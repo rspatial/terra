@@ -340,8 +340,9 @@ NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
-static int proj_cdn_suppressed = 0;
-static std::string proj_cdn_reason;
+// consolidate repetetive PROJ warnings
+static bool proj_seen_cdn = false;
+static bool proj_seen_cache_lock = false;
 
 static bool is_proj_cdn_warning(const char *msg) {
 	std::string s(msg);
@@ -350,19 +351,57 @@ static bool is_proj_cdn_warning(const char *msg) {
 	         s.find("Cannot open https://") != std::string::npos));
 }
 
-static bool handle_proj_cdn(const char *msg, int err_no) {
-	if (!is_proj_cdn_warning(msg)) return false;
-	proj_cdn_suppressed++;
-	if (proj_cdn_suppressed == 1) {
-		std::string s(msg);
-		auto pos = s.rfind(": ");
-		if (pos != std::string::npos && pos > 30) {
-			proj_cdn_reason = s.substr(pos + 2);
-		} else {
-			proj_cdn_reason = s;
-		}
+// PROJ emits messages like
+//   "PROJ: Cannot take exclusive lock on /home/u/.local/share/proj/cache.db"
+// when its SQLite network cache cannot acquire the EXCLUSIVE lock it needs
+// for housekeeping. The transformation itself still succeeds. This is most
+// often a symptom of cache.db sitting on an NFS / Lustre / GPFS home dir, or
+// of multiple processes sharing one cache.
+static bool is_proj_cache_lock_warning(const char *msg) {
+	std::string s(msg);
+	return (s.find("Cannot take exclusive lock") != std::string::npos &&
+	        s.find("cache.db") != std::string::npos);
+}
+
+// Returns true if the message was recognized as a known-noisy PROJ warning
+// and has been collapsed. False means the caller should emit it normally.
+static bool handle_proj_noise(const char *msg, int err_no) {
+	if (is_proj_cdn_warning(msg)) {
+		proj_seen_cdn = true;
+		return true;
 	}
-	return true;
+	if (is_proj_cache_lock_warning(msg)) {
+		proj_seen_cache_lock = true;
+		return true;
+	}
+	return false;
+}
+
+void proj_noise_reset() {
+	proj_seen_cdn = false;
+	proj_seen_cache_lock = false;
+}
+
+void proj_noise_drain(SpatMessages &m) {
+	if (proj_seen_cdn) {
+		m.addWarning(
+			"PROJ could not download one or more datum grids from cdn.proj.org. "
+			"Transformation accuracy may be reduced. "
+			"Suppress with: projNetwork(FALSE)"
+		);
+		proj_seen_cdn = false;
+	}
+	if (proj_seen_cache_lock) {
+		m.addWarning(
+			"PROJ could not lock its network cache (cache.db). "
+			"Transformations still completed, but this often indicates the "
+			"cache is on a network filesystem (NFS/Lustre/GPFS) or is being "
+			"accessed by concurrent processes. "
+			"Mitigate by pointing PROJ at a local directory, e.g. "
+			"Sys.setenv(PROJ_USER_WRITABLE_DIRECTORY=\"/tmp/proj\")"
+		);
+		proj_seen_cache_lock = false;
+	}
 }
 
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
@@ -371,12 +410,12 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             break;
         case 1:
         case 2:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL %d)", msg, err_no);
             }
             break;
         case 3:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL error %d)", msg, err_no);
             }
             break;
@@ -384,7 +423,7 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
             }
             break;
@@ -399,7 +438,7 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 2:
             break;
         case 3:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL error %d)", msg, err_no);
             }
             break;
@@ -447,17 +486,6 @@ void set_gdal_warnings(int level) {
 	} else {
 		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
 	}
-}
-
-// [[Rcpp::export(name = ".proj_cdn_suppressed")]]
-Rcpp::List get_proj_cdn_suppressed() {
-	Rcpp::List out = Rcpp::List::create(
-		Rcpp::Named("count") = proj_cdn_suppressed,
-		Rcpp::Named("reason") = proj_cdn_reason
-	);
-	proj_cdn_suppressed = 0;
-	proj_cdn_reason = "";
-	return out;
 }
 
 #include "common.h"

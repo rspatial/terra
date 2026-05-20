@@ -29,6 +29,33 @@ SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
 
 bool can_transform(std::string fromCRS, std::string toCRS);
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS);
+
+// Call at the start of any operation that performs coordinate
+// transformations, before any GDAL/PROJ work, to clear stale noise flags
+// from previous operations.
+void proj_noise_reset();
+
+// Drain any "noisy" PROJ messages that the GDAL error handler has collapsed
+// (currently: CDN download failures and cache.db lock failures) into the
+// given SpatMessages object as a single warning each, and reset the flags.
+// Call this at the end of any operation that performs coordinate transformations
+
+void proj_noise_drain(SpatMessages &m);
+
+// Reset PROJ noise flags on construction and drain any
+// collected noise into the target SpatMessages on destruction. Useful for
+// functions with many return paths.
+struct ProjNoiseScope {
+	SpatMessages *m_target;
+	explicit ProjNoiseScope(SpatMessages &target) : m_target(&target) {
+		proj_noise_reset();
+	}
+	~ProjNoiseScope() {
+		if (m_target) proj_noise_drain(*m_target);
+	}
+	ProjNoiseScope(const ProjNoiseScope&) = delete;
+	ProjNoiseScope& operator=(const ProjNoiseScope&) = delete;
+};
 bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt, std::string &msg);
 bool prj_from_spatial_reference(const OGRSpatialReference *srs, std::string &prj, std::string &msg);
 //std::vector<std::string> srefs_from_string(std::string input);

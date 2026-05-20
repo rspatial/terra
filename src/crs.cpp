@@ -402,6 +402,8 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 		return(s);
 	#else
 
+	ProjNoiseScope _pns(s.msg);
+
 	OGRSpatialReference source, target;
 	std::string vsrs = getSRS("wkt");
 	const char *pszDefFrom = vsrs.c_str();

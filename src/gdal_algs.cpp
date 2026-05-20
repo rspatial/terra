@@ -554,6 +554,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
+	ProjNoiseScope _pns(out.msg);
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
 		return out;
@@ -1055,6 +1056,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	
 	
 	SpatRaster out = x.geometry(nlyr(), false, false);
+	ProjNoiseScope _pns(out.msg);
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
 		return out;
