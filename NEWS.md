@@ -1,10 +1,11 @@
-# version 1.9-28
+# version 1.9-30
 
 ## bug fixes
 
 - terra did not build with GDAL < 3.4 [#2080](https://github.com/rspatial/terra/issues/2080) by Wolfgang Viechtbauer
 - `spatSample<SpatRaster>(method="random")` on large rasters had become very slow [#2086](https://github.com/rspatial/terra/issues/2086) by Jason Flower
-
+- retro labels generated with `plot(x, pax=list(retro=TRUE))` were incorrect in the W and S hemisphere [#2090](https://github.com/rspatial/terra/issues/2090) by Lucas Salinas Morales
+ 
 
 ## enhancements
 
