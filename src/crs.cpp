@@ -39,6 +39,8 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 #include "proj.h"
 #endif
 
+#include "crs.h"
+
 bool is_ogr_error(OGRErr err, std::string &msg) {
 	if (err != OGRERR_NONE) {
 		switch (err) {
