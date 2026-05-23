@@ -2,10 +2,10 @@
 
 \alias{ar_info}
 
-\title{ar_info}
+\title{Describe a multi-dimensional array file}
 
 \description{
-Describe a multi-dimensional array (netcdf) file
+Describe a multi-dimensional array file (e.g., NetCDF)
 }
 
 \usage{
