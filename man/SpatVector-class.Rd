@@ -23,7 +23,7 @@
 
 \code{SpatVectorCollection} can hold a collection of SpatVectors
 
-\code{SpatVectorProxy} is a SpatVector for which the data are on-disk in-stead of in memory. 
+\code{SpatVectorProxy} is a SpatVector for which the data are on-disk instead of in memory. 
 }
 
 \keyword{classes}
