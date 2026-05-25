@@ -102,7 +102,7 @@
   layers
 
 - [`ar_info()`](https://rspatial.github.io/terra/reference/ar_info.md) :
-  ar_info
+  Describe a multi-dimensional array file
 
 - [`Arith-methods`](https://rspatial.github.io/terra/reference/arith-generic.md)
   [`Arith,SpatExtent,numeric-method`](https://rspatial.github.io/terra/reference/arith-generic.md)

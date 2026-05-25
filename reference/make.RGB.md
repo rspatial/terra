@@ -76,8 +76,6 @@ SpatRaster
 
 ``` r
 r <- rast(system.file("ex/elev.tif", package="terra"))
-
-r <- rast(system.file("external/test.grd", package="raster"))
 x <- make.RGB(r)
 plot(x)
 ```

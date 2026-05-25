@@ -51,7 +51,7 @@ r <- rast()
 e <- ext(-10.1, 9.9, -20.1, 19.9)
 ea <- align(e, r)
 e
-#> SpatExtent : -10.1, 9.9, -20.1, 19.9 (xmin, xmax, ymin, ymax)
+#> SpatExtent : -10.1, 9.9000000000000004, -20.100000000000001, 19.899999999999999 (xmin, xmax, ymin, ymax)
 ext(r)
 #> SpatExtent : -180, 180, -90, 90 (xmin, xmax, ymin, ymax)
 ea

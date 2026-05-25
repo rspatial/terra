@@ -52,10 +52,10 @@ x <- ext(0.1, 2.2, 0, 3)
 y <- ext(-2, 1, -2,2)
 # union
 x + y
-#> SpatExtent : -2, 2.2, -2, 3 (xmin, xmax, ymin, ymax)
+#> SpatExtent : -2, 2.2000000000000002, -2, 3 (xmin, xmax, ymin, ymax)
 # intersection
 x * y
-#> SpatExtent : 0.1, 1, 0, 2 (xmin, xmax, ymin, ymax)
+#> SpatExtent : 0.10000000000000001, 1, 0, 2 (xmin, xmax, ymin, ymax)
 
 e <- x %% 2
 e

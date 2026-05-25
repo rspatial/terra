@@ -1,7 +1,7 @@
 # List or remove layers from a vector file
 
 List or remove layers from a vector file that supports layers such as
-GPGK
+GPKG
 
 ## Usage
 
@@ -17,7 +17,7 @@ vector_layers(filename, delete="", return_error=FALSE)
 
 - delete:
 
-  character. layers to be deleted (ignored if the value is `""`
+  character. layers to be deleted (ignored if the value is `""`)
 
 - return_error:
 

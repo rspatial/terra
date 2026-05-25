@@ -30,8 +30,8 @@ coordinate reference system.
 These classes hold a C++ pointer to the data "reference class". You
 should not write scripts that directly access this pointer, as its
 user-interface is not stable. These pointers make the code run fast, but
-they they cannot be "serialized". That is they cannot be recovered from
-a saved R session, or passed to nodes on a computer cluster. Generally,
+they cannot be "serialized". That is they cannot be recovered from a
+saved R session, or passed to nodes on a computer cluster. Generally,
 you should use
 [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md)
 to save `SpatRaster` objects to disk (and pass a filename or cell values
@@ -432,7 +432,7 @@ not need to match each other.
 |  |  |
 |----|----|
 | [`vect`](https://rspatial.github.io/terra/reference/vect.md) | Create a SpatVector from a file (for example a "shapefile") or from another object |
-| [`vector_layers`](https://rspatial.github.io/terra/reference/vector_layers.md) | list or delete layers in a vector database such as GPGK |
+| [`vector_layers`](https://rspatial.github.io/terra/reference/vector_layers.md) | list or delete layers in a vector database such as GPKG |
 | `rbind` | append SpatVectors of the same geometry type |
 | [`unique`](https://rspatial.github.io/terra/reference/unique.md) | remove duplicates |
 | [`na.omit`](https://rspatial.github.io/terra/reference/na.omit.md) | remove empty geometries and/or fields that are `NA` |
@@ -457,7 +457,7 @@ not need to match each other.
 | [`ncol`](https://rspatial.github.io/terra/reference/dimensions.md) | The number of columns (of the attributes) |
 | [`nrow`](https://rspatial.github.io/terra/reference/dimensions.md) | The number of rows (of the geometries and attributes) |
 | [`names`](https://rspatial.github.io/terra/reference/names.md) | Get or set the layer names |
-| [`ext`](https://rspatial.github.io/terra/reference/ext.md) | Get the extent (minimum and maximum x and y coordinates ("bounding box") |
+| [`ext`](https://rspatial.github.io/terra/reference/ext.md) | Get the extent (minimum and maximum x and y coordinates; "bounding box") |
 | [`crs`](https://rspatial.github.io/terra/reference/crs.md) | The coordinate reference system (map projection) |
 | [`linearUnits`](https://rspatial.github.io/terra/reference/linearUnits.md) | returns the linear units of the crs (in meter) |
 | [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md) | Test if an object has (or may have) a longitude/latitude coordinate reference system |
@@ -750,7 +750,7 @@ better. Here are some examples:
 | [`quantile`](https://rspatial.github.io/terra/reference/quantile.md) | computes by cell, across layers instead of the other way around |
 | [`extract`](https://rspatial.github.io/terra/reference/extract.md) | By default, `terra` returns a matrix, with the first column the sequential ID of the vectors. |
 |  | `raster` returns a list (for lines or polygons) or a matrix (for points, but without the ID |
-|  | column. You can use `list=TRUE` to get the results as a list |
+|  | column). You can use `list=TRUE` to get the results as a list |
 | [`values`](https://rspatial.github.io/terra/reference/values.md) | `terra` always returns a matrix. `raster` returns a vector for a `RasterLayer` |
 | [`Summary-methods`](https://rspatial.github.io/terra/reference/summarize-generics.md) | With `raster`, `mean(x, y)` and `mean(stack(x, y)` return the same result, a single |
 |  | layer with the mean of all cell values. This is also what `terra` returns with |

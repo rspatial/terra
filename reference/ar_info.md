@@ -1,6 +1,6 @@
-# ar_info
+# Describe a multi-dimensional array file
 
-Describe a multi-dimensional array (netcdf) file
+Describe a multi-dimensional array file (e.g., NetCDF)
 
 ## Usage
 

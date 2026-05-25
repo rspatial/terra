@@ -2,9 +2,9 @@
 
 Set or get names for each dataset (variable) in a SpatRasterDataset.
 
-Each SpatRaster \_data source\_ can also have a variable name and a long
+Each SpatRaster *data source* can also have a variable name and a long
 variable name. They are set when reading a file with possibly multiple
-sub-datasets (e.g. netcdf or hdf5 format) into a single SpatRaster. Each
+sub-datasets (e.g. NetCDF or HDF5 format) into a single SpatRaster. Each
 sub-dataset is a separate "data-source" in the SpatRaster. Note that
 newly created or derived SpatRasters always have a single variable (data
 source), and therefore the variable names are lost when processing a
@@ -12,7 +12,8 @@ multi-variable SpatRaster. Thus the variable names are mostly useful to
 understand a SpatRaster created from some files and for managing
 SpatRasterDatasets.
 
-See `link{names}` for the more commonly used \_layer\_ names.
+See [`names`](https://rspatial.github.io/terra/reference/names.md) for
+the more commonly used *layer* names.
 
 ## Usage
 
@@ -60,7 +61,8 @@ character
 
 terra enforces neither unique nor valid names. See
 [`make.unique`](https://rdrr.io/r/base/make.unique.html) to create
-unique names and `{make.names}` to make syntactically valid names.
+unique names and [`make.names`](https://rdrr.io/r/base/make.names.html)
+to make syntactically valid names.
 
 ## Examples
 

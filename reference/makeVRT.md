@@ -52,8 +52,8 @@ makeVRT(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres=xres, xycen
 - xycenter:
 
   logical. If `TRUE`, `xmin` and `xmax` represent the coordinates of the
-  center of the extreme cell, in stead of the coordinates of the outside
-  corner. Only used of `extent` is missing
+  center of the extreme cell, instead of the coordinates of the outside
+  corner. Only used if `extent` is missing
 
 - crs:
 

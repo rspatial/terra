@@ -4,5 +4,5 @@
 
 `SpatVectorCollection` can hold a collection of SpatVectors
 
-`SpatVectorProxy` is a SpatVector for which the data are on-disk
-in-stead of in memory.
+`SpatVectorProxy` is a SpatVector for which the data are on-disk instead
+of in memory.

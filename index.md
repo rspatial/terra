@@ -24,7 +24,7 @@ feature, please file an
 package. The interfaces of `terra` and `raster` are similar, but `terra`
 is simpler, faster and can do more. You can try
 [tappa](https://github.com/rspatial/tappa/) if want the terra
-functionality in python; or you can use the C++ library to [roll your
+functionality in Python; or you can use the C++ library to [roll your
 own](https://github.com/rspatial/terra/tree/master/cmdapp) application.
 
 ## Installation
@@ -101,5 +101,5 @@ And now, in R, install the package
     remotes::install_github("rspatial/terra")
 
 See the `sf` [instructions](https://github.com/r-spatial/sf) for
-installation on other linux systems — and for possible
+installation on other Linux systems — and for possible
 updates/improvements on the above instructions.
