@@ -1151,7 +1151,7 @@ Released 2022-06-09
 
 Released 2022-02-17
 
-- `writeVector` and `vect` now work with GPGK if the path has non-ascii characters [#518]
+- `writeVector` and `vect` now work with GPKG if the path has non-ascii characters [#518]
 - The results of `predict` with `cores > 1` and more than one output variable were garbled
 - `zonal` dropped category names when using an external (R) function [#527] by Jakub Nowosad
 - focal/focalCpp showed strange patterns when the window size was larger than the block size [#519] by Alex Ilich
@@ -1186,7 +1186,7 @@ Released 2022-01-30
 
 - `distance`, `gridDistance`, `direction` and `patches` now process all layers of the input SpatRaster. [#503] by Chris Haak
 - consistent copy-on-modify behavior in `()<-` methods. in-place updating available with `set.` methods such as `set.names` and `set.values`. [#493] by Jean Romain and [#511] by Bryan Fuentes
-- much faster writing of GPGK vector data by using a single transaction (following sf) [#460] by Krzysztof Dyba
+- much faster writing of GPKG vector data by using a single transaction (following sf) [#460] by Krzysztof Dyba
 - `aggregate<SpatRaster>` now accepts functions that return more than one value per aggregated cell
 - `writeVector` has new argument `insert` to add a layer to an existing file (e.g. GPKG).
 
@@ -1257,7 +1257,7 @@ Released 2022-01-13
 - `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>`. [#456] by Márcia Barbosa
 - The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459] by Edzer Pebesma
 - it is now possible to add sub-datasets to GPKG and GTiff files. [#300] by gtitov
-- general option `memfrac` can now be set to zero (in stead of not lower than 0.1). [#476] by Matt Strimas-Mackey
+- general option `memfrac` can now be set to zero (instead of not lower than 0.1). [#476] by Matt Strimas-Mackey
 - new argument `allowGaps` in `patches` to disallow gaps between patch IDs. See [#478] by Dunbar Carpenter.
 
 

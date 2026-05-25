@@ -22,9 +22,9 @@
 \description{
 Set or get names for each dataset (variable) in a SpatRasterDataset. 
 
-Each SpatRaster _data source_ can also have a variable name and a long variable name. They are set when reading a file with possibly multiple sub-datasets (e.g. netcdf or hdf5 format) into a single SpatRaster. Each sub-dataset is a separate "data-source" in the SpatRaster. Note that newly created or derived SpatRasters always have a single variable (data source), and therefore the variable names are lost when processing a multi-variable SpatRaster. Thus the variable names are mostly useful to understand a SpatRaster created from some files and for managing SpatRasterDatasets.
+Each SpatRaster \emph{data source} can also have a variable name and a long variable name. They are set when reading a file with possibly multiple sub-datasets (e.g. NetCDF or HDF5 format) into a single SpatRaster. Each sub-dataset is a separate "data-source" in the SpatRaster. Note that newly created or derived SpatRasters always have a single variable (data source), and therefore the variable names are lost when processing a multi-variable SpatRaster. Thus the variable names are mostly useful to understand a SpatRaster created from some files and for managing SpatRasterDatasets.
 
-See \code{link{names}} for the more commonly used _layer_ names.
+See \code{\link{names}} for the more commonly used \emph{layer} names.
 
 }
 
@@ -56,7 +56,7 @@ character
 }
 
 \note{
-terra enforces neither unique nor valid names. See \code{\link{make.unique}} to create unique names and \code{{make.names}} to make syntactically valid names.
+terra enforces neither unique nor valid names. See \code{\link{make.unique}} to create unique names and \code{\link{make.names}} to make syntactically valid names.
 }
 
 \examples{

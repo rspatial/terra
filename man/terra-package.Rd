@@ -16,7 +16,7 @@ The package implements two main classes (data types): \code{SpatRaster} and \cod
 
 Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of \code{SpatRaster} or \code{SpatVector} objects. There is also a \code{SpatGraticule} class to assist in adding longitude/latitude lines and labels to a map with another coordinate reference system.
 
-These classes hold a C++ pointer to the data "reference class". You should not write scripts that directly access this pointer, as its user-interface is not stable. These pointers make the code run fast, but they they cannot be "serialized". That is they cannot be recovered from a saved R session, or passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}} and \code{\link{saveRDS}}. See these \href{https://rspatial.org/pkg/10-parallel.html}{guidelines} for parallelization with terra objects.
+These classes hold a C++ pointer to the data "reference class". You should not write scripts that directly access this pointer, as its user-interface is not stable. These pointers make the code run fast, but they cannot be "serialized". That is they cannot be recovered from a saved R session, or passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}} and \code{\link{saveRDS}}. See these \href{https://rspatial.org/pkg/10-parallel.html}{guidelines} for parallelization with terra objects.
 
 The "terra" package is a replacement of the "raster" package. "terra" has a very similar, but simpler, interface; it is faster, and it can do much more. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
@@ -426,7 +426,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 \section{XVIII. Create SpatVector objects}{
 \tabular{ll}{
   \code{\link{vect}} \tab Create a SpatVector from a file (for example a "shapefile") or from another object\cr
-  \code{\link{vector_layers}} \tab list or delete layers in a vector database such as GPGK\cr
+  \code{\link{vector_layers}} \tab list or delete layers in a vector database such as GPKG\cr
   \code{rbind} \tab append SpatVectors of the same geometry type\cr
   \code{\link{unique}} \tab remove duplicates \cr
   \code{\link{na.omit}} \tab remove empty geometries and/or fields that are \code{NA} \cr
@@ -452,7 +452,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   \code{\link{ncol}}\tab The number of columns (of the attributes)\cr
   \code{\link{nrow}} \tab The number of rows (of the geometries and attributes)\cr
   \code{\link{names}} \tab Get or set the layer names \cr
-  \code{\link{ext}} \tab Get the extent (minimum and maximum x and y coordinates ("bounding box") \cr
+  \code{\link{ext}} \tab Get the extent (minimum and maximum x and y coordinates; "bounding box") \cr
   \code{\link{crs}} \tab The coordinate reference system (map projection) \cr
   \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
   \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
@@ -747,7 +747,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 \code{\link{quantile}}\tab computes by cell, across layers instead of the other way around\cr
 \code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \cr
 \tab \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID\cr
-\tab column. You can use \code{list=TRUE} to get the results as a list\cr
+\tab column). You can use \code{list=TRUE} to get the results as a list\cr
 \code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
 \code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single\cr
 \tab layer with the mean of all cell values. This is also what \code{terra} returns with \cr
