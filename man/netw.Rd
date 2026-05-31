@@ -33,10 +33,10 @@
 \title{Build a SpatNetwork}
 
 \description{
-\code{netw} is the user-facing constructor for a \code{SpatNetwork}, in the same spirit as \code{\link{vect}} for \code{SpatVector} or \code{\link{rast}} for \code{SpatRaster}. It dispatches on the class of its first argument:
+\code{netw} creates r a \code{SpatNetwork}, in the same spirit as \code{\link{vect}} for \code{SpatVector} or \code{\link{rast}} for \code{SpatRaster}. It dispatches on the class of its first argument:
 \itemize{
   \item \code{netw()} -- an empty network.
-  \item \code{netw(<SpatVector of lines>, ...)} -- builds a planar topological network by noding the input lines (every place where two lines cross becomes a node, the line pieces between consecutive nodes become edges). The full coordinate sequence between nodes is preserved on each edge so that the original sinuous geometry survives.
+  \item \code{netw(<SpatVector of lines>, ...)} -- builds a network by noding the input lines (every place where two lines cross becomes a node, the line pieces between consecutive nodes become edges). The full coordinate sequence between nodes is preserved.
   \item \code{netw(<igraph>, ...)} -- builds a network from an \code{igraph} object. Vertex attributes give the node coordinates; an optional \code{weight} edge attribute supplies edge weights. Edges become straight 2-point lines between their end nodes (igraph carries no edge geometry).
   \item \code{netw(<filename>, ...)} -- reads a network from disk. Currently only the GDAL Geographic Network Model (GNM) format is supported. Use \code{\link{writeNetwork}} for the write side.
   \item \code{netw(<SpatNetwork>, ...)} -- identity (returns the input unchanged).
@@ -44,7 +44,7 @@
 
 The same coercions are also exposed via \code{methods::as}: \code{as(v, "SpatNetwork")}, \code{as(g, "SpatNetwork")}, \code{as(net, "igraph")}.
 
-The accessors \code{net_nodes}, \code{net_edges}, \code{net_nnodes}, \code{net_nedges}, \code{net_directed} and \code{net_weights} return parts of the network as ordinary \code{SpatVector}s and primitives. The \code{net_*} prefix avoids collisions with the \code{igraph} and \code{network} packages, which export plain \code{nodes}, \code{edges}, \code{is.directed} and \code{weights}.
+The accessors \code{net_nodes}, \code{net_edges}, \code{net_nnodes}, \code{net_nedges}, \code{net_directed} and \code{net_weights} return parts of the network as ordinary \code{SpatVector}s and primitives. .
 }
 
 \usage{
