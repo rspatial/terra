@@ -4,6 +4,7 @@
 
 - terra did not build with GDAL < 3.4 [#2080](https://github.com/rspatial/terra/issues/2080) by Wolfgang Viechtbauer
 - `spatSample<SpatRaster>(method="random")` on large lon/lat rasters had become very slow [#2086](https://github.com/rspatial/terra/issues/2086) by Jason Flower
+- recurring `Cannot take exclusive lock on cache.db` PROJ warnings during `project` are now collapsed into a single, actionable message [#2088](https://github.com/rspatial/terra/issues/2088)
 - retro labels generated with `plot(x, pax=list(retro=TRUE))` were incorrect in the W and S hemispheres [#2090](https://github.com/rspatial/terra/issues/2090) by Lucas Salinas Morales
  
 
@@ -13,6 +14,7 @@
 ## new 
 
 - `make.RGB` function [#2085](https://github.com/rspatial/terra/issues/2085) by Jérôme Guélat
+- `as.network<SpatVector>` to build a `SpatNetwork` object
 
 
 # version 1.9-27
