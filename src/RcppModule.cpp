@@ -2,6 +2,7 @@
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
 #include "spatGraph.h"
+#include "spatNetwork.h"
 #include <memory> //std::addressof
 #include "NA.h"
 #include "spatTime.h"
@@ -211,6 +212,7 @@ RCPP_EXPOSED_CLASS(SpatRasterStack)
 RCPP_EXPOSED_CLASS(SpatVector)
 RCPP_EXPOSED_CLASS(SpatVectorProxy)
 RCPP_EXPOSED_CLASS(SpatVectorCollection)
+RCPP_EXPOSED_CLASS(SpatNetwork)
 //RCPP_EXPOSED_CLASS(SpatGraph)
 //RCPP_EXPOSED_CLASS(SpatVector2)
 
@@ -432,6 +434,31 @@ RCPP_MODULE(spat){
 	;
 
 
+	class_<SpatNetwork>("SpatNetwork")
+		.constructor()
+		.method("deepcopy", &SpatNetwork::deepCopy)
+		.method("nnodes", &SpatNetwork::nnodes)
+		.method("nedges", &SpatNetwork::nedges)
+		.method("as_nodes", &SpatNetwork::as_nodes)
+		.method("as_edges", &SpatNetwork::as_edges)
+		.method("node_degree", &SpatNetwork::node_degree)
+		.method("edge_lengths_plane", &SpatNetwork::edge_lengths_plane)
+		.method("setSRS", &SpatNetwork::setSRS)
+		.method("getSRS", &SpatNetwork::getSRS)
+		.property("extent", &SpatNetwork::getExtent)
+		.method("has_error", &SpatNetwork::hasError)
+		.method("has_warning", &SpatNetwork::hasWarning)
+		.method("getWarnings", &SpatNetwork::getWarnings)
+		.method("getError", &SpatNetwork::getError)
+		.method("show", &SpatNetwork::show)
+		.field_readonly("node_x", &SpatNetwork::node_x)
+		.field_readonly("node_y", &SpatNetwork::node_y)
+		.field_readonly("edge_from", &SpatNetwork::edge_from)
+		.field_readonly("edge_to", &SpatNetwork::edge_to)
+		.field_readonly("edge_source", &SpatNetwork::edge_source)
+	;
+
+
 	class_<SpatCategories>("SpatCategories")
 		.constructor()
 		.field_readonly("df", &SpatCategories::d)
@@ -604,6 +631,7 @@ RCPP_MODULE(spat){
 		.method("union", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::unite ))
 		.method("union_self", ( SpatVector (SpatVector::*)())( &SpatVector::unite ))
 		.method("union_unary", &SpatVector::unaryunion)
+		.method("as_network", &SpatVector::as_network)
 		.method("intersect", &SpatVector::intersect)
 		.method("delaunay", &SpatVector::delaunay)
 		.method("voronoi", &SpatVector::voronoi)

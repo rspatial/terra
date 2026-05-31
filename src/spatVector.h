@@ -103,6 +103,7 @@ class SpatGeom {
 
 
 class SpatVectorCollection;
+class SpatNetwork;
 
 class SpatVector {
 
@@ -417,6 +418,7 @@ class SpatVector {
 		SpatVector width();
 
 		SpatVector unaryunion();
+		SpatNetwork as_network(double snap, bool merge);
 
 		SpatVector cbind(SpatDataFrame d);
 		void fix_lonlat_overflow();

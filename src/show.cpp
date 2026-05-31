@@ -22,6 +22,7 @@
 #include <iomanip>
 
 #include "spatRasterMultiple.h"
+#include "spatNetwork.h"
 
 #ifdef useGDAL
 #include "ogr_spatialref.h"
@@ -984,6 +985,32 @@ std::string SpatVectorProxy::show() {
 
 	if (nc > 0) {
 		append_spatvector_df_preview(s, v.df, 0);
+	}
+
+	return s.str();
+}
+
+
+std::string SpatNetwork::show() {
+	std::ostringstream s;
+	size_t nn = nnodes();
+	size_t ne = nedges();
+	s << "class       : SpatNetwork\n";
+	s << "dimensions  : " << nn << ", " << ne << "  (nodes, edges)\n";
+	if (nn > 0) {
+		s << "extent      : "
+		  << format_double(extent.xmin, 7) << ", "
+		  << format_double(extent.xmax, 7) << ", "
+		  << format_double(extent.ymin, 7) << ", "
+		  << format_double(extent.ymax, 7)
+		  << "  (xmin, xmax, ymin, ymax)\n";
+	}
+	std::string wkt   = srs.get("wkt");
+	std::string proj4 = srs.get("proj4");
+	s << "coord. ref. : " << crs_description(wkt, proj4) << "\n";
+
+	if (edge_df.ncol() > 0) {
+		append_spatvector_df_preview(s, edge_df, 0);
 	}
 
 	return s.str();

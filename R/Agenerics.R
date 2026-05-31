@@ -193,7 +193,12 @@ if (!isGeneric("add<-")) {setGeneric("add<-", function(x, value) standardGeneric
 if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}
 if (!isGeneric("as.contour")) {setGeneric("as.contour", function(x,...) standardGeneric("as.contour"))}
 if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGeneric("as.lines"))}
+if (!isGeneric("as.network")) {setGeneric("as.network", function(x,...) standardGeneric("as.network"))}
 if (!isGeneric("as.points")) {setGeneric("as.points", function(x,...) standardGeneric("as.points"))}
+if (!isGeneric("nodes")) {setGeneric("nodes", function(x,...) standardGeneric("nodes"))}
+if (!isGeneric("edges")) {setGeneric("edges", function(x,...) standardGeneric("edges"))}
+if (!isGeneric("nnodes")) {setGeneric("nnodes", function(x,...) standardGeneric("nnodes"))}
+if (!isGeneric("nedges")) {setGeneric("nedges", function(x,...) standardGeneric("nedges"))}
 if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standardGeneric("as.polygons"))}
 if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGeneric("classify")) }
 if (!isGeneric("cells")) { setGeneric("cells", function(x, y, ...) standardGeneric("cells")) }

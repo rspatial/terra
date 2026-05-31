@@ -17,10 +17,16 @@
 
 
 #include <numeric>
+#include <functional>
+#include <unordered_map>
+#include <cmath>
+#include <cstdint>
+#include <utility>
 #include "geos_spat.h"
 #include "distance.h"
 #include "recycle.h"
 #include "string_utils.h"
+#include "spatNetwork.h"
 
 void callbck(void *item, void *userdata) { // callback function for tree selection
 	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
@@ -3447,4 +3453,288 @@ void SpatVector::make_CCW() {
 	#endif
 }
 
+
+// Build a SpatNetwork from a SpatVector of lines.
+//
+// Algorithm:
+//   1. Convert the SpatVector to GEOS geometries.
+//   2. If snap > 0, snap points within `snap` of each other
+//   3. Collect into a single MULTILINESTRING.
+//   4. GEOSUnaryUnion: full noding + dissolution of duplicate/overlapping pieces. 
+//   5. if GEOSLineMerge: collapse runs of degree-2  shared endpoints
+//   6. For each child LINESTRING:
+//        - Hash its first/last coordinates (quantized at 1e-12 of the
+//          extent) to assign integer node IDs.
+//        - Store the full coordinate sequence as the edge geometry.
+//   7. Source-attribution: for each output edge, take its midpoint and
+//      find the first source whose geometry (within `snap`, or a small
+//      fraction of the bounding box if snap == 0) covers that midpoint.
+//      The attribute row of that source is used in edge_df. When
+//      merge=true, an edge can span multiple source features only one source's attributes used.
+SpatNetwork SpatVector::as_network(double snap, bool merge) {
+	SpatNetwork net;
+	net.srs = srs;
+
+	if (size() == 0) {
+		return net;
+	}
+	if (type() != "lines") {
+		net.setError("input must be a SpatVector of lines");
+		return net;
+	}
+
+	GEOSContextScope hGEOSCtxt;
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	if (g.empty()) {
+		net.setError("no input geometries");
+		return net;
+	}
+
+	// 2. Optional snap: replace each input with snap(input, all-merged, snap).
+	if (snap > 0.0) {
+		// Build a single reference geometry to snap against.
+		std::vector<GEOSGeometry*> raw;
+		raw.reserve(g.size());
+		for (size_t i = 0; i < g.size(); i++) raw.push_back(g[i].get());
+		GEOSGeometry *coll = GEOSGeom_createCollection_r(
+			hGEOSCtxt, GEOS_MULTILINESTRING, raw.data(), (unsigned) raw.size());
+		// raw pointers are now owned by `coll`; release ownership from g.
+		for (size_t i = 0; i < g.size(); i++) {
+			(void) g[i].release();
+		}
+		GEOSGeometry *unioned = GEOSUnaryUnion_r(hGEOSCtxt, coll);
+		GEOSGeom_destroy_r(hGEOSCtxt, coll);
+		if (unioned == NULL) {
+			net.setError("snap union failed");
+			return net;
+		}
+		// Re-build per-feature geoms (we lost the originals to the
+		// collection above), then snap each to `unioned`.
+		g = geos_geoms(this, hGEOSCtxt);
+		for (size_t i = 0; i < g.size(); i++) {
+			GEOSGeometry *snapped = GEOSSnap_r(hGEOSCtxt, g[i].get(), unioned, snap);
+			if (snapped != NULL) {
+				g[i] = geos_ptr(snapped, hGEOSCtxt);
+			}
+		}
+		GEOSGeom_destroy_r(hGEOSCtxt, unioned);
+	}
+
+	// 3. Build a MULTILINESTRING from the per-feature geoms. We need to
+	//    duplicate each so we can keep the originals for source attribution.
+	std::vector<GeomPtr> g_for_attr;
+	g_for_attr.reserve(g.size());
+	for (size_t i = 0; i < g.size(); i++) {
+		if (g[i].get() == NULL) {
+			g_for_attr.push_back(GeomPtr());
+			continue;
+		}
+		GEOSGeometry *clone = GEOSGeom_clone_r(hGEOSCtxt, g[i].get());
+		if (clone != NULL) g_for_attr.push_back(geos_ptr(clone, hGEOSCtxt));
+		else g_for_attr.push_back(GeomPtr());
+	}
+
+	std::vector<GEOSGeometry*> mlraw;
+	mlraw.reserve(g.size());
+	for (size_t i = 0; i < g.size(); i++) {
+		if (g[i].get() == NULL) continue;
+		// transfer ownership of g[i] to the collection
+		mlraw.push_back(g[i].release());
+	}
+	if (mlraw.empty()) {
+		net.setError("no usable input geometries");
+		return net;
+	}
+	GEOSGeometry *bigml = GEOSGeom_createCollection_r(
+		hGEOSCtxt, GEOS_MULTILINESTRING, mlraw.data(), (unsigned) mlraw.size());
+	if (bigml == NULL) {
+		// Ownership of mlraw entries is undefined on failure; defensively
+		// destroy them ourselves.
+		for (auto p : mlraw) {
+			if (p) GEOSGeom_destroy_r(hGEOSCtxt, p);
+		}
+		net.setError("could not build MULTILINESTRING");
+		return net;
+	}
+
+	// 4. Node by union-self.
+	GEOSGeometry *noded = GEOSUnaryUnion_r(hGEOSCtxt, bigml);
+	GEOSGeom_destroy_r(hGEOSCtxt, bigml);
+	if (noded == NULL) {
+		net.setError("noding failed");
+		return net;
+	}
+
+	// 5. Optional line-merge: stitch chains of degree-2 connections back
+	//    into single linestrings, so only true junctions remain as
+	//    nodes. GEOSLineMerge accepts a (Multi)LineString and is a no-op
+	//    on already-merged geometry, so it's safe to call unconditionally
+	//    when `merge` is true.
+	if (merge) {
+		GEOSGeometry *merged = GEOSLineMerge_r(hGEOSCtxt, noded);
+		if (merged != NULL) {
+			GEOSGeom_destroy_r(hGEOSCtxt, noded);
+			noded = merged;
+		}
+		// On failure we silently keep the un-merged result; the network
+		// will still be correct, just with extra degree-2 nodes.
+	}
+
+	// Helper to walk the (possibly Multi-) result as a list of
+	// LINESTRINGs.
+	auto each_linestring = [&](GEOSGeometry *root,
+		std::function<void(const GEOSGeometry*)> fn) {
+		int gid = GEOSGeomTypeId_r(hGEOSCtxt, root);
+		if (gid == GEOS_LINESTRING) {
+			fn(root);
+		} else {
+			int nsub = GEOSGetNumGeometries_r(hGEOSCtxt, root);
+			for (int i = 0; i < nsub; i++) {
+				const GEOSGeometry *sub = GEOSGetGeometryN_r(hGEOSCtxt, root, i);
+				int sid = GEOSGeomTypeId_r(hGEOSCtxt, sub);
+				if (sid == GEOS_LINESTRING) fn(sub);
+			}
+		}
+	};
+
+	// 6. Collect node coordinates and edges.
+	// Quantize node coords by tolerance to handle floating-point noise.
+	double tol = (snap > 0.0) ? snap : 0.0;
+	if (tol == 0.0) {
+		// derive a small tolerance from the bounding box
+		SpatExtent e = getExtent();
+		double dx = e.xmax - e.xmin, dy = e.ymax - e.ymin;
+		double scale = std::max(std::abs(dx), std::abs(dy));
+		if (scale == 0.0 || !std::isfinite(scale)) scale = 1.0;
+		tol = scale * 1e-12;
+	}
+
+	// Hash a 2D quantized coordinate pair into a 64-bit key. We use a
+	// pair-keyed map (rather than packing both axes into one integer)
+	// because typical lon/lat extents at tol = 1e-12 produce 50+ bit
+	// quantized indices that do not fit in 32 bits per axis.
+	struct PairHash {
+		size_t operator()(const std::pair<int64_t,int64_t> &p) const noexcept {
+			uint64_t h = (uint64_t) p.first * 0x9e3779b97f4a7c15ULL;
+			h ^= (uint64_t) p.second + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2);
+			return (size_t) h;
+		}
+	};
+	std::unordered_map<std::pair<int64_t,int64_t>, size_t, PairHash> nodemap;
+
+	auto qkey = [&](double x, double y) -> std::pair<int64_t,int64_t> {
+		return std::make_pair((int64_t) std::llround(x / tol),
+		                      (int64_t) std::llround(y / tol));
+	};
+
+	auto add_node = [&](double x, double y) -> size_t {
+		auto k = qkey(x, y);
+		auto it = nodemap.find(k);
+		if (it != nodemap.end()) return it->second;
+		size_t id = net.node_x.size();
+		net.node_x.push_back(x);
+		net.node_y.push_back(y);
+		nodemap.emplace(k, id);
+		return id;
+	};
+
+	each_linestring(noded, [&](const GEOSGeometry *ls) {
+		const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r(hGEOSCtxt, ls);
+		unsigned int npts = 0;
+		if (!GEOSCoordSeq_getSize_r(hGEOSCtxt, cs, &npts) || npts < 2) return;
+		std::vector<double> xs(npts), ys(npts);
+		for (unsigned int p = 0; p < npts; p++) {
+			GEOSCoordSeq_getX_r(hGEOSCtxt, cs, p, &xs[p]);
+			GEOSCoordSeq_getY_r(hGEOSCtxt, cs, p, &ys[p]);
+		}
+		size_t a = add_node(xs.front(), ys.front());
+		size_t b = add_node(xs.back(),  ys.back());
+		net.edge_from.push_back(a);
+		net.edge_to.push_back(b);
+		net.edge_x.push_back(std::move(xs));
+		net.edge_y.push_back(std::move(ys));
+		net.edge_source.push_back(-1);  // resolved below
+	});
+
+	GEOSGeom_destroy_r(hGEOSCtxt, noded);
+
+	// 7. Source attribution by midpoint distance.
+	// We do not need an STRtree for typical road-network sizes; a linear
+	// scan with early exit is simple, deterministic, and correct.
+	double cover_tol = (snap > 0.0) ? snap : tol * 100.0;
+	for (size_t i = 0; i < net.edge_from.size(); i++) {
+		const std::vector<double> &xs = net.edge_x[i];
+		const std::vector<double> &ys = net.edge_y[i];
+		// Use the geometric midpoint along the polyline.
+		double L = 0.0;
+		std::vector<double> seg(xs.size(), 0.0);
+		for (size_t j = 1; j < xs.size(); j++) {
+			double dx = xs[j] - xs[j-1], dy = ys[j] - ys[j-1];
+			seg[j] = std::sqrt(dx*dx + dy*dy);
+			L += seg[j];
+		}
+		double half = L * 0.5;
+		double acc = 0.0;
+		double mx = xs.front(), my = ys.front();
+		for (size_t j = 1; j < xs.size(); j++) {
+			if (acc + seg[j] >= half) {
+				double t = seg[j] > 0 ? (half - acc) / seg[j] : 0.0;
+				mx = xs[j-1] + t * (xs[j] - xs[j-1]);
+				my = ys[j-1] + t * (ys[j] - ys[j-1]);
+				break;
+			}
+			acc += seg[j];
+		}
+
+		// Build a GEOS POINT for the midpoint.
+		GEOSCoordSequence *cs = GEOSCoordSeq_create_r(hGEOSCtxt, 1, 2);
+		GEOSCoordSeq_setX_r(hGEOSCtxt, cs, 0, mx);
+		GEOSCoordSeq_setY_r(hGEOSCtxt, cs, 0, my);
+		GEOSGeometry *pt = GEOSGeom_createPoint_r(hGEOSCtxt, cs);
+		if (pt == NULL) continue;
+
+		long winner = -1;
+		for (size_t k = 0; k < g_for_attr.size(); k++) {
+			if (g_for_attr[k].get() == NULL) continue;
+			double dist = 0.0;
+			if (GEOSDistance_r(hGEOSCtxt, pt, g_for_attr[k].get(), &dist)) {
+				if (dist <= cover_tol) {
+					winner = (long) k;
+					break;
+				}
+			}
+		}
+		GEOSGeom_destroy_r(hGEOSCtxt, pt);
+		net.edge_source[i] = winner;
+	}
+
+	// Forward attributes from the source SpatVector. If any edge could
+	// not be attributed (rare; degenerate inputs), skip forwarding and
+	// warn — the source_id column on edges() always lets the user
+	// join attributes manually via the input data.frame.
+	bool any_unattr = false;
+	for (size_t i = 0; i < net.edge_source.size(); i++) {
+		if (net.edge_source[i] < 0) { any_unattr = true; break; }
+	}
+	if (df.ncol() > 0) {
+		if (any_unattr) {
+			net.addWarning(
+				"some edges could not be attributed to a source feature; "
+				"per-edge source attributes were not forwarded. "
+				"Use the source_id column on edges() (-1 for unattributed) "
+				"to join attributes from the input SpatVector."
+			);
+		} else {
+			std::vector<size_t> rows;
+			rows.reserve(net.edge_source.size());
+			for (size_t i = 0; i < net.edge_source.size(); i++) {
+				rows.push_back((size_t) net.edge_source[i]);
+			}
+			net.edge_df = df.subset_rows(rows);
+		}
+	}
+
+	net.computeExtent();
+	return net;
+}
 

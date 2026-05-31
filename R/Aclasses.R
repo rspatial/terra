@@ -102,6 +102,23 @@ setClass("SpatVectorCollection",
 )
 
 
+setClass("SpatNetwork",
+	representation (
+		pntr = "C++Object"
+	),
+	prototype (
+		pntr = NULL
+	),
+	validity = function(object)	{
+		if (is.null(object@pntr) || is(object@pntr, "Rcpp_SpatNetwork")){
+			return(TRUE)
+		} else {
+			return(FALSE)
+		}
+	}
+)
+
+
 
 setClass("SpatExtent",
 	representation (
