@@ -29,7 +29,6 @@
 <url><loc>https://rspatial.github.io/terra/reference/as.data.frame.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.lines.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.list.html</loc></url>
-<url><loc>https://rspatial.github.io/terra/reference/as.network.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.points.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.polygons.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.raster.html</loc></url>
@@ -159,6 +158,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/na.omit.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/names.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/nearby.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/netw.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/normalize.longitude.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/north.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/not.na.html</loc></url>
@@ -220,6 +220,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/shade.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/sharedPaths.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/shift.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/shortestPath.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/sieve.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/simplify.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/sort.html</loc></url>
@@ -275,6 +276,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/wrap.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/wrapCache.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/writeCDF.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/writeNetwork.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/writeRaster.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/writeVector.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/xapp.html</loc></url>

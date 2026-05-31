@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-30
+## version 1.9-31
 
 ### bug fixes
 
@@ -26,7 +26,11 @@
 - `make.RGB` function
   [\#2085](https://github.com/rspatial/terra/issues/2085) by Jérôme
   Guélat
-- `as.network<SpatVector>` to build a `SpatNetwork` object
+- `netw` to create `SpatNetwork` objects. The network can be directed or
+  undirected and is by default weighted by edge length.
+- `SpatNetwork` methods: `shortestPath`, ,
+  ``` writeNetwork``net_nodes ```, `net_edges`, `net_nnodes`,
+  `net_nedges`, `net_directed`, `net_weights` and `net_weights<-`.
 
 ## version 1.9-27
 

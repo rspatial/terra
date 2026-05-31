@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-30" id="version-19-30">version 1.9-30<a class="anchor" aria-label="anchor" href="#version-19-30"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-31" id="version-19-31">version 1.9-31<a class="anchor" aria-label="anchor" href="#version-19-31"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-30">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-30"></a></h3>
+<h3 id="bug-fixes-1-9-31">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-31"></a></h3>
 <ul><li>terra did not build with GDAL &lt; 3.4 <a href="https://github.com/rspatial/terra/issues/2080" class="external-link">#2080</a> by Wolfgang Viechtbauer</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(method="random")</code> on large lon/lat rasters had become very slow <a href="https://github.com/rspatial/terra/issues/2086" class="external-link">#2086</a> by Jason Flower</li>
@@ -45,14 +45,16 @@
 <li>retro labels generated with <code>plot(x, pax=list(retro=TRUE))</code> were incorrect in the W and S hemispheres <a href="https://github.com/rspatial/terra/issues/2090" class="external-link">#2090</a> by Lucas Salinas Morales</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-30">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-30"></a></h3>
+<h3 id="enhancements-1-9-31">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-31"></a></h3>
 </div>
 <div class="section level3">
-<h3 id="new-1-9-30">new<a class="anchor" aria-label="anchor" href="#new-1-9-30"></a></h3>
+<h3 id="new-1-9-31">new<a class="anchor" aria-label="anchor" href="#new-1-9-31"></a></h3>
 <ul><li>
 <code>make.RGB</code> function <a href="https://github.com/rspatial/terra/issues/2085" class="external-link">#2085</a> by Jérôme Guélat</li>
 <li>
-<code>as.network&lt;SpatVector&gt;</code> to build a <code>SpatNetwork</code> object</li>
+<code>netw</code> to create <code>SpatNetwork</code> objects. The network can be directed or undirected and is by default weighted by edge length.</li>
+<li>
+<code>SpatNetwork</code> methods: <code>shortestPath</code>, , <code>writeNetwork``net_nodes</code>, <code>net_edges</code>, <code>net_nnodes</code>, <code>net_nedges</code>, <code>net_directed</code>, <code>net_weights</code> and <code>net_weights&lt;-</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">
