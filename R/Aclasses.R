@@ -173,3 +173,10 @@ setClass("SpatGraticule",
 	}
 )
 
+
+# Make igraph's S3 class visible to S4 dispatch (`setMethod("netw",
+# "igraph", ...)`, `setAs("igraph", "SpatNetwork", ...)`). It is safe
+# to register the name even when the (Suggested) igraph package is
+# absent -- nothing here imports igraph.
+setOldClass("igraph")
+

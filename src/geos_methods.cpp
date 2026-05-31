@@ -3471,9 +3471,10 @@ void SpatVector::make_CCW() {
 //      fraction of the bounding box if snap == 0) covers that midpoint.
 //      The attribute row of that source is used in edge_df. When
 //      merge=true, an edge can span multiple source features only one source's attributes used.
-SpatNetwork SpatVector::as_network(double snap, bool merge) {
+SpatNetwork SpatVector::as_network(double snap, bool merge, bool directed, bool weighted) {
 	SpatNetwork net;
 	net.srs = srs;
+	net.directed = directed;
 
 	if (size() == 0) {
 		return net;
@@ -3732,6 +3733,13 @@ SpatNetwork SpatVector::as_network(double snap, bool merge) {
 			}
 			net.edge_df = df.subset_rows(rows);
 		}
+	}
+
+	// 8. Geometric edge lengths (lon/lat-aware) and default weights.
+	net.compute_edge_lengths();
+	if (weighted) {
+		net.edge_weight = net.edge_length;
+		net.weighted = true;
 	}
 
 	net.computeExtent();

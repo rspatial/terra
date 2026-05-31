@@ -418,7 +418,7 @@ class SpatVector {
 		SpatVector width();
 
 		SpatVector unaryunion();
-		SpatNetwork as_network(double snap, bool merge);
+		SpatNetwork as_network(double snap, bool merge, bool directed, bool weighted);
 
 		SpatVector cbind(SpatDataFrame d);
 		void fix_lonlat_overflow();

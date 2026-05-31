@@ -996,6 +996,8 @@ std::string SpatNetwork::show() {
 	size_t nn = nnodes();
 	size_t ne = nedges();
 	s << "class       : SpatNetwork\n";
+	s << "type        : " << (directed ? "directed" : "undirected")
+	  << ", " << (weighted ? "weighted" : "unweighted") << "\n";
 	s << "dimensions  : " << nn << ", " << ne << "  (nodes, edges)\n";
 	if (nn > 0) {
 		s << "extent      : "
