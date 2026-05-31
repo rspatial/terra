@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-30</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-31</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,8 +39,10 @@
 <h3 id="bug-fixes-1-9-30">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-30"></a></h3>
 <ul><li>terra did not build with GDAL &lt; 3.4 <a href="https://github.com/rspatial/terra/issues/2080" class="external-link">#2080</a> by Wolfgang Viechtbauer</li>
 <li>
-<code>spatSample&lt;SpatRaster&gt;(method="random")</code> on large rasters had become very slow <a href="https://github.com/rspatial/terra/issues/2086" class="external-link">#2086</a> by Jason Flower</li>
-<li>retro labels generated with <code>plot(x, pax=list(retro=TRUE))</code> were incorrect in the W and S hemisphere <a href="https://github.com/rspatial/terra/issues/2090" class="external-link">#2090</a> by Lucas Salinas Morales</li>
+<code>spatSample&lt;SpatRaster&gt;(method="random")</code> on large lon/lat rasters had become very slow <a href="https://github.com/rspatial/terra/issues/2086" class="external-link">#2086</a> by Jason Flower</li>
+<li>recurring <code>Cannot take exclusive lock on cache.db</code> PROJ warnings during <code>project</code> are now collapsed into a single, actionable message <a href="https://github.com/rspatial/terra/issues/2088" class="external-link">#2088</a>
+</li>
+<li>retro labels generated with <code>plot(x, pax=list(retro=TRUE))</code> were incorrect in the W and S hemispheres <a href="https://github.com/rspatial/terra/issues/2090" class="external-link">#2090</a> by Lucas Salinas Morales</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-9-30">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-30"></a></h3>
@@ -49,6 +51,8 @@
 <h3 id="new-1-9-30">new<a class="anchor" aria-label="anchor" href="#new-1-9-30"></a></h3>
 <ul><li>
 <code>make.RGB</code> function <a href="https://github.com/rspatial/terra/issues/2085" class="external-link">#2085</a> by Jérôme Guélat</li>
+<li>
+<code>as.network&lt;SpatVector&gt;</code> to build a <code>SpatNetwork</code> object</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -140,6 +140,13 @@
   [`as.list(`*`<SpatVectorCollection>`*`)`](https://rspatial.github.io/terra/reference/as.list.md)
   : Coerce a Spat\* object to a list
 
+- [`as.network(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/as.network.md)
+  [`nodes(`*`<SpatNetwork>`*`)`](https://rspatial.github.io/terra/reference/as.network.md)
+  [`edges(`*`<SpatNetwork>`*`)`](https://rspatial.github.io/terra/reference/as.network.md)
+  [`nnodes(`*`<SpatNetwork>`*`)`](https://rspatial.github.io/terra/reference/as.network.md)
+  [`nedges(`*`<SpatNetwork>`*`)`](https://rspatial.github.io/terra/reference/as.network.md)
+  : Build a SpatNetwork from lines
+
 - [`as.points(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/as.points.md)
   [`as.points(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/as.points.md)
   [`as.points(`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/as.points.md)
