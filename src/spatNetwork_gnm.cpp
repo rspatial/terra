@@ -31,16 +31,12 @@
 
 // Detect whether the GDAL build that we are linking against ships the
 // GNM headers AND is recent enough for the API we rely on. GNM has
-// been part of GDAL since 2.0, but a few of the helpers we want
-// (VSIMkdirRecursive, the GNMGenericNetwork::ConnectFeatures signature
-// we use, etc.) only stabilised around GDAL 2.4, so that's the floor
-// for compiling this file's body. On anything older the read/write
-// methods become no-ops that produce a clear error message instead of
-// a link failure.
+// been part of GDAL since 2.0, but a few of the helpers stabilized later.
+
 #include "gdal_version.h"
 #if defined(__has_include)
 #  if __has_include(<gnm.h>) && defined(GDAL_VERSION_NUM) \
-      && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2, 4, 0)
+      && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 0, 0)
 #    define TERRA_HAS_GNM 1
 #  endif
 #endif
@@ -64,9 +60,7 @@
 // backslashes; the result always uses the input's slash style. If `path`
 // has no separator (`./mynet` or just `mynet`), parent becomes ".".
 #if TERRA_HAS_GNM
-static void split_parent_basename(const std::string &path,
-                                  std::string &parent,
-                                  std::string &base) {
+static void split_parent_basename(const std::string &path, std::string &parent, std::string &base) {
 	std::string::size_type p = path.find_last_of("/\\");
 	if (p == std::string::npos) {
 		parent = ".";
@@ -94,7 +88,7 @@ bool SpatNetwork::write_gnm(std::string filename,
                             std::vector<std::string> options) {
 #if !TERRA_HAS_GNM
 	(void)filename; (void)driver_name; (void)options;
-	setError("terra was compiled against a GDAL build without GNM support");
+	setError("terra needs GDAL 3 for GNM support");
 	return false;
 #else
 	GDALAllRegister();
@@ -158,12 +152,14 @@ bool SpatNetwork::write_gnm(std::string filename,
 		return false;
 	}
 
-	// GNMFileNetwork::Create does NOT write the `_gnm_srs.prj` sidecar
-	// even though its Open path requires it (Open calls
-	// LoadNetworkSrs which reads that file). Write it ourselves so that
-	// the dataset can be read back by GDAL itself. We just persist the
-	// WKT we already have -- going through OGRSpatialReference here
-	// would require GDAL >= 3.0 for the axis-mapping helpers.
+	// GNMFileNetwork::Create does NOT reliably write the `_gnm_srs.prj`
+	// sidecar even though its Open path needs it (Open calls
+	// LoadNetworkSrs, which reads that file). Write it ourselves so
+	// that the dataset can be read back -- by terra, by ogrinfo, or by
+	// any other GDAL consumer. We just persist the WKT we already
+	// have: `srs.wkt` is the terra-side WKT2 string we used in
+	// GNM_MD_SRS above, so going through OGRSpatialReference here
+	// would only round-trip the same text through GDAL.
 	{
 		std::string srs_path = filename + "/_gnm_srs.prj";
 		VSILFILE *fp = VSIFOpenL(srs_path.c_str(), "w");
@@ -270,7 +266,7 @@ bool SpatNetwork::write_gnm(std::string filename,
 bool SpatNetwork::read_gnm(std::string filename) {
 #if !TERRA_HAS_GNM
 	(void)filename;
-	setError("terra was compiled against a GDAL build without GNM support");
+	setError("terra needs GDAL 3 for GNM support");
 	return false;
 #else
 	GDALAllRegister();
@@ -455,9 +451,11 @@ bool SpatNetwork::read_gnm(std::string filename) {
 		char **papszFiles = VSIReadDir(filename.c_str());
 		if (papszFiles) {
 			for (int i = 0; papszFiles[i] != nullptr; i++) {
-				// CPLGetBasename is older and more portable than
-				// CPLGetBasenameSafe (the latter only exists in
-				// GDAL >= 3.10 and returns a temporary CPLString).
+				// CPLGetBasename strips the directory and extension from
+				// a path. CPLGetBasenameSafe (GDAL >= 3.10) returns a
+				// std::string-like wrapper, but CPLGetBasename works
+				// across our entire supported GDAL range and is fine
+				// for a one-shot equality check.
 				const char *bn = CPLGetBasename(papszFiles[i]);
 				if (bn && EQUAL(bn, "_gnm_graph")) {
 					graph_path = filename + "/" + papszFiles[i];

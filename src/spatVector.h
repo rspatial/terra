@@ -341,7 +341,7 @@ class SpatVector {
 		SpatVector shared_paths(SpatVector x, bool index);
 		SpatVector snap(double tolerance);
 		SpatVector snapto(SpatVector y, double tolerance);
-		SpatVector thin_nodes(double threshold);
+		SpatVector thin_nodes(double threshold, std::string unit);
 		SpatVector split_lines(SpatVector v);
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();

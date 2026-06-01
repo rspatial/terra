@@ -2,6 +2,8 @@
 
 \docType{methods}
 
+\alias{SpatNetwork}
+\alias{SpatNetwork-class}
 \alias{netw}
 \alias{netw,missing-method}
 \alias{netw,SpatVector-method}
