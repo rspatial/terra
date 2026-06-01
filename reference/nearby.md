@@ -26,7 +26,9 @@ nearest(x, y, pairs=FALSE, centroids=TRUE, lines=FALSE, method="geo")
 
 - distance:
 
-  numeric. maximum distance
+  numeric. Maximum distance. Expressed in meters for lon/lat data (the
+  geodesic distance is computed using `method`), and in the units of the
+  CRS for projected data.
 
 - k:
 

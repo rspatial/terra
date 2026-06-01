@@ -1,7 +1,8 @@
 # Write a SpatNetwork to disk
 
-Write a `SpatNetwork` to disk as a GDAL Geographic Network Model (GNM)
-dataset. Use
+Write a
+[`SpatNetwork`](https://rspatial.github.io/terra/reference/netw.md) to
+disk as a GDAL Geographic Network Model (GNM) dataset. Use
 [`netw`](https://rspatial.github.io/terra/reference/netw.md)`(filename)`
 to read it back in.
 

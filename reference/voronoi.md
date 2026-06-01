@@ -25,7 +25,10 @@ delaunay(x, tolerance=0, as.lines=FALSE, constrained=FALSE)
 
 - tolerance:
 
-  numeric \>= 0, snapping tolerance (0 is no snapping)
+  numeric \>= 0. Snapping tolerance applied to the input vertices before
+  computing the diagram (`0` is no snapping). Expressed in the units of
+  the CRS of `x`, i.e. meters or feet for projected data and **degrees**
+  for lon/lat data.
 
 - as.lines:
 

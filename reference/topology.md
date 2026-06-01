@@ -12,7 +12,14 @@ rounds the coordinates
 coordinates is `NA`.
 
 `snap` makes boundaries of geometries identical if they are very close
-to each other.
+to each other. The `tolerance` is expressed in the coordinate reference
+system's units: meters (or feet, etc.) for projected data, and
+**degrees** for lon/lat data. To snap lon/lat geometries with a
+tolerance expressed in meters, project the data to a metric CRS first
+with [`project`](https://rspatial.github.io/terra/reference/project.md),
+snap, then project back.
+[`simplifyGeom`](https://rspatial.github.io/terra/reference/simplify.md)
+uses the same convention.
 
 ## Usage
 
@@ -40,7 +47,9 @@ makeNodes(x)
 
 - tolerance:
 
-  numeric. Snapping tolerance (distance between geometries)
+  numeric. Snapping tolerance, expressed in the units of the CRS of `x`
+  (i.e. meters or feet for projected data, **degrees** for lon/lat
+  data). One degree of latitude is approximately 111 km.
 
 - digits:
 
