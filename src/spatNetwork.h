@@ -42,9 +42,7 @@ public:
 	std::vector<long> edge_source;
 
 	// Geometric length of each edge, in CRS units (or meters when the
-	// CRS is geographic / lon-lat). Cached at construction time so that
-	// `weight` can be replaced by something else (e.g. travel time)
-	// without losing the underlying geometric length.
+	// CRS is lon/lat). Computed at construction time
 	std::vector<double> edge_length;
 
 	// Per-edge weight used by graph algorithms (shortest path, etc.).
@@ -53,9 +51,8 @@ public:
 	std::vector<double> edge_weight;
 	bool weighted = false;
 
-	// If true, edge orientation (from_node -> to_node) is the legal
-	// travel direction; an undirected graph treats every edge as
-	// bidirectional. Use this for water flow, one-way streets, etc.
+	// If true, edge orientation (from_node -> to_node) is the only travel direction; 
+	// an undirected graph treats every edge as bidirectional. 
 	bool directed = false;
 
 	SpatSRS srs;
