@@ -854,6 +854,7 @@
 
 - [`regress(`*`<SpatRaster>`*`,`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/regress.md)
   [`regress(`*`<SpatRaster>`*`,`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/regress.md)
+  [`regress(`*`<SpatRaster>`*`,`*`<data.frame>`*`)`](https://rspatial.github.io/terra/reference/regress.md)
   : Cell level regression
 
 - [`relate(`*`<SpatVector>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/relate.md)

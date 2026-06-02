@@ -21,6 +21,9 @@
 
 ### enhancements
 
+- `regress` gained a `<SpatRaster,data.frame>` method to specify levels
+  of factors
+
 ### new
 
 - `make.RGB` function
