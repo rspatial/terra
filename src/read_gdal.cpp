@@ -953,8 +953,20 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 #if GDAL_VERSION_NUM >= 3040000
 	if ((multi >= 1) && (gdrv != "VRT")) {
+		std::string md_fname = fname;
+		std::vector<std::string> md_subname = subdsname;
+		{
+			std::string p, v;
+			if (split_dsn_subname(fname, p, v)) {
+				md_fname = p;
+				if (md_subname.empty() || md_subname[0].empty()) {
+					md_subname = {v};
+				}
+			}
+		}
+
 		if (gdrv == "netCDF") {
-			if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			}
@@ -962,7 +974,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
-			if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			} else {

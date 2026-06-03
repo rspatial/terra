@@ -221,6 +221,27 @@ bool looks_like_gdal_dsn(const std::string& name) {
 }
 
 
+bool split_dsn_subname(const std::string& dsn, std::string& path, std::string& varname) {
+// Parse a classic-API GDAL subdataset DSN into file path and trailing variable name. driver is dropped
+// works for <DRIVER>:"<path>":<varname>
+
+	if (!looks_like_gdal_dsn(dsn)) return false;
+	size_t pos = dsn.find(":\"");
+	if (pos == std::string::npos) return false;
+	size_t close_q = dsn.find('"', pos + 2);
+	if (close_q == std::string::npos) return false;
+	if (close_q + 1 >= dsn.size()) return false;
+	if (dsn[close_q + 1] != ':') return false;
+
+	std::string p = dsn.substr(pos + 2, close_q - pos - 2);
+	std::string v = dsn.substr(close_q + 2);
+	if (p.empty() || v.empty()) return false;
+	path = p;
+	varname = v;
+	return true;
+}
+
+
 bool path_exists(std::string path) {
 
 /*

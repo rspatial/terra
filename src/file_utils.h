@@ -20,6 +20,7 @@
 
 bool file_exists(const std::string& name);
 bool looks_like_gdal_dsn(const std::string& name);
+bool split_dsn_subname(const std::string& dsn, std::string& path, std::string& varname);
 bool path_exists(std::string path);
 bool filepath_exists(const std::string& name);
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg);
