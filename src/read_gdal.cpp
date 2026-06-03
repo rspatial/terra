@@ -958,6 +958,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			}
+			msg.clearError();
 		}
 		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
@@ -966,6 +967,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				return true;
 			} else {
 				addWarning("cannot open this file with the multidim API: " + fname);
+				msg.clearError();
 			}
 		}
 	}
