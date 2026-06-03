@@ -680,7 +680,9 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname)) {
+			setError("cannot read from " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot read from " + fname );
@@ -775,7 +777,9 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 //	std::vector<std::string> ops;
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname)) {
+			setError("cannot read from " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot read from " + fname );
@@ -934,7 +938,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
     if( poDataset == NULL )  {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname)) {
+			setError("cannot open this file as a SpatRaster: " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot open this file as a SpatRaster: " + fname);

@@ -843,7 +843,13 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	CSLDestroy(drvs);
 	drvs = NULL;
     if( !poDataset ) {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname)) {
+			if (drivers.size() > 0) {
+				setError("cannot read multidim from this file or with this driver");
+			} else {
+				setError("cannot read multidim from this file");
+			}
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else if (drivers.size() > 0) {
 			setError("cannot read multidim from this file or with this driver");

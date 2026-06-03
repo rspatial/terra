@@ -199,6 +199,28 @@ bool file_exists(const std::string& name) {
 }
 
 
+bool looks_like_gdal_dsn(const std::string& name) {
+
+// test if the substring before the first ':' has at least 2 uppercase letters/digits/underscores
+// to identify GDAL "connection string" / DSN
+//
+// e.g.,  NETCDF:"/vsicurl/https://.../foo.nc":BRF1
+//
+
+	size_t colon = name.find(':');
+	if (colon == std::string::npos || colon < 2) return false;
+	for (size_t i = 0; i < colon; i++) {
+		unsigned char c = static_cast<unsigned char>(name[i]);
+		// Only A-Z, 0-9, '_' are acceptable in a GDAL driver prefix.
+		bool ok = (c >= 'A' && c <= 'Z') ||
+		          (c >= '0' && c <= '9') ||
+		          (c == '_');
+		if (!ok) return false;
+	}
+	return true;
+}
+
+
 bool path_exists(std::string path) {
 
 /*
