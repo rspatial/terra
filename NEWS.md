@@ -6,6 +6,7 @@
 - `spatSample<SpatRaster>(method="random")` on large lon/lat rasters had become very slow [#2086](https://github.com/rspatial/terra/issues/2086) by Jason Flower
 - recurring `Cannot take exclusive lock on cache.db` PROJ warnings during `project` are now collapsed into a single, actionable message [#2088](https://github.com/rspatial/terra/issues/2088)
 - retro labels generated with `plot(x, pax=list(retro=TRUE))` were incorrect in the W and S hemispheres [#2090](https://github.com/rspatial/terra/issues/2090) by Lucas Salinas Morales
+- `trim` failed with "invalid extent" if the trimmed bounding box was within `padding` cells of the raster edge [#2092](https://github.com/rspatial/terra/issues/2092) by James Howard
  
 
 ## enhancements

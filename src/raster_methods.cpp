@@ -1878,7 +1878,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 			return out;
 		}
 
-		firstrow = std::max(r - padding, size_t(0));
+		firstrow = (r >= padding) ? r - padding : size_t(0);
 
 		for (r=nrow()-1; r>firstrow; r--) {
 			readValues(v, r, 1, 0, ncol());
@@ -1887,7 +1887,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 			}
 		}
 
-		lastrow = std::max(std::min(r+padding, nrow()), size_t(0));
+		lastrow = (nrow() > 0) ? std::min(r + padding, nrow() - 1) : size_t(0);
 
 		if (lastrow < firstrow) {
 			std::swap(firstrow, lastrow);
@@ -1899,7 +1899,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 				break;
 			}
 		}
-		firstcol = std::min(std::max(c-padding, size_t(0)), ncol());
+		firstcol = (c >= padding) ? c - padding : size_t(0);
 
 		for (c=ncol()-1; c>firstcol; c--) {
 			readValues(v, 0, nrow(), c, 1);
@@ -1907,7 +1907,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 				break;
 			}
 		}
-		lastcol = std::max(std::min(c+padding, ncol()), size_t(0));
+		lastcol = (ncol() > 0) ? std::min(c + padding, ncol() - 1) : size_t(0);
 	} else {
 		for (r=0; r<nr; r++) {
 			readValues(v, r, 1, 0, ncol());
@@ -1923,7 +1923,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 			return out;
 		}
 
-		firstrow = std::max(r - padding, size_t(0));
+		firstrow = (r >= padding) ? r - padding : size_t(0);
 
 		for (r=nrow()-1; r>firstrow; r--) {
 			readValues(v, r, 1, 0, ncol());
@@ -1932,7 +1932,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 			}
 		}
 
-		lastrow = std::max(std::min(r+padding, nrow()), size_t(0));
+		lastrow = (nrow() > 0) ? std::min(r + padding, nrow() - 1) : size_t(0);
 
 		if (lastrow < firstrow) {
 			std::swap(firstrow, lastrow);
@@ -1944,7 +1944,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 				break;
 			}
 		}
-		firstcol = std::min(std::max(c-padding, size_t(0)), ncol());
+		firstcol = (c >= padding) ? c - padding : size_t(0);
 
 
 		for (c=ncol()-1; c>firstcol; c--) {
@@ -1953,7 +1953,7 @@ SpatRaster SpatRaster::trim1(double value, size_t padding, SpatOptions &opt) {
 				break;
 			}
 		}
-		lastcol = std::max(std::min(c+padding, ncol()), size_t(0));
+		lastcol = (ncol() > 0) ? std::min(c + padding, ncol() - 1) : size_t(0);
 
 	}
 	readStop();
@@ -2103,7 +2103,10 @@ SpatRaster SpatRaster::trim2(double value, size_t padding, SpatOptions &opt) {
 			break;
 		}
 	}
-	firstrow += bs.row[bstart-1];
+
+	if (bstart > 0) {
+		firstrow += bs.row[bstart-1];
+	}
 
 	if (!rowfound) {
 		SpatRaster out;
@@ -2180,16 +2183,11 @@ SpatRaster SpatRaster::trim2(double value, size_t padding, SpatOptions &opt) {
 		readBlock(v, bs, i);
 		block_cols(v, fun, value, firstcol, lastcol, firstcolfound, lastcolfound, 0, bs.nrows[i], bs.nrows[i], nc, nl, padding);
 	}
-	firstrow = std::max(firstrow - padding, size_t(0));
-	lastrow = std::max(std::min(lastrow + padding, nr), size_t(0));
-	if (lastrow < firstrow) {
-		std::swap(firstrow, lastrow);
-	}
-	firstcol = std::min(std::max(firstcol-padding, size_t(0)), nc);
-	lastcol = std::max(std::min(lastcol+padding, nc), size_t(0));
-	if (lastcol < firstcol) {
-		std::swap(firstcol, lastcol);
-	}
+
+	firstrow = (firstrow >= padding) ? firstrow - padding : size_t(0);
+	lastrow  = (nr > 0) ? std::min(lastrow + padding, nr - 1) : size_t(0);
+	firstcol = (firstcol >= padding) ? firstcol - padding : size_t(0);
+	lastcol  = (nc > 0) ? std::min(lastcol + padding, nc - 1) : size_t(0);
 
 	readStop();
 	std::vector<double> res = resolution();
