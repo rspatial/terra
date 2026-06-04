@@ -507,7 +507,11 @@ static bool md_fill_source_from_marray(
 			auto pcal = indvar->GetAttribute("calendar");
 			if (pcal) cal = pcal->ReadAsString();
 			dimcalendar.push_back(cal);
-			indvar->Read(start.data(), count.data(), nullptr, nullptr, GDALExtendedDataType::Create(GDT_Float64), &dimvals[i][0]);
+			auto reader = indvar->GetUnscaled();
+			if (!reader) reader = indvar;
+			reader->Read(start.data(), count.data(), nullptr, nullptr,
+			             GDALExtendedDataType::Create(GDT_Float64),
+			             &dimvals[i][0]);
 		}
 	}
 
@@ -607,8 +611,9 @@ static bool md_fill_source_from_marray(
 		if (indvar2 == NULL) {
 			continue;
 		}
+		double v0 = dimvals[ii][0];
 		double res = dimvals[ii][1] - dimvals[ii][0];
-		if (!indvar2->IsRegularlySpaced(dimvals[ii][0], res)) {
+		if (!indvar2->IsRegularlySpaced(v0, res)) {
 			return fail(dimnames[ii] + " is not regularly spaced");
 		}
 	}
