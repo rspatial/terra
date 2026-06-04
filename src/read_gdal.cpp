@@ -965,8 +965,32 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 
+		// The 2D driver applies projection-specific coordinate conversions 
+		double adfGT[6] = {0,1,0,0,0,1};
+		bool has_2d_gt = (poDataset->GetRasterCount() > 0) &&
+		                 (poDataset->GetGeoTransform(adfGT) == CE_None);
+
+		auto override_extent_from_2d_gt = [&]() {
+			if (!has_2d_gt) return;
+			if (source.empty()) return;
+			double xmin = adfGT[0];
+			double xmax = xmin + adfGT[1] * source[0].ncol;
+			if (xmin > xmax) std::swap(xmin, xmax);
+			double ymax = adfGT[3];
+			double ymin = ymax + adfGT[5] * source[0].nrow;
+			if (adfGT[5] > 0) {
+				source[0].flipped = true;
+				std::swap(ymin, ymax);
+			}
+			source[0].extent = SpatExtent(xmin, xmax, ymin, ymax);
+			if (adfGT[2] != 0 || adfGT[4] != 0) {
+				source[0].rotated = true;
+			}
+		};
+
 		if (gdrv == "netCDF") {
 			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+				override_extent_from_2d_gt();
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			}
@@ -975,6 +999,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
 			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+				override_extent_from_2d_gt();
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			} else {
