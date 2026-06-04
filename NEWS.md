@@ -8,6 +8,7 @@
 - retro labels generated with `plot(x, pax=list(retro=TRUE))` were incorrect in the W and S hemispheres [#2090](https://github.com/rspatial/terra/issues/2090) by Lucas Salinas Morales
 - `trim` failed with "invalid extent" if the trimmed bounding box was within `padding` cells of the raster edge [#2092](https://github.com/rspatial/terra/issues/2092) by James Howard
 - `rast` reported a misleading "file does not exist" error when using the multidim API (`rast(x, md=TRUE)` for a DSN connection string that identified a subdataset [#2093](https://github.com/rspatial/terra/issues/2093) by Michael Sumner
+- `writeRaster(x, filename, filetype="COG")` segfaulted with GDAL 3.13.0 because the COG driver now has `Create()` that crashes with `RasterIO` crashes; terra now always writes COGs via the original `CreateCopy()` path [#2095](https://github.com/rspatial/terra/issues/2095) by Andrew Brown
  
 
 ## enhancements
