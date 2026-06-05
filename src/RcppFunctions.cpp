@@ -12,6 +12,8 @@
 #include "ogr_spatialref.h"
 
 #include <unordered_map>
+#include <list>
+#include <functional>
 #include <string>
 
 //#define GEOS_USE_ONLY_R_API

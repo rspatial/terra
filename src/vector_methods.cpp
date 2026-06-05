@@ -20,6 +20,7 @@
 #include "vecmath.h"
 #include "recycle.h"
 #include "distance.h"
+#include <functional>
 
 
 /*

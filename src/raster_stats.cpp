@@ -17,6 +17,7 @@
 
 #include "spatRaster.h"
 #include <limits>
+#include <functional>
 #include <set>
 //#include <cmath>
 //#include <algorithm>

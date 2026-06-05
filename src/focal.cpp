@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <functional>
 #include <vector>
 
 #include "tbb_helper.h"

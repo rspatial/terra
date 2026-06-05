@@ -21,6 +21,7 @@
 #include "vecmathse.h"
 #include <cmath>
 #include <functional>
+#include <map>
 
 #include "math_utils.h"
 #include "file_utils.h"

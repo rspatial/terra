@@ -19,6 +19,7 @@
 #include "spatRaster.h"
 #include "distance.h"
 #include "recycle.h"
+#include <map>
 #include <random>
 #include <set>
 #include <unordered_set>
