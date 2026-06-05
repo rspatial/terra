@@ -30,6 +30,8 @@
 #include <stddef.h>
 #include <cmath>
 #include <algorithm>
+#include <cstdint>
+#include <limits>
 #include <list>
 
 //#include <cstdint>
@@ -417,13 +419,16 @@ std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x, bool filter
     return ret;
 }
 
-// Arrays usable as SpatRaster md sources: at least 2 dimensions; higher dimension count first.
+// Arrays usable as SpatRaster md sources: at least 2 dimensions.
+// Sorted so the most likely "main" data variable comes first:
+// first higher dimension count, then larger total cell count, then alphabetical
 static std::vector<std::string> md_arrays_usable_for_raster(
 		std::shared_ptr<GDALGroup> poRootGroup,
 		const std::vector<std::string> &candidates) {
 	struct NameDim {
 		std::string name;
 		size_t ndim;
+		uint64_t ncell;  // product of dim sizes; saturates at UINT64_MAX
 	};
 	std::vector<NameDim> tmp;
 	tmp.reserve(candidates.size());
@@ -433,15 +438,25 @@ static std::vector<std::string> md_arrays_usable_for_raster(
 		if (!poVar) {
 			continue;
 		}
-		size_t nd = poVar->GetDimensions().size();
-		if (nd >= 2) {
-			tmp.push_back({poVar->GetFullName(), nd});
+		const auto &dims = poVar->GetDimensions();
+		size_t nd = dims.size();
+		if (nd < 2) continue;
+		uint64_t nc = 1;
+		for (const auto &d : dims) {
+			GUInt64 sz = d->GetSize();
+			if (sz == 0) { nc = 0; break; }
+			// guard against overflow
+			if (nc > std::numeric_limits<uint64_t>::max() / sz) {
+				nc = std::numeric_limits<uint64_t>::max();
+				break;
+			}
+			nc *= static_cast<uint64_t>(sz);
 		}
+		tmp.push_back({poVar->GetFullName(), nd, nc});
 	}
 	std::stable_sort(tmp.begin(), tmp.end(), [](const NameDim &a, const NameDim &b) {
-		if (a.ndim != b.ndim) {
-			return a.ndim > b.ndim;
-		}
+		if (a.ndim != b.ndim) return a.ndim > b.ndim;
+		if (a.ncell != b.ncell) return a.ncell > b.ncell;
 		return a.name < b.name;
 	});
 	std::vector<std::string> out;
@@ -468,7 +483,7 @@ static bool md_fill_source_from_marray(
 		if (errors_are_fatal) {
 			parent.setError(msg);
 		} else {
-			parent.addWarning(std::string("skipped multidimensional array: ") + array_request_name + " (" + msg + ")");
+			parent.addWarning(std::string("skipped array: ") + array_request_name + " (" + msg + ")");
 		}
 		return false;
 	};
@@ -911,7 +926,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 				setError(std::string("cannot find array: \"") + arrays_to_use[ai] + "\".\nAvailable arrays: " + concatenate(anms, ", "));
 				return false;
 			}
-			addWarning(std::string("skipped multidimensional array (not found): ") + arrays_to_use[ai]);
+			addWarning(std::string("skipped array (not found): ") + arrays_to_use[ai]);
 			continue;
 		}
 		{
@@ -922,7 +937,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 						" dimension(s); rast(, md=TRUE) requires at least 2 dimensions");
 					return false;
 				}
-				addWarning(std::string("skipped multidimensional array (<2 dims): ") + arrays_to_use[ai]);
+				addWarning(std::string("skipped array (<2 dims): ") + arrays_to_use[ai]);
 				continue;
 			}
 		}
@@ -943,7 +958,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 			SpatRaster chunk;
 			chunk.setSource(s);
 			if (!chunk.compare_geom(*this, false, false, 0.1)) {
-				addWarning(std::string("skipped multidimensional array (different geometry): ") + arrays_to_use[ai]);
+				addWarning(std::string("skipped array (different geometry): ") + arrays_to_use[ai]);
 				continue;
 			}
 			addSource(chunk, false, opt);
