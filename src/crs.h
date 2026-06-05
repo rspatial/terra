@@ -25,26 +25,14 @@ SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
 		std::string grid_availability, double desired_accuracy,
 		bool strict_containment, bool axis_order_authority_compliant);
 		
-
-
 bool can_transform(std::string fromCRS, std::string toCRS);
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS);
 
-// Call at the start of any operation that performs coordinate
-// transformations, before any GDAL/PROJ work, to clear stale noise flags
-// from previous operations.
 void proj_noise_reset();
-
-// Drain any "noisy" PROJ messages that the GDAL error handler has collapsed
-// (currently: CDN download failures and cache.db lock failures) into the
-// given SpatMessages object as a single warning each, and reset the flags.
-// Call this at the end of any operation that performs coordinate transformations
-
 void proj_noise_drain(SpatMessages &m);
+void proj_noise_mark_cdn();
+void proj_noise_mark_cache_lock();
 
-// Reset PROJ noise flags on construction and drain any
-// collected noise into the target SpatMessages on destruction. Useful for
-// functions with many return paths.
 struct ProjNoiseScope {
 	SpatMessages *m_target;
 	explicit ProjNoiseScope(SpatMessages &target) : m_target(&target) {

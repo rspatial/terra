@@ -21,6 +21,50 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 
+// PROJ noise (cdn.proj.org download failures, cache.db lock failures)
+namespace {
+	bool proj_seen_cdn = false;
+	bool proj_seen_cache_lock = false;
+}
+
+void proj_noise_reset() {
+// Call at the start of any operation that performs coordinate
+// transformations, before any GDAL/PROJ work, to clear stale noise flags
+	proj_seen_cdn = false;
+	proj_seen_cache_lock = false;
+}
+
+// Setters used by the R-side GDAL error handler (RcppFunctions.cpp) to
+// register that a known-noisy PROJ warning has fired. 
+void proj_noise_mark_cdn() { proj_seen_cdn = true; }
+void proj_noise_mark_cache_lock() { proj_seen_cache_lock = true; }
+
+
+void proj_noise_drain(SpatMessages &m) {
+// Drain any "noisy" PROJ messages that the GDAL error handler has collapsed
+// (currently: CDN download failures and cache.db lock failures) into the
+// given SpatMessages object as a single warning each, and reset the flags.
+// Call this at the end of any operation that performs coordinate transformations
+	if (proj_seen_cdn) {
+		m.addWarning(
+			"PROJ could not download one or more datum grids from cdn.proj.org. "
+			"Transformation accuracy may be reduced. "
+			"Suppress with: projNetwork(FALSE)"		);
+		proj_seen_cdn = false;
+	}
+	if (proj_seen_cache_lock) {
+		m.addWarning(
+			"PROJ could not lock its network cache (cache.db). "
+			"Transformations still completed, but this often indicates the "
+			"cache is on a network filesystem (NFS/Lustre/GPFS) or is being "
+			"accessed by concurrent processes. "
+			"Mitigate by pointing PROJ at a local directory, e.g. "
+			"Sys.setenv(PROJ_USER_WRITABLE_DIRECTORY=\"/tmp/proj\")"
+		);
+		proj_seen_cache_lock = false;
+	}
+}
+
 
 #ifndef useGDAL
 

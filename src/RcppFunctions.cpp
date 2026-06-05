@@ -340,9 +340,10 @@ NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
-// consolidate repetetive PROJ warnings
-static bool proj_seen_cdn = false;
-static bool proj_seen_cache_lock = false;
+// consolidate repetetive PROJ warnings.
+// State + drain/reset live in crs.cpp so the symbols are also present
+// in non-R builds (tappa). The R-side GDAL error handler only marks
+// the flags via the public setters from crs.h.
 
 static bool is_proj_cdn_warning(const char *msg) {
 	std::string s(msg);
@@ -367,41 +368,14 @@ static bool is_proj_cache_lock_warning(const char *msg) {
 // and has been collapsed. False means the caller should emit it normally.
 static bool handle_proj_noise(const char *msg, int err_no) {
 	if (is_proj_cdn_warning(msg)) {
-		proj_seen_cdn = true;
+		proj_noise_mark_cdn();
 		return true;
 	}
 	if (is_proj_cache_lock_warning(msg)) {
-		proj_seen_cache_lock = true;
+		proj_noise_mark_cache_lock();
 		return true;
 	}
 	return false;
-}
-
-void proj_noise_reset() {
-	proj_seen_cdn = false;
-	proj_seen_cache_lock = false;
-}
-
-void proj_noise_drain(SpatMessages &m) {
-	if (proj_seen_cdn) {
-		m.addWarning(
-			"PROJ could not download one or more datum grids from cdn.proj.org. "
-			"Transformation accuracy may be reduced. "
-			"Suppress with: projNetwork(FALSE)"
-		);
-		proj_seen_cdn = false;
-	}
-	if (proj_seen_cache_lock) {
-		m.addWarning(
-			"PROJ could not lock its network cache (cache.db). "
-			"Transformations still completed, but this often indicates the "
-			"cache is on a network filesystem (NFS/Lustre/GPFS) or is being "
-			"accessed by concurrent processes. "
-			"Mitigate by pointing PROJ at a local directory, e.g. "
-			"Sys.setenv(PROJ_USER_WRITABLE_DIRECTORY=\"/tmp/proj\")"
-		);
-		proj_seen_cache_lock = false;
-	}
 }
 
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
