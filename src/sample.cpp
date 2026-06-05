@@ -20,6 +20,7 @@
 #include "distance.h"
 #include "recycle.h"
 #include <random>
+#include <set>
 #include <unordered_set>
 #include "string_utils.h"
 #include "geodesic.h"
