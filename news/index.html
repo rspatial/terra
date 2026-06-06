@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-31</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-32</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,23 +34,34 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-31" id="version-19-31">version 1.9-31<a class="anchor" aria-label="anchor" href="#version-19-31"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-32" id="version-19-32">version 1.9-32<a class="anchor" aria-label="anchor" href="#version-19-32"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-31">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-31"></a></h3>
+<h3 id="bug-fixes-1-9-32">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-32"></a></h3>
 <ul><li>terra did not build with GDAL &lt; 3.4 <a href="https://github.com/rspatial/terra/issues/2080" class="external-link">#2080</a> by Wolfgang Viechtbauer</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(method="random")</code> on large lon/lat rasters had become very slow <a href="https://github.com/rspatial/terra/issues/2086" class="external-link">#2086</a> by Jason Flower</li>
 <li>recurring <code>Cannot take exclusive lock on cache.db</code> PROJ warnings during <code>project</code> are now collapsed into a single, actionable message <a href="https://github.com/rspatial/terra/issues/2088" class="external-link">#2088</a>
 </li>
 <li>retro labels generated with <code>plot(x, pax=list(retro=TRUE))</code> were incorrect in the W and S hemispheres <a href="https://github.com/rspatial/terra/issues/2090" class="external-link">#2090</a> by Lucas Salinas Morales</li>
+<li>
+<code>trim</code> failed with “invalid extent” if the trimmed bounding box was within <code>padding</code> cells of the raster edge <a href="https://github.com/rspatial/terra/issues/2092" class="external-link">#2092</a> by James Howard</li>
+<li>
+<code>rast</code> reported a “file does not exist” error when given a GDAL DSN string (e.g. <code>NETCDF:".../file.nc":VAR</code>). With <code>md=TRUE</code>, <code>rast</code> now splits a <code>DRIVER:"path":VAR</code> DSN so the multidim API can find the file, and reuses the classic 2D driver’s geotransform so the extent is reported in CRS units instead of raw coordinate-variable values <a href="https://github.com/rspatial/terra/issues/2093" class="external-link">#2093</a> by Michael Sumner</li>
+<li>
+<code>writeRaster(x, filename, filetype="COG")</code> segfaulted with GDAL 3.13.0 because the COG driver now has <code>Create()</code> that crashes with <code>RasterIO</code> crashes; terra now always writes COGs via the original <code>CreateCopy()</code> path <a href="https://github.com/rspatial/terra/issues/2095" class="external-link">#2095</a> by Andrew Brown</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-31">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-31"></a></h3>
+<h3 id="enhancements-1-9-32">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-32"></a></h3>
 <ul><li>
 <code>regress</code> gained a <code>&lt;SpatRaster,data.frame&gt;</code> method to specify levels of factors</li>
+<li>
+<code>extract(x, polygons, fun=...)</code> could fail with large polygons/high-res rasters. For standard functions (<code>sum</code>, <code>sum2</code>, <code>mean</code>, <code>min</code>, <code>max</code>, <code>prod</code>, <code>sd</code>, <code>std</code>, <code>isNA</code>, <code>notNA</code>) processing is now by block and memory safe <a href="https://github.com/rspatial/terra/issues/2097" class="external-link">#2097</a>
+</li>
+<li>
+<code>sprc(&lt;character&gt;)</code> gained argument <code>group=TRUE</code> to combine rasters with the same geometry; convenient for “one folder per tile, one file per band” situations</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-9-31">new<a class="anchor" aria-label="anchor" href="#new-1-9-31"></a></h3>
+<h3 id="new-1-9-32">new<a class="anchor" aria-label="anchor" href="#new-1-9-32"></a></h3>
 <ul><li>
 <code>make.RGB</code> function <a href="https://github.com/rspatial/terra/issues/2085" class="external-link">#2085</a> by Jérôme Guélat</li>
 <li>

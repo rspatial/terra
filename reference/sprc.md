@@ -14,7 +14,7 @@ You can create a SpatRasterCollection from a file with subdatasets.
 
 ``` r
 # S4 method for class 'character'
-sprc(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="") 
+sprc(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", group=FALSE) 
 
 # S4 method for class 'SpatRaster'
 sprc(x, ...) 
@@ -64,6 +64,13 @@ sprc(x)
   character. Metadata domains to read (see
   [`metags`](https://rspatial.github.io/terra/reference/metags.md) to
   retrieve their values if there are any. "" is the default domain
+
+- group:
+
+  logical. If `TRUE`, files that share the same raster geometry are
+  combined into a single multi-layer `SpatRaster`. Useful when tiles are
+  split across folders with one file per band (e.g. Sentinel-2 /
+  Landsat)
 
 - ...:
 
