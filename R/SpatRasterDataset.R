@@ -341,13 +341,18 @@ setMethod("sprc", signature(x="list"),
 )
 
 setMethod("sprc", signature(x="character"),
-	function(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="") {
+	function(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", group=FALSE) {
 
 		if (length(x) > 1) {
-			r <- lapply(x, rast)
-			s <- sprc(r)
-			names(s) <- tools::file_path_sans_ext(basename(x))
-			return(s)
+			ff <- vapply(x, function(p) {
+				if (file.exists(p)) .fullFilename(p) else p
+			}, character(1))
+			if (is.null(opts)) opts <- ""[0]
+			if (isTRUE(raw)) opts <- c(opts, "so=false")
+			domains <- clean_domains(domains)
+			r <- methods::new("SpatRasterCollection")
+			r@pntr <- SpatRasterCollection$new(ff, opts, isTRUE(noflip), isTRUE(guessCRS), domains, isTRUE(group))
+			return(messages(r, "sprc"))
 		}
 
 		x <- trimws(x[1])

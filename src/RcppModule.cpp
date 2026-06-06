@@ -1132,6 +1132,7 @@ RCPP_MODULE(spat){
 	class_<SpatRasterCollection>("SpatRasterCollection")
 		.constructor()
 		.constructor<std::string, std::vector<int>, bool, std::vector<std::string>, bool, bool, std::vector<std::string>>()
+		.constructor<std::vector<std::string>, std::vector<std::string>, bool, bool, std::vector<std::string>, bool>()
 
 		.property("names", &SpatRasterCollection::get_names, &SpatRasterCollection::set_names)
 

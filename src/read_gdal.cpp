@@ -849,6 +849,87 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 }
 
 
+SpatRasterCollection::SpatRasterCollection(std::vector<std::string> fnames, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, bool group) {
+
+// group=true : groups files with same geometry
+
+	std::vector<SpatRaster> rasters;
+	rasters.reserve(fnames.size());
+	std::vector<std::string> sources;
+	sources.reserve(fnames.size());
+
+	for (size_t i=0; i<fnames.size(); i++) {
+		SpatRaster sub;
+		if (sub.constructFromFile(fnames[i], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 0)) {
+			rasters.push_back(sub);
+			sources.push_back(fnames[i]);
+		} else {
+			addWarning("skipped (could not open): " + fnames[i]);
+		}
+	}
+
+	if (!group) {
+		for (size_t i=0; i<rasters.size(); i++) {
+			std::string nm = rasters[i].source.empty() ? basename_noext(sources[i]) : rasters[i].source[0].source_name;
+			push_back(rasters[i], nm);
+		}
+		return;
+	}
+
+	std::vector<size_t> leaders;
+	std::vector<std::vector<size_t>> groups;
+	leaders.reserve(rasters.size());
+	groups.reserve(rasters.size());
+
+	for (size_t i=0; i<rasters.size(); i++) {
+		bool matched = false;
+		for (size_t g=0; g<leaders.size(); g++) {
+			SpatRaster probe = rasters[leaders[g]].deepCopy();
+			// lyrs=false, crs=true, tol=0, warncrs=false,
+			// ext=true, rowcol=true, res=true
+			if (probe.compare_geom(rasters[i], false, true, 0.0, false, true, true, true)) {
+				groups[g].push_back(i);
+				matched = true;
+				break;
+			}
+		}
+		if (!matched) {
+			leaders.push_back(i);
+			groups.push_back(std::vector<size_t>{i});
+		}
+	}
+
+	SpatOptions opt;
+	for (size_t g=0; g<groups.size(); g++) {
+		std::vector<size_t> &idxs = groups[g];
+		if (idxs.size() == 1) {
+			SpatRaster &r0 = rasters[idxs[0]];
+			std::string nm = r0.source.empty() ? basename_noext(sources[idxs[0]]) : r0.source[0].source_name;
+			push_back(r0, nm);
+			continue;
+		}
+		SpatRaster combined = rasters[idxs[0]];
+		for (size_t k=1; k<idxs.size(); k++) {
+			combined.addSource(rasters[idxs[k]], false, opt);
+		}
+		// Default name: shared dirname's basename when all files in the
+		// group sit in the same folder (typical "tile per folder" layout).
+		std::string dir0 = dirname(sources[idxs[0]]);
+		bool sameDir = !dir0.empty() && dir0 != ".";
+		for (size_t k=1; sameDir && k<idxs.size(); k++) {
+			if (dirname(sources[idxs[k]]) != dir0) sameDir = false;
+		}
+		std::string gname;
+		if (sameDir) {
+			gname = basename(dir0);
+		} else {
+			gname = basename_noext(sources[idxs[0]]);
+		}
+		push_back(combined, gname);
+	}
+}
+
+
 /*
 SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
 	SpatRaster out;

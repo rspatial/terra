@@ -60,7 +60,10 @@
 		alpha <- RGB[,4]
 		RGB <- RGB[,-4]
 	} else {
-		alpha <- out$alpha
+		# out$alpha is canonical 0..255; rescale to match maxColorValue=scale
+		# so a fully-opaque alpha (255) means full opacity regardless of
+		# the data scale (e.g. scale=3000 for Sentinel-2 reflectance).
+		alpha <- out$alpha * scale / 255
 	}
 
 	if (!is.null(naind)) {
