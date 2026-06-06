@@ -1,4 +1,4 @@
-# version 1.9-31
+# version 1.9-32
 
 ## bug fixes
 
@@ -9,11 +9,14 @@
 - `trim` failed with "invalid extent" if the trimmed bounding box was within `padding` cells of the raster edge [#2092](https://github.com/rspatial/terra/issues/2092) by James Howard
 - `rast` reported a "file does not exist" error when given a GDAL DSN string (e.g. `NETCDF:".../file.nc":VAR`). With `md=TRUE`, `rast` now splits a `DRIVER:"path":VAR` DSN so the multidim API can find the file, and reuses the classic 2D driver's geotransform so the extent is reported in CRS units instead of raw coordinate-variable values 	[#2093](https://github.com/rspatial/terra/issues/2093) by Michael Sumner
 - `writeRaster(x, filename, filetype="COG")` segfaulted with GDAL 3.13.0 because the COG driver now has `Create()` that crashes with `RasterIO` crashes; terra now always writes COGs via the original `CreateCopy()` path [#2095](https://github.com/rspatial/terra/issues/2095) by Andrew Brown
- 
+
 
 ## enhancements
 
 - `regress` gained a `<SpatRaster,data.frame>` method to specify levels of factors
+- `extract(x, polygons, fun=...)` could fail with large polygons/high-res rasters. For standard functions (`sum`, `sum2`, `mean`, `min`, `max`, `prod`, `sd`, `std`, `isNA`, `notNA`) processing is now by block and memory safe [#2097](https://github.com/rspatial/terra/issues/2097)
+- `sprc(<character>)` gained argument `group=TRUE` to combine rasters with the same geometry; convenient for "one folder per tile, one file per band" situations
+ 
 
 
 ## new 
