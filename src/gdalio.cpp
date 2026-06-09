@@ -623,7 +623,18 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, bool update, SpatOptions 
 		if (simple && open_gdal_multidim(hDS, isrc)) {
 			return true;
 		}
-		fromfile = false;
+		// Cannot expose the array as a classic dataset directly
+		if (canProcessInMemory(opt)) {
+			fromfile = false;
+		} else {
+			SpatRaster tmp(source[isrc]);
+			tmp = tmp.writeTempRaster(opt);
+			if (tmp.hasError()) {
+				setError(tmp.getError());
+				return false;
+			}
+			return tmp.open_gdal(hDS, 0, update, opt);
+		}
 	}
 #endif
 
