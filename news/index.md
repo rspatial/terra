@@ -37,6 +37,9 @@
 
 ### enhancements
 
+- `extract<SpatRaster,SpatVector>` with polygons had become *much*
+  slower [\#2100](https://github.com/rspatial/terra/issues/2100)
+  <https://github.com/rspatial/terra/issues/2100>) by Torsten Hauffe
 - `regress` gained a `<SpatRaster,data.frame>` method to specify levels
   of factors
 - `extract(x, polygons, fun=...)` could fail with large

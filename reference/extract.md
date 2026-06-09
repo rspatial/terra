@@ -49,12 +49,15 @@ extract(x, y, count=FALSE)
 
 - fun:
 
-  function to summarize the extracted data by line or polygon geometry.
-  You can use `fun=table` to tabulate raster values for each line or
-  polygon geometry. If `weights=TRUE` or `exact=TRUE` only `mean`,
-  `sum`, `min`, `max` and `table` are accepted — and these functions
-  will consider the fraction of a cell that is covered when computing
-  the mean or the sum). Ignored if `y` has point geometry
+  function to summarize the extracted data by line or polygon geometry,
+  such as `sum`, as well as terra built-in functions `"isNA"`, and
+  `"notNA"` to get the count of cells that are (not) `NA`, and `"sum2"`
+  (the sum of squares). You can use `fun=table` to tabulate raster
+  values for each line or polygon geometry. If `weights=TRUE` or
+  `exact=TRUE` only `mean`, `sum`, `min`, `max` and `table` are accepted
+  — and these functions consider the fraction of a cell that is covered
+  when computing the mean or the sum). Ignored if `y` has point
+  geometry.
 
 - method:
 

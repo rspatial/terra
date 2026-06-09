@@ -53,6 +53,8 @@
 <div class="section level3">
 <h3 id="enhancements-1-9-32">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-32"></a></h3>
 <ul><li>
+<code>extract&lt;SpatRaster,SpatVector&gt;</code> with polygons had become <em>much</em> slower <a href="https://github.com/rspatial/terra/issues/2100" class="external-link">#2100</a> <a href="https://github.com/rspatial/terra/issues/2100" class="external-link uri">https://github.com/rspatial/terra/issues/2100</a>) by Torsten Hauffe</li>
+<li>
 <code>regress</code> gained a <code>&lt;SpatRaster,data.frame&gt;</code> method to specify levels of factors</li>
 <li>
 <code>extract(x, polygons, fun=...)</code> could fail with large polygons/high-res rasters. For standard functions (<code>sum</code>, <code>sum2</code>, <code>mean</code>, <code>min</code>, <code>max</code>, <code>prod</code>, <code>sd</code>, <code>std</code>, <code>isNA</code>, <code>notNA</code>) processing is now by block and memory safe <a href="https://github.com/rspatial/terra/issues/2097" class="external-link">#2097</a>
