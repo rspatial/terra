@@ -558,6 +558,7 @@ class SpatRaster {
 
 		bool readStartMulti(size_t src);
 		bool readStopMulti(size_t src);
+		bool open_gdal_multidim(GDALDatasetH &hDS, size_t src);
 		bool readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 		std::vector<double> readValuesMulti(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr);
 		std::vector<double> readSampleMulti(size_t src, size_t srows, size_t scols, bool overview);
