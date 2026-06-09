@@ -224,6 +224,10 @@ SpatVector::SpatVector() {
 }
 
 SpatVector::SpatVector(SpatGeom g) {
+	extent.xmin = NAN;
+	extent.xmax = NAN;
+	extent.ymin = NAN;
+	extent.ymax = NAN;
 	addGeom(g);
 }
 
