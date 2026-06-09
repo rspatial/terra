@@ -13,6 +13,8 @@
 
 ## enhancements
 
+- `extract<SpatRaster,SpatVector>` with polygons had become *much* slower [#2100](https://github.com/rspatial/terra/issues/2100)
+https://github.com/rspatial/terra/issues/2100) by Torsten Hauffe
 - `regress` gained a `<SpatRaster,data.frame>` method to specify levels of factors
 - `extract(x, polygons, fun=...)` could fail with large polygons/high-res rasters. For standard functions (`sum`, `sum2`, `mean`, `min`, `max`, `prod`, `sd`, `std`, `isNA`, `notNA`) processing is now by block and memory safe [#2097](https://github.com/rspatial/terra/issues/2097)
 - `sprc(<character>)` gained argument `group=TRUE` to combine rasters with the same geometry; convenient for "one folder per tile, one file per band" situations
