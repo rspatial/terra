@@ -69,7 +69,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <dd><p>SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone. <code>z</code> can have multiple layers to define intersecting zones</p></dd>
 
   <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
-<dd><p>function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function</p></dd>
+<dd><p>function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" (these work for zones with many cells), and, for smaller zones only, a proper function</p></dd>
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments passed to fun, such as <code>na.rm=TRUE</code></p></dd>

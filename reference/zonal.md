@@ -42,8 +42,9 @@ zonal(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)
 - fun:
 
   function to be applied to summarize the values by zone. Either as
-  character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for
-  relatively small SpatRasters, a proper function
+  character: "mean", "min", "max", "sum", "isNA", and "notNA" (these
+  work for zones with many cells), and, for smaller zones only, a proper
+  function
 
 - ...:
 
