@@ -13,11 +13,10 @@
 
 .vect_kml_source_for_xml <- function(x) {
 	x <- enc2utf8(trimws(x[1]))
-	if (grepl("^/vsicurl/", x)) {
-		sub("^/vsicurl/", "", x)
-	} else {
-		x
-	}
+	# undo the VSI routing added by .vect_vsify to recover the local path or URL
+	x <- sub("^/vsizip/", "", x)
+	x <- sub("^/vsicurl/", "", x)
+	x
 }
 
 

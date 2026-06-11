@@ -874,6 +874,21 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 }
 
 
+// Unlike LIBKML, the internal KML driver does not read ".kmz", so a ".kmz" must be exposed with "/vsizip/" 
+static std::string kmz_vsizip_fallback(const std::string &fname) {
+	if (fname.compare(0, 8, "/vsizip/") == 0) return "";
+	size_t n = fname.size();
+	if (n < 4) return "";
+	if (lower_case(fname.substr(n - 4)) != ".kmz") return "";
+	if (GDALGetDriverByName("LIBKML") != NULL) return "";
+	// GDAL's /vsizip/ expects forward slashes (Windows normalizePath uses '\\')
+	std::string f = fname;
+	for (size_t i = 0; i < f.size(); i++) {
+		if (f[i] == '\\') f[i] = '/';
+	}
+	return "/vsizip/" + f;
+}
+
 bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> ext, SpatVector filter, bool as_proxy, std::string what, std::string dialect, std::vector<std::string> options) {
 
 	char ** openops = NULL;
@@ -885,8 +900,17 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
 	}
 		
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, openops, NULL ));
+	if (poDS == NULL) {
+		std::string alt = kmz_vsizip_fallback(fname);
+		if (!alt.empty()) {
+			poDS = static_cast<GDALDataset*>(GDALOpenEx( alt.c_str(), GDAL_OF_VECTOR, NULL, openops, NULL ));
+			if (poDS != NULL) fname = alt;
+		}
+	}
     if( poDS == NULL ) {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname) || (fname.compare(0, 4, "/vsi") == 0)) {
+			setError("Cannot open this file as a SpatVector: " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("Cannot open this file as a SpatVector: " + fname);
@@ -1117,8 +1141,17 @@ bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::
 bool SpatVectorCollection::read(std::string fname, std::string layer, std::string query, std::string dialect, std::vector<double> extent, SpatVector filter) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+	if (poDS == NULL) {
+		std::string alt = kmz_vsizip_fallback(fname);
+		if (!alt.empty()) {
+			poDS = static_cast<GDALDataset*>(GDALOpenEx( alt.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+			if (poDS != NULL) fname = alt;
+		}
+	}
     if( poDS == NULL ) {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname) || (fname.compare(0, 4, "/vsi") == 0)) {
+			setError("Cannot open this file as a SpatVector: " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("Cannot open this file as a SpatVector: " + fname);
