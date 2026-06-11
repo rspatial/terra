@@ -1033,7 +1033,12 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::string gdrv = poDriver->GetDescription();
 
 #if GDAL_VERSION_NUM >= 3040000
-	if ((multi >= 1) && (gdrv != "VRT")) {
+	// ZARR:"file":/temp:{10}:{0} does not work on the multidim API
+	bool classic_view = (fname.find(":{") != std::string::npos);
+	for (size_t i=0; (!classic_view) && i<subdsname.size(); i++) {
+		if (subdsname[i].find('{') != std::string::npos) classic_view = true;
+	}
+	if ((multi >= 1) && (gdrv != "VRT") && (!classic_view)) {
 		std::string md_fname = fname;
 		std::vector<std::string> md_subname = subdsname;
 		{
