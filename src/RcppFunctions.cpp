@@ -15,6 +15,9 @@
 #include <list>
 #include <functional>
 #include <string>
+#include <thread>
+#include <atomic>
+#include <cstdio>
 
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
@@ -342,6 +345,31 @@ NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
+// GDAL can emit errors/warnings from parallel worker threads. Record the main
+// thread once and route off-main-thread messages to stderr instead of into R.
+static std::atomic<bool> terra_main_thread_known{false};
+static std::thread::id terra_main_thread;
+
+static void terra_remember_main_thread() {
+	terra_main_thread = std::this_thread::get_id();
+	terra_main_thread_known.store(true);
+}
+
+static bool terra_on_main_thread() {
+	// Until the main thread is recorded, R is still single-threaded, so any
+	// call is necessarily on the main thread.
+	if (!terra_main_thread_known.load()) return true;
+	return std::this_thread::get_id() == terra_main_thread;
+}
+
+static void gdal_err_offthread(CPLErr eErrClass, int err_no, const char *msg) {
+	// Never call into R here. 
+	if ((eErrClass >= CE_Failure) && (msg != NULL)) {
+		std::fprintf(stderr, "GDAL error %d: %s\n", err_no, msg);
+		std::fflush(stderr);
+	}
+}
+
 // consolidate repetetive PROJ warnings.
 // State + drain/reset live in crs.cpp so the symbols are also present
 // in non-R builds (tappa). The R-side GDAL error handler only marks
@@ -381,6 +409,7 @@ static bool handle_proj_noise(const char *msg, int err_no) {
 }
 
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
+	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
 	switch ( eErrClass ) {
         case 0:
             break;
@@ -408,6 +437,7 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 }
 
 static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
+	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
 	switch ( eErrClass ) {
         case 0:
         case 1:
@@ -430,6 +460,7 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
 
 
 static void __err_fatal(CPLErr eErrClass, int err_no, const char *msg) {
+	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
 	switch ( eErrClass ) {
         case 0:
         case 1:
@@ -453,6 +484,9 @@ static void __err_none(CPLErr eErrClass, int err_no, const char *msg) {
 
 // [[Rcpp::export(name = ".set_gdal_warnings")]]
 void set_gdal_warnings(int level) {
+	// Called from gdal_init() at package load, i.e. on R's main thread before
+	// any GDAL operation (and thus before any GDAL worker thread) can run.
+	terra_remember_main_thread();
 	if (level==4) {
 		CPLSetErrorHandler((CPLErrorHandler)__err_none);
 	} else if (level==1) {
