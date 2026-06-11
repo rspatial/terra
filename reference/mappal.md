@@ -1,7 +1,7 @@
 # color palettes for mapping
 
-Get a color palette for mapping. These palettes were copied from
-[GRASS](https://grass.osgeo.org/grass-stable/manuals/r.colors.html)
+Get a color palette for mapping. These palettes were copied from GRASS
+r.colors
 
 ## Usage
 

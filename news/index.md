@@ -50,6 +50,10 @@
 - `sprc(<character>)` gained argument `group=TRUE` to combine rasters
   with the same geometry; convenient for “one folder per tile, one file
   per band” situations
+- automatic addition of required “/vsicurl/” and/or “/vsizip/” to remote
+  vector data sources
+  [\#2103](https://github.com/rspatial/terra/issues/2103) by Márcia
+  Barbosa
 
 ### new
 
