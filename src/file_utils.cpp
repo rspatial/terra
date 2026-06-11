@@ -187,10 +187,14 @@ std::string get_vsi_container(const std::string& path) {
 bool file_exists(const std::string& name) {
 	if (is_vsi(name)) {
 		std::string container = get_vsi_container(name);
-		if (!container.empty()) {
+		if (!container.empty()
+				&& container.compare(0, 4, "/vsi") != 0
+				&& container.compare(0, 4, "http") != 0
+				&& container.compare(0, 5, "s3://") != 0) {
 			std::ifstream cf(container.c_str());
 			if (!cf.good()) return false;
 		}
+		// check remote file existence with VSIStatL
 		VSIStatBufL statBuf;
 		return VSIStatL(name.c_str(), &statBuf) == 0;
 	}

@@ -908,9 +908,11 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
 		}
 	}
     if( poDS == NULL ) {
-		if (looks_like_gdal_dsn(fname) || (fname.compare(0, 4, "/vsi") == 0)) {
+		if (looks_like_gdal_dsn(fname)) {
 			setError("Cannot open this file as a SpatVector: " + fname);
 		} else if (!file_exists(fname)) {
+			// for /vsi... paths file_exists uses VSIStatL, so a missing local
+			// file or an unreachable remote URL (e.g. 404) is reported here
 			setError("file does not exist: " + fname);
 		} else {
 			setError("Cannot open this file as a SpatVector: " + fname);
@@ -1149,7 +1151,7 @@ bool SpatVectorCollection::read(std::string fname, std::string layer, std::strin
 		}
 	}
     if( poDS == NULL ) {
-		if (looks_like_gdal_dsn(fname) || (fname.compare(0, 4, "/vsi") == 0)) {
+		if (looks_like_gdal_dsn(fname)) {
 			setError("Cannot open this file as a SpatVector: " + fname);
 		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
