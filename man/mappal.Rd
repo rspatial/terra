@@ -5,7 +5,7 @@
 \title{color palettes for mapping}
 
 \description{
-Get a color palette for mapping. These palettes were copied from \href{https://grass.osgeo.org/grass-stable/manuals/r.colors.html}{GRASS}
+Get a color palette for mapping. These palettes were copied from GRASS r.colors
 }
 
 \usage{
