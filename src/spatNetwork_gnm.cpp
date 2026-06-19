@@ -366,9 +366,12 @@ bool SpatNetwork::read_gnm(std::string filename) {
 			if (!L) continue;
 			const char *nm = L->GetName();
 			if (!nm || nm[0] == '_') continue;     // skip system layers
+			// Accept the multi-part variants too: GDAL >= 3.14 reports a
+			// shapefile PolyLine as MultiLineString (and a point layer may
+			// be MultiPoint), see rspatial/terra#2104.
 			OGRwkbGeometryType gt = wkbFlatten(L->GetGeomType());
-			if (!poNodes && gt == wkbPoint)      poNodes = L;
-			else if (!poEdges && gt == wkbLineString) poEdges = L;
+			if (!poNodes && (gt == wkbPoint || gt == wkbMultiPoint)) poNodes = L;
+			else if (!poEdges && (gt == wkbLineString || gt == wkbMultiLineString)) poEdges = L;
 		}
 	}
 	if (!poNodes || !poEdges) {
@@ -388,8 +391,18 @@ bool SpatNetwork::read_gnm(std::string filename) {
 			GNMGFID gfid = (idx >= 0) ? f->GetFieldAsInteger64(idx)
 			                          : f->GetFID();
 			OGRGeometry *g = f->GetGeometryRef();
-			if (g && wkbFlatten(g->getGeometryType()) == wkbPoint) {
-				OGRPoint *pt = (OGRPoint *) g;
+			// A node is a point. Also accept (single-part) MultiPoint
+			const OGRPoint *pt = nullptr;
+			if (g) {
+				OGRwkbGeometryType gt = wkbFlatten(g->getGeometryType());
+				if (gt == wkbPoint) {
+					pt = g->toPoint();
+				} else if (gt == wkbMultiPoint) {
+					const OGRMultiPoint *mp = g->toMultiPoint();
+					if (mp && mp->getNumGeometries() > 0) pt = mp->getGeometryRef(0);
+				}
+			}
+			if (pt) {
 				gfid_to_node[gfid] = node_x.size();
 				node_x.push_back(pt->getX());
 				node_y.push_back(pt->getY());
@@ -417,8 +430,18 @@ bool SpatNetwork::read_gnm(std::string filename) {
 			GNMGFID gfid = (idx_g >= 0) ? f->GetFieldAsInteger64(idx_g)
 			                            : f->GetFID();
 			OGRGeometry *g = f->GetGeometryRef();
-			if (g && wkbFlatten(g->getGeometryType()) == wkbLineString) {
-				OGRLineString *ls = (OGRLineString *) g;
+			// An edge can be LineString or MultiLineString (GDAL >= 3.14)
+			const OGRLineString *ls = nullptr;
+			if (g) {
+				OGRwkbGeometryType gt = wkbFlatten(g->getGeometryType());
+				if (gt == wkbLineString) {
+					ls = g->toLineString();
+				} else if (gt == wkbMultiLineString) {
+					const OGRMultiLineString *mls = g->toMultiLineString();
+					if (mls && mls->getNumGeometries() > 0) ls = mls->getGeometryRef(0);
+				}
+			}
+			if (ls) {
 				EdgeRec er;
 				er.xs.reserve(ls->getNumPoints());
 				er.ys.reserve(ls->getNumPoints());
