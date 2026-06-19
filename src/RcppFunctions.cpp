@@ -17,7 +17,8 @@
 #include <string>
 #include <thread>
 #include <atomic>
-#include <cstdio>
+#include <mutex>
+#include <vector>
 
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
@@ -345,10 +346,19 @@ NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
-// GDAL can emit errors/warnings from parallel worker threads. Record the main
-// thread once and route off-main-thread messages to stderr instead of into R.
+// GDAL can emit errors/warnings from parallel worker threads (e.g. the ZARR
+// and network drivers read blocks in parallel). The R C API may only be used
+// from R's own (main) thread; touching it from a worker thread is undefined
+// behavior that surfaces as a bogus "C stack usage ... is too close to the
+// limit" error or a segfault (#2102). We record the main thread once (at GDAL
+// init, see set_gdal_warnings); a message raised on any other thread is queued
+// here and replayed as a normal R warning the next time the handler runs on
+// the main thread. We never call into R -- nor write to stdout/stderr -- from
+// a worker thread.
 static std::atomic<bool> terra_main_thread_known{false};
 static std::thread::id terra_main_thread;
+static std::mutex terra_offthread_mtx;
+static std::vector<std::string> terra_offthread_msgs;
 
 static void terra_remember_main_thread() {
 	terra_main_thread = std::this_thread::get_id();
@@ -363,10 +373,14 @@ static bool terra_on_main_thread() {
 }
 
 static void gdal_err_offthread(CPLErr eErrClass, int err_no, const char *msg) {
-	// Never call into R here. 
+	// Queue serious off-main-thread messages for later replay on the main
+	// thread. Cap the queue so a flood of worker-thread errors cannot grow it
+	// without bound.
 	if ((eErrClass >= CE_Failure) && (msg != NULL)) {
-		std::fprintf(stderr, "GDAL error %d: %s\n", err_no, msg);
-		std::fflush(stderr);
+		std::lock_guard<std::mutex> lock(terra_offthread_mtx);
+		if (terra_offthread_msgs.size() < 100) {
+			terra_offthread_msgs.push_back(std::string(msg) + " (GDAL " + std::to_string(err_no) + ")");
+		}
 	}
 }
 
@@ -408,8 +422,23 @@ static bool handle_proj_noise(const char *msg, int err_no) {
 	return false;
 }
 
+// Replay any messages that were queued from GDAL worker threads. Must only be
+// called on the main thread (from the error handlers below).
+static void drain_offthread_messages() {
+	std::vector<std::string> msgs;
+	{
+		std::lock_guard<std::mutex> lock(terra_offthread_mtx);
+		if (terra_offthread_msgs.empty()) return;
+		msgs.swap(terra_offthread_msgs);
+	}
+	for (size_t i = 0; i < msgs.size(); i++) {
+		warningNoCall("%s", msgs[i].c_str());
+	}
+}
+
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
+	drain_offthread_messages();
 	switch ( eErrClass ) {
         case 0:
             break;
@@ -438,6 +467,7 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 
 static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
 	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
+	drain_offthread_messages();
 	switch ( eErrClass ) {
         case 0:
         case 1:
