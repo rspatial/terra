@@ -1,6 +1,10 @@
 # GNM (GDAL Geographic Network Model) round-trip tests for SpatNetwork.
 # Exercises writeNetwork() (write side) and netw(<filename>) (read side).
 
+#v <- terra::gdal() 
+#if ((v >= "3.1.0") && (v < "3.13.1") && "GNMFile" %in% terra::gdal(drivers = TRUE)$name) {
+
+
 if (terra::gdal() >= "3.1.0" && "GNMFile" %in% terra::gdal(drivers = TRUE)$name) {
 
 	# --- a small undirected, weighted test network --------------------
