@@ -346,15 +346,10 @@ NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
-// GDAL can emit errors/warnings from parallel worker threads (e.g. the ZARR
-// and network drivers read blocks in parallel). The R C API may only be used
-// from R's own (main) thread; touching it from a worker thread is undefined
-// behavior that surfaces as a bogus "C stack usage ... is too close to the
-// limit" error or a segfault (#2102). We record the main thread once (at GDAL
-// init, see set_gdal_warnings); a message raised on any other thread is queued
-// here and replayed as a normal R warning the next time the handler runs on
-// the main thread. We never call into R -- nor write to stdout/stderr -- from
-// a worker thread.
+// GDAL can emit errors/warnings from parallel worker threads. 
+// We record the main thread once (at GDAL init, set_gdal_warnings); 
+// a message raised on other threads is queued here and 
+// replayed as a normal R warning the next time the handler runs on the main thread. 
 static std::atomic<bool> terra_main_thread_known{false};
 static std::thread::id terra_main_thread;
 static std::mutex terra_offthread_mtx;

@@ -1,5 +1,6 @@
 
 terra.Rcheck/*
+proj_conf*
 
 install_time_patches/
 src/Makevars.ucrt.orig
