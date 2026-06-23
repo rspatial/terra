@@ -67,6 +67,30 @@ static bool md_is_vertical_dim_name(const std::string &nm) {
 		|| in_string(n, "plev");
 }
 
+// look for  unambiguous lon/lat signals: coordinate units ("degrees_east" /
+// "degrees_north") or explicit longitude/latitude dimension names
+static bool md_is_lon_unit(const std::string &u) {
+	std::string s = lower_case(lrtrim_copy(u));
+	return s == "degrees_east" || s == "degree_east" || s == "degrees east"
+		|| s == "degree_e" || s == "degrees_e" || s == "degreese";
+}
+
+static bool md_is_lat_unit(const std::string &u) {
+	std::string s = lower_case(lrtrim_copy(u));
+	return s == "degrees_north" || s == "degree_north" || s == "degrees north"
+		|| s == "degree_n" || s == "degrees_n" || s == "degreesn";
+}
+
+static bool md_is_lon_name(const std::string &nm) {
+	std::string n = lower_case(lrtrim_copy(nm));
+	return n == "longitude" || n == "lon" || n == "long";
+}
+
+static bool md_is_lat_name(const std::string &nm) {
+	std::string n = lower_case(lrtrim_copy(nm));
+	return n == "latitude" || n == "lat";
+}
+
 static int md_find_col_dim(const std::vector<std::string> &dimnames) {
 	for (size_t i = 0; i < dimnames.size(); i++) {
 		if (md_is_col_dim_name(dimnames[i])) return (int) i;
@@ -772,9 +796,18 @@ static bool md_fill_source_from_marray(
 		gdal_capture_messages_end(false);
 	} 
 	
-	if (guessCRS && wkt.empty()) {
-		
-		if (s.extent.xmin >= -181 && s.extent.xmax <= 361 && s.extent.ymin >= -91 && s.extent.ymax <= 91) {
+	if (wkt.empty()) {
+		bool lonlat_extent = (s.extent.xmin >= -181 && s.extent.xmax <= 361 &&
+		                      s.extent.ymin >= -91 && s.extent.ymax <= 91);
+		bool geographic_xy =
+			(md_is_lon_unit(dimunits[ix]) && md_is_lat_unit(dimunits[iy])) ||
+			(md_is_lon_name(dimnames[ix]) && md_is_lat_name(dimnames[iy]));
+		if (geographic_xy && lonlat_extent) {
+			// CF lon/lat coordinates -> CRS84. The classic driver does the same,
+			// so this is a derived CRS, not a guess: assigned without a warning.
+			wkt = "OGC:CRS84";
+			s.parameters_changed = true;
+		} else if (guessCRS && lonlat_extent) {
 			wkt = "OGC:CRS84";
 			s.parameters_changed = true;
 			parent.addWarning("guessed crs");
