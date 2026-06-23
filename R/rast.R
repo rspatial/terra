@@ -280,20 +280,6 @@ setMethod("rast", signature(x="character"),
 			md <- as.integer(md)
 		}
 
-		#if (isTRUE(md)) {
-		#	if (!is.null(win)) {
-		#		error("rast", "argument 'win' is ignored if 'multi=TRUE'")			
-		#	}
-		#	if (length(x) > 1) {
-		#		error("rast", "only a single filename can be used if 'multi=TRUE'")
-		#	}
-		#	r <- multi(x, subds, dims=dims, drivers=drivers, opts=opts, vsi=vsi, raw=raw, noflip=noflip, guessCRS=guessCRS, domains=domains)
-		#	if (!is.null(lyrs)) {
-		#		r <- r[[lyrs]]
-		#	}
-		#	return(r)
-		#}
-
 		
 		f <- .fullFilename(x, vsi=vsi)
 		if (length(f) == 0) {
