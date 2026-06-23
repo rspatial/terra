@@ -762,11 +762,14 @@ static bool md_fill_source_from_marray(
 	if (wkt.empty()) {
 		// temporary work-around for https://github.com/rspatial/terra/issues/2068
 		std::vector<std::string> ops;
+		// classic-API probe for a CRS. discard messages 
+		gdal_capture_messages_begin();
 		try {
 			std::vector<std::string> empty_dom;
 			SpatRasterStack rstack(fname, {0}, true, ops, true, true, empty_dom);
 			wkt = rstack.getSRS("wkt");
 		} catch(...) {}
+		gdal_capture_messages_end(false);
 	} 
 	
 	if (guessCRS && wkt.empty()) {

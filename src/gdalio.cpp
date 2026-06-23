@@ -28,6 +28,58 @@
 
 #include "cpl_port.h"
 #include "cpl_conv.h" // CPLFree()
+#include "cpl_error.h"
+
+#include <mutex>
+#include <vector>
+#include <string>
+
+
+// Temporarily buffer GDAL error/warning messages to probe a source with one GDAL open mode (classic API)
+// without surfacing its failure when retried with another mode (multidim API).
+
+namespace {
+	struct CapturedGDALMsg {
+		CPLErr eErrClass;
+		int err_no;
+		std::string msg;
+	};
+	std::mutex terra_capture_mtx;
+	std::vector<CapturedGDALMsg> terra_capture_msgs;
+
+	void CPL_STDCALL terra_capture_handler(CPLErr eErrClass, int err_no, const char *msg) {
+		if (msg == NULL) return;
+		if (eErrClass < CE_Warning) return; // ignore CE_None / CE_Debug
+		std::lock_guard<std::mutex> lock(terra_capture_mtx);
+		if (terra_capture_msgs.size() < 100) {
+			terra_capture_msgs.push_back({eErrClass, err_no, std::string(msg)});
+		}
+	}
+}
+
+void gdal_capture_messages_begin() {
+	{
+		std::lock_guard<std::mutex> lock(terra_capture_mtx);
+		terra_capture_msgs.clear();
+	}
+	CPLPushErrorHandler((CPLErrorHandler) terra_capture_handler);
+}
+
+void gdal_capture_messages_end(bool emit) {
+	CPLPopErrorHandler();
+	std::vector<CapturedGDALMsg> msgs;
+	{
+		std::lock_guard<std::mutex> lock(terra_capture_mtx);
+		msgs.swap(terra_capture_msgs);
+	}
+	if (emit) {
+		for (size_t i = 0; i < msgs.size(); i++) {
+			// CE_Fatal would not return; never replay it as fatal.
+			CPLErr cls = (msgs[i].eErrClass >= CE_Fatal) ? CE_Failure : msgs[i].eErrClass;
+			CPLError(cls, msgs[i].err_no, "%s", msgs[i].msg.c_str());
+		}
+	}
+}
 
 
 
