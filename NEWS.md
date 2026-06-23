@@ -1,6 +1,8 @@
-# version 1.9-35
+# version 1.9-36
 
 ## bug fixes
+
+- multidim vrt can now be opened [#2107](https://github.com/rspatial/terra/issues/2107) 
 
 ## enhancements
 
