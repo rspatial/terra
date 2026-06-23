@@ -1016,9 +1016,38 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 	}
 
+#if GDAL_VERSION_NUM >= 3040000
+	const bool md_probe = (multi >= 1);
+	if (md_probe) gdal_capture_messages_begin();
+#endif
+
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
+#if GDAL_VERSION_NUM >= 3040000
+	// Keep the probe's messages only when the classic open succeeded; otherwise
+	// discard them (the multidim fallback below emits its own diagnostics).
+	if (md_probe) gdal_capture_messages_end(poDataset != NULL);
+#endif
+
     if( poDataset == NULL )  {
+#if GDAL_VERSION_NUM >= 3040000
+		if (multi >= 1) {
+			std::string md_fname = fname;
+			std::vector<std::string> md_subname = subdsname;
+			std::string p, v;
+			if (split_dsn_subname(fname, p, v)) {
+				md_fname = p;
+				if (md_subname.empty() || md_subname[0].empty()) {
+					md_subname = {v};
+				}
+			}
+			msg.clearError();
+			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains)) {
+				return true;
+			}
+			msg.clearError();
+		}
+#endif
 		if (looks_like_gdal_dsn(fname)) {
 			setError("cannot open this file as a SpatRaster: " + fname);
 		} else if (!file_exists(fname)) {
