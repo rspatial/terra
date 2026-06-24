@@ -1002,6 +1002,26 @@ SpatVector SpatVector::hull(std::string htype, std::string by, double param, boo
 		return out;
 	}
 
+	// no aggregation, return with same attributes
+	if (by == "_") {
+		for (size_t i=0; i<size(); i++) {
+			SpatVector x = subset_rows(i);
+			x = x.hull(htype, "");
+			if (x.hasError()) {
+				return x;
+			}
+			if (!x.geoms.empty() && (x.geoms[0].gtype == polygons)) {
+				out.addGeom(x.geoms[0]);
+			} else {
+				SpatGeom g(polygons);
+				out.addGeom(g);
+			}
+		}
+		out.df = df;
+		out.srs = srs;
+		return out;
+	}
+
 	if (!by.empty()) {
 		SpatVector tmp = aggregate(by, false);
 		if (tmp.hasError()) {
