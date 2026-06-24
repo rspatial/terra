@@ -1123,7 +1123,12 @@ bool SpatRaster::open_gdal_multidim(GDALDatasetH &hDS, size_t src) {
 		root->ResolveMDArray(source[src].m_arrayname.c_str(), startgroup, nullptr);
 	if (!arr) return false;
 
+#if GDAL_VERSION_NUM >= 3080000
+	// The 3-argument overload was added in GDAL 3.8
 	GDALDataset *cds = arr->AsClassicDataset(source[src].m_dims[0], source[src].m_dims[1], root);
+#else
+	GDALDataset *cds = arr->AsClassicDataset(source[src].m_dims[0], source[src].m_dims[1]);
+#endif
 	if (cds == NULL) return false;
 
 	hDS = (GDALDatasetH) cds;
