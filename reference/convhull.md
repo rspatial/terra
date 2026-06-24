@@ -29,7 +29,8 @@ hull(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE)
 - by:
 
   character (variable name), to get a new geometry for groups of input
-  geometries
+  geometries. Use `""` to get a hull around all geometries combined. Use
+  `NA` to get a hull around each geometry in `x`
 
 - param:
 

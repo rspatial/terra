@@ -9,7 +9,7 @@ The old method convHull is deprecated and will be removed in a future version.">
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-32</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-36</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ The old method convHull is deprecated and will be removed in a future version.">
 <dd><p>character. One of "convex", "rectangle", "circle", "concave_ratio", "concave_length"</p></dd>
 
   <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
-<dd><p>character (variable name), to get a new geometry for groups of input geometries</p></dd>
+<dd><p>character (variable name), to get a new geometry for groups of input geometries. Use <code>""</code> to get a hull around all geometries combined. Use <code>NA</code> to get a hull around each geometry in <code>x</code></p></dd>
 
   <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
 <dd><p>numeric between 0 and 1. For the "concave_*" types only. For <code>type="concave_ratio"</code> this is the edge length ratio value, between 0 and 1. For <code>type="concave_length"</code> this the maximum edge length (a value &gt; 0). For <code>type="concave_polygons"</code> this specifies the maximum Edge Length as a fraction of the difference between the longest and shortest edge lengths between the polygons. This normalizes the maximum edge length to be scale-free. A value of 1 produces the convex hull; a value of 0 produces the original polygons</p></dd>

@@ -1,6 +1,21 @@
 # Changelog
 
-## version 1.9-32
+## version 1.9-36
+
+### bug fixes
+
+- multidim vrt can now be opened
+  [\#2107](https://github.com/rspatial/terra/issues/2107)
+
+### enhancements
+
+### new
+
+## version 1.9-34
+
+CRAN release: 2026-06-19
+
+Released 2026-06-20
 
 ### bug fixes
 
@@ -22,13 +37,13 @@
   within `padding` cells of the raster edge
   [\#2092](https://github.com/rspatial/terra/issues/2092) by James
   Howard
-- `rast` reported a “file does not exist” error when given a GDAL DSN
-  string (e.g. `NETCDF:".../file.nc":VAR`). With `md=TRUE`, `rast` now
-  splits a `DRIVER:"path":VAR` DSN so the multidim API can find the
-  file, and reuses the classic 2D driver’s geotransform so the extent is
-  reported in CRS units instead of raw coordinate-variable values
-  [\#2093](https://github.com/rspatial/terra/issues/2093) by Michael
-  Sumner
+- With the new default “md=TRUE”, `rast` reported a “file does not
+  exist” error with a GDAL DSN string (e.g. `NETCDF:".../file.nc":VAR`).
+  , `rast` now splits a `DRIVER:"path":VAR` DSN so the multidim API can
+  find the file. It reuses the classic 2D driver’s geotransform so the
+  extent is reported in CRS units instead of raw coordinate-variable
+  values [\#2093](https://github.com/rspatial/terra/issues/2093) by
+  Michael Sumner
 - `writeRaster(x, filename, filetype="COG")` segfaulted with GDAL 3.13.0
   because the COG driver now has `Create()` that crashes with `RasterIO`
   crashes; terra now always writes COGs via the original `CreateCopy()`
@@ -38,8 +53,8 @@
 ### enhancements
 
 - `extract<SpatRaster,SpatVector>` with polygons had become *much*
-  slower [\#2100](https://github.com/rspatial/terra/issues/2100)
-  <https://github.com/rspatial/terra/issues/2100>) by Torsten Hauffe
+  slower [\#2100](https://github.com/rspatial/terra/issues/2100) by
+  Torsten Hauffe
 - `regress` gained a `<SpatRaster,data.frame>` method to specify levels
   of factors
 - `extract(x, polygons, fun=...)` could fail with large
