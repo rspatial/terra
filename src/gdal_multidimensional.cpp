@@ -1559,27 +1559,86 @@ void getSampleRowCol2(std::vector<int64_t> &oldrow, std::vector<int64_t> &oldcol
 
 std::vector<double> SpatRaster::readSampleMulti(size_t src, size_t srows, size_t scols, bool overview) {
 	(void) overview;
-	std::vector<int64_t> colnr, rownr;
-	getSampleRowCol2(rownr, colnr, nrow(), ncol(), srows, scols);
-	const size_t n = rownr.size();
+
 	const size_t nl = source[src].layers.size();
-	std::vector<std::vector<double>> out(nl);
-	if (!readRowColMulti(src, out, 0, rownr, colnr)) {
+	const size_t NR = nrow();
+	const size_t NC = ncol();
+	if (nl == 0 || NR == 0 || NC == 0 || srows == 0 || scols == 0) {
 		return std::vector<double>();
 	}
-	if (hasError()) {
-		return std::vector<double>();
+
+	// Regularly-spaced sample row / column indices (same scheme as getSampleRowCol2).
+	const double rf = NR / (double) srows;
+	const double cf = NC / (double) scols;
+	std::vector<size_t> samp_col(scols);
+	for (size_t j = 0; j < scols; j++) {
+		size_t c = (size_t) (j * cf + 0.5 * cf);
+		samp_col[j] = (c < NC) ? c : (NC - 1);
 	}
-	// Same band layout as readGDALsample / readChunkGDAL: layer-major (cells, then next layer).
+	std::vector<size_t> samp_row(srows);
+	for (size_t i = 0; i < srows; i++) {
+		size_t r = (size_t) (i * rf + 0.5 * rf);
+		samp_row[i] = (r < NR) ? r : (NR - 1);
+	}
+
+	const size_t n = srows * scols;
+	// Layer-major output, matching readGDALsample / readChunkGDAL.
 	std::vector<double> ret(n * nl);
-	for (size_t lyr = 0; lyr < nl; lyr++) {
-		if (out[lyr].size() != n) {
-			setError("internal error in readSampleMulti: unexpected sample size");
+
+	if (!readStartMulti(src)) {
+		return std::vector<double>();
+	}
+
+	// Read the whole array in one pass if that matches the need and file is small
+	SpatOptions sopt;
+	const bool fits = canProcessInMemory(sopt);
+	const bool tall_sparse_sample = (NR >= 2048) && (srows * 4 < NR);
+	if (fits && !tall_sparse_sample) {
+		std::vector<double> block;
+		readChunkMulti(block, src, 0, NR, 0, NC); // nl * NR * NC, layer-major
+		readStopMulti(src);
+		const size_t cells = NR * NC;
+		if (hasError() || block.size() != cells * nl) {
+			if (!hasError()) {
+				setError("internal error in readSampleMulti: unexpected block size");
+			}
 			return std::vector<double>();
 		}
-		double *dest = ret.data() + lyr * n;
-		std::copy(out[lyr].begin(), out[lyr].end(), dest);
+		for (size_t lyr = 0; lyr < nl; lyr++) {
+			const double *layer = block.data() + lyr * cells;
+			double *dest = ret.data() + lyr * n;
+			for (size_t i = 0; i < srows; i++) {
+				const double *layrow = layer + samp_row[i] * NC;
+				double *drow = dest + i * scols;
+				for (size_t j = 0; j < scols; j++) {
+					drow[j] = layrow[samp_col[j]];
+				}
+			}
+		}
+		return ret;
 	}
+
+	// one (partial) row at a time.
+	std::vector<double> rowbuf;
+	for (size_t i = 0; i < srows; i++) {
+		rowbuf.clear();
+		readChunkMulti(rowbuf, src, samp_row[i], 1, 0, NC); // appends nl * NC
+		if (hasError() || rowbuf.size() != nl * NC) {
+			readStopMulti(src);
+			if (!hasError()) {
+				setError("internal error in readSampleMulti: unexpected row size");
+			}
+			return std::vector<double>();
+		}
+		for (size_t lyr = 0; lyr < nl; lyr++) {
+			const double *rowlyr = rowbuf.data() + lyr * NC;
+			double *dest = ret.data() + lyr * n + i * scols;
+			for (size_t j = 0; j < scols; j++) {
+				dest[j] = rowlyr[samp_col[j]];
+			}
+		}
+	}
+	readStopMulti(src);
 	return ret;
 }
 
