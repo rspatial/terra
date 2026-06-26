@@ -13,6 +13,7 @@
 
 ## new 
 
+- `furdist` method to get the furthest distance from a point to any location on another geometry
 
 
 # version 1.9-34
