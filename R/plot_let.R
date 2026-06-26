@@ -244,7 +244,12 @@ setMethod("plet", signature(x="SpatVector"),
 	}
 )
 
-
+setMethod("plet", signature(x="data.frame"),
+	function(x, ...) {
+		x <- suppressWarnings(vect(x, crs="lonlat"))
+		if (inherits(x, "SpatVector")) plet(x, ...)
+	}
+)
 
 setMethod("plet", signature(x="SpatVectorCollection"),
 	function(x, y="", col, main=y, cex=1, lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)  {

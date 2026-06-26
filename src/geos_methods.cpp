@@ -3325,6 +3325,103 @@ SpatVector SpatVector::point_on_surface(bool check_lonlat) {
 }
 
 
+
+// nearest location on source geometry
+// planar data returns the nearest-connection line, last vertex is the geometry.
+static bool corrected_centroid_on_source(SpatVector &np, double &rx, double &ry) {
+	if (np.hasError() || (np.nrow() == 0)) return false;
+	std::vector<std::vector<double>> nc = np.coordinates();
+	if (nc.size() < 2 || nc[0].empty()) return false;
+	size_t last = nc[0].size() - 1;
+	rx = nc[0][last];
+	ry = nc[1][last];
+	return true;
+}
+
+
+SpatVector SpatVector::corrected_centroid(bool check_lonlat, bool inside) {
+
+	SpatVector x = centroid(check_lonlat);
+	if (x.hasError() || (nrow() == 0)) {
+		return x;
+	}
+
+	std::string t = type();
+	std::vector<std::vector<double>> xy = x.coordinates();
+	if (xy.size() < 2) {
+		return x;
+	}
+	std::vector<double> ox = xy[0];
+	std::vector<double> oy = xy[1];
+	size_t n = size();
+
+	// geodesic distance method
+	std::string method = "geo";
+
+	SpatOptions dopt;
+	std::vector<double> d = x.distance(*this, true, "m", method, false, dopt);
+	std::vector<long> idx;
+	if (d.size() == n) {
+		for (size_t i = 0; i < n; i++) {
+			if (d[i] > 0) idx.push_back((long) i);
+		}
+	} else {
+		// distance test unavailable (should not happen): correct every feature
+		idx.resize(n);
+		std::iota(idx.begin(), idx.end(), 0L);
+	}
+
+	if (!idx.empty()) {
+		SpatVector sub_src = subset_rows(idx);
+		SpatVector sub_cen = x.subset_rows(idx);
+		size_t m = idx.size();
+
+		if (inside && (t == "polygons")) {
+			// a guaranteed-interior representative point
+			SpatVector pos = sub_src.point_on_surface(check_lonlat);
+			if (pos.hasError()) {
+				return pos;
+			}
+			std::vector<std::vector<double>> pxy = pos.coordinates();
+			for (size_t k = 0; k < m; k++) {
+				ox[idx[k]] = pxy[0][k];
+				oy[idx[k]] = pxy[1][k];
+			}
+		} else if (!is_lonlat()) {
+			// planar: one pairwise nearest_point() call for the whole subset. Use last node of line returned
+			SpatVector np = sub_cen.nearest_point(sub_src, true, method);
+			if (!np.hasError() && (np.size() == m)) {
+				for (size_t k = 0; k < m; k++) {
+					if (np.geoms[k].parts.empty()) continue;
+					const std::vector<double> &lx = np.geoms[k].parts[0].x;
+					const std::vector<double> &ly = np.geoms[k].parts[0].y;
+					if (lx.size() < 2) continue;
+					ox[idx[k]] = lx.back();
+					oy[idx[k]] = ly.back();
+				}
+			}
+		} else {
+			for (size_t k = 0; k < m; k++) {
+				SpatVector ci = sub_cen.subset_rows((long) k);
+				SpatVector gi = sub_src.subset_rows((long) k);
+				SpatVector np = ci.nearest_point(gi, false, method);
+				double rx, ry;
+				if (corrected_centroid_on_source(np, rx, ry)) {
+					ox[idx[k]] = rx;
+					oy[idx[k]] = ry;
+				}
+			}
+		}
+	}
+
+	SpatVector out;
+	out.setPointsGeometry(ox, oy);
+	out.srs = srs;
+	out.df = df;
+	return out;
+}
+
+
 SpatVector SpatVector::unaryunion() {
 	SpatVector out;
 

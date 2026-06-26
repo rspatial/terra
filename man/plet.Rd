@@ -7,6 +7,7 @@
 \alias{plet,SpatRaster-method}
 \alias{plet,SpatRasterCollection-method}
 \alias{plet,SpatVector-method}
+\alias{plet,data.frame-method}
 \alias{plet,SpatVectorCollection-method}
 
 \alias{lines,leaflet-method}
@@ -41,6 +42,7 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 	wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL,
 	breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 
+\S4method{plet}{data.frame}(x, ...)
 
 \S4method{plet}{SpatVectorCollection}(x, y="", col, main=y, cex=1, 
 	lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, 
@@ -61,7 +63,7 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 
 
 \arguments{
-  \item{x}{SpatRaster, SpatVector, or leaflet object}
+  \item{x}{SpatRaster, SpatVector, or leaflet object. If \code{x} is a data.frame, an attempt is made to create a SpatVector from it with the \code{\link{vect}} method for a data.frame}
   \item{y}{missing, or positive integer, or character (variable or layer name) indicating the layer(s) to be plotted. If \code{x} is a SpatRaster, you can select multiple layers}
   \item{col}{character. Vector of colors or a color generating function. If \code{x} is a SpatVectorCollection, you can provide a list with colors and/or functions, with one list element for each SpatVector}
   \item{alpha}{one or two numbers between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque). The first number is to fill the points/lines/polygons, the second for the outline}

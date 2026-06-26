@@ -252,8 +252,10 @@ setMethod("fillHoles", signature(x="SpatRaster"),
 
 
 setMethod("centroids", signature(x="SpatVector"),
-	function(x, inside=FALSE) {
-		if (inside) {
+	function(x, inside=FALSE, correct=FALSE) {
+		if (correct) {
+			x@pntr <- x@pntr$corrected_centroid(TRUE, isTRUE(inside))
+		} else if (inside) {
 			x@pntr <- x@pntr$point_on_surface(TRUE)
 		} else {
 			x@pntr <- x@pntr$centroid(TRUE)
