@@ -1,9 +1,10 @@
-# version 1.9-36
+# version 1.9-37
 
 ## bug fixes
 
 - multidim vrt can now be opened [#2107](https://github.com/rspatial/terra/issues/2107) 
 - terra did not compile with GDAL > 3.04 & < 3.8 [#2109](https://github.com/rspatial/terra/issues/2109) by Andrew Gene Brown
+- terra did not compile with GDAL < 3.5.0 [#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang Viechtbauer
 
 ## enhancements
 

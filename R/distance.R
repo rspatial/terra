@@ -3,6 +3,8 @@
 # Version 1.0
 # License GPL v3
 
+
+
 setMethod("buffer", signature(x="SpatRaster"),
 	function(x, width, background=0, include=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
@@ -125,6 +127,15 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 		m
 	}
 }
+
+setMethod("furdist", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, pairwise=FALSE, unit="m", method="geo") {
+		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
+		opt <- spatOptions()	 
+		x$pntr <- x@pntr$furthest_distance(y, pairwise, unit, method, opt)
+		messages(x, "furthest")
+	}
+)
 
 setMethod("distance", signature(x="SpatVector", y="ANY"),
 	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="haversine", use_nodes=FALSE, names=NULL) {
