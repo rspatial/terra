@@ -399,7 +399,9 @@ bool SpatNetwork::read_gnm(std::string filename) {
 					pt = g->toPoint();
 				} else if (gt == wkbMultiPoint) {
 					const OGRMultiPoint *mp = g->toMultiPoint();
-					if (mp && mp->getNumGeometries() > 0) pt = mp->getGeometryRef(0);
+					// getGeometryRef() returns const OGRGeometry* on older GDAL and OGRPoint* on newer
+					// static_cast works on both without warning.
+					if (mp && mp->getNumGeometries() > 0) pt = static_cast<const OGRPoint*>(mp->getGeometryRef(0));
 				}
 			}
 			if (pt) {
@@ -438,7 +440,7 @@ bool SpatNetwork::read_gnm(std::string filename) {
 					ls = g->toLineString();
 				} else if (gt == wkbMultiLineString) {
 					const OGRMultiLineString *mls = g->toMultiLineString();
-					if (mls && mls->getNumGeometries() > 0) ls = mls->getGeometryRef(0);
+					if (mls && mls->getNumGeometries() > 0) ls = static_cast<const OGRLineString*>(mls->getGeometryRef(0));
 				}
 			}
 			if (ls) {
