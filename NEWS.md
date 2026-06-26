@@ -7,9 +7,8 @@
 
 ## enhancements
 
-- faster sampling of mutlidim rasters [#2110](https://github.com/rspatial/terra/issues/2110) by Michael Sumner
-- `centroids` argument "inside" can now be set to `NA` to allow using the true centroid when it is inside and the alternative when not.
-- `centroids` gained argument "best" to force a centroid to the nearest location on the polygon (`inside=FALSE`) or an alternative location inside the polygon (`inside=TRUE`) 
+- faster sampling of multidim rasters [#2110](https://github.com/rspatial/terra/issues/2110) by Michael Sumner
+- `centroids` gained argument "correct" to force a centroid to the nearest location on the polygon (`inside=FALSE`) or an alternative location inside the polygon (`inside=TRUE`) 
 
 ## new 
 
