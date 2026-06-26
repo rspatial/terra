@@ -32,6 +32,8 @@ plet(x, y="", col, main=y, cex=1,
   wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL,
   breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 
+# S4 method for class 'data.frame'
+plet(x, ...)
 
 # S4 method for class 'SpatVectorCollection'
 plet(x, y="", col, main=y, cex=1, 
@@ -58,7 +60,10 @@ polys(x, y, col, lwd=2, lty=NULL,
 
 - x:
 
-  SpatRaster, SpatVector, or leaflet object
+  SpatRaster, SpatVector, or leaflet object. If `x` is a data.frame, an
+  attempt is made to create a SpatVector from it with the
+  [`vect`](https://rspatial.github.io/terra/reference/vect.md) method
+  for a data.frame
 
 - y:
 

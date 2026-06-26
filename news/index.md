@@ -6,8 +6,20 @@
 
 - multidim vrt can now be opened
   [\#2107](https://github.com/rspatial/terra/issues/2107)
+- terra did not compile with GDAL \> 3.04 & \< 3.8
+  [\#2109](https://github.com/rspatial/terra/issues/2109) by Andrew Gene
+  Brown
 
 ### enhancements
+
+- faster sampling of mutlidim rasters
+  [\#2110](https://github.com/rspatial/terra/issues/2110) by Michael
+  Sumner
+- `centroids` argument “inside” can now be set to `NA` to allow using
+  the true centroid when it is inside and the alternative when not.
+- `centroids` gained argument “best” to force a centroid to the nearest
+  location on the polygon (`inside=FALSE`) or an alternative location
+  inside the polygon (`inside=TRUE`)
 
 ### new
 

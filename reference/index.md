@@ -757,6 +757,7 @@
 - [`plet(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
   [`plet(`*`<SpatRasterCollection>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
   [`plet(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
+  [`plet(`*`<data.frame>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
   [`plet(`*`<SpatVectorCollection>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
   [`lines(`*`<leaflet>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
   [`points(`*`<leaflet>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
