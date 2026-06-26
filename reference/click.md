@@ -4,13 +4,13 @@ Click on a map (plot) to get the coordinates or the values of a
 SpatRaster or SpatVector at that location. For a SpatRaster you can also
 get the coordinates and cell number of the location.
 
-Note that for many installations this does to work well on the default
+Note that for many installations this does not work well on the default
 RStudio plotting device. To work around that, you can first run
 `dev.new(noRStudioGD = TRUE)` which will create a separate window for
 plotting, then use
 [`plot()`](https://rspatial.github.io/terra/reference/plot.md) followed
 by `click()` and click on the map. It may also help to set your RStudio
-"Tools/Global Options/Appearance/Zoom" to 100
+"Tools/Global Options/Appearance/Zoom" to 100%.
 
 ## Usage
 
