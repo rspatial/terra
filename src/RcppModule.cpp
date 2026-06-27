@@ -571,6 +571,7 @@ RCPP_MODULE(spat){
 		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string, const std::string, bool, SpatOptions&))( &SpatVector::distance))
 		.method("point_distance", &SpatVector::pointdistance)
 		.method("furthest_distance", &SpatVector::furthest_distance)
+		.method("snap_to", &SpatVector::snap_to)
 
 //		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::geos_distance))
 //		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::geos_distance))

@@ -132,8 +132,9 @@ setMethod("furdist", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, pairwise=FALSE, unit="m", method="geo") {
 		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
 		opt <- spatOptions()	 
-		x$pntr <- x@pntr$furthest_distance(y, pairwise, unit, method, opt)
+		out <- x@pntr$furthest_distance(y@pntr, pairwise, unit, method, opt)
 		messages(x, "furthest")
+		out
 	}
 )
 

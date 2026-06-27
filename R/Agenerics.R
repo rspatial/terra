@@ -9,6 +9,8 @@ if (!isGeneric("flowAccumulation")) {setGeneric("flowAccumulation", function(x, 
 
 if (!isGeneric("tessellate")) {setGeneric("tessellate", function(x, ...) standardGeneric("tessellate"))}
 
+if (!isGeneric("snapTo")) {setGeneric("snapTo", function(x, y, ...) standardGeneric("snapTo"))}
+
 if (!isGeneric("agitate")) {setGeneric("agitate", function(x, ...) standardGeneric("agitate"))}
 
 if (!isGeneric("nany")) {setGeneric("nany", function(x, ...) standardGeneric("nany"))}

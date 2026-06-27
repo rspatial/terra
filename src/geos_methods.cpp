@@ -3505,6 +3505,112 @@ std::vector<double> SpatVector::furthest_distance(SpatVector p, bool pairwise, s
 }
 
 
+// Move points onto the edge of their corresponding line/polygon. A point that
+// touches (lies on, or inside a polygon) its geometry is kept unchanged
+
+SpatVector SpatVector::snap_to(SpatVector x, const std::string method, SpatOptions &opt) {
+
+	SpatVector out;
+
+	if (type() != "points") {
+		out.setError("input SpatVector must have point geometry");
+		return out;
+	}
+	std::string xt = x.type();
+	if ((xt != "polygons") && (xt != "lines")) {
+		out.setError("target must have line or polygon geometry");
+		return out;
+	}
+	if ((method != "geo") && (method != "cosine") && (method != "haversine")) {
+		out.setError("invalid method. Must be 'geo', 'haversine' or 'cosine'");
+		return out;
+	}
+
+	bool warn_crs = false;
+	if (srs.is_empty() && x.srs.is_empty()) {
+		warn_crs = true;
+	} else if (!srs.is_same(x.srs, false)) {
+		out.setError("CRSs do not match");
+		return out;
+	}
+
+	size_t n = size();
+	size_t nx = x.size();
+	if ((n == 0) || (nx == 0)) {
+		return *this;
+	}
+	if ((nx != n) && (nx != 1)) {
+		out.setError("the number of points and the number of geometries do not match (and 'x' is not a single geometry)");
+		return out;
+	}
+
+	std::vector<std::vector<double>> xy = coordinates();
+	if (xy.size() < 2) {
+		return *this;
+	}
+	std::vector<double> ox = xy[0];
+	std::vector<double> oy = xy[1];
+
+	// Points that already touch / are inside their geometry have distance 0 and stay put
+	SpatOptions dopt;
+	std::vector<double> d = distance(x, true, "m", method, false, dopt);
+	std::vector<long> idx;       // outside points (row in *this)
+	std::vector<long> gidx;      // matching geometry (row in x)
+	if (d.size() == n) {
+		for (size_t i = 0; i < n; i++) {
+			if (d[i] > 0) {
+				idx.push_back((long) i);
+				gidx.push_back((long) (nx == 1 ? 0 : i));
+			}
+		}
+	} else {
+		// distance test unavailable (should not happen): snap every point
+		for (size_t i = 0; i < n; i++) {
+			idx.push_back((long) i);
+			gidx.push_back((long) (nx == 1 ? 0 : i));
+		}
+	}
+
+	if (!idx.empty()) {
+		SpatVector sub_pts = subset_rows(idx);
+		SpatVector sub_geo = x.subset_rows(gidx);
+		size_t m = idx.size();
+
+		if (!is_lonlat()) {
+			// planar: one pairwise nearest_point() call for the whole subset.
+			SpatVector np = sub_pts.nearest_point(sub_geo, true, method);
+			if (!np.hasError() && (np.size() == m)) {
+				for (size_t k = 0; k < m; k++) {
+					if (np.geoms[k].parts.empty()) continue;
+					const std::vector<double> &lx = np.geoms[k].parts[0].x;
+					const std::vector<double> &ly = np.geoms[k].parts[0].y;
+					if (lx.size() < 2) continue;
+					ox[idx[k]] = lx.back();
+					oy[idx[k]] = ly.back();
+				}
+			}
+		} else {
+			for (size_t k = 0; k < m; k++) {
+				SpatVector pi = sub_pts.subset_rows((long) k);
+				SpatVector gi = sub_geo.subset_rows((long) k);
+				SpatVector np = pi.nearest_point(gi, false, method);
+				double rx, ry;
+				if (corrected_centroid_on_source(np, rx, ry)) {
+					ox[idx[k]] = rx;
+					oy[idx[k]] = ry;
+				}
+			}
+		}
+	}
+
+	out.setPointsGeometry(ox, oy);
+	out.srs = srs;
+	out.df = df;
+	if (warn_crs) out.addWarning("unknown CRSs. Results can be wrong");
+	return out;
+}
+
+
 SpatVector SpatVector::unaryunion() {
 	SpatVector out;
 
@@ -3655,22 +3761,6 @@ void SpatVector::make_CCW() {
 
 
 // Build a SpatNetwork from a SpatVector of lines.
-//
-// Algorithm:
-//   1. Convert the SpatVector to GEOS geometries.
-//   2. If snap > 0, snap points within `snap` of each other
-//   3. Collect into a single MULTILINESTRING.
-//   4. GEOSUnaryUnion: full noding + dissolution of duplicate/overlapping pieces. 
-//   5. if GEOSLineMerge: collapse runs of degree-2  shared endpoints
-//   6. For each child LINESTRING:
-//        - Hash its first/last coordinates (quantized at 1e-12 of the
-//          extent) to assign integer node IDs.
-//        - Store the full coordinate sequence as the edge geometry.
-//   7. Source-attribution: for each output edge, take its midpoint and
-//      find the first source whose geometry (within `snap`, or a small
-//      fraction of the bounding box if snap == 0) covers that midpoint.
-//      The attribute row of that source is used in edge_df. When
-//      merge=true, an edge can span multiple source features only one source's attributes used.
 SpatNetwork SpatVector::as_network(double snap, bool merge, bool directed, bool weighted) {
 	SpatNetwork net;
 	net.srs = srs;
@@ -3767,10 +3857,7 @@ SpatNetwork SpatVector::as_network(double snap, bool merge, bool directed, bool 
 	}
 
 	// 5. Optional line-merge: stitch chains of degree-2 connections back
-	//    into single linestrings, so only true junctions remain as
-	//    nodes. GEOSLineMerge accepts a (Multi)LineString and is a no-op
-	//    on already-merged geometry, so it's safe to call unconditionally
-	//    when `merge` is true.
+	//    into single linestrings, so only true junctions remain as nodes. 
 	if (merge) {
 		GEOSGeometry *merged = GEOSLineMerge_r(hGEOSCtxt, noded);
 		if (merged != NULL) {
