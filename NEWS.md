@@ -1,19 +1,20 @@
-# version 1.9-37
+# version 1.9-38
 
 ## bug fixes
 
-- multidim vrt can now be opened [#2107](https://github.com/rspatial/terra/issues/2107) 
+- multidim vrt can now be opened [#2107](https://github.com/rspatial/terra/issues/2107)  by Michael Sumner
 - terra did not compile with GDAL > 3.04 & < 3.8 [#2109](https://github.com/rspatial/terra/issues/2109) by Andrew Gene Brown
 - terra did not compile with GDAL < 3.5.0 [#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang Viechtbauer
 
 ## enhancements
 
 - faster sampling of multidim rasters [#2110](https://github.com/rspatial/terra/issues/2110) by Michael Sumner
-- `centroids` gained argument "correct" to force a centroid to the nearest location on the polygon (`inside=FALSE`) or an alternative location inside the polygon (`inside=TRUE`) 
+- `centroids` gained argument "correct" that moves centroids that are not on their geometry to the nearest location on the geometry (`inside=FALSE`) or to an alternative location that is inside the polygon (`inside=TRUE`) 
 
 ## new 
 
 - `furdist` method to get the furthest distance from a point to any location on another geometry
+- `snapTo` method to move points to the nearest location on lines or polygons
 
 
 # version 1.9-34

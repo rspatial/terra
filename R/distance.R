@@ -132,11 +132,11 @@ setMethod("furdist", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, pairwise=FALSE, unit="m") {
 		opt <- spatOptions()	 
 		out <- x@pntr$furthest_distance(y@pntr, pairwise, unit, opt)
-		messages(x, "furthest")
+		messages(x, "furdist")
 		if (pairwise) {
-			data.frame(x=rep(1:nrow(x), each=nrow(y)), y=rep(1:nrow(y), nrow(x)), dist=out)
+			out[[1]]
 		} else {
-			out
+			data.frame(from=out[[1]]+1, to=out[[2]]+1, distance=out[[3]])
 		}
 	}
 )

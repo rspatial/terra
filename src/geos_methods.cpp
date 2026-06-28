@@ -3422,21 +3422,21 @@ SpatVector SpatVector::corrected_centroid(bool check_lonlat, bool inside) {
 }
 
 
-// Distance from point(s) to the furthest location on the edge of a geometry.
-std::vector<double> SpatVector::furthest_distance(SpatVector p, bool pairwise, std::string unit, SpatOptions &opt) {
+// Distance from each point in the furthest location on the edge of the geometries in p. 
+std::vector<std::vector<double>> SpatVector::furthest_distance(SpatVector x, bool pairwise, std::string unit, SpatOptions &opt) {
 
-	std::vector<double> out;
+	std::vector<std::vector<double>> out(3);
 
-	if (srs.is_empty() && p.srs.is_empty()) {
+	if (srs.is_empty() && x.srs.is_empty()) {
 		addWarning("unknown CRSs. Results can be wrong");
-	} else if (!srs.is_same(p.srs, false)) {
+	} else if (!srs.is_same(x.srs, false)) {
 		setError("CRSs do not match");
 		return out;
 	}
 
-	size_t ng = size();
-	size_t np = p.size();
-	if ((ng == 0) || (np == 0)) {
+	size_t npt = size();      // query points
+	size_t ngeo = x.size();   // other geometries
+	if ((npt == 0) || (ngeo == 0)) {
 		setError("empty SpatVector");
 		return out;
 	}
@@ -3447,22 +3447,23 @@ std::vector<double> SpatVector::furthest_distance(SpatVector p, bool pairwise, s
 		setError("invalid unit");
 		return out;
 	}
-	if (pairwise && (ng != np) && (ng > 1) && (np > 1)) {
+	if (pairwise && (npt != ngeo) && (npt > 1) && (ngeo > 1)) {
 		setError("for pairwise computation the number of geometries must match, or one should have a single geometry");
 		return out;
 	}
 
-	SpatVector gsrc = *this;
-	if (lonlat && (type() != "points")) {
-		SpatExtent e = getExtent();
+	SpatVector gsrc = x;
+	if (lonlat && (x.type() != "points")) {
+		// densify the geometries
+		SpatExtent e = x.getExtent();
 		double diag = distance_lonlat(e.xmin, e.ymin, e.xmax, e.ymax);
 		double interval = diag / 10000.0;
 		if (!(interval > 0)) interval = 1;
-		gsrc = densify(interval, true, false);
+		gsrc = x.densify(interval, true, false);
 		if (gsrc.hasError()) { setError(gsrc.getError()); return out; }
 	}
-	SpatVector gpts = (type() == "points") ? gsrc : gsrc.as_points(true, false);
-	SpatVector qpts = (p.type() == "points") ? p : p.as_points(true, false);
+	SpatVector gpts = (x.type() == "points") ? gsrc : gsrc.as_points(true, false);
+	SpatVector qpts = (type() == "points") ? *this : as_points(true, false);
 	if (gpts.hasError()) { setError(gpts.getError()); return out; }
 	if (qpts.hasError()) { setError(qpts.getError()); return out; }
 
@@ -3486,24 +3487,29 @@ std::vector<double> SpatVector::furthest_distance(SpatVector p, bool pairwise, s
 	};
 
 	if (pairwise) {
-		size_t n = std::max(ng, np);
-		out.reserve(n);
+		size_t n = std::max(npt, ngeo);
+		out[0].reserve(n);
 		for (size_t i = 0; i < n; i++) {
-			SpatVector gi = gpts.subset_rows((long) (ng == 1 ? 0 : i));
-			SpatVector qi = qpts.subset_rows((long) (np == 1 ? 0 : i));
-			std::vector<std::vector<double>> gc = gi.coordinates();
+			SpatVector qi = qpts.subset_rows((long) (npt == 1 ? 0 : i));
+			SpatVector gi = gpts.subset_rows((long) (ngeo == 1 ? 0 : i));
 			std::vector<std::vector<double>> qc = qi.coordinates();
-			out.push_back(furthest(qc, gc));
+			std::vector<std::vector<double>> gc = gi.coordinates();
+			out[0].push_back(furthest(qc, gc));
 		}
 	} else {
-		out.reserve(ng * np);
-		for (size_t i = 0; i < ng; i++) {
-			SpatVector gi = gpts.subset_rows((long) i);
-			std::vector<std::vector<double>> gc = gi.coordinates();
-			for (size_t j = 0; j < np; j++) {
-				SpatVector qj = qpts.subset_rows((long) j);
-				std::vector<std::vector<double>> qc = qj.coordinates();
-				out.push_back(furthest(qc, gc));
+		size_t total = npt * ngeo;
+		out[0].reserve(total);
+		out[1].reserve(total);
+		out[2].reserve(total);
+		for (size_t i = 0; i < npt; i++) {
+			SpatVector qi = qpts.subset_rows((long) i);
+			std::vector<std::vector<double>> qc = qi.coordinates();
+			for (size_t j = 0; j < ngeo; j++) {
+				SpatVector gj = gpts.subset_rows((long) j);
+				std::vector<std::vector<double>> gc = gj.coordinates();
+				out[0].push_back((double) i);   // point index (in *this)
+				out[1].push_back((double) j);   // geometry index (in x)
+				out[2].push_back(furthest(qc, gc));
 			}
 		}
 	}
