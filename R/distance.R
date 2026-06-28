@@ -129,12 +129,15 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 }
 
 setMethod("furdist", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, pairwise=FALSE, unit="m", method="geo") {
-		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
+	function(x, y, pairwise=FALSE, unit="m") {
 		opt <- spatOptions()	 
-		out <- x@pntr$furthest_distance(y@pntr, pairwise, unit, method, opt)
+		out <- x@pntr$furthest_distance(y@pntr, pairwise, unit, opt)
 		messages(x, "furthest")
-		out
+		if (pairwise) {
+			data.frame(x=rep(1:nrow(x), each=nrow(y)), y=rep(1:nrow(y), nrow(x)), dist=out)
+		} else {
+			out
+		}
 	}
 )
 

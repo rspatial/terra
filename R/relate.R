@@ -331,10 +331,10 @@ setMethod("nearby", signature(x="SpatVector"),
 )
 
 setMethod("snapTo", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, ...) {
+	function(x, y, paired=TRUE, ...) {
 		opt <- spatOptions(...)
-		x <- x@pntr$snap_to(y@pntr, "cosine", opt)
-		message(x, "snapTo")
+		x@pntr <- x@pntr$snap_to(y@pntr, paired[1], opt)
+		messages(x, "snapTo")
 	}
 )
 	
