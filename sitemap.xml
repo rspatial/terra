@@ -103,6 +103,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/focalValues.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/forceCCW.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/freq.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/furdist.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/gaps.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/gdal.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/geometry.html</loc></url>
@@ -223,6 +224,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/shortestPath.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/sieve.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/simplify.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/snapTo.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/sort.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/sources.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/spin.html</loc></url>

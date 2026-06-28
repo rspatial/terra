@@ -59,10 +59,7 @@ s <- rast(r)
 values(s) <- 1:ncell(s)
 rs <- c(r,r,s,r)
 sources(rs)
-#> [1] "/home/runner/work/_temp/Library/terra/ex/elev.tif"
-#> [2] "/home/runner/work/_temp/Library/terra/ex/elev.tif"
-#> [3] ""                                                 
-#> [4] "/home/runner/work/_temp/Library/terra/ex/elev.tif"
+#> Error in sources(rs): could not find function "sources"
 hasValues(r)
 #> [1] TRUE
 x <- rast()

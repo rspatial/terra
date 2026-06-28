@@ -458,6 +458,9 @@
 - [`freq(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/freq.md)
   : Frequency table
 
+- [`furdist(`*`<SpatVector>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/furdist.md)
+  : Distance to the furthest location on a geometry
+
 - [`gaps(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/gaps.md)
   : Find gaps between polygons
 
@@ -986,6 +989,9 @@
 
 - [`simplifyGeom(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/simplify.md)
   : simplifyGeom geometries
+
+- [`snapTo(`*`<SpatVector>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/snapTo.md)
+  : Snap points to the edge of lines or polygons
 
 - [`sort(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/sort.md)
   [`sort(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/sort.md)
