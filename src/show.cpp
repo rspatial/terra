@@ -33,7 +33,13 @@
 
 
 static std::string basename_trunc(const std::string &path, size_t maxlen = 150) {
-	std::string b = basename(path);
+	// Match R's basename(): trailing path separators are stripped before the
+	// last component is taken (so e.g. ".../:psl.zarr/" yields ":psl.zarr").
+	std::string p = path;
+	while (!p.empty() && (p.back() == '/' || p.back() == '\\')) {
+		p.pop_back();
+	}
+	std::string b = basename(p);
 	if (b.size() > maxlen) {
 		b = b.substr(0, maxlen) + "~";
 	}
@@ -351,10 +357,10 @@ std::string SpatRaster::show(bool one_based) {
 				srcs[i] = "memory";
 			} else {
 				std::string f = fnames[i];
-				f.erase(std::remove(f.begin(), f.end(), '"'), f.end());
 				if (f.substr(0, 5) != "HDF5:") {
 					f = basename_trunc(f);
 				}
+				f.erase(std::remove(f.begin(), f.end(), '"'), f.end());
 				srcs[i] = f;
 			}
 		}
