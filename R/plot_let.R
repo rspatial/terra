@@ -1,5 +1,6 @@
 # these methods require the dev version of leaflet
 
+
 checkLeafLetVersion <- function() {
 	v <- utils::packageVersion("leaflet")
 	if (v < "2.1.2.9000") {
@@ -20,6 +21,21 @@ popUp <- function(x) {
 		paste("geom", 1:nrow(x), sep="_")
 	}
 }
+
+getLabel <- function(x, label) {
+	if (is.null(label)) return(label)
+	if ((length(label) == 1)) {
+		if (is.logical(label)) {
+			if (label) return(1:nrow(x))
+			return(NULL)
+		}
+		if (label %in% names(x)) {
+			return(x[[label, drop=TRUE]])
+		}
+	}
+	label
+}
+
 
 makelonlat <- function(x) {
 	geo <- is.lonlat(x)
@@ -103,6 +119,7 @@ baselayers <- function(tiles, wrap=TRUE) {
 }
 
 
+
 setMethod("plet", signature(x="SpatVector"),
 	function(x, y="", col, main=y, cex=1, lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)  {
 
@@ -143,7 +160,7 @@ setMethod("plet", signature(x="SpatVector"),
 			cols <- .getCols(nrow(x), col)
 			pop  <- lab <- NULL
 			if (isTRUE(popup[1])) pop <- popUp(x)
-			if (isTRUE(label[1])) lab <- 1:nrow(x)
+			lab <- getLabel(x, label)
 			if (g == "polygons") {
 				map <- leaflet::addPolygons(map, data=x, label=lab, group=group, 
 							fillColor=cols, fillOpacity=alpha[1], opacity=alpha[2], 
@@ -183,7 +200,12 @@ setMethod("plet", signature(x="SpatVector"),
 					s <- xy[v == u[i], ]
 					pop <- lab <- NULL
 					if (isTRUE(popup[1])) pop <- popUp(x[v == u[i], ])
-					if (isTRUE(label[1])) lab <- u
+					if ((length(label)==1) && isTRUE(label)) {
+						lab <- u
+					} else {
+						lab <- getLabel(x, label)
+					}
+					
 					if (g == "polygons") {
 						map <- leaflet::addPolygons(map, data=s, label=lab[i], group=u[i], 
 							fillColor=cols[i],  fillOpacity=alpha[1], opacity=alpha[2], popup=pop, 
@@ -209,7 +231,12 @@ setMethod("plet", signature(x="SpatVector"),
 				leg <- .get_leg(v, type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, reverse=reverse, border=border, ...)
 				pop <- lab <- NULL
 				if (isTRUE(popup[1])) pop <- popUp(x)
-				if (isTRUE(label[1])) lab <- v
+				if ((length(label)==1) && (isTRUE(label))) {
+					lab <- v
+				} else {
+					lab <- getLabel(x, label)
+				}
+				
 				if (g == "polygons") {
 					map <- leaflet::addPolygons(map, data=x, label=lab, group=y, 
 						fillColor=leg$main_cols, opacity=alpha[2], fillOpacity=alpha[1], 
@@ -302,9 +329,7 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 			if (popup[i]) {
 				pop <- popUp(v)
 			} 
-			if (label[i]) {
-				lab <- 1:nrow(v)
-			}
+			lab <- getLabel(x, label)
 			if (y[i] == "") { # no legend
 				icols <- .getCols(nrow(v), cols[[i]])
 				if (g == "polygons") {
@@ -409,6 +434,8 @@ setMethod("polys", signature(x="leaflet"),
 			alpha[1] <- fill
 		}
 
+		label <- getLabel(x, label)
+
 		alpha <- pmax(0, pmin(1, rep_len(alpha, 2)))
 
 		if (inherits(y, "SpatVector")) {
@@ -461,8 +488,9 @@ setMethod("lines", signature(x="leaflet"),
 			popup=popUp(y)
 		} else {
 			popup <- NULL
-		}
-		
+		}		
+		label <- getLabel(x, label)
+
 		if (inherits(y, "SpatVector")) {
 			if (nrow(y) == 0) return(x)
 			y <- makelonlat(y)
@@ -519,6 +547,7 @@ setMethod("points", signature(x="leaflet"),
 		cols <- .getCols(nrow(y), col)
 		borders <- .getCols(nrow(y), border)
 		alpha <- pmax(0, pmin(1, rep_len(alpha, 2)))
+		label <- getLabel(x, label)
 
 		leaflet::addCircleMarkers(x, data=y, radius=cex, popup=popup, label=label, 
 			opacity=alpha[2], fillColor=col, fillOpacity=alpha[1], col=borders, weight=lwd, 
