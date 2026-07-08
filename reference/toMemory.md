@@ -41,7 +41,7 @@ Same as `x`
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 sources(r)
-#> Error in sources(r): could not find function "sources"
+#> [1] "/home/runner/work/_temp/Library/terra/ex/elev.tif"
 inMemory(r)
 #> [1] FALSE
 x <- toMemory(r)
