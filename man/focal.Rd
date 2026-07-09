@@ -31,7 +31,7 @@ Calculate focal ("moving window") values for each cell.
 
 \item{expand}{logical. If \code{TRUE}, the value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "built-in" \code{fun}s such as mean, sum, min and max}
 
-\item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
+\item{silent}{logical. If \code{FALSE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
 
 \item{cores}{controls per-block parallelism when \code{fun} is a user-supplied R function (the "built-in" \code{fun}s such as "mean" and "sum" are already multi-threaded via TBB and ignore \code{cores}). Can be a positive integer (the number of local PSOCK workers), an existing \code{parallel::cluster}, the string \code{"future"} to use the currently registered \code{\link[future:plan]{future plan}}, or a future strategy itself (e.g. \code{future::multisession}). The per-block focal-values matrix is split into row-chunks and dispatched across workers}
 
