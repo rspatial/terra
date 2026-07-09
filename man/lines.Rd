@@ -34,11 +34,11 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, col, cex=0.7, pch=16, alpha=1, jitter=0, ...)
+\S4method{points}{SpatVector}(x, y=NULL, col, cex=0.7, pch=16, alpha=1, jitter=0, legend=NULL, ...)
 
-\S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)
+\S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, legend=FALSE, ...)
 
-\S4method{polys}{SpatVector}(x, col, border="black", lwd=1, lty=1, alpha=1, ...)
+\S4method{polys}{SpatVector}(x, y=NULL, col, border="black", lwd=1, lty=1, alpha=1, legend=FALSE, ...)
 
 \S4method{points}{SpatRaster}(x, ...)
 
@@ -55,8 +55,9 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
 
 \arguments{
   \item{x}{SpatVector or SpatExtent}
-  \item{y}{missing or SpatVector. If both \code{x} and \code{y} have point geometry and the same number of rows, lines are drawn between pairs of points}
+  \item{y}{missing, or a character (variable name) or positive integer (column number) to color the geometries by the values of that variable of \code{x}. With \code{lines}, \code{y} can also be a SpatVector; if both \code{x} and \code{y} have point geometry and the same number of rows, lines are drawn between pairs of points}
   \item{col}{character. Colors}
+  \item{legend}{logical. If \code{TRUE} and \code{y} is a variable name/number, a legend is shown}
   \item{border}{character. color(s) of the polygon borders. Use \code{NULL} or \code{NA} to not draw a border}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{pch}{positive integer, point type. See \code{\link{points}}. On some (linux) devices, the default symbol "16" is a not a very smooth circle. You can use "20" instead (it takes a bit longer to draw) or "1" for an open circle}
@@ -80,6 +81,11 @@ values(r) <- 1:ncell(r)
 plot(r)
 lines(v)
 points(v)
+
+# color by the values of a variable
+plot(v, col="light gray", border="white")
+lines(v, "NAME_1", lwd=5)
+points(centroids(v), "AREA", cex=2, legend="topright")
 }
 
 \keyword{methods}
