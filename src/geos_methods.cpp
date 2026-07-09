@@ -19,6 +19,7 @@
 #include <numeric>
 #include <functional>
 #include <unordered_map>
+#include <unordered_set>
 #include <cmath>
 #include <cstdint>
 #include <utility>
@@ -3956,6 +3957,40 @@ SpatNetwork SpatVector::as_network(double snap, bool merge, bool directed, bool 
 		return id;
 	};
 
+	// GEOS >= 3.15 merges contiguous linestrings in overlay/union output
+	// the noded result no longer breaks at the endpoints of the input segments. 
+	// If merge=false, these must remain nodes.
+	// collect the (possibly snapped) input endpoints so edges can be split at them below. 
+	std::unordered_set<std::pair<int64_t,int64_t>, PairHash> input_endpoints;
+	if (!merge) {
+		for (size_t k = 0; k < g_for_attr.size(); k++) {
+			if (g_for_attr[k].get() == NULL) continue;
+			each_linestring(g_for_attr[k].get(), [&](const GEOSGeometry *ls) {
+				const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r(hGEOSCtxt, ls);
+				unsigned int npts = 0;
+				if (!GEOSCoordSeq_getSize_r(hGEOSCtxt, cs, &npts) || npts < 1) return;
+				double x, y;
+				GEOSCoordSeq_getX_r(hGEOSCtxt, cs, 0, &x);
+				GEOSCoordSeq_getY_r(hGEOSCtxt, cs, 0, &y);
+				input_endpoints.insert(qkey(x, y));
+				GEOSCoordSeq_getX_r(hGEOSCtxt, cs, npts - 1, &x);
+				GEOSCoordSeq_getY_r(hGEOSCtxt, cs, npts - 1, &y);
+				input_endpoints.insert(qkey(x, y));
+			});
+		}
+	}
+
+	auto add_edge = [&](std::vector<double> xs, std::vector<double> ys) {
+		if (xs.size() < 2) return;
+		size_t a = add_node(xs.front(), ys.front());
+		size_t b = add_node(xs.back(),  ys.back());
+		net.edge_from.push_back(a);
+		net.edge_to.push_back(b);
+		net.edge_x.push_back(std::move(xs));
+		net.edge_y.push_back(std::move(ys));
+		net.edge_source.push_back(-1);  // resolved below
+	};
+
 	each_linestring(noded, [&](const GEOSGeometry *ls) {
 		const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r(hGEOSCtxt, ls);
 		unsigned int npts = 0;
@@ -3965,13 +4000,21 @@ SpatNetwork SpatVector::as_network(double snap, bool merge, bool directed, bool 
 			GEOSCoordSeq_getX_r(hGEOSCtxt, cs, p, &xs[p]);
 			GEOSCoordSeq_getY_r(hGEOSCtxt, cs, p, &ys[p]);
 		}
-		size_t a = add_node(xs.front(), ys.front());
-		size_t b = add_node(xs.back(),  ys.back());
-		net.edge_from.push_back(a);
-		net.edge_to.push_back(b);
-		net.edge_x.push_back(std::move(xs));
-		net.edge_y.push_back(std::move(ys));
-		net.edge_source.push_back(-1);  // resolved below
+		if (input_endpoints.empty()) {
+			add_edge(std::move(xs), std::move(ys));
+			return;
+		}
+		// merge=FALSE: split at interior vertices that are input endpoints
+		size_t start = 0;
+		for (size_t p = 1; p + 1 < xs.size(); p++) {
+			if (input_endpoints.count(qkey(xs[p], ys[p]))) {
+				add_edge(std::vector<double>(xs.begin() + start, xs.begin() + p + 1),
+				         std::vector<double>(ys.begin() + start, ys.begin() + p + 1));
+				start = p;
+			}
+		}
+		add_edge(std::vector<double>(xs.begin() + start, xs.end()),
+		         std::vector<double>(ys.begin() + start, ys.end()));
 	});
 
 	GEOSGeom_destroy_r(hGEOSCtxt, noded);
