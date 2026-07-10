@@ -191,7 +191,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 
 void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool naomit, bool expand, bool global, std::function<double(std::vector<double>&, bool)> fun) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool naomit, bool expand, bool global, std::function<double(std::vector<double>&, bool)> fun, const SpatOptions &opt) {
 
 	out.resize(nc * nr);
 	int hwc = wnc / 2;
@@ -207,61 +207,76 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 
 	bool checkNA = naonly || naomit;
 
-	for (int r=0; r < nr; r++) {
-		int rread = r+srow;
-		for (int c=0; c < nc; c++) {
-			size_t cell = r*nc + c;
-			if (checkNA) {
-				size_t readcell = rread*nc + c;
-				if (naonly) {
-					if (!std::isnan(d[readcell])) {
+	// row loops can run in parallel
+	auto kernel = [&](int r_begin, int r_end) {
+		std::vector<double> v;
+		v.reserve(wnr * wnc);
+		for (int r=r_begin; r < r_end; r++) {
+			int rread = r+srow;
+			for (int c=0; c < nc; c++) {
+				size_t cell = r*nc + c;
+				if (checkNA) {
+					size_t readcell = rread*nc + c;
+					if (naonly) {
+						if (!std::isnan(d[readcell])) {
+							out[cell] = d[readcell];
+							continue;
+						}
+					} else if (std::isnan(d[readcell])) {
 						out[cell] = d[readcell];
 						continue;
 					}
-				} else if (std::isnan(d[readcell])) {
-					out[cell] = d[readcell];
-					continue;
 				}
-			}
-			std::vector<double> v;
-			v.reserve(wnr * wnc);
-			for (int rr=0; rr<wnr; rr++) {
-				int offr = wr1 - rr;
-				for (int cc=0; cc < wnc; cc++)  {
-					int offc = wc1 - cc;
-					//int wi = wnc * offr + offc;
-					int wi = wnc * rr + cc;
-					if (winNA[wi]) {
-						continue;
-					}
-					int row = rread + hwr - offr;
-					int col = c + hwc - offc;
-					if (global) {
-						col = col < 0 ? nc + col : col;
-						col = col > nc1 ? col - nc : col;
-						v.push_back(d[nc*row + col] * window[wi]);
-					} else if (expand) {
-						col = col < 0 ? 0 : col;
-						col = col > nc1 ? nc1 : col;
-						v.push_back(d[nc*row + col] * window[wi]);
-					} else {
-						if (col >= 0 && col < nc) {
+				v.clear();
+				for (int rr=0; rr<wnr; rr++) {
+					int offr = wr1 - rr;
+					for (int cc=0; cc < wnc; cc++)  {
+						int offc = wc1 - cc;
+						//int wi = wnc * offr + offc;
+						int wi = wnc * rr + cc;
+						if (winNA[wi]) {
+							continue;
+						}
+						int row = rread + hwr - offr;
+						int col = c + hwc - offc;
+						if (global) {
+							col = col < 0 ? nc + col : col;
+							col = col > nc1 ? col - nc : col;
+							v.push_back(d[nc*row + col] * window[wi]);
+						} else if (expand) {
+							col = col < 0 ? 0 : col;
+							col = col > nc1 ? nc1 : col;
 							v.push_back(d[nc*row + col] * window[wi]);
 						} else {
-							v.push_back(fill * window[wi]);
+							if (col >= 0 && col < nc) {
+								v.push_back(d[nc*row + col] * window[wi]);
+							} else {
+								v.push_back(fill * window[wi]);
+							}
 						}
 					}
 				}
+				out[cell] = fun(v, narm);
 			}
-			out[cell] = fun(v, narm);
 		}
+	};
+
+#if defined(USE_TBB)
+	if (opt.parallel && nr > 1 && ((long long) nr * nc * wnr * wnc > 100000)) {
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, nr, 1),
+			[&](const tbb::blocked_range<int> &r) { kernel(r.begin(), r.end()); });
+		return;
 	}
+#else
+	(void) opt;
+#endif
+	kernel(0, nr);
 }
 
 
 
 void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool naomit, bool expand, bool global) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool naomit, bool expand, bool global, const SpatOptions &opt) {
 
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
@@ -278,7 +293,9 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 	int nc1 = nc - 1;
 	bool checkNA = naonly || naomit;
 
-	for (int r=0; r < nr; r++) {
+	// rows are independent and can be parallelized
+	auto kernel = [&](int r_begin, int r_end) {
+	for (int r=r_begin; r < r_end; r++) {
 		int rread = r+srow;
 		for (int c=0; c < nc; c++) {
 			size_t cell = r*nc + c;
@@ -353,10 +370,22 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 			}
 		}
 	}
+	};
+
+#if defined(USE_TBB)
+	if (opt.parallel && nr > 1 && ((long long) nr * nc * wnr * wnc > 100000)) {
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, nr, 1),
+			[&](const tbb::blocked_range<int> &r) { kernel(r.begin(), r.end()); });
+		return;
+	}
+#else
+	(void) opt;
+#endif
+	kernel(0, nr);
 }
 
 void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool naomit, bool expand, bool global) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool naomit, bool expand, bool global, const SpatOptions &opt) {
 
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
@@ -383,7 +412,13 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 
 	bool checkNA = naonly || naomit;
 
-	for (int r=0; r<nr; r++) {
+	// rows are independent (disjoint writes to `out`), so the row loop can
+	// be parallelized. `winsum` is per-cell state when narm=TRUE, so it is
+	// a chunk-local copy of the precomputed total.
+	const double winsum_all = winsum;
+	auto kernel = [&](int r_begin, int r_end) {
+	double winsum = winsum_all;
+	for (int r=r_begin; r<r_end; r++) {
 		int rread = r+srow;
 		for (int c=0; c < nc; c++) {
 			size_t cell = r*nc + c;
@@ -457,6 +492,18 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 			}
 		}
 	}
+	};
+
+#if defined(USE_TBB)
+	if (opt.parallel && nr > 1 && ((long long) nr * nc * wnr * wnc > 100000)) {
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, nr, 1),
+			[&](const tbb::blocked_range<int> &r) { kernel(r.begin(), r.end()); });
+		return;
+	}
+#else
+	(void) opt;
+#endif
+	kernel(0, nr);
 }
 
 
@@ -581,11 +628,11 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 			}
 
 			if (dofun) {
-				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun);
+				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun, opt);
 			} else if (fun == "mean") {
-				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global);
+				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
 			} else {
-				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global);
+				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
 			}
 
 			if (i != (out.bs.n-1)) {
@@ -646,11 +693,11 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 				}
 
 				if (dofun) {
-					focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun);
+					focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun, opt);
 				} else if (fun == "mean") {
-					focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global);
+					focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
 				} else {
-					focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global);
+					focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
 				}
 				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
 			}
@@ -1146,15 +1193,15 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 		} else if (dofun) {
 			focal_win_fun(vin, vout, (int) nc, (int) roff, (int) bnr, m,
 			              (int) w[0], (int) w[1], fillvalue,
-			              narm, naonly, naomit, expand, global, fFun);
+			              narm, naonly, naomit, expand, global, fFun, opt);
 		} else if (is_mean) {
 			focal_win_mean(vin, vout, (int) nc, (int) roff, (int) bnr, m,
 			               (int) w[0], (int) w[1], fillvalue,
-			               narm, naonly, naomit, expand, global);
+			               narm, naonly, naomit, expand, global, opt);
 		} else {
 			focal_win_sum(vin, vout, (int) nc, (int) roff, (int) bnr, m,
 			              (int) w[0], (int) w[1], fillvalue,
-			              narm, naonly, naomit, expand, global);
+			              narm, naonly, naomit, expand, global, opt);
 		}
 	};
 
