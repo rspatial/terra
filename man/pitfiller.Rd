@@ -28,7 +28,7 @@ Fills pits (depressions with no outlet) in a digital elevation model (DEM) using
 A \code{\link{SpatRaster}} object with pits filled.
 }
 \details{
-The PEM4PIT (Physical Erosion Model for PIT and flat areas correction) equation [Grimaldi at al, 2007] corrects DEMs by simulating erosion processes. It improves hydrologic modeling by enhancing flow direction and contributing area representation.
+The PEM4PIT (Physical Erosion Model for PIT and flat areas correction) equation [Grimaldi at al, 2007] corrects DEMs by simulating erosion processes. It improves hydrologic modeling by enhancing flow direction and contributing area representation. Function is still experimental. 
 
 The model is based on the steady-state sediment balance equation:
 

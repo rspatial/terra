@@ -16,7 +16,7 @@ find pits (depressions with no outlet )
 }
 
 \arguments{
-<<<<<<< HEAD
+
   \item{x}{SpatRaster with flow-direcion. See \code{\link{terrain}}}
    \item{pits_on_boundary}{logical if \code{TRUE} (default) pits are considered also on the boundary. If \code{FALSE} pits are considered only within the terrain domain.}
   \item{filename}{character. Output filename}
