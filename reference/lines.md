@@ -13,7 +13,7 @@ not NA in the first layer are used.
 
 ``` r
 # S4 method for class 'SpatVector'
-points(x, y=NULL, col, cex=0.7, pch=16, alpha=1, jitter=0, legend=NULL, ...)
+points(x, y=NULL, col, cex=0.7, pch=16, alpha=1, jitter=0, legend=FALSE, ...)
 
 # S4 method for class 'SpatVector'
 lines(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, legend=FALSE, ...)
@@ -134,7 +134,5 @@ points(v)
 # color by the values of a variable
 plot(v, col="light gray", border="white")
 lines(v, "NAME_1", lwd=5)
-
 points(centroids(v), "AREA", cex=2, legend="topright")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': unused arguments (add = TRUE, col = "black", cex = 2, pch = 16, alpha = 1, legend = "topright")
 ```

@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-38
+## version 1.9-39
 
 ### bug fixes
 
@@ -27,6 +27,11 @@
   values of a variable (argument `y`)
   [\#2119](https://github.com/rspatial/terra/issues/2119) by Márcia
   Barbosa
+- `focal` can now use TBB parallelization for built-in functions “max”,
+  “min”, “median”, “modal” and “sd” (in addition to “sum”/“mean”)
+  [\#2115](https://github.com/rspatial/terra/issues/2115) by Breeze-Hu
+- `focal` with “min” or “max” and an unweighted window is now faster,
+  especially with large windows
 
 ### new
 
