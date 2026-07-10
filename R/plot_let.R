@@ -1,5 +1,26 @@
 # these methods require the dev version of leaflet
 
+# Per-feature colors for variable y
+.cols_from_y <- function(x, y, cols=NULL, fname="points", type=NULL, breaks=NULL, 
+		breakby="eqint", sort=TRUE, reverse=FALSE) {
+	if (length(y) != 1) {
+		error(fname, "y should be a single variable (column) name or number")
+	}
+	if (is.numeric(y)) {
+		y <- round(y)
+		if ((y < 1) || (y > ncol(x))) {
+			error(fname, "y is not a valid column number")
+		}
+		y <- names(x)[y]
+	}
+	if (!(y %in% names(x))) {
+		error(fname, "'", y, "' is not a variable (column name) in x")
+	}
+	v <- values(x[, y])[,1]
+	if (is.null(cols)) cols <- .default.pal()
+	.get_leg(v, type=type, dig.lab=3, cols=cols, breaks=breaks, breakby=breakby, sort=sort, reverse=reverse)
+}
+
 
 checkLeafLetVersion <- function() {
 	v <- utils::packageVersion("leaflet")
@@ -426,7 +447,7 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 
 
 setMethod("polys", signature(x="leaflet"),
-	function(x, y, col, lwd=2, lty=NULL, border="black", alpha=c(.3, 1), popup=TRUE, label=NULL, fill=NULL, ...)  {
+	function(x, y, field="", col, lwd=2, lty=NULL, border="black", alpha=c(.3, 1), popup=TRUE, label=NULL, legend="bottomright", fill=NULL, ...)  {
 
 
 		if (!is.null(fill)) { 
@@ -441,19 +462,31 @@ setMethod("polys", signature(x="leaflet"),
 		if (inherits(y, "SpatVector")) {
 			if (nrow(y) == 0) return(x)
 			y <- makelonlat(y)
-			if (missing(col)) col <- "black"
 			if (geomtype(y) != "polygons") {
 				error("polys", "SpatVector y must have polygons geometry")
 			}
-			leaflet::addPolygons(x, data=y, weight=lwd, dashArray=lty, fillColor=col, 
+			leg <- NULL
+			if (!is.null(field) && (field[1] != "")) {
+				# color by the values of variable (column) "field" of y
+				leg <- .cols_from_y(y, field, if (missing(col)) NULL else col, fname="polys")
+				col <- leg$main_cols
+			} else if (missing(col)) {
+				col <- "black"
+			}
+			map <- leaflet::addPolygons(x, data=y, weight=lwd, dashArray=lty, fillColor=col, 
 					fillOpacity=alpha[1], col=border, opacity=alpha[2], popup=popup, 
 					label=label, ...)			
-			
+			if ((!is.null(leg)) && (!is.null(legend))) {
+				map <- leaflet::addLegend(map, position=legend, colors=leg$leg$fill, 
+						labels=as.character(leg$leg$legend), opacity=alpha[1], title=field)
+			}
+			map
 		} else if (inherits(y, "SpatVectorCollection")) {
 			nms <- names(y)
 			n <- length(y)
 			nms[nchar(nms) == 0] <- "X"
 			nms <- make.unique(nms)
+			if (missing(col)) col <- "black"
 			if (is.function(col)) {
 				cols <- col(n)
 			} else {
@@ -481,7 +514,7 @@ setMethod("polys", signature(x="leaflet"),
 
 
 setMethod("lines", signature(x="leaflet"),
-	function(x, y, col, lwd=2, lty=NULL, alpha=1, label=NULL, popup=FALSE, ...)  {
+	function(x, y, field="", col, lwd=2, lty=NULL, alpha=1, label=NULL, popup=FALSE, legend="bottomright", ...)  {
 
 		alpha <- max(0, min(1, alpha))
 		if (popup) {
@@ -494,17 +527,30 @@ setMethod("lines", signature(x="leaflet"),
 		if (inherits(y, "SpatVector")) {
 			if (nrow(y) == 0) return(x)
 			y <- makelonlat(y)
-			if (missing(col)) col <- "black"
 			if (!(geomtype(y) %in% c("lines", "polygons"))) {
 				error("lines", "SpatVector y must have either lines or polygons geometry")
 			}
-			leaflet::addPolylines(x, data=y, weight=lwd, dashArray=lty, popup=popup, label=label,
+			leg <- NULL
+			if (!is.null(field) && (field[1] != "")) {
+				# color by the values of variable (column) "field" of y
+				leg <- .cols_from_y(y, field, if (missing(col)) NULL else col, fname="lines")
+				col <- leg$main_cols
+			} else if (missing(col)) {
+				col <- "black"
+			}
+			map <- leaflet::addPolylines(x, data=y, weight=lwd, dashArray=lty, popup=popup, label=label,
 					opacity=alpha, col=col, ...)
+			if ((!is.null(leg)) && (!is.null(legend))) {
+				map <- leaflet::addLegend(map, position=legend, colors=leg$leg$fill, 
+						labels=as.character(leg$leg$legend), opacity=alpha, title=field)
+			}
+			map
 		} else if (inherits(y, "SpatVectorCollection")) {
 			nms <- names(y)
 			n <- length(y)
 			nms[nchar(nms) == 0] <- "X"
 			nms <- make.unique(nms)
+			if (missing(col)) col <- "black"
 			if (is.function(col)) {
 				cols <- col(n)
 			} else {
@@ -527,11 +573,10 @@ setMethod("lines", signature(x="leaflet"),
 
 
 setMethod("points", signature(x="leaflet"),
-	function(x, y, col, border=col, cex=1, lwd=2, lty=NULL, alpha=c(.3, 1), label=1:nrow(y), popup=FALSE, ...)  {
+	function(x, y, field="", col, border=col, cex=1, lwd=2, lty=NULL, alpha=c(.3, 1), label=1:nrow(y), popup=FALSE, legend="bottomright", ...)  {
 		stopifnot(inherits(y, "SpatVector"))
 		if (nrow(y) == 0) return(x)
 		y <- makelonlat(y)
-		if (missing(col)) col <- "black"
 		if (!(geomtype(y) == "points")) {
 			if (geomtype(y) == "polygons") {
 				y <- centroids(y)
@@ -544,14 +589,29 @@ setMethod("points", signature(x="leaflet"),
 		} else {
 			popup <- NULL
 		}
+		leg <- NULL
+		if (!is.null(field) && (field[1] != "")) {
+			# color by the values of variable (column) "field" of y
+			leg <- .cols_from_y(y, field, if (missing(col)) NULL else col, fname="points")
+			col <- leg$main_cols
+			if (missing(border)) border <- col
+		} else if (missing(col)) {
+			col <- "black"
+			if (missing(border)) border <- col
+		}
 		cols <- .getCols(nrow(y), col)
 		borders <- .getCols(nrow(y), border)
 		alpha <- pmax(0, pmin(1, rep_len(alpha, 2)))
 		label <- getLabel(x, label)
 
-		leaflet::addCircleMarkers(x, data=y, radius=cex, popup=popup, label=label, 
-			opacity=alpha[2], fillColor=col, fillOpacity=alpha[1], col=borders, weight=lwd, 
+		map <- leaflet::addCircleMarkers(x, data=y, radius=cex, popup=popup, label=label, 
+			opacity=alpha[2], fillColor=cols, fillOpacity=alpha[1], col=borders, weight=lwd, 
 			dashArray=lty, ...)
+		if ((!is.null(leg)) && (!is.null(legend))) {
+			map <- leaflet::addLegend(map, position=legend, colors=leg$leg$fill, 
+					labels=as.character(leg$leg$legend), opacity=1, title=field)
+		}
+		map
 		
 		#i <- which(sapply(x$x$calls, function(i) i$method) == "addLayersControl")
 		#x$x$calls[[2]]
