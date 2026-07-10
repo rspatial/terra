@@ -34,7 +34,7 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, y=NULL, col, cex=0.7, pch=16, alpha=1, jitter=0, legend=NULL, ...)
+\S4method{points}{SpatVector}(x, y=NULL, col, cex=0.7, pch=16, alpha=1, jitter=0, legend=FALSE, ...)
 
 \S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, legend=FALSE, ...)
 
