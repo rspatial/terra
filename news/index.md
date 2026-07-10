@@ -23,6 +23,10 @@
   not on their geometry to the nearest location on the geometry
   (`inside=FALSE`) or to an alternative location that is inside the
   polygon (`inside=TRUE`)
+- `points`, `lines` and `polys` can now color the geometries by the
+  values of a variable (argument `y`)
+  [\#2119](https://github.com/rspatial/terra/issues/2119) by Márcia
+  Barbosa
 
 ### new
 

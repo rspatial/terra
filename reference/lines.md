@@ -13,13 +13,13 @@ not NA in the first layer are used.
 
 ``` r
 # S4 method for class 'SpatVector'
-points(x, col, cex=0.7, pch=16, alpha=1, jitter=0, ...)
+points(x, y=NULL, col, cex=0.7, pch=16, alpha=1, jitter=0, legend=NULL, ...)
 
 # S4 method for class 'SpatVector'
-lines(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)
+lines(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, legend=FALSE, ...)
 
 # S4 method for class 'SpatVector'
-polys(x, col, border="black", lwd=1, lty=1, alpha=1, ...)
+polys(x, y=NULL, col, border="black", lwd=1, lty=1, alpha=1, legend=FALSE, ...)
 
 # S4 method for class 'SpatRaster'
 points(x, ...)
@@ -48,12 +48,20 @@ polys(x, col, alpha=1, ...)
 
 - y:
 
-  missing or SpatVector. If both `x` and `y` have point geometry and the
-  same number of rows, lines are drawn between pairs of points
+  missing, or a character (variable name) or positive integer (column
+  number) to color the geometries by the values of that variable of `x`.
+  With `lines`, `y` can also be a SpatVector; if both `x` and `y` have
+  point geometry and the same number of rows, lines are drawn between
+  pairs of points
 
 - col:
 
   character. Colors
+
+- legend:
+
+  logical. If `TRUE` and `y` is a variable name/number, a legend is
+  shown
 
 - border:
 
@@ -121,4 +129,12 @@ values(r) <- 1:ncell(r)
 plot(r)
 lines(v)
 points(v)
+
+
+# color by the values of a variable
+plot(v, col="light gray", border="white")
+lines(v, "NAME_1", lwd=5)
+
+points(centroids(v), "AREA", cex=2, legend="topright")
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': unused arguments (add = TRUE, col = "black", cex = 2, pch = 16, alpha = 1, legend = "topright")
 ```
