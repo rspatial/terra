@@ -1,4 +1,69 @@
-# version 1.9-23
+# version 1.9-39
+
+## bug fixes
+
+- multidim vrt can now be opened [#2107](https://github.com/rspatial/terra/issues/2107)  by Michael Sumner
+- terra did not compile with GDAL > 3.04 & < 3.8 [#2109](https://github.com/rspatial/terra/issues/2109) by Andrew Gene Brown
+- terra did not compile with GDAL < 3.5.0 [#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang Viechtbauer
+
+## enhancements
+
+- faster sampling of multidim rasters [#2110](https://github.com/rspatial/terra/issues/2110) by Michael Sumner
+- `centroids` gained argument "correct" that moves centroids that are not on their geometry to the nearest location on the geometry (`inside=FALSE`) or to an alternative location that is inside the polygon (`inside=TRUE`) 
+- `points`, `lines` and `polys` can now color the geometries by the values of a variable (argument `y`) [#2119](https://github.com/rspatial/terra/issues/2119) by Márcia Barbosa
+- `focal` can now use TBB parallelization for built-in functions "max", "min", "median", "modal" and "sd" (in addition to "sum"/"mean") [#2115](https://github.com/rspatial/terra/issues/2115) by Breeze-Hu
+
+## new 
+
+- `furdist` method to get the furthest distance from a point to any location on another geometry
+- `snapTo` method to move points to the nearest location on lines or polygons
+
+
+# version 1.9-34
+
+Released 2026-06-20
+
+## bug fixes
+
+- terra did not build with GDAL < 3.4 [#2080](https://github.com/rspatial/terra/issues/2080) by Wolfgang Viechtbauer
+- `spatSample<SpatRaster>(method="random")` on large lon/lat rasters had become very slow [#2086](https://github.com/rspatial/terra/issues/2086) by Jason Flower
+- recurring `Cannot take exclusive lock on cache.db` PROJ warnings during `project` are now collapsed into a single, actionable message [#2088](https://github.com/rspatial/terra/issues/2088)
+- retro labels generated with `plot(x, pax=list(retro=TRUE))` were incorrect in the W and S hemispheres [#2090](https://github.com/rspatial/terra/issues/2090) by Lucas Salinas Morales
+- `trim` failed with "invalid extent" if the trimmed bounding box was within `padding` cells of the raster edge [#2092](https://github.com/rspatial/terra/issues/2092) by James Howard
+- With the new default "md=TRUE", `rast` reported a "file does not exist" error with a GDAL DSN string (e.g. `NETCDF:".../file.nc":VAR`). , `rast` now splits a `DRIVER:"path":VAR` DSN so the multidim API can find the file. It reuses the classic 2D driver's geotransform so the extent is reported in CRS units instead of raw coordinate-variable values [#2093](https://github.com/rspatial/terra/issues/2093) by Michael Sumner
+- `writeRaster(x, filename, filetype="COG")` segfaulted with GDAL 3.13.0 because the COG driver now has `Create()` that crashes with `RasterIO` crashes; terra now always writes COGs via the original `CreateCopy()` path [#2095](https://github.com/rspatial/terra/issues/2095) by Andrew Brown
+
+
+## enhancements
+
+- `extract<SpatRaster,SpatVector>` with polygons had become *much* slower [#2100](https://github.com/rspatial/terra/issues/2100) by Torsten Hauffe
+- `regress` gained a `<SpatRaster,data.frame>` method to specify levels of factors
+- `extract(x, polygons, fun=...)` could fail with large polygons/high-res rasters. For standard functions (`sum`, `sum2`, `mean`, `min`, `max`, `prod`, `sd`, `std`, `isNA`, `notNA`) processing is now by block and memory safe [#2097](https://github.com/rspatial/terra/issues/2097)
+- `sprc(<character>)` gained argument `group=TRUE` to combine rasters with the same geometry; convenient for "one folder per tile, one file per band" situations
+- automatic addition of required "/vsicurl/" and/or "/vsizip/" to remote vector data sources [#2103](https://github.com/rspatial/terra/issues/2103) by Márcia Barbosa
+
+
+## new 
+
+- `make.RGB` function [#2085](https://github.com/rspatial/terra/issues/2085) by Jérôme Guélat
+- `netw` to create `SpatNetwork` objects. The network can be directed or undirected and is by default weighted by edge length.
+- `SpatNetwork` methods: `shortestPath`, , `writeNetwork``net_nodes`, `net_edges`, `net_nnodes`, `net_nedges`, `net_directed`, `net_weights` and `net_weights<-`.
+
+
+# version 1.9-27
+
+Released 2026-05-08
+
+## bug fixes
+
+- terra did not build with Apple clang 14 on CRAN
+- terra did not build with PROJ < 7 [#2080](https://github.com/rspatial/terra/issues/2080) by Wolfgang Viechtbauer
+- `project` without template failed [#2081](https://github.com/rspatial/terra/issues/2081) by Ethan Plunkett
+
+
+# version 1.9-25
+
+Released 2026-05-04
 
 ## bug fixes
 
@@ -1121,7 +1186,7 @@ Released 2022-06-09
 
 Released 2022-02-17
 
-- `writeVector` and `vect` now work with GPGK if the path has non-ascii characters [#518]
+- `writeVector` and `vect` now work with GPKG if the path has non-ascii characters [#518]
 - The results of `predict` with `cores > 1` and more than one output variable were garbled
 - `zonal` dropped category names when using an external (R) function [#527] by Jakub Nowosad
 - focal/focalCpp showed strange patterns when the window size was larger than the block size [#519] by Alex Ilich
@@ -1156,7 +1221,7 @@ Released 2022-01-30
 
 - `distance`, `gridDistance`, `direction` and `patches` now process all layers of the input SpatRaster. [#503] by Chris Haak
 - consistent copy-on-modify behavior in `()<-` methods. in-place updating available with `set.` methods such as `set.names` and `set.values`. [#493] by Jean Romain and [#511] by Bryan Fuentes
-- much faster writing of GPGK vector data by using a single transaction (following sf) [#460] by Krzysztof Dyba
+- much faster writing of GPKG vector data by using a single transaction (following sf) [#460] by Krzysztof Dyba
 - `aggregate<SpatRaster>` now accepts functions that return more than one value per aggregated cell
 - `writeVector` has new argument `insert` to add a layer to an existing file (e.g. GPKG).
 
@@ -1227,7 +1292,7 @@ Released 2022-01-13
 - `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>`. [#456] by Márcia Barbosa
 - The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459] by Edzer Pebesma
 - it is now possible to add sub-datasets to GPKG and GTiff files. [#300] by gtitov
-- general option `memfrac` can now be set to zero (in stead of not lower than 0.1). [#476] by Matt Strimas-Mackey
+- general option `memfrac` can now be set to zero (instead of not lower than 0.1). [#476] by Matt Strimas-Mackey
 - new argument `allowGaps` in `patches` to disallow gaps between patch IDs. See [#478] by Dunbar Carpenter.
 
 

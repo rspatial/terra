@@ -68,6 +68,11 @@ class SpatMessages {
 			error = "";
 			return err;
 		}
+
+		void clearError() {
+			has_error = false;
+			error = "";
+		}
 		
 		void addWarning(std::string s) {
 			has_warning = true;

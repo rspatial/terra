@@ -52,12 +52,12 @@ rasterize_points <- function(x, y, values, fun="last", background=NA, update=FAL
 	for (i in 1:nl) {
 		if (is.character(values[,i])) {
 			f <- as.factor(values[,i])
-			levs[[i]] <- levels(f)
+			levs[[i]] <- data.frame(ID=seq_along(levels(f))-1L, category=levels(f))
 			values[,i] <- as.integer(f) - 1
 			has_levels <- TRUE
 		} else if (is.factor(values[,i])) {
 			f <- values[,i]
-			levs[[i]] <- levels(f)
+			levs[[i]] <- data.frame(ID=seq_along(levels(f))-1L, category=levels(f))
 			values[,i] <- as.integer(f) - 1
 			has_levels <- TRUE
 		}

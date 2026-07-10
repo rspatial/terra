@@ -14,6 +14,8 @@ if (!isGeneric("pitfiller")) {setGeneric("pitfiller", function(x,pit, ...) stand
 
 if (!isGeneric("tessellate")) {setGeneric("tessellate", function(x, ...) standardGeneric("tessellate"))}
 
+if (!isGeneric("snapTo")) {setGeneric("snapTo", function(x, y, ...) standardGeneric("snapTo"))}
+
 if (!isGeneric("agitate")) {setGeneric("agitate", function(x, ...) standardGeneric("agitate"))}
 
 if (!isGeneric("nany")) {setGeneric("nany", function(x, ...) standardGeneric("nany"))}
@@ -199,6 +201,15 @@ if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGener
 if (!isGeneric("as.contour")) {setGeneric("as.contour", function(x,...) standardGeneric("as.contour"))}
 if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGeneric("as.lines"))}
 if (!isGeneric("as.points")) {setGeneric("as.points", function(x,...) standardGeneric("as.points"))}
+if (!isGeneric("netw")) {setGeneric("netw", function(x, ...) standardGeneric("netw"))}
+if (!isGeneric("net_nodes")) {setGeneric("net_nodes", function(x, ...) standardGeneric("net_nodes"))}
+if (!isGeneric("net_edges")) {setGeneric("net_edges", function(x, ...) standardGeneric("net_edges"))}
+if (!isGeneric("net_nnodes")) {setGeneric("net_nnodes", function(x, ...) standardGeneric("net_nnodes"))}
+if (!isGeneric("net_nedges")) {setGeneric("net_nedges", function(x, ...) standardGeneric("net_nedges"))}
+if (!isGeneric("net_directed")) {setGeneric("net_directed", function(x, ...) standardGeneric("net_directed"))}
+if (!isGeneric("net_weights")) {setGeneric("net_weights", function(x, ...) standardGeneric("net_weights"))}
+if (!isGeneric("net_weights<-")) {setGeneric("net_weights<-", function(x, value) standardGeneric("net_weights<-"))}
+if (!isGeneric("shortestPath")) {setGeneric("shortestPath", function(x, ...) standardGeneric("shortestPath"))}
 if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standardGeneric("as.polygons"))}
 if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGeneric("classify")) }
 if (!isGeneric("cells")) { setGeneric("cells", function(x, y, ...) standardGeneric("cells")) }
@@ -275,6 +286,7 @@ if (!isGeneric("units<-")) {setGeneric("units<-", function(x,value) standardGene
 if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("vect")) }
 if (!isGeneric("writeCDF")) {setGeneric("writeCDF", function(x, filename, ...) standardGeneric("writeCDF"))}
 if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, ...) standardGeneric("writeVector"))}
+if (!isGeneric("writeNetwork")) {setGeneric("writeNetwork", function(x, filename, ...) standardGeneric("writeNetwork"))}
 ## shared with "raster"
 if (!isGeneric("%in%")) { setGeneric("%in%", function(x, table)	standardGeneric("%in%")) }
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}
@@ -306,6 +318,7 @@ if (!isGeneric("aggregate")) {setGeneric("aggregate", function(x, ...) standardG
 if (!isGeneric("disagg")) {setGeneric("disagg", function(x, ...) standardGeneric("disagg"))}
 if (!isGeneric("costDist")) {setGeneric("costDist", function(x, ...)standardGeneric("costDist"))}
 if (!isGeneric("gridDist")) {setGeneric("gridDist", function(x, ...)standardGeneric("gridDist"))}
+if (!isGeneric("furdist")) {setGeneric("furdist", function(x, y, ...)standardGeneric("furdist"))}
 if (!isGeneric("distance")) {setGeneric("distance", function(x, y, ...)standardGeneric("distance"))}
 if (!isGeneric("direction")) {setGeneric("direction", function(x, ...)standardGeneric("direction"))}
 if (!isGeneric("extract")) { setGeneric("extract", function(x, y, ...) standardGeneric("extract"))}

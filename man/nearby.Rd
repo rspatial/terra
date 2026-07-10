@@ -22,7 +22,7 @@ Identify geometries that are near to each other. Either get the index of all geo
 \arguments{
   \item{x}{SpatVector}
   \item{y}{SpatVector or NULL}
-  \item{distance}{numeric. maximum distance}
+  \item{distance}{numeric. Maximum distance. Expressed in meters for lon/lat data (the geodesic distance is computed using \code{method}), and in the units of the CRS for projected data.}
   \item{k}{positive integer. number of neighbors. Ignored if \code{distance > 0}}
   \item{centroids}{logical. Should the centroids of polygons be used?}
   \item{symmetrical}{logical. If \code{TRUE}, a near pair is only included once. That is, if geometry 1 is near to geometry 3, the implied nearness between 3 and 1 is not reported. Ignored if \code{k} neighbors are returned}

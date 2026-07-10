@@ -19,6 +19,8 @@
 #include "string_utils.h"
 #include "vecmath.h"
 #include "recycle.h"
+#include "distance.h"
+#include <functional>
 
 
 /*
@@ -691,83 +693,143 @@ inline double cartdist(const double& x1, const double& y1, const double &x2, con
 
 
 
-bool thinnodes(std::vector<double> &x, std::vector<double> &y, const double &threshold, const size_t &mnsize) {
-	std::vector<double> xout, yout;
-	size_t n = x.size();
-	xout.reserve(n);
-	yout.reserve(n);
-	n--;
-	for (size_t i=0; i<n; i++) {
-		if (cartdist(x[i], y[i], x[i+1], y[i+1]) <= threshold) {
-			xout.push_back((x[i] + x[i+1])/2);
-			yout.push_back((y[i] + y[i+1])/2);
+// Greedy node thinning along a single ring/line.
+//
+//   x, y     : in-place vertex sequence
+//   thr      : threshold in the SAME units as `x`/`y`
+//              (i.e. meters for lon/lat caller, CRS units for planar)
+//   mnsize   : minimum number of vertices the result must have to be
+//              accepted (3 for lines, 4 for closed rings)
+//   lonlat   : if true, distances are computed geodesically (meters);
+//              if false, planar Euclidean.
+//   closed   : if true, the input is a closed ring (first==last) and the
+//              last vertex is forced to mirror the first.
+//
+// Algorithm: walk forward keeping a "last kept" vertex. A new vertex is
+// kept iff its distance to the last kept vertex exceeds `thr`. The very
+// last input vertex is always kept (so polyline endpoints survive). On
+// a closed ring the closing vertex is set equal to the first kept vertex.
+//
+// Returns true iff the geometry was actually shortened.
+bool thinnodes(std::vector<double> &x, std::vector<double> &y,
+               const double &thr, const size_t &mnsize,
+               bool lonlat, bool closed) {
+	const size_t n = x.size();
+	if (n <= mnsize) return false;
+
+	auto d2 = [&](size_t a, size_t b) {
+		if (lonlat) {
+			return distLonlat(x[a], y[a], x[b], y[b]);
 		} else {
-			xout.push_back(x[i]);
-			yout.push_back(y[i]);
+			double dx = x[a] - x[b];
+			double dy = y[a] - y[b];
+			return std::sqrt(dx*dx + dy*dy);
+		}
+	};
+
+	std::vector<size_t> keep;
+	keep.reserve(n);
+	keep.push_back(0);
+	const size_t last = n - 1;
+
+	// Walk all interior vertices; never include `last` here -- we always
+	// append it explicitly below so polyline endpoints / ring closures
+	// are preserved.
+	for (size_t i = 1; i < last; i++) {
+		if (d2(i, keep.back()) > thr) {
+			keep.push_back(i);
 		}
 	}
-	if (cartdist(x[n], y[n], xout[0], yout[0]) <= threshold) {
-		xout.push_back((x[n] + xout[0])/2);
-		yout.push_back((y[n] + yout[0])/2);
-		xout[0] = xout[n];
-		yout[0] = xout[n];
-	} else {
-		xout.push_back(xout[0]);
-		yout.push_back(yout[0]);
+	// Always keep the last vertex -- but if the previous kept vertex is
+	// already within `thr` of the last vertex, drop *it* in favour of
+	// the endpoint (avoids leaving a sub-threshold tail).
+	while (keep.size() > 1 && d2(last, keep.back()) <= thr) {
+		keep.pop_back();
 	}
-	if (xout.size() == (n+1)) {
-		return false;
+	keep.push_back(last);
+
+	// On a closed ring, force last == first to keep the ring closed.
+	if (keep.size() < mnsize) return false;
+	if (keep.size() == n) return false;
+
+	std::vector<double> xout, yout;
+	xout.reserve(keep.size());
+	yout.reserve(keep.size());
+	for (size_t k : keep) {
+		xout.push_back(x[k]);
+		yout.push_back(y[k]);
 	}
-	if (xout.size() >= mnsize) {
-		x = std::move(xout);
-		y = std::move(yout);
-		return true;
+	if (closed) {
+		xout.back() = xout.front();
+		yout.back() = yout.front();
 	}
-	return false;
+
+	x = std::move(xout);
+	y = std::move(yout);
+	return true;
 }
 
 
 
-SpatVector SpatVector::thin_nodes(double threshold) {
+SpatVector SpatVector::thin_nodes(double threshold, std::string unit) {
 
 	SpatVector out;
-	if (threshold < 0) {
-		out.setError("threshold must be a positive number");
+	if (threshold <= 0) {
+		out.setError("threshold (d) must be a positive number");
 		return out;
 	}
 	if (geoms.empty()) {
 		out = *this;
 		return out;
 	}
-	size_t mnode = 4;
-	if (geoms[0].gtype == lines) {
-		mnode = 3;
-	} else if (geoms[0].gtype != polygons) {
+	bool isLines    = (geoms[0].gtype == lines);
+	bool isPolygons = (geoms[0].gtype == polygons);
+	if (!(isLines || isPolygons)) {
 		out.setError("can only thin lines or polygons");
 		return out;
 	}
+	size_t mnode = isPolygons ? 4 : 2;
+
+	// Convert threshold to the same units as the coordinate values:
+	//   - planar CRS  -> CRS distance units (m, ft, ...): srs.m_dist
+	//     gives the multiplier from the user-supplied `unit` to those
+	//     CRS units (so d_internal = d / m).
+	//   - lon/lat     -> meters: distLonlat returns meters, and m_dist
+	//     converts the user `unit` to meters too.
+	bool lonlat = is_lonlat();
+	double m = 1;
+	if (!srs.m_dist(m, lonlat, unit)) {
+		out.setError("invalid unit");
+		return out;
+	}
+	double d_internal = threshold / m;
 
 	out = *this;
 	bool objext = false;
-	for (size_t i=0; i < size(); i++) {
+	for (size_t i=0; i < out.size(); i++) {
 		bool geomext = false;
 		for (size_t j=0; j < out.geoms[i].size(); j++) {
-			if (thinnodes(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {
+			if (thinnodes(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y,
+			              d_internal, mnode, lonlat, isPolygons)) {
 				geomext = true;
 			}
-			if (geoms[i].parts[j].hasHoles()) {
-				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
-					thinnodes(geoms[i].parts[j].holes[k].x, geoms[i].parts[j].holes[k].y, threshold, mnode);
+			if (out.geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < out.geoms[i].parts[j].nHoles(); k++) {
+					if (thinnodes(out.geoms[i].parts[j].holes[k].x,
+					              out.geoms[i].parts[j].holes[k].y,
+					              d_internal, mnode, lonlat, true)) {
+						geomext = true;
+					}
 				}
 			}
 		}
 		if (geomext) {
 			objext = true;
-			geoms[i].computeExtent();
+			out.geoms[i].computeExtent();
 		}
 	}
 	if (objext) {
-		computeExtent();
+		out.computeExtent();
 	}
 
 	return out;

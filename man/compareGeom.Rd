@@ -55,7 +55,8 @@ nrow(r3) <- 10
 
 
 \dontrun{
-compareGeom(r1, r3)
+# this fails because the number of rows is different
+try(compareGeom(r1, r3))
 }
 }
 

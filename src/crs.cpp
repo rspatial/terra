@@ -21,6 +21,50 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 
+// PROJ noise (cdn.proj.org download failures, cache.db lock failures)
+namespace {
+	bool proj_seen_cdn = false;
+	bool proj_seen_cache_lock = false;
+}
+
+void proj_noise_reset() {
+// Call at the start of any operation that performs coordinate
+// transformations, before any GDAL/PROJ work, to clear stale noise flags
+	proj_seen_cdn = false;
+	proj_seen_cache_lock = false;
+}
+
+// Setters used by the R-side GDAL error handler (RcppFunctions.cpp) to
+// register that a known-noisy PROJ warning has fired. 
+void proj_noise_mark_cdn() { proj_seen_cdn = true; }
+void proj_noise_mark_cache_lock() { proj_seen_cache_lock = true; }
+
+
+void proj_noise_drain(SpatMessages &m) {
+// Drain any "noisy" PROJ messages that the GDAL error handler has collapsed
+// (currently: CDN download failures and cache.db lock failures) into the
+// given SpatMessages object as a single warning each, and reset the flags.
+// Call this at the end of any operation that performs coordinate transformations
+	if (proj_seen_cdn) {
+		m.addWarning(
+			"PROJ could not download one or more datum grids from cdn.proj.org. "
+			"Transformation accuracy may be reduced. "
+			"Suppress with: projNetwork(FALSE)"		);
+		proj_seen_cdn = false;
+	}
+	if (proj_seen_cache_lock) {
+		m.addWarning(
+			"PROJ could not lock its network cache (cache.db). "
+			"Transformations still completed, but this often indicates the "
+			"cache is on a network filesystem (NFS/Lustre/GPFS) or is being "
+			"accessed by concurrent processes. "
+			"Mitigate by pointing PROJ at a local directory, e.g. "
+			"Sys.setenv(PROJ_USER_WRITABLE_DIRECTORY=\"/tmp/proj\")"
+		);
+		proj_seen_cache_lock = false;
+	}
+}
+
 
 #ifndef useGDAL
 
@@ -38,6 +82,8 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
 #endif
+
+#include "crs.h"
 
 bool is_ogr_error(OGRErr err, std::string &msg) {
 	if (err != OGRERR_NONE) {
@@ -402,6 +448,8 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 		return(s);
 	#else
 
+	ProjNoiseScope _pns(s.msg);
+
 	OGRSpatialReference source, target;
 	std::string vsrs = getSRS("wkt");
 	const char *pszDefFrom = vsrs.c_str();
@@ -568,14 +616,10 @@ SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
 
 	SpatDataFrame out;
 
-#if GDAL_VERSION_MAJOR < 3
+#if GDAL_VERSION_MAJOR < 3 || PROJ_VERSION_MAJOR < 7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR < 1)
 	out.setError("GDAL >= 3 and PROJ >= 7.1 required");
 	return out;
 #else
-	#if PROJ_VERSION_MAJOR < 7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR < 1)
-	out.setError("PROJ >= 7.1 required");
-	return out;
-#endif
 
 	PJ *src = proj_create(PJ_DEFAULT_CTX, source_crs.c_str());
 	if (src == nullptr) {

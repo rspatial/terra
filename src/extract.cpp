@@ -16,6 +16,8 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <functional>
+#include <cmath>
+#include <limits>
 
 #include "spatRasterMultiple.h"
 #include "vecmath.h"
@@ -1049,10 +1051,270 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 */
 
 
-// GCC 14 false-positive: -Wfree-nonheap-object misfires for vector<function<>>
-// when resize() and the destructor are analysed together through deep inlining.
-// The inlining trace incorrectly conflates the string allocator with the
-// function allocator. Clang does not produce this warning.
+// Streaming accumulator for the chunkable subset of extract reducers
+// (sum, sum2, mean, min, max, prod, sd, std, isNA, notNA).
+namespace {
+struct ExtractCellAcc {
+	bool na_seen = false;
+	bool nonna_seen = false;
+	size_t n_nonna = 0;
+	size_t n_na = 0;
+	double sum = 0.0;
+	double sumsq = 0.0;
+	double vmin = 0.0;
+	double vmax = 0.0;
+	double prod_v = 1.0;
+
+	inline void update_one(double v) {
+		if (std::isnan(v)) {
+			na_seen = true;
+			n_na++;
+			return;
+		}
+		n_nonna++;
+		sum += v;
+		sumsq += v * v;
+		if (!nonna_seen) {
+			vmin = v;
+			vmax = v;
+			prod_v = v;
+			nonna_seen = true;
+		} else {
+			if (v < vmin) vmin = v;
+			if (v > vmax) vmax = v;
+			prod_v *= v;
+		}
+	}
+
+	void update(const std::vector<double> &x) {
+		for (double v : x) update_one(v);
+	}
+
+	double get(const std::string &fname, bool narm) const {
+		if (fname == "isNA")  return static_cast<double>(n_na);
+		if (fname == "notNA") return static_cast<double>(n_nonna);
+		if (!narm && na_seen) return std::numeric_limits<double>::quiet_NaN();
+		if (!nonna_seen)      return std::numeric_limits<double>::quiet_NaN();
+		if (fname == "sum")  return sum;
+		if (fname == "sum2") return sumsq;
+		if (fname == "mean") return sum / static_cast<double>(n_nonna);
+		if (fname == "min")  return vmin;
+		if (fname == "max")  return vmax;
+		if (fname == "prod") return prod_v;
+		if (fname == "sd") {
+			if (n_nonna < 2) return std::numeric_limits<double>::quiet_NaN();
+			double mu = sum / static_cast<double>(n_nonna);
+			double ssq = sumsq - static_cast<double>(n_nonna) * mu * mu;
+			if (ssq <= 0) return 0.0;
+			return std::sqrt(ssq / static_cast<double>(n_nonna - 1));
+		}
+		if (fname == "std") {
+			double mu = sum / static_cast<double>(n_nonna);
+			double ssq = sumsq - static_cast<double>(n_nonna) * mu * mu;
+			if (ssq <= 0) return 0.0;
+			return std::sqrt(ssq / static_cast<double>(n_nonna));
+		}
+		return std::numeric_limits<double>::quiet_NaN();
+	}
+};
+
+inline bool is_chunkable_extract_fun(const std::string &f) {
+	return f == "sum"  || f == "sum2" || f == "mean" || f == "min"  || f == "max"  
+		|| f == "prod" || f == "sd"   || f == "std"	|| f == "isNA" || f == "notNA";
+}
+
+// Avoid rasterizeCells() and extractCell() for all cells before reducing
+static std::vector<double> extract_aggregate_blocks(
+		SpatRaster &self, SpatVector p,
+		const std::vector<std::string> &funs,
+		bool narm, bool touches, bool small,
+		SpatOptions &opt) {
+
+	size_t nl = self.nlyr();
+	size_t nf = funs.size();
+	std::vector<double> nan_out(nf * nl, std::numeric_limits<double>::quiet_NaN());
+
+	SpatExtent ve = p.getExtent();
+	SpatExtent re = self.getExtent();
+	if (ve.xmin >= ve.xmax) {
+		double xr = 0.1 * self.xres();
+		ve.xmin -= xr; ve.xmax += xr;
+	}
+	if (ve.ymin >= ve.ymax) {
+		double yr = 0.1 * self.yres();
+		ve.ymin -= yr; ve.ymax += yr;
+	}
+	SpatExtent e = re.intersect(ve);
+	if (!e.valid()) {
+		// Empty intersect: caller will treat as no-overlap.
+		// Use isNA/notNA = 0, others = NaN. Signal "empty" via accumulator.
+		std::vector<ExtractCellAcc> acc(nl);
+		std::vector<double> out(nf * nl);
+		for (size_t j = 0; j < nf; j++) {
+			for (size_t k = 0; k < nl; k++) {
+				out[j * nl + k] = acc[k].get(funs[j], narm);
+			}
+		}
+		return out;
+	}
+
+	SpatRaster geom1 = self.geometry(1);
+	SpatOptions ropt(opt);
+	SpatRaster gcrop = geom1.crop(e, "out", false, ropt);
+	if (gcrop.hasError()) {
+		return nan_out;
+	}
+
+	size_t crop_nrow = gcrop.nrow();
+	size_t crop_ncol = gcrop.ncol();
+	if (crop_nrow == 0 || crop_ncol == 0) {
+		return nan_out;
+	}
+
+	// Map the cropped grid back to row/col offset in the parent raster.
+	int64_t row_offset = self.rowFromY(gcrop.yFromRow(0));
+	int64_t col_offset = self.colFromX(gcrop.xFromCol(0));
+	if (row_offset < 0) row_offset = 0;
+	if (col_offset < 0) col_offset = 0;
+	// Bounds: avoid running past the parent.
+	if ((size_t) row_offset + crop_nrow > self.nrow()) {
+		crop_nrow = self.nrow() - (size_t) row_offset;
+	}
+	if ((size_t) col_offset + crop_ncol > self.ncol()) {
+		crop_ncol = self.ncol() - (size_t) col_offset;
+	}
+	if (crop_nrow == 0 || crop_ncol == 0) {
+		return nan_out;
+	}
+
+	BlockSize bs = gcrop.getBlockSize(ropt);
+	if (bs.n == 0) {
+		return nan_out;
+	}
+
+	std::vector<ExtractCellAcc> acc(nl);
+	std::vector<double> feats(1, 1);
+
+	if (!self.readStart()) {
+		return nan_out;
+	}
+
+	bool ok = true;
+	for (size_t i = 0; i < bs.n; i++) {
+		size_t blk_row_in_crop = bs.row[i];
+		size_t blk_n = bs.nrows[i];
+		if (blk_n == 0) continue;
+		if (blk_row_in_crop + blk_n > crop_nrow) {
+			blk_n = crop_nrow - blk_row_in_crop;
+			if (blk_n == 0) continue;
+		}
+
+		double xres = gcrop.xres();
+		double yres = gcrop.yres();
+		double bxmin = gcrop.xFromCol(0) - 0.5 * xres;
+		double bxmax = gcrop.xFromCol((int64_t)(crop_ncol - 1)) + 0.5 * xres;
+		double bymax = gcrop.yFromRow((int64_t) blk_row_in_crop) + 0.5 * yres;
+		double bymin = gcrop.yFromRow((int64_t)(blk_row_in_crop + blk_n - 1)) - 0.5 * yres;
+		SpatExtent be(bxmin, bxmax, bymin, bymax);
+
+		SpatOptions blockopt(ropt);
+		SpatRaster gblk = gcrop.crop(be, "near", false, blockopt);
+		if (gblk.hasError()) {
+			self.setError(gblk.getError());
+			ok = false;
+			break;
+		}
+		if (gblk.nrow() == 0 || gblk.ncol() == 0) {
+			continue;
+		}
+
+		// Rasterize polygon onto the block.
+		SpatOptions mopt(ropt);
+		SpatRaster mask = gblk.rasterize(p, "", feats, NAN, touches,
+				"", false, false, false, mopt);
+		if (mask.hasError()) {
+			self.setError(mask.getError());
+			ok = false;
+			break;
+		}
+
+		size_t mnrow = mask.nrow();
+		size_t mncol = mask.ncol();
+		if (mnrow == 0 || mncol == 0) continue;
+
+		std::vector<double> mv;
+		if (!mask.readStart()) {
+			self.setError(mask.getError());
+			ok = false;
+			break;
+		}
+		mask.readValues(mv, 0, mnrow, 0, mncol);
+		mask.readStop();
+		if (mv.empty()) continue;
+
+		// Read parent values for the same window.
+		std::vector<double> pv;
+		self.readValues(pv, (size_t) row_offset + blk_row_in_crop, mnrow,
+				(size_t) col_offset, mncol);
+		if (self.hasError()) {
+			ok = false;
+			break;
+		}
+
+		size_t blk_cells = mnrow * mncol;
+		// pv layout from readValues: layer-major, then row-major within layer.
+		for (size_t k = 0; k < nl; k++) {
+			size_t off = k * blk_cells;
+			for (size_t j = 0; j < blk_cells; j++) {
+				if (!std::isnan(mv[j])) {
+					acc[k].update_one(pv[off + j]);
+				}
+			}
+		}
+	}
+	self.readStop();
+
+	if (!ok) {
+		return nan_out;
+	}
+
+	// `small=true`: if no cell was inside the polygon mask but the polygon
+	// touches at least one cell, fall back to a per-vertex sample
+	bool any_seen = false;
+	for (size_t k = 0; k < nl; k++) {
+		if (acc[k].nonna_seen || acc[k].na_seen) { any_seen = true; break; }
+	}
+	if (small && !any_seen) {
+		SpatOptions sopt(opt);
+		SpatVector pts = p.as_points(false, true);
+		SpatDataFrame vd = pts.getGeometryDF();
+		std::vector<double> xv = vd.getD(0);
+		std::vector<double> yv = vd.getD(1);
+		std::vector<double> cells = self.cellFromXY(xv, yv);
+		// dedupe
+		cells.erase(std::remove_if(cells.begin(), cells.end(),
+				[](double v){ return std::isnan(v); }), cells.end());
+		std::sort(cells.begin(), cells.end());
+		cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
+		if (!cells.empty()) {
+			std::vector<std::vector<double>> cvals = self.extractCell(cells, opt);
+			for (size_t k = 0; k < nl; k++) {
+				acc[k].update(cvals[k]);
+			}
+		}
+	}
+
+	std::vector<double> out(nf * nl);
+	for (size_t j = 0; j < nf; j++) {
+		for (size_t k = 0; k < nl; k++) {
+			out[j * nl + k] = acc[k].get(funs[j], narm);
+		}
+	}
+	return out;
+}
+} // namespace
+
+// avoid GCC 14 false-positive
 #if defined(__GNUC__) && !defined(__clang__)
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wfree-nonheap-object"
@@ -1168,10 +1430,34 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std:
 	} else {
 		out.resize(ng);
 	}	
+	// Streaming reducer fast paths (issue #2097)
+	bool use_streaming = havefun && !weights && !exact;
+	if (use_streaming) {
+		for (size_t j = 0; j < funs.size(); j++) {
+			if (!is_chunkable_extract_fun(funs[j])) {
+				use_streaming = false;
+				break;
+			}
+		}
+	}
+	bool stream_polygons = use_streaming && (gtype == "polygons");
+	const size_t chunk_target = 1000000;
+
 	for (size_t i=0; i<ng; i++) {
 		SpatGeom g = v.getGeom(i);
 		SpatVector p(g);
 		p.srs = v.srs;
+
+		// block-stream a chunkable reducer over a polygon
+		// without creating the full cell list or value buffer.
+		if (stream_polygons) {
+			std::vector<double> agg = extract_aggregate_blocks(
+					*this, p, funs, narm, touches, small, opt);
+			// fun-major, layer-minor
+			flat.insert(flat.end(), agg.begin(), agg.end());
+			continue;
+		}
+
 		std::vector<double> cell, wgt;
 		if (weights) {
 			if (gtype == "lines") {
@@ -1190,20 +1476,40 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std:
 		}
 		
 		if (havefun) {
-			std::vector<std::vector<double>> cvals = extractCell(cell, opt);
-			if (weights | exact) {
-				for (size_t j=0; j<funs.size(); j++) {
-					for (size_t k=0; k<nl; k++) {
-						flat.push_back( wfuns[j](cvals[k], wgt, 0, cvals[k].size()) );
+			if (use_streaming) {
+				std::vector<ExtractCellAcc> acc(nl);
+				size_t ncell = cell.size();
+				if (ncell > 0) {
+					for (size_t off = 0; off < ncell; off += chunk_target) {
+						size_t end = std::min(off + chunk_target, ncell);
+						std::vector<double> sub(cell.begin() + off, cell.begin() + end);
+						std::vector<std::vector<double>> cvals = extractCell(sub, opt);
+						for (size_t k = 0; k < nl; k++) {
+							acc[k].update(cvals[k]);
+						}
+					}
+				}
+				for (size_t j = 0; j < funs.size(); j++) {
+					for (size_t k = 0; k < nl; k++) {
+						flat.push_back(acc[k].get(funs[j], narm));
 					}
 				}
 			} else {
-				for (size_t j=0; j<funs.size(); j++) {
-					for (size_t k=0; k<nl; k++) {
-						flat.push_back( efuns[j](cvals[k], 0, cvals[k].size()) );
-					}						
+				std::vector<std::vector<double>> cvals = extractCell(cell, opt);
+				if (weights | exact) {
+					for (size_t j=0; j<funs.size(); j++) {
+						for (size_t k=0; k<nl; k++) {
+							flat.push_back( wfuns[j](cvals[k], wgt, 0, cvals[k].size()) );
+						}
+					}
+				} else {
+					for (size_t j=0; j<funs.size(); j++) {
+						for (size_t k=0; k<nl; k++) {
+							flat.push_back( efuns[j](cvals[k], 0, cvals[k].size()) );
+						}						
+					}
 				}
-			}			
+			}
 		} else {
 			out[i] = extractCell(cell, opt);
 			if (cells) {

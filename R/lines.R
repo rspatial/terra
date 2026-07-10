@@ -32,32 +32,37 @@ function(x, mx=10000, dissolve=TRUE, ...) {
 
 
 setMethod("lines", signature(x="SpatVector"),
-	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)  {
+	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, legend=FALSE, ...)  {
 		reset.clip()
 		n <- nrow(x)
 		if (n == 0) return(invisible(NULL))
 		gtype <- geomtype(x)
-		if (missing(col)) col <- "black"
 		if (!is.null(y)) {
-			stopifnot(inherits(y, "SpatVector"))
-			ytype <- geomtype(y)
-			if ((ytype != "points") || (gtype != "points")) {
-				error("lines", "when supplying two SpatVectors, both must have point geometry")
-			}
-			stopifnot(nrow(x) == nrow(y))
-			p1 <- geom(x)[, c("x", "y"), drop=FALSE]
-			p2 <- geom(y)[, c("x", "y"), drop=FALSE]
-			if (arrows) {
-				arrows(p1[,1], p1[,2], p2[,1], p2[,2], col=col, lwd=lwd, lty=lty, ...)
+			if (!inherits(y, "SpatVector")) {
+				plot(as.lines(x), y, add=TRUE, col=col, lwd=lwd, ly=lty, alpha=alpha, legend=legend, ...)
 			} else {
-				a <- as.vector(t(cbind(p1[,1], p2[,1], NA)))
-				b <- as.vector(t(cbind(p1[,2], p2[,2], NA)))
-				lines(cbind(a, b), col=col, lwd=lwd, lty=lty, ...)
+				stopifnot(inherits(y, "SpatVector"))
+				if (missing(col)) col <- "black"
+				ytype <- geomtype(y)
+				if ((ytype != "points") || (gtype != "points")) {
+					error("lines", "when supplying two SpatVectors, both must have point geometry")
+				}
+				stopifnot(nrow(x) == nrow(y))
+				p1 <- geom(x)[, c("x", "y"), drop=FALSE]
+				p2 <- geom(y)[, c("x", "y"), drop=FALSE]
+				if (arrows) {
+					arrows(p1[,1], p1[,2], p2[,1], p2[,2], col=col, lwd=lwd, lty=lty, ...)
+				} else {
+					a <- as.vector(t(cbind(p1[,1], p2[,1], NA)))
+					b <- as.vector(t(cbind(p1[,2], p2[,2], NA)))
+					lines(cbind(a, b), col=col, lwd=lwd, lty=lty, ...)
+				}
 			}
 		} else {
-			if (gtype != "polygons") {
+			if (gtype == "polygons") {
 				x <- as.lines(x) 
 			}
+			if (missing(col)) col <- "black"
 			if ((length(col) == 1) && (length(lty)==1) && (length(lwd)==1)) {
 				col <- .getCols(1, col, alpha)
 				g <- x@pntr$linesNA()
@@ -94,35 +99,44 @@ setMethod("lines", signature(x="SpatVector"),
 
 
 setMethod("points", signature(x="SpatVector"),
-	function(x, col, cex=0.7, pch=16, alpha=1, jitter=0, ...)  {
+	function(x, y=NULL, col, cex=0.7, pch=16, alpha=1, jitter=0, legend=FALSE, ...)  {
 		reset.clip()
 		n <- length(x)
 		if (n == 0) return(invisible(NULL))
-		if (missing(col)) col <- "black"
-		if ((length(col) == 1) && (length(cex)==1) && (length(pch)==1)) {
-			col <- .getCols(1, col, alpha)
-			#graphics::points(g[,3:4], col=col,  pch=pch, cex=cex,...)
-			g <- crds(x)
-			if (isTRUE(jitter > 0)) {
-				g <- jitter(g, factor = jitter)
-			}			
-			graphics::plot.xy(list(x=g[,1], y=g[,2]), type="p", pch=pch, col=col, cex=cex, ...)
+		if (!is.null(y)) {
+			stopifnot(inherits(x, "SpatVector"))
+			if (geomtype(x) != "points") {
+				x <- as.points(x)
+			}
+			plot(x, y, add=TRUE, col=col, cex=cex, pch=pch, alpha=alpha, legend=legend, ...)
 		} else {
-			col <- .getCols(n, col, alpha)
-			cex <- rep_len(cex, n)
-			pch <- rep_len(pch, n)
-			g <- geom(x, df=TRUE)
-			if (isTRUE(jitter > 0)) {
-				g[,3:4] <- jitter(g[,3:4], factor = jitter)
-			}			
-			if (nrow(g) > g[nrow(g), 1]) {
-				g <- split(g[,3:4], g[,1])
-				for (i in 1:n) {
-					#graphics::points(g[[i]], col=col[i], pch=pch[i], cex=cex[i], ...)
-					graphics::plot.xy(list(x=g[[i]][,1], y=g[[i]][,2]), type="p", pch=pch[i], col=col[i], cex=cex[i], ...)
-				}
+			if (missing(col)) col <- "black"
+			if ((length(col) == 1) && (length(cex)==1) && (length(pch)==1)) {
+				col <- .getCols(1, col, alpha)
+				#graphics::points(g[,3:4], col=col,  pch=pch, cex=cex,...)
+				g <- crds(x)
+				if (isTRUE(jitter > 0)) {
+					g <- jitter(g, factor = jitter)
+				}			
+				graphics::plot.xy(list(x=g[,1], y=g[,2]), type="p", pch=pch, col=col, cex=cex, ...)
 			} else {
-				graphics::plot.xy(list(x=g[,3], y=g[,4]), type="p", pch=pch, col=col, cex=cex, ...)
+				if (missing(col)) col <- "black"
+				col <- .getCols(n, col, alpha)
+				cex <- rep_len(cex, n)
+				pch <- rep_len(pch, n)
+				g <- geom(x, df=TRUE)
+				if (isTRUE(jitter > 0)) {
+					g[,3:4] <- jitter(g[,3:4], factor = jitter)
+				}			
+				if (nrow(g) > g[nrow(g), 1]) {
+					g <- split(g[,3:4], g[,1])
+					for (i in 1:n) {
+						#graphics::points(g[[i]], col=col[i], pch=pch[i], cex=cex[i], ...)
+						graphics::plot.xy(list(x=g[[i]][,1], y=g[[i]][,2]), type="p", pch=pch[i], col=col[i], cex=cex[i], ...)
+					}
+				} else {
+					graphics::plot.xy(list(x=g[,3], y=g[,4]), type="p", pch=pch, col=col, cex=cex, ...)
+				}
 			}
 		}
 	}
@@ -130,13 +144,15 @@ setMethod("points", signature(x="SpatVector"),
 
 
 setMethod("polys", signature(x="SpatVector"),
-	function(x, col, border="black", lwd=1, lty=1, alpha=1, ...)  {
+	function(x, y=NULL, col, border="black", lwd=1, lty=1, alpha=1, legend=FALSE, ...)  {
 		reset.clip()
 		gtype <- geomtype(x)
 		if (gtype != "polygons") {
 			error("polys", "expecting polygons")
 		}
-		if (missing(col)) {
+		if (!is.null(y)) {
+			plot(x, y, add=TRUE, col=col, border=border, lwd=lwd, lty=lty, alpha=alpha, legend=legend, ...)
+		} else if (missing(col)) {
 			col <- NULL
 		} else {
 			col <- .getCols(length(x), col, alpha)

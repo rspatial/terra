@@ -20,7 +20,7 @@ You can create a SpatRasterCollection from a file with subdatasets.
 }
 
 \usage{
-\S4method{sprc}{character}(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="") 
+\S4method{sprc}{character}(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", group=FALSE) 
 
 \S4method{sprc}{SpatRaster}(x, ...) 
 
@@ -38,6 +38,7 @@ You can create a SpatRasterCollection from a file with subdatasets.
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{guessCRS}{logical. If \code{TRUE} and the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
 \item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any. "" is the default domain}
+\item{group}{logical. If \code{TRUE}, files that share the same raster geometry are combined into a single multi-layer \code{SpatRaster}. Useful when tiles are split across folders with one file per band (e.g. Sentinel-2 / Landsat)}
 \item{...}{additional SpatRasters} 
 }
 
@@ -58,6 +59,7 @@ values(y) <- 1:ncell(y)
 
 z <- sprc(x, y)
 z
+
 }
 
 

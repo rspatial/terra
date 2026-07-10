@@ -505,7 +505,10 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	//bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
 
 	GDALDataset *poDS;
-	if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+	// COG has DCAP_CREATE since GDAL 3.13, but its Create() path crashes when using
+	// block by block via RasterIO see #2095. So we use CreateCopy as before 3.13
+	bool force_createcopy = (driver == "COG");
+	if (!force_createcopy && CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
 		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 	} else if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
 		copy_driver = driver;

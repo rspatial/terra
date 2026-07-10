@@ -319,6 +319,7 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 setMethod("hull", signature(x="SpatVector"),
 	function(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE) {
 		type <- match.arg(tolower(type), c("convex", "rectangle", "circle", "concave_ratio", "concave_length"))
+		if (is.na(by)) by <- "_"
 		x@pntr <- x@pntr$hull(type, by[1], param, allowHoles, tight)
 		messages(x, "hull")
 	}
@@ -498,8 +499,7 @@ setMethod("simplifyGeom", signature(x="SpatVector"),
 setMethod("thinNodes", signature(x="SpatVector"),
 	function(x, d=1e-6, unit="m", makeValid=TRUE) {
 		stopifnot(unit[1] %in% c("m", "km"))
-		if (unit[1] == "km") d <- d * 1000
-		x@pntr <- x@pntr$thin_nodes(d)
+		x@pntr <- x@pntr$thin_nodes(d, unit[1])
 		x <- messages(x, "thinNodes")
 		if (makeValid) {
 			x <- makeValid(x)

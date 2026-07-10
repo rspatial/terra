@@ -362,18 +362,21 @@ sampleStratified_old <- function(x, size, replace=FALSE, as.df=TRUE, as.points=F
 		x <- subst(anyNA(x), 1, NA)
 	}
 
+	v <- values(x, mat=FALSE)
+	nona <- which(!is.na(v))
+	rm(v)
+	if (length(nona) == 0L) return(integer())
+	ssize <- if (replace) size else min(size, length(nona))
+
 	if (lonlat) {
-		v <- cbind(cell=1:ncell(x), abs(cos(pi * values(init(x, "y")) / 360)), values(x))
-		v <- v[!is.na(v[,3]),]
-		ssize <- ifelse(replace, size, min(size, nrow(v)))
-		i <- sample.int(nrow(v), ssize, prob=v[,2], replace=replace)
+		nc <- ncol(x)
+		rows <- ((nona - 1L) %/% nc) + 1L
+		w_row <- abs(cos(pi * yFromRow(x, seq_len(nrow(x))) / 180))
+		i <- sample.int(length(nona), ssize, prob=w_row[rows], replace=replace)
 	} else {
-		v <- cbind(cell=1:ncell(x), values(x))
-		v <- v[!is.na(v[,2]),]
-		ssize <- ifelse(replace, size, min(size, nrow(v)))
-		i <- sample.int(nrow(v), ssize, replace=replace)
+		i <- sample.int(length(nona), ssize, replace=replace)
 	}
-	v[i,1]
+	nona[i]
 }
 
 
@@ -392,7 +395,9 @@ sampleStratified_old <- function(x, size, replace=FALSE, as.df=TRUE, as.points=F
 		} else {
 			esize <- size
 		}
-		if (na.rm && (blocks(x, n=4)$n == 1)) {
+		# Only use the in-memory exact-weighted sampler for large rasters
+		# with a small requested sample, as the rejection-sampling branches below are much faster
+		if (na.rm && (blocks(x, n=4)$n == 1) && (ncell(x) <= 50 * esize)) {
 			cells <- .sampleCellsMemory(x, esize, replace, lonlat, ext)
 		} else if (lonlat) {
 			m <- ifelse(replace, 1.5, 2)
@@ -581,7 +586,7 @@ set_factors <- function(x, ff, cts, asdf) {
 
 	} else if (is.lonlat(rx)) {	
 		y <- xyFromCell(rx, x)[,2]
-		weights <- abs(cos(pi * y / 360))
+		weights <- abs(cos(pi * y / 180))
 		s <- sample(x, size, prob=weights, replace=replace)
 	} else {
 		s <- sample(x, size, replace=replace)

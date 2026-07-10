@@ -224,6 +224,10 @@ SpatVector::SpatVector() {
 }
 
 SpatVector::SpatVector(SpatGeom g) {
+	extent.xmin = NAN;
+	extent.xmax = NAN;
+	extent.ymin = NAN;
+	extent.ymax = NAN;
 	addGeom(g);
 }
 
@@ -1244,8 +1248,8 @@ void remove_duplicates(std::vector<double> &x, std::vector<double> &y, int digit
 		vecround(x, digits);
 		vecround(y, digits);
 	}
-	size_t start = x.size() - 1;
-	for (size_t i=start; i>0; i--) {
+	if (x.size() < 2) return;
+	for (size_t i = x.size() - 1; i > 0; i--) {
 		if ((x[i] == x[i-1]) && (y[i] == y[i-1])) {
 			x.erase(x.begin()+i);
 			y.erase(y.begin()+i);
@@ -1255,18 +1259,35 @@ void remove_duplicates(std::vector<double> &x, std::vector<double> &y, int digit
 
 
 void SpatGeom::remove_duplicate_nodes(int digits) {
-	size_t start = parts.size()-1;
-	for (size_t i=start; i>0; i--) {
-		remove_duplicates(parts[i].x, parts[i].y, digits);
-		if (parts[i].x.size() < 4) {
-			parts.erase(parts.begin()+i);
+	if (parts.empty()) return;
+	// Each geometry type has a different minimum-vertex requirement
+	// for a part. We must not silently drop valid lines (which only
+	// need 2 vertices) just because polygons need 4 to close a ring.
+	size_t min_part = 1;
+	if (gtype == lines)         min_part = 2;
+	else if (gtype == polygons) min_part = 4;
+
+	// Walk the parts list backward so erases below `i` don't shift the
+	// iteration, and start at parts.size()-1 inclusive (down to 0). We
+	// can't use a size_t loop for that (it would underflow), so iterate
+	// `i = parts.size() ... 1` and use `idx = i - 1`.
+	for (size_t i = parts.size(); i > 0; i--) {
+		size_t idx = i - 1;
+		remove_duplicates(parts[idx].x, parts[idx].y, digits);
+		if (parts[idx].x.size() < min_part) {
+			parts.erase(parts.begin() + idx);
 			continue;
 		}
-		if (parts[i].hasHoles()) {
-			for (size_t j=0; j < parts[i].nHoles(); j++) {
-				remove_duplicates(parts[i].holes[j].x, parts[i].holes[j].y, digits);
-				if (parts[i].holes[j].x.size() < 4) {
-					parts[i].holes.erase(parts[i].holes.begin()+j);
+		if (parts[idx].hasHoles()) {
+			// Same backward-iteration pattern for the holes list. A
+			// hole is always a ring, so the threshold is 4 regardless
+			// of the outer geometry type.
+			for (size_t k = parts[idx].nHoles(); k > 0; k--) {
+				size_t hidx = k - 1;
+				remove_duplicates(parts[idx].holes[hidx].x,
+				                  parts[idx].holes[hidx].y, digits);
+				if (parts[idx].holes[hidx].x.size() < 4) {
+					parts[idx].holes.erase(parts[idx].holes.begin() + hidx);
 				}
 			}
 		}

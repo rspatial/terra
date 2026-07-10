@@ -23,6 +23,7 @@
 #include "vecmath.h"
 
 #include <set>
+#include <map>
 
 #ifdef useGDAL
 #include "crs.h"

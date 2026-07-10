@@ -330,7 +330,14 @@ setMethod("nearby", signature(x="SpatVector"),
 	}
 )
 
-
+setMethod("snapTo", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, paired=TRUE, ...) {
+		opt <- spatOptions(...)
+		x@pntr <- x@pntr$snap_to(y@pntr, paired[1], opt)
+		messages(x, "snapTo")
+	}
+)
+	
 
 setMethod("nearest", signature(x="SpatVector"),
 	function(x, y=NULL, pairs=FALSE, centroids=TRUE, lines=FALSE, method="geo") {

@@ -22,7 +22,7 @@ Get a Voronoi diagram or Delaunay triangles for points, or the nodes of lines or
 \arguments{
 \item{x}{SpatVector}
 \item{bnd}{SpatVector to set the outer boundary of the voronoi diagram}
-\item{tolerance}{numeric >= 0, snapping tolerance (0 is no snapping)}
+\item{tolerance}{numeric >= 0. Snapping tolerance applied to the input vertices before computing the diagram (\code{0} is no snapping). Expressed in the units of the CRS of \code{x}, i.e. meters or feet for projected data and \strong{degrees} for lon/lat data.}
 \item{as.lines}{logical. If \code{TRUE}, lines are returned without the outer boundary}
 \item{constrained}{logical. If \code{TRUE}, a constrained delaunay triangulation is returned}
 \item{deldir}{logical. If \code{TRUE}, the \code{\link[deldir]{deldir}} is used instead of the GEOS C++ library method. It has been reported that \code{deldir} does not choke on very large data sets}

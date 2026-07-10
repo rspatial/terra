@@ -13,11 +13,10 @@
 
 .vect_kml_source_for_xml <- function(x) {
 	x <- enc2utf8(trimws(x[1]))
-	if (grepl("^/vsicurl/", x)) {
-		sub("^/vsicurl/", "", x)
-	} else {
-		x
-	}
+	# undo the VSI routing added by .vect_vsify to recover the local path or URL
+	x <- sub("^/vsizip/", "", x)
+	x <- sub("^/vsicurl/", "", x)
+	x
 }
 
 
@@ -133,6 +132,87 @@
 }
 
 
+# Remove LIBKML placemark fields that the KML driver does not produce, unless they have values.
+.kml_drop_empty_libkml <- function(df) {
+	if (!is.data.frame(df) || ncol(df) == 0L) {
+		return(df)
+	}
+	libkml <- c("id", "timestamp", "begin", "end", "altitudemode", "tessellate",
+		"extrude", "visibility", "draworder", "icon", "snippet", "heading",
+		"tilt", "roll", "range", "model")
+	drop <- vapply(seq_along(df), function(i) {
+		(tolower(names(df)[i]) %in% libkml) && all(is.na(df[[i]]))
+	}, logical(1))
+	if (any(drop)) {
+		df <- df[, !drop, drop = FALSE]
+	}
+	df
+}
+
+
+# Extract HTML <description> attributes if present
+.kml_split_description <- function(df) {
+	if (!is.data.frame(df) || nrow(df) == 0L) {
+		return(NULL)
+	}
+	dcol <- which(tolower(names(df)) == "description")
+	if (length(dcol) != 1L) {
+		return(NULL)
+	}
+	desc <- as.character(df[[dcol]])
+	n <- length(desc)
+
+	extract <- function(rx) {
+		mm <- regmatches(desc, gregexpr(rx, desc, perl = TRUE, ignore.case = TRUE))
+		lens <- lengths(mm)
+		if (sum(lens) == 0L) {
+			return(NULL)
+		}
+		flat <- unlist(mm, use.names = FALSE)
+		g <- regmatches(flat, regexec(rx, flat, perl = TRUE, ignore.case = TRUE))
+		key <- vapply(g, function(z) if (length(z) >= 3L) z[2] else NA_character_, character(1))
+		val <- vapply(g, function(z) if (length(z) >= 3L) z[3] else NA_character_, character(1))
+		key <- sub(":\\s*$", "", trimws(key))
+		list(row = rep(seq_len(n), lens), key = key, val = trimws(val))
+	}
+
+	# (1) "<b>KEY:</b> <i>VALUE</i><br/>" (also without the <i> wrapper)
+	rx1 <- "<b>\\s*([^<>]+?)\\s*:?\\s*</b>\\s*(?:<i>)?\\s*([^<]*?)\\s*(?:</i>)?\\s*(?:<br\\s*/?>|$)"
+	# (2) two-cell table rows "<td>KEY</td><td>VALUE</td>"
+	rx2 <- "<t[dh][^>]*>\\s*([^<]*?)\\s*</t[dh]>\\s*<t[dh][^>]*>\\s*([^<]*?)\\s*</t[dh]>"
+	pp <- extract(rx1)
+	if (is.null(pp) || all(is.na(pp$key) | !nzchar(pp$key))) {
+		pp <- extract(rx2)
+	}
+	if (is.null(pp)) {
+		return(NULL)
+	}
+	keep <- !is.na(pp$key) & nzchar(pp$key)
+	pp$row <- pp$row[keep]; pp$key <- pp$key[keep]; pp$val <- pp$val[keep]
+	if (!length(pp$key)) {
+		return(NULL)
+	}
+	# only split when the layout is consistent: most features parse, and no
+	# feature repeats a key (which would signal free-text, not a record)
+	per_row <- split(pp$key, pp$row)
+	if (any(vapply(per_row, anyDuplicated, integer(1)) > 0L)) {
+		return(NULL)
+	}
+	if (length(per_row) < max(1L, 0.9 * n)) {
+		return(NULL)
+	}
+	ref <- unique(pp$key)
+	if (!length(ref)) {
+		return(NULL)
+	}
+	newcols <- matrix(NA_character_, nrow = n, ncol = length(ref), dimnames = list(NULL, ref))
+	newcols[cbind(pp$row, match(pp$key, ref))] <- pp$val
+	newcols <- as.data.frame(newcols, stringsAsFactors = FALSE)
+	other <- .kml_drop_empty_libkml(df[, -dcol, drop = FALSE])
+	if (ncol(other)) cbind(other, newcols) else newcols
+}
+
+
 .try_kml_extended_attributes <- function(v, x, kml.extended = NULL) {
 	if (!inherits(v, "SpatVector")) {
 		return(v)
@@ -143,9 +223,18 @@
 	if (isFALSE(kml.extended)) {
 		return(v)
 	}
-	# Always attempt merge when kml.extended is NULL or TRUE. LIBKML (common on
-	# Linux) exposes many KML structure fields as columns (often NA); the plain
-	# KML driver on Windows does not — merging from XML keeps results portable.
+	# First try to split an HTML <description> column that holds the attributes
+	# (no XML package or source re-read needed).
+	split <- try(.kml_split_description(values(v)), silent = TRUE)
+	if (!inherits(split, "try-error") && !is.null(split) && nrow(split) == nrow(v)) {
+		names(split) <- make.names(names(split), unique = TRUE)
+		split[] <- lapply(split, utils::type.convert, as.is = TRUE)
+		values(v) <- split
+		return(v)
+	}
+
+	# Always attempt merge when kml.extended is NULL or TRUE. LIBKML (linux)
+	# KML (R Windows) does not
 	if (!requireNamespace("XML", quietly = TRUE)) {
 		if (isTRUE(kml.extended) || ncol(v) <= 2) {
 			warn("vect", "install package 'XML' to use kml.extended; or set kml.extended=FALSE")

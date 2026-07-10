@@ -101,3 +101,68 @@ setMethod ("coltab<-" , "SpatRaster",
 	}
 )
 
+
+
+
+make.RGB <- function(x, col=grDevices::rainbow(25), breaks=NULL, alpha=FALSE, colNA="white", zlim=NULL, zlimcol=NULL, ext=NULL, filename="", ...) { 
+
+	getCols <- function(x, col, breaks=NULL, r=NULL, colNA=NA) {
+		if (!is.null(breaks)) {
+			breaks <- sort(breaks)
+			x <- as.numeric(cut(x, breaks, include.lowest=TRUE))
+			
+		} else {
+			x <- (x - r[1])/ (r[2] - r[1])
+			x <- round(x * (length(col)-1) + 1)
+		}
+		x <- col[x]
+		if (!is.na(colNA)) {
+			x[is.na(x)] <- grDevices::rgb(t(grDevices::col2rgb(colNA)), maxColorValue=255)
+		}
+		x
+	}
+
+	if (!is.null(ext)) {
+		x <- crop(x, ext)
+	}
+	
+	if (alpha) {
+		out <- rast(x, nl=4)
+		RGB(out) <- 1:4
+	} else {
+		out <- rast(x, nl=3)
+		RGB(out) <- 1:3
+	}
+	names(out) <- c('red', 'green', 'blue', 'alpha')[1:nlyr(out)]
+
+	
+	r <- minmax(x, TRUE)[,1]
+	if (is.null(breaks)) {
+		zrange <- range(r, zlim, na.rm=TRUE)
+	} else {
+		zrange <- range(r, zlim, breaks, na.rm=TRUE)
+	}
+	if (zrange[1] == zrange[2]) {
+		zrange[1] <- zrange[1] - 0.001
+		zrange[2] <- zrange[2] + 0.001
+	}
+
+	tr <- writeStart(out, filename=filename, ...)
+		
+	for (i in 1:tr$n) {
+		v <- values(x, row=tr$row[i], nrows=tr$nrows[i])
+		
+		if (!is.null(zlim)) {
+			if (!is.null(zlimcol)) {
+				v[v < zlim[1]] <- zlim[1]
+				v[v > zlim[2]] <- zlim[2]
+			} else { #if (is.na(zlimcol)) {
+				v[v < zlim[1] | v > zlim[2]] <- NA
+			} 
+		}
+		v <- getCols(v, col, breaks, zrange, colNA)
+		v <- grDevices::col2rgb(as.vector(v), alpha=alpha)
+		writeValues(out, t(v), tr$row[i], tr$nrows[i])
+	}
+	writeStop(out)
+}

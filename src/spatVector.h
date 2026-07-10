@@ -103,6 +103,7 @@ class SpatGeom {
 
 
 class SpatVectorCollection;
+class SpatNetwork;
 
 class SpatVector {
 
@@ -207,6 +208,8 @@ class SpatVector {
 
 		std::vector<double> distance(bool sequential, std::string unit, const std::string method, bool by_node, SpatOptions &opt);
 		std::vector<double> distance(SpatVector x, bool pairwise, std::string unit, const std::string method, bool by_node, SpatOptions &opt);
+		std::vector<std::vector<double>> furthest_distance(SpatVector x, bool pairwise, std::string unit, SpatOptions &opt);
+		SpatVector snap_to(SpatVector x, bool paired, SpatOptions &opt);
 		SpatVector thin_geoms(double d, std::string unit, SpatOptions &opt);
 		std::vector<double> pointdistance(const std::vector<double>& px, const std::vector<double>& py, const std::vector<double>& sx, const std::vector<double>& sy, bool pairwise, double m, bool lonlat, std::string method);
 
@@ -340,7 +343,7 @@ class SpatVector {
 		SpatVector shared_paths(SpatVector x, bool index);
 		SpatVector snap(double tolerance);
 		SpatVector snapto(SpatVector y, double tolerance);
-		SpatVector thin_nodes(double threshold);
+		SpatVector thin_nodes(double threshold, std::string unit);
 		SpatVector split_lines(SpatVector v);
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
@@ -360,6 +363,7 @@ class SpatVector {
 
 		SpatVector centroid(bool check_lonlat);
 		SpatVector point_on_surface(bool check_lonlat);
+		SpatVector corrected_centroid(bool check_lonlat, bool inside);
 		std::vector<int> pointInPolygon(std::vector<double> &x, std::vector<double> &y);
 		std::vector<int> pointInPolygonPlanar(std::vector<double> &x, std::vector<double> &y);
 		std::vector<int> pointInPolygonGeo(std::vector<double> &x, std::vector<double> &y);
@@ -417,6 +421,7 @@ class SpatVector {
 		SpatVector width();
 
 		SpatVector unaryunion();
+		SpatNetwork as_network(double snap, bool merge, bool directed, bool weighted);
 
 		SpatVector cbind(SpatDataFrame d);
 		void fix_lonlat_overflow();

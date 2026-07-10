@@ -22,7 +22,7 @@ vars <- expand.grid(x = x, y = y)
 ### ---------------------------------------------------------
 
 
-model=c("vshape","paraboloid","planar")[3] 
+model=c("vshape","paraboloid","planar")[1] 
 
 if (model=="vshape") {
   # Model: V-shape valley with longitudinal slope

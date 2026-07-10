@@ -578,9 +578,6 @@
 		}
 	} else {
 		out$alpha <- 255
-		if (!is.null(scale)) {
-			out$alpha <- out$alpha * scale / 255
-		}
 		out <- hexcols(out)
 	}
 	out$rgb$bgalpha <- bgalpha

@@ -12,7 +12,13 @@
 #include "ogr_spatialref.h"
 
 #include <unordered_map>
+#include <list>
+#include <functional>
 #include <string>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <vector>
 
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
@@ -340,8 +346,43 @@ NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
-static int proj_cdn_suppressed = 0;
-static std::string proj_cdn_reason;
+// GDAL can emit errors/warnings from parallel worker threads. 
+// We record the main thread once (at GDAL init, set_gdal_warnings); 
+// a message raised on other threads is queued here and 
+// replayed as a normal R warning the next time the handler runs on the main thread. 
+static std::atomic<bool> terra_main_thread_known{false};
+static std::thread::id terra_main_thread;
+static std::mutex terra_offthread_mtx;
+static std::vector<std::string> terra_offthread_msgs;
+
+static void terra_remember_main_thread() {
+	terra_main_thread = std::this_thread::get_id();
+	terra_main_thread_known.store(true);
+}
+
+static bool terra_on_main_thread() {
+	// Until the main thread is recorded, R is still single-threaded, so any
+	// call is necessarily on the main thread.
+	if (!terra_main_thread_known.load()) return true;
+	return std::this_thread::get_id() == terra_main_thread;
+}
+
+static void gdal_err_offthread(CPLErr eErrClass, int err_no, const char *msg) {
+	// Queue serious off-main-thread messages for later replay on the main
+	// thread. Cap the queue so a flood of worker-thread errors cannot grow it
+	// without bound.
+	if ((eErrClass >= CE_Failure) && (msg != NULL)) {
+		std::lock_guard<std::mutex> lock(terra_offthread_mtx);
+		if (terra_offthread_msgs.size() < 100) {
+			terra_offthread_msgs.push_back(std::string(msg) + " (GDAL " + std::to_string(err_no) + ")");
+		}
+	}
+}
+
+// consolidate repetetive PROJ warnings.
+// State + drain/reset live in crs.cpp so the symbols are also present
+// in non-R builds (tappa). The R-side GDAL error handler only marks
+// the flags via the public setters from crs.h.
 
 static bool is_proj_cdn_warning(const char *msg) {
 	std::string s(msg);
@@ -350,33 +391,60 @@ static bool is_proj_cdn_warning(const char *msg) {
 	         s.find("Cannot open https://") != std::string::npos));
 }
 
-static bool handle_proj_cdn(const char *msg, int err_no) {
-	if (!is_proj_cdn_warning(msg)) return false;
-	proj_cdn_suppressed++;
-	if (proj_cdn_suppressed == 1) {
-		std::string s(msg);
-		auto pos = s.rfind(": ");
-		if (pos != std::string::npos && pos > 30) {
-			proj_cdn_reason = s.substr(pos + 2);
-		} else {
-			proj_cdn_reason = s;
-		}
+// PROJ emits messages like
+//   "PROJ: Cannot take exclusive lock on /home/u/.local/share/proj/cache.db"
+// when its SQLite network cache cannot acquire the EXCLUSIVE lock it needs
+// for housekeeping. The transformation itself still succeeds. This is most
+// often a symptom of cache.db sitting on an NFS / Lustre / GPFS home dir, or
+// of multiple processes sharing one cache.
+static bool is_proj_cache_lock_warning(const char *msg) {
+	std::string s(msg);
+	return (s.find("Cannot take exclusive lock") != std::string::npos &&
+	        s.find("cache.db") != std::string::npos);
+}
+
+// Returns true if the message was recognized as a known-noisy PROJ warning
+// and has been collapsed. False means the caller should emit it normally.
+static bool handle_proj_noise(const char *msg, int err_no) {
+	if (is_proj_cdn_warning(msg)) {
+		proj_noise_mark_cdn();
+		return true;
 	}
-	return true;
+	if (is_proj_cache_lock_warning(msg)) {
+		proj_noise_mark_cache_lock();
+		return true;
+	}
+	return false;
+}
+
+// Replay any messages that were queued from GDAL worker threads. Must only be
+// called on the main thread (from the error handlers below).
+static void drain_offthread_messages() {
+	std::vector<std::string> msgs;
+	{
+		std::lock_guard<std::mutex> lock(terra_offthread_mtx);
+		if (terra_offthread_msgs.empty()) return;
+		msgs.swap(terra_offthread_msgs);
+	}
+	for (size_t i = 0; i < msgs.size(); i++) {
+		warningNoCall("%s", msgs[i].c_str());
+	}
 }
 
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
+	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
+	drain_offthread_messages();
 	switch ( eErrClass ) {
         case 0:
             break;
         case 1:
         case 2:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL %d)", msg, err_no);
             }
             break;
         case 3:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL error %d)", msg, err_no);
             }
             break;
@@ -384,7 +452,7 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
             }
             break;
@@ -393,13 +461,15 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 }
 
 static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
+	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
+	drain_offthread_messages();
 	switch ( eErrClass ) {
         case 0:
         case 1:
         case 2:
             break;
         case 3:
-            if (!handle_proj_cdn(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no)) {
                 warningNoCall("%s (GDAL error %d)", msg, err_no);
             }
             break;
@@ -415,6 +485,7 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
 
 
 static void __err_fatal(CPLErr eErrClass, int err_no, const char *msg) {
+	if (!terra_on_main_thread()) { gdal_err_offthread(eErrClass, err_no, msg); return; }
 	switch ( eErrClass ) {
         case 0:
         case 1:
@@ -438,6 +509,9 @@ static void __err_none(CPLErr eErrClass, int err_no, const char *msg) {
 
 // [[Rcpp::export(name = ".set_gdal_warnings")]]
 void set_gdal_warnings(int level) {
+	// Called from gdal_init() at package load, i.e. on R's main thread before
+	// any GDAL operation (and thus before any GDAL worker thread) can run.
+	terra_remember_main_thread();
 	if (level==4) {
 		CPLSetErrorHandler((CPLErrorHandler)__err_none);
 	} else if (level==1) {
@@ -447,17 +521,6 @@ void set_gdal_warnings(int level) {
 	} else {
 		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
 	}
-}
-
-// [[Rcpp::export(name = ".proj_cdn_suppressed")]]
-Rcpp::List get_proj_cdn_suppressed() {
-	Rcpp::List out = Rcpp::List::create(
-		Rcpp::Named("count") = proj_cdn_suppressed,
-		Rcpp::Named("reason") = proj_cdn_reason
-	);
-	proj_cdn_suppressed = 0;
-	proj_cdn_reason = "";
-	return out;
 }
 
 #include "common.h"

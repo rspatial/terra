@@ -173,3 +173,100 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 })
 
 
+
+.reg_constMM <- function(mm, na.rm=FALSE) {
+	outnl <- ncol(mm)
+	nas <- rep(NA_real_, outnl)
+	if (na.rm) {
+		function(y, ...) {
+			ok <- !is.na(y)
+			if (!any(ok)) return(nas)
+			if (sum(ok) < outnl) return(nas)
+			stats::.lm.fit(mm[ok, , drop=FALSE], y[ok])$coefficients
+		}
+	} else {
+		function(y, ...) {
+			if (any(is.na(y))) return(nas)
+			stats::.lm.fit(mm, y)$coefficients
+		}
+	}
+}
+
+
+setMethod("regress", signature(y="SpatRaster", x="data.frame"),
+function(y, x, formula=NULL, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, ...) {
+
+	if (nrow(x) != nlyr(y)) {
+		error("regress", "nrow(x) must equal nlyr(y)")
+	}
+	if (ncol(x) == 0) {
+		error("regress", "x must have at least one column")
+	}
+	if (anyNA(x)) {
+		error("regress", "x cannot have NAs")
+	}
+
+	# Default formula: regress against every column of x.
+	if (is.null(formula)) {
+		formula <- stats::as.formula(
+			paste("y ~", paste(names(x), collapse=" + "))
+		)
+	} else {
+		formula <- stats::as.formula(formula)
+	}
+
+	# Drop the LHS to make the formula one-sided.
+	if (length(formula) == 3L) {
+		formula <- formula[-2L]
+	}
+	mm <- stats::model.matrix(formula, data=x)
+	if (nrow(mm) != nlyr(y)) {
+		error("regress", paste0("model.matrix produced ", nrow(mm),
+			" rows; expected ", nlyr(y), " (one per layer). Check `formula` and `x`."))
+	}
+	outnl <- ncol(mm)
+
+	regfun <- .reg_constMM(mm, na.rm=na.rm)
+
+	out <- rast(y)
+	nlyr(out) <- outnl
+	names(out) <- colnames(mm)
+	nc <- ncol(y)
+	readStart(y)
+	on.exit(readStop(y))
+
+	doclust <- FALSE
+	if (inherits(cores, "cluster")) {
+		doclust <- TRUE
+	} else if (cores > 1) {
+		doclust <- TRUE
+		cores <- parallel::makeCluster(cores)
+		on.exit(parallel::stopCluster(cores), add=TRUE)
+	}
+
+	ncops <- nlyr(y) / nlyr(out)
+	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4
+	b <- writeStart(out, filename, overwrite, n=ncops, sources=sources(y), ...)
+
+	if (doclust) {
+		ncores <- length(cores)
+		for (i in 1:b$n) {
+			v <- readValues(y, b$row[i], b$nrows[i], 1, nc, TRUE)
+			icsz <- max(min(100, ceiling(b$nrows[i] / ncores)), b$nrows[i])
+			r <- parallel::parRapply(cores, v, regfun, chunk.size=icsz)
+			if (nlyr(out) > 1) {
+				r <- matrix(r, ncol=nlyr(out), byrow=TRUE)
+			}
+			writeValues(out, r, b$row[i], b$nrows[i])
+		}
+	} else {
+		for (i in 1:b$n) {
+			v <- readValues(y, b$row[i], b$nrows[i], 1, nc, TRUE)
+			r <- apply(v, 1, regfun)
+			writeValues(out, t(r), b$row[i], b$nrows[i])
+		}
+	}
+	writeStop(out)
+})
+
+

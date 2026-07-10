@@ -554,6 +554,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
+	ProjNoiseScope _pns(out.msg);
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
 		return out;
@@ -1052,9 +1053,24 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 		}
 		return r.warper_by_util(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, opt);
 	}
-	
-	
+
+	// GDAL warp reads raw values; apply scale/offset first (like warper()), else
+	// scaled sources (including multidim) would be warped on their raw values.
+	bool any_rotated = false;
+	for (size_t j = 0; j < ns; j++) {
+		if (source[j].rotated) {
+			any_rotated = true;
+			break;
+		}
+	}
+	if (hasScaleOffset() && !any_rotated) {
+		SpatOptions opt2(opt);
+		SpatRaster app = apply_so(opt2);
+		return app.warper_by_util(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, opt);
+	}
+
 	SpatRaster out = x.geometry(nlyr(), false, false);
+	ProjNoiseScope _pns(out.msg);
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
 		return out;
@@ -1574,7 +1590,20 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out.setError("this source is not rotated");
 		return(out);
 	}
-	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_drivers, source[0].open_ops);
+	GDALDataset *poDataset = NULL;
+#if GDAL_VERSION_NUM >= 3040000
+	// A multidim source stores a bare file name that cannot be opened as a
+	// classic raster (no bands/geotransform); expose the array as a classic dataset instead.
+	if (source[0].is_multidim) {
+		GDALDatasetH hMD = NULL;
+		if (open_gdal_multidim(hMD, 0)) {
+			poDataset = (GDALDataset *) hMD;
+		}
+	}
+#endif
+	if (poDataset == NULL) {
+		poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_drivers, source[0].open_ops);
+	}
 
 	if( poDataset == NULL )  {
 		setError("cannot read from " + source[0].filename);

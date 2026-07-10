@@ -8,10 +8,10 @@
 \alias{units<-,SpatRasterDataset-method}
 
   
-\title{units of SpatRaster or SpatRasterDataSet}
+\title{units of SpatRaster or SpatRasterDataset}
 
 \description{
-Get or set the units of the layers of a SpatRaster or the datasets in a SpatRasterDataSet.
+Get or set the units of the layers of a SpatRaster or the datasets in a SpatRasterDataset.
 }
 
 \usage{

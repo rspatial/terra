@@ -52,6 +52,22 @@ setMethod("vect", signature(x="SpatGraticule"),
 )
 
 
+# Remote files may need  "/vsicurl/" and "/vsizip/" 
+.vect_vsify <- function(x) {
+	x <- enc2utf8(trimws(x[1]))
+	if (grepl("^/vsizip/", x)) {
+		inner <- sub("^/vsizip/+", "", x)
+		if (grepl("^(https?|ftp)://", inner, ignore.case=TRUE) && !grepl("^vsicurl/", inner, ignore.case=TRUE)) {
+			return(paste0("/vsizip//vsicurl/", inner))
+		}
+		return(x)
+	}
+	if (grepl("^(https?|ftp)://", x, ignore.case=TRUE) && grepl("\\.(kml|kmz)$", x, ignore.case=TRUE)) {
+		return(paste0("/vsicurl/", x))
+	}
+	x
+}
+
 setMethod("vect", signature(x="character"),
 	function(x, layer="", query="", dialect="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL) {
 
@@ -85,6 +101,7 @@ setMethod("vect", signature(x="character"),
 			} else if ((substr(x, 1, 4) == "http") & (grepl("\\.shp$", x) | grepl("\\.gpkg$", x))) {
 				x <- paste0("/vsicurl/", x[1])
 			}
+			x <- .vect_vsify(x)
 		}
 		
 		p <- methods::new("SpatVector")
@@ -439,6 +456,15 @@ setMethod("vect", signature(x="data.frame"),
 								match(c("long", "lati"), nms),
 								match(c("long", "lat"), nms),								
                                 match(c("lon", "lat"), nms),
+                                match(c("location.lon", "location.lat"), nms),
+                                match(c("location.long", "location.lat"), nms),
+                                match(c("location.longitude", "location.latitude"), nms),
+                                match(c("location_lon", "location_lat"), nms),
+                                match(c("location_long", "location_lat"), nms),
+                                match(c("location_longitude", "location_latitude"), nms),
+                                match(c("location-lon", "location-lat"), nms),
+                                match(c("location-long", "location-lat"), nms),
+                                match(c("location-longitude", "location-latitude"), nms),
 								match(c("easting", "northing"), nms),
 								match(c("xcoord", "ycoord"), nms),
                                 match(c("x.coord", "y.coord"), nms),

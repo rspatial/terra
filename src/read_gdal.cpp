@@ -680,7 +680,9 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname)) {
+			setError("cannot read from " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot read from " + fname );
@@ -775,7 +777,9 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 //	std::vector<std::string> ops;
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
-		if (!file_exists(fname)) {
+		if (looks_like_gdal_dsn(fname)) {
+			setError("cannot read from " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot read from " + fname );
@@ -842,6 +846,87 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 	get_tags(meta, "NC_GLOBAL#", tagnames, tagvalues);
 	for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i], "GLOBAL");
 
+}
+
+
+SpatRasterCollection::SpatRasterCollection(std::vector<std::string> fnames, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, bool group) {
+
+// group=true : groups files with same geometry
+
+	std::vector<SpatRaster> rasters;
+	rasters.reserve(fnames.size());
+	std::vector<std::string> sources;
+	sources.reserve(fnames.size());
+
+	for (size_t i=0; i<fnames.size(); i++) {
+		SpatRaster sub;
+		if (sub.constructFromFile(fnames[i], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 0)) {
+			rasters.push_back(sub);
+			sources.push_back(fnames[i]);
+		} else {
+			addWarning("skipped (could not open): " + fnames[i]);
+		}
+	}
+
+	if (!group) {
+		for (size_t i=0; i<rasters.size(); i++) {
+			std::string nm = rasters[i].source.empty() ? basename_noext(sources[i]) : rasters[i].source[0].source_name;
+			push_back(rasters[i], nm);
+		}
+		return;
+	}
+
+	std::vector<size_t> leaders;
+	std::vector<std::vector<size_t>> groups;
+	leaders.reserve(rasters.size());
+	groups.reserve(rasters.size());
+
+	for (size_t i=0; i<rasters.size(); i++) {
+		bool matched = false;
+		for (size_t g=0; g<leaders.size(); g++) {
+			SpatRaster probe = rasters[leaders[g]].deepCopy();
+			// lyrs=false, crs=true, tol=0, warncrs=false,
+			// ext=true, rowcol=true, res=true
+			if (probe.compare_geom(rasters[i], false, true, 0.0, false, true, true, true)) {
+				groups[g].push_back(i);
+				matched = true;
+				break;
+			}
+		}
+		if (!matched) {
+			leaders.push_back(i);
+			groups.push_back(std::vector<size_t>{i});
+		}
+	}
+
+	SpatOptions opt;
+	for (size_t g=0; g<groups.size(); g++) {
+		std::vector<size_t> &idxs = groups[g];
+		if (idxs.size() == 1) {
+			SpatRaster &r0 = rasters[idxs[0]];
+			std::string nm = r0.source.empty() ? basename_noext(sources[idxs[0]]) : r0.source[0].source_name;
+			push_back(r0, nm);
+			continue;
+		}
+		SpatRaster combined = rasters[idxs[0]];
+		for (size_t k=1; k<idxs.size(); k++) {
+			combined.addSource(rasters[idxs[k]], false, opt);
+		}
+		// Default name: shared dirname's basename when all files in the
+		// group sit in the same folder (typical "tile per folder" layout).
+		std::string dir0 = dirname(sources[idxs[0]]);
+		bool sameDir = !dir0.empty() && dir0 != ".";
+		for (size_t k=1; sameDir && k<idxs.size(); k++) {
+			if (dirname(sources[idxs[k]]) != dir0) sameDir = false;
+		}
+		std::string gname;
+		if (sameDir) {
+			gname = basename(dir0);
+		} else {
+			gname = basename_noext(sources[idxs[0]]);
+		}
+		push_back(combined, gname);
+	}
 }
 
 
@@ -931,10 +1016,41 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 	}
 
+#if GDAL_VERSION_NUM >= 3040000
+	const bool md_probe = (multi >= 1);
+	if (md_probe) gdal_capture_messages_begin();
+#endif
+
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
+#if GDAL_VERSION_NUM >= 3040000
+	// Keep the probe's messages only when the classic open succeeded; otherwise
+	// discard them (the multidim fallback below emits its own diagnostics).
+	if (md_probe) gdal_capture_messages_end(poDataset != NULL);
+#endif
+
     if( poDataset == NULL )  {
-		if (!file_exists(fname)) {
+#if GDAL_VERSION_NUM >= 3040000
+		if (multi >= 1) {
+			std::string md_fname = fname;
+			std::vector<std::string> md_subname = subdsname;
+			std::string p, v;
+			if (split_dsn_subname(fname, p, v)) {
+				md_fname = p;
+				if (md_subname.empty() || md_subname[0].empty()) {
+					md_subname = {v};
+				}
+			}
+			msg.clearError();
+			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains)) {
+				return true;
+			}
+			msg.clearError();
+		}
+#endif
+		if (looks_like_gdal_dsn(fname)) {
+			setError("cannot open this file as a SpatRaster: " + fname);
+		} else if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot open this file as a SpatRaster: " + fname);
@@ -945,25 +1061,69 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	GDALDriver *poDriver = poDataset->GetDriver();
 	std::string gdrv = poDriver->GetDescription();
 
-	if ((multi >= 1) && (gdrv != "VRT")) {
-		if (gdrv == "netCDF") {
-			if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
-				GDALClose( (GDALDatasetH) poDataset );		
-				return true;
-			}
-		}
-		if (multi == 1) { // should be for > 1, but that seems to fail 
-			const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
-			if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
-				if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
-					GDALClose( (GDALDatasetH) poDataset );		
-					return true;
-				} else {
-					addWarning("cannot open this file with the multidim API: " + fname);
+#if GDAL_VERSION_NUM >= 3040000
+	// ZARR:"file":/temp:{10}:{0} does not work on the multidim API
+	bool classic_view = (fname.find(":{") != std::string::npos);
+	for (size_t i=0; (!classic_view) && i<subdsname.size(); i++) {
+		if (subdsname[i].find('{') != std::string::npos) classic_view = true;
+	}
+	if ((multi >= 1) && (gdrv != "VRT") && (!classic_view)) {
+		std::string md_fname = fname;
+		std::vector<std::string> md_subname = subdsname;
+		{
+			std::string p, v;
+			if (split_dsn_subname(fname, p, v)) {
+				md_fname = p;
+				if (md_subname.empty() || md_subname[0].empty()) {
+					md_subname = {v};
 				}
 			}
 		}
+
+		// The 2D driver applies projection-specific coordinate conversions 
+		double adfGT[6] = {0,1,0,0,0,1};
+		bool has_2d_gt = (poDataset->GetRasterCount() > 0) &&
+		                 (poDataset->GetGeoTransform(adfGT) == CE_None);
+
+		auto override_extent_from_2d_gt = [&]() {
+			if (!has_2d_gt) return;
+			if (source.empty()) return;
+			double xmin = adfGT[0];
+			double xmax = xmin + adfGT[1] * source[0].ncol;
+			if (xmin > xmax) std::swap(xmin, xmax);
+			double ymax = adfGT[3];
+			double ymin = ymax + adfGT[5] * source[0].nrow;
+			if (adfGT[5] > 0) {
+				source[0].flipped = true;
+				std::swap(ymin, ymax);
+			}
+			source[0].extent = SpatExtent(xmin, xmax, ymin, ymax);
+			if (adfGT[2] != 0 || adfGT[4] != 0) {
+				source[0].rotated = true;
+			}
+		};
+
+		if (gdrv == "netCDF") {
+			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+				override_extent_from_2d_gt();
+				GDALClose( (GDALDatasetH) poDataset );		
+				return true;
+			}
+			msg.clearError();
+		}
+		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
+		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
+			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+				override_extent_from_2d_gt();
+				GDALClose( (GDALDatasetH) poDataset );		
+				return true;
+			} else {
+				addWarning("cannot open this file with the multidim API: " + fname);
+				msg.clearError();
+			}
+		}
 	}
+#endif
 
 	int nl = poDataset->GetRasterCount();
 

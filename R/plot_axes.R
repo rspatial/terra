@@ -53,25 +53,30 @@ retro_labels <- function(x, lat=TRUE) {
 	if ((is.null(x)) || (!is.numeric(x))) {
 		return(x)
 	}
-	if ((length(x) > 1) && (min(diff(x)) <= 1/120)) {
-		d <- floor(x)
-		m <- floor(60*(x - d))
-		s <- round(3600*(x - d - m/60))
+
+	# Determine the hemisphere from the sign of the input, do not use floor directly
+	if (lat) {
+		h <- c("S", "", "N")[sign(x) + 2]
+		a <- abs(x)
 	} else {
-		d <- floor(x)
-		m <- round(60*(x - d))
+		# Wrap longitude to (-180, 180]; display 180 (not -180).
+		w <- ((x + 180) %% 360) - 180
+		w[w == -180] <- 180
+		h <- c("W", "", "E")[sign(w) + 2]
+		h[abs(w) == 180] <- ""
+		a <- abs(w)
+	}
+
+	if ((length(x) > 1) && (min(diff(x)) <= 1/120)) {
+		d <- floor(a)
+		m <- floor(60 * (a - d))
+		s <- round(3600 * (a - d - m/60))
+	} else {
+		d <- floor(a)
+		m <- round(60 * (a - d))
 		s <- 0
 	}
 
-	if (lat) {
-		h <- c("S", "", "N")[sign(d)+2]
-		d <- abs(d)
-	} else {
-		d <- (d + 180) %% 360 - 180
-		h <- c("W", "", "E")[sign(d)+2]
-		d <- abs(d)
-		h[d == 180] <- ""
-	} 
 	i <- (s == 0) & (m == 0)
 	j <- (s == 0) & (m != 0)
 
@@ -79,7 +84,7 @@ retro_labels <- function(x, lat=TRUE) {
 	s <- formatC(s, width=2, flag="0")
 	r <- paste0(d, "\u00B0" , m, "'", s, '"', h)
 	r[i] <- paste0(d[i], "\u00B0" , h[i])
-	r[j] <- paste0(d[j], "\u00B0" , m[j], "'", h[j])	
+	r[j] <- paste0(d[j], "\u00B0" , m[j], "'", h[j])
 	r
 }
 

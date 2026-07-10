@@ -30,7 +30,7 @@ Vector topology methods
 
 \code{emptyGeoms} returns the indices of empty (null) geometries. \code{\link{is.na}} also checks if any of the coordinates is \code{NA}.
 
-\code{snap} makes boundaries of geometries identical if they are very close to each other.
+\code{snap} makes boundaries of geometries identical if they are very close to each other. The \code{tolerance} is expressed in the coordinate reference system's units: meters (or feet, etc.) for projected data, and \strong{degrees} for lon/lat data. To snap lon/lat geometries with a tolerance expressed in meters, project the data to a metric CRS first with \code{\link{project}}, snap, then project back. \code{\link{simplifyGeom}} uses the same convention.
 }
 
 \usage{
@@ -41,10 +41,10 @@ Vector topology methods
 }
 
 \arguments{
-  \item{x}{SpatVector of lines or polygons}
-  \item{y}{SpatVector of lines or polygons to snap to. If \code{NULL} snapping is to the other geometries in \code{x}}
-  \item{tolerance}{numeric. Snapping tolerance (distance between geometries)}
-  \item{digits}{numeric. Number of digits used in rounding. Ignored if < 0}
+\item{x}{SpatVector of lines or polygons}
+\item{y}{SpatVector of lines or polygons to snap to. If \code{NULL} snapping is to the other geometries in \code{x}}
+\item{tolerance}{numeric. Snapping tolerance, expressed in the units of the CRS of \code{x} (i.e. meters or feet for projected data, \strong{degrees} for lon/lat data). One degree of latitude is approximately 111 km.}
+\item{digits}{numeric. Number of digits used in rounding. Ignored if < 0}
 } 
 
 \value{

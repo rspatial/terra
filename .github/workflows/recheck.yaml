@@ -7,12 +7,13 @@ on:
         options:
         - Depends
         - Imports
+        - Suggests
         - strong
         - most
       pattern:
         type: string
         description: 'grep pattern to subset packages'
-        default: ''
+        default: 'this does not work'
         
 name: Reverse dependency check
 

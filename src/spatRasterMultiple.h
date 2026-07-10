@@ -121,6 +121,7 @@ class SpatRasterCollection {
 		std::vector<std::string> names;
 		SpatRasterCollection() {};
 		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
+		SpatRasterCollection(std::vector<std::string> fnames, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, bool group);
 //		void setExtent();
 		SpatExtent getExtent();
 		

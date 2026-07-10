@@ -713,8 +713,11 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, xscale=0, yscale=0, filename="", ...)  {
+	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, filename="", ...)  {
 
+		xscale=0
+		yscale=0
+		
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
 				method <- "near"
@@ -798,7 +801,7 @@ setMethod("project", signature(x="SpatRaster"),
 				tmp <- project(rast(x), y)
 				if (!is.null(res)) res(tmp) <- res
 				if (!is.null(origin)) origin(tmp) <- origin
-				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, pipeline=pipeline, AOI=AOI, desired_accuracy=desired_accuracy, allow_approx=allow_approx, xscale=xscale, yscale=yscale, ...))
+				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, pipeline=pipeline, AOI=AOI, desired_accuracy=desired_accuracy, allow_approx=allow_approx, ...))
 			}
 			if (use_gdal) {
 				if (by_util) {
@@ -811,7 +814,6 @@ setMethod("project", signature(x="SpatRaster"),
 				x@pntr <- x@pntr$resample(y@pntr, method, mask[1], TRUE, opt)
 			}
 		}
-		proj_cdn_message()
 		messages(x, "project")
 	}
 )
@@ -854,18 +856,20 @@ setMethod("project", signature(x="SpatVector"),
 			if (crs(px) != crs(x)) {
 				warn("project", "pipeline input crs does not match (crs(x))")			
 			}
-		} else if (inherits(pipeline, "character")) {
-			y <- crs(y)		
-		} else {
+		} else if (!inherits(pipeline, "character")) {
 			error("project", "pipeline should be data.frame, list, or character value")
 		}
 		if (length(pipeline) != 1) {
 			error("project", "privode a single pipeline")
 		}
+		if (missing(y)) {
+			error("project", "y (output crs) cannot be missing")
+		}
 		if (inherits(y, "numeric")) {
-			error("project", "argument y cannot be a number.\nFor EPSG codes use this format 'epsg:1234'")			
-		} else if (!is.character(y)) {
-			y <- crs(y)
+			error("project", "argument y cannot be a number.\nFor EPSG codes use this format 'epsg:1234'")
+		}
+		if (!is.character(y)) {
+			y <- as.character(crs(y))
 		}
 
 		if (is.null(AOI)) {
@@ -878,7 +882,6 @@ setMethod("project", signature(x="SpatVector"),
 			aoi <- as.vector(aoi)[c(1,3,2,4)]
 		}
 		x@pntr <- x@pntr$project(y, partial, pipeline, aoi, desired_accuracy, isTRUE(allow_approx))
-		proj_cdn_message()
 		messages(x, "project")
 	}
 )

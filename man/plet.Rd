@@ -7,6 +7,7 @@
 \alias{plet,SpatRaster-method}
 \alias{plet,SpatRasterCollection-method}
 \alias{plet,SpatVector-method}
+\alias{plet,data.frame-method}
 \alias{plet,SpatVectorCollection-method}
 
 \alias{lines,leaflet-method}
@@ -41,6 +42,7 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 	wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL,
 	breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 
+\S4method{plet}{data.frame}(x, ...)
 
 \S4method{plet}{SpatVectorCollection}(x, y="", col, main=y, cex=1, 
 	lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, 
@@ -49,20 +51,22 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 	breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 
 
-\S4method{lines}{leaflet}(x, y, col, lwd=2, lty=NULL, alpha=1, 
-	label=NULL, popup=FALSE,...)
+\S4method{lines}{leaflet}(x, y, field="", col, lwd=2, lty=NULL, alpha=1, 
+	label=NULL, popup=FALSE, legend="bottomright", ...)
 
-\S4method{points}{leaflet}(x, y, col, border=col, cex=1, lwd=2, lty=NULL, 
-	alpha=c(.3, 1), label=1:nrow(y), popup=FALSE, ...)
+\S4method{points}{leaflet}(x, y, field="", col, border=col, cex=1, lwd=2, lty=NULL, 
+	alpha=c(.3, 1), label=1:nrow(y), popup=FALSE, legend="bottomright", ...)
 
-\S4method{polys}{leaflet}(x, y, col, lwd=2, lty=NULL, 
-	border="black", alpha=c(0.3, 1), popup=TRUE, label=NULL, fill=NULL, ...)
+\S4method{polys}{leaflet}(x, y, field="", col, lwd=2, lty=NULL, 
+	border="black", alpha=c(0.3, 1), popup=TRUE, label=NULL, 
+	legend="bottomright", fill=NULL, ...)
 }
 
 
 \arguments{
-  \item{x}{SpatRaster, SpatVector, or leaflet object}
-  \item{y}{missing, or positive integer, or character (variable or layer name) indicating the layer(s) to be plotted. If \code{x} is a SpatRaster, you can select multiple layers}
+  \item{x}{SpatRaster, SpatVector, or leaflet object. If \code{x} is a data.frame, an attempt is made to create a SpatVector from it with the \code{\link{vect}} method for a data.frame}
+  \item{y}{missing, or positive integer, or character (variable or layer name) indicating the layer(s) to be plotted. If \code{x} is a SpatRaster, you can select multiple layers. If \code{x} is a leaflet object, \code{y} is the SpatVector to be added to the map}
+  \item{field}{character (variable name) or positive integer (column number) to color the points, lines, or polygons by the values of that variable of SpatVector \code{y} (if \code{x} is a leaflet object). Use \code{""} to not color by a variable}
   \item{col}{character. Vector of colors or a color generating function. If \code{x} is a SpatVectorCollection, you can provide a list with colors and/or functions, with one list element for each SpatVector}
   \item{alpha}{one or two numbers between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque). The first number is to fill the points/lines/polygons, the second for the outline}
   \item{tiles}{character or NULL. Names of background tile providers}
@@ -118,6 +122,9 @@ values(p) = data.frame(id=11:40, name=sample(letters, 30, replace=TRUE))
 m <- plet(v, "NAME_1", tiles="", border="blue")
 m <- points(m, p, col="red", cex=2, popup=T)
 lines(m, v, lwd=1, col="white")
+
+# color by the values of a variable
+plet(v, tiles="") |> points(p, field="name", cex=8)
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
   points(p, col="white", border="red", cex=12, popup=TRUE, lwd=3, lty="1 4",

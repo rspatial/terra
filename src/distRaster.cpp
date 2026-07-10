@@ -20,6 +20,8 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <map>
+#include <functional>
 #include "geodesic.h"
 #include "recycle.h"
 #include "math_utils.h"

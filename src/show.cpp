@@ -22,6 +22,7 @@
 #include <iomanip>
 
 #include "spatRasterMultiple.h"
+#include "spatNetwork.h"
 
 #ifdef useGDAL
 #include "ogr_spatialref.h"
@@ -32,7 +33,13 @@
 
 
 static std::string basename_trunc(const std::string &path, size_t maxlen = 150) {
-	std::string b = basename(path);
+	// Match R's basename(): trailing path separators are stripped before the
+	// last component is taken (so e.g. ".../:psl.zarr/" yields ":psl.zarr").
+	std::string p = path;
+	while (!p.empty() && (p.back() == '/' || p.back() == '\\')) {
+		p.pop_back();
+	}
+	std::string b = basename(p);
 	if (b.size() > maxlen) {
 		b = b.substr(0, maxlen) + "~";
 	}
@@ -350,10 +357,10 @@ std::string SpatRaster::show(bool one_based) {
 				srcs[i] = "memory";
 			} else {
 				std::string f = fnames[i];
-				f.erase(std::remove(f.begin(), f.end(), '"'), f.end());
 				if (f.substr(0, 5) != "HDF5:") {
 					f = basename_trunc(f);
 				}
+				f.erase(std::remove(f.begin(), f.end(), '"'), f.end());
 				srcs[i] = f;
 			}
 		}
@@ -984,6 +991,34 @@ std::string SpatVectorProxy::show() {
 
 	if (nc > 0) {
 		append_spatvector_df_preview(s, v.df, 0);
+	}
+
+	return s.str();
+}
+
+
+std::string SpatNetwork::show() {
+	std::ostringstream s;
+	size_t nn = nnodes();
+	size_t ne = nedges();
+	s << "class       : SpatNetwork\n";
+	s << "type        : " << (directed ? "directed" : "undirected")
+	  << ", " << (weighted ? "weighted" : "unweighted") << "\n";
+	s << "dimensions  : " << nn << ", " << ne << "  (nodes, edges)\n";
+	if (nn > 0) {
+		s << "extent      : "
+		  << format_double(extent.xmin, 7) << ", "
+		  << format_double(extent.xmax, 7) << ", "
+		  << format_double(extent.ymin, 7) << ", "
+		  << format_double(extent.ymax, 7)
+		  << "  (xmin, xmax, ymin, ymax)\n";
+	}
+	std::string wkt   = srs.get("wkt");
+	std::string proj4 = srs.get("proj4");
+	s << "coord. ref. : " << crs_description(wkt, proj4) << "\n";
+
+	if (edge_df.ncol() > 0) {
+		append_spatvector_df_preview(s, edge_df, 0);
 	}
 
 	return s.str();

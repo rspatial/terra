@@ -187,15 +187,65 @@ std::string get_vsi_container(const std::string& path) {
 bool file_exists(const std::string& name) {
 	if (is_vsi(name)) {
 		std::string container = get_vsi_container(name);
-		if (!container.empty()) {
+		if (!container.empty()
+				&& container.compare(0, 4, "/vsi") != 0
+				&& container.compare(0, 4, "http") != 0
+				&& container.compare(0, 5, "s3://") != 0) {
 			std::ifstream cf(container.c_str());
 			if (!cf.good()) return false;
 		}
+		// check remote file existence with VSIStatL
 		VSIStatBufL statBuf;
 		return VSIStatL(name.c_str(), &statBuf) == 0;
 	}
 	std::ifstream f(name.c_str());
 	return f.good();
+}
+
+
+bool looks_like_gdal_dsn(const std::string& name) {
+
+// test if the substring before the first ':' has at least 2 letters/digits/underscores
+// to identify GDAL "connection string" / DSN
+//
+// e.g.,  NETCDF:"/vsicurl/https://.../foo.nc":BRF1
+//        vrt:///vsicurl/https://.../foo.nc?transpose=/BRF1:1,0
+//        https://.../foo.tif
+//
+
+	size_t colon = name.find(':');
+	if (colon == std::string::npos || colon < 2) return false;
+	for (size_t i = 0; i < colon; i++) {
+		unsigned char c = static_cast<unsigned char>(name[i]);
+		// Driver / scheme prefixes are letters, digits, or '_'.
+		bool ok = (c >= 'A' && c <= 'Z') ||
+		          (c >= 'a' && c <= 'z') ||
+		          (c >= '0' && c <= '9') ||
+		          (c == '_');
+		if (!ok) return false;
+	}
+	return true;
+}
+
+
+bool split_dsn_subname(const std::string& dsn, std::string& path, std::string& varname) {
+// Parse a classic-API GDAL subdataset DSN into file path and trailing variable name. driver is dropped
+// works for <DRIVER>:"<path>":<varname>
+
+	if (!looks_like_gdal_dsn(dsn)) return false;
+	size_t pos = dsn.find(":\"");
+	if (pos == std::string::npos) return false;
+	size_t close_q = dsn.find('"', pos + 2);
+	if (close_q == std::string::npos) return false;
+	if (close_q + 1 >= dsn.size()) return false;
+	if (dsn[close_q + 1] != ':') return false;
+
+	std::string p = dsn.substr(pos + 2, close_q - pos - 2);
+	std::string v = dsn.substr(close_q + 2);
+	if (p.empty() || v.empty()) return false;
+	path = p;
+	varname = v;
+	return true;
 }
 
 
