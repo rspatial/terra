@@ -1,4 +1,4 @@
-# version 1.9-38
+# version 1.9-39
 
 ## bug fixes
 
@@ -11,6 +11,7 @@
 - faster sampling of multidim rasters [#2110](https://github.com/rspatial/terra/issues/2110) by Michael Sumner
 - `centroids` gained argument "correct" that moves centroids that are not on their geometry to the nearest location on the geometry (`inside=FALSE`) or to an alternative location that is inside the polygon (`inside=TRUE`) 
 - `points`, `lines` and `polys` can now color the geometries by the values of a variable (argument `y`) [#2119](https://github.com/rspatial/terra/issues/2119) by Márcia Barbosa
+- `focal` can now use TBB parallelization for built-in functions "max", "min", "median", "modal" and "sd" (in addition to "sum"/"mean") [#2115](https://github.com/rspatial/terra/issues/2115) by Breeze-Hu
 
 ## new 
 
