@@ -1102,6 +1102,188 @@ static void separable_run(const std::vector<double> &d, std::vector<double> &out
 }
 
 
+// ── PLAIN UNIFORM SLIDING MIN/MAX  (van Herk/Gil-Werman) --------------------
+//
+// For a plain (constant-weight) window, min/max is separable and each 1-D
+// sliding min/max can be computed in ~3 comparisons per cell regardless of
+// the window size, with the van Herk/Gil-Werman algorithm: split the array
+// into blocks of the window width, precompute running aggregates from the
+// left (P) and from the right (S) within each block; the window [i, i+w-1]
+// is then op(S[i], P[i+w-1]).
+//
+// NA handling is folded into the combining operator `op`:
+//   narm=TRUE  : a NaN-skipping variant (all-NaN window -> NaN)
+//   narm=FALSE : a NaN-propagating variant (any NaN in the window -> NaN)
+// Both operators are associative and idempotent, as vHGW requires. The NaN
+// checks are explicit (not std::fmax/fmin) so the semantics cannot be
+// altered by compiler optimization of the fmax/fmin builtins.
+//
+// The (constant) weight is applied to the result: max(w*v) == w*max(v) for
+// w > 0, and max(w*v) == w*min(v) for w < 0 (the caller swaps min/max).
+
+// 1-D vHGW: dst[i] = op(src[i .. i+w-1]) for i in [0, n - w]; S and P are
+// scratch buffers of size n.
+template <typename Op>
+static inline void hgw_1d(const double *src, int n, int w, double *dst,
+                          double *S, double *P, Op op) {
+	for (int bstart = 0; bstart < n; bstart += w) {
+		int bend = std::min(bstart + w, n) - 1;
+		S[bend] = src[bend];
+		for (int i = bend - 1; i >= bstart; i--) {
+			S[i] = op(src[i], S[i + 1]);
+		}
+		P[bstart] = src[bstart];
+		for (int i = bstart + 1; i <= bend; i++) {
+			P[i] = op(P[i - 1], src[i]);
+		}
+	}
+	int nout = n - w + 1;
+	for (int i = 0; i < nout; i++) {
+		dst[i] = op(S[i], P[i + w - 1]);
+	}
+}
+
+template <typename Op>
+static void hgw_run(const std::vector<double> &d, std::vector<double> &out,
+                    int nc, int srow, int nr, int wnr, int wnc,
+                    double w_const, double fill, bool naonly, bool naomit,
+                    bool expand, bool global, const SpatOptions &opt, Op op) {
+
+	const int hwr = wnr / 2;
+	const int hwc = wnc / 2;
+	const int rows_in = nr + 2 * hwr;
+	const bool checkNA = naonly || naomit;
+
+	// Pass 1: horizontal sliding aggregate over each input row (incl. the
+	// vertical halo rows already present in d) -> tmp (rows_in x nc).
+	// Embarrassingly parallel over rows.
+	std::vector<double> tmp((size_t) rows_in * nc);
+	const int next = nc + 2 * hwc;
+
+	auto pass1_range = [&](int rr_begin, int rr_end) {
+		std::vector<double> ext(next), S(next), P(next);
+		for (int rr = rr_begin; rr < rr_end; rr++) {
+			const double *src = d.data() + (size_t) (srow - hwr + rr) * nc;
+			for (int i = 0; i < next; i++) {
+				int eff = boundary_col(i - hwc, nc, expand, global);
+				ext[i] = (eff < 0) ? fill : src[eff];
+			}
+			hgw_1d(ext.data(), next, wnc, tmp.data() + (size_t) rr * nc,
+			       S.data(), P.data(), op);
+		}
+	};
+
+	// Pass 2: vertical sliding aggregate down the columns of tmp, processed
+	// row-wise (cache friendly). For each block of wnr input rows, Sbuf[j]
+	// holds op(tmp[j .. block_end]) and Prow accumulates from the top of the
+	// next block, so window [r, r+wnr-1] = op(Sbuf[r], Prow at r+wnr-1);
+	// the two parts are contiguous and non-overlapping. Chunks are
+	// independent: each builds its own block structure from its start row.
+	auto pass2_range = [&](int r_begin, int r_end) {
+		const int B = wnr;
+		std::vector<double> Sbuf((size_t) B * nc);
+		std::vector<double> Prow(nc);
+
+		auto emit = [&](int r, const double *a, const double *b) {
+			double *outrow = out.data() + (size_t) r * nc;
+			const double *iv_row = checkNA ? d.data() + (size_t) (srow + r) * nc : nullptr;
+			for (int c = 0; c < nc; c++) {
+				double v = (b == nullptr) ? a[c] : op(a[c], b[c]);
+				v *= w_const;
+				if (checkNA) {
+					double iv = iv_row[c];
+					if (naonly ? !std::isnan(iv) : std::isnan(iv)) v = iv;
+				}
+				outrow[c] = v;
+			}
+		};
+
+		for (int bstart = r_begin; bstart < r_end; bstart += B) {
+			int out_end = std::min(bstart + B, r_end);
+			int in_last = bstart + B - 1;
+			// suffix aggregates for input rows [bstart, in_last]
+			const double *tj = tmp.data() + (size_t) in_last * nc;
+			std::copy(tj, tj + nc, Sbuf.data() + (size_t) (B - 1) * nc);
+			for (int j = in_last - 1; j >= bstart; j--) {
+				tj = tmp.data() + (size_t) j * nc;
+				const double *sprev = Sbuf.data() + (size_t) (j + 1 - bstart) * nc;
+				double *sj = Sbuf.data() + (size_t) (j - bstart) * nc;
+				for (int c = 0; c < nc; c++) {
+					sj[c] = op(tj[c], sprev[c]);
+				}
+			}
+			// r = bstart: the window is exactly the suffix block
+			emit(bstart, Sbuf.data(), nullptr);
+			for (int r = bstart + 1; r < out_end; r++) {
+				tj = tmp.data() + (size_t) (r + B - 1) * nc;
+				if (r == bstart + 1) {
+					std::copy(tj, tj + nc, Prow.data());
+				} else {
+					for (int c = 0; c < nc; c++) {
+						Prow[c] = op(Prow[c], tj[c]);
+					}
+				}
+				emit(r, Sbuf.data() + (size_t) (r - bstart) * nc, Prow.data());
+			}
+		}
+	};
+
+#if defined(USE_TBB)
+	if (opt.parallel && (long long) rows_in * nc > 20000) {
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, rows_in, 8),
+			[&](const tbb::blocked_range<int> &r) { pass1_range(r.begin(), r.end()); });
+		size_t grain = (size_t) std::max(wnr, 16);
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, nr, grain),
+			[&](const tbb::blocked_range<int> &r) { pass2_range(r.begin(), r.end()); });
+		return;
+	}
+#else
+	(void) opt;
+#endif
+	pass1_range(0, rows_in);
+	pass2_range(0, nr);
+}
+
+static void focal_win_minmax(const std::vector<double> &d, std::vector<double> &out,
+                    int nc, int srow, int nr, int wnr, int wnc,
+                    double w_const, double fill, bool narm, bool naonly, bool naomit,
+                    bool expand, bool global, bool is_max, const SpatOptions &opt) {
+
+	// a negative constant weight turns a max into a min (and vice versa);
+	// the weight itself is applied to the aggregated result in hgw_run
+	bool mx = (w_const < 0) ? !is_max : is_max;
+	if (mx) {
+		if (narm) {
+			hgw_run(d, out, nc, srow, nr, wnr, wnc, w_const, fill, naonly, naomit,
+				expand, global, opt,
+				[](double a, double b) {
+					if (std::isnan(a)) return b;
+					if (std::isnan(b)) return a;
+					return a > b ? a : b; });
+		} else {
+			hgw_run(d, out, nc, srow, nr, wnr, wnc, w_const, fill, naonly, naomit,
+				expand, global, opt,
+				[](double a, double b) {
+					return (std::isnan(a) || std::isnan(b)) ? (double) NAN : (a > b ? a : b); });
+		}
+	} else {
+		if (narm) {
+			hgw_run(d, out, nc, srow, nr, wnr, wnc, w_const, fill, naonly, naomit,
+				expand, global, opt,
+				[](double a, double b) {
+					if (std::isnan(a)) return b;
+					if (std::isnan(b)) return a;
+					return a < b ? a : b; });
+		} else {
+			hgw_run(d, out, nc, srow, nr, wnr, wnc, w_const, fill, naonly, naomit,
+				expand, global, opt,
+				[](double a, double b) {
+					return (std::isnan(a) || std::isnan(b)) ? (double) NAN : (a < b ? a : b); });
+		}
+	}
+}
+
+
 // ── focal2 ────────────────────────────────────────
 
 SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, bool naomit, std::string fun, bool expand, SpatOptions &opt) {
@@ -1165,6 +1347,10 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 	double w_const = 0.0;
 	bool plain = window_is_plain(m, w_const);
 
+	// plain-window min/max: van Herk/Gil-Werman sliding min/max
+	const bool plain_minmax = plain && (w_const != 0.0) &&
+		((fun == "min") || (fun == "max"));
+
 	std::vector<double> row_k, col_k;
 	bool rank1 = false;
 	if (!plain && (is_sum || is_mean)) {
@@ -1185,6 +1371,12 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 				        (int) w[0], (int) w[1], w_const,
 				        fillvalue, narm, naonly, naomit, expand, global, opt, emit_mean);
 			}
+		} else if (plain_minmax) {
+			vout.assign(nc * bnr, NAN);
+			focal_win_minmax(vin, vout, (int) nc, (int) roff, (int) bnr,
+			              (int) w[0], (int) w[1], w_const,
+			              fillvalue, narm, naonly, naomit, expand, global,
+			              fun == "max", opt);
 		} else if (rank1) {
 			vout.assign(nc * bnr, NAN);
 			separable_run(vin, vout, (int) nc, (int) roff, (int) bnr,
