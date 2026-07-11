@@ -15,7 +15,7 @@
 \title{Replace values of a SpatRaster}
 
 \description{
-Replace values of a SpatRaster. These are convenience functions for smaller objects only. For larger rasters see \code{link{classify}} or \code{\link{subst}}
+Replace values of a SpatRaster. These are convenience functions for smaller objects only. For larger rasters see \code{\link{classify}} or \code{\link{subst}}
 } 
 
 \usage{
