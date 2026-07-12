@@ -75,7 +75,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
   \item{pipeline}{character. A PROJ pipeline string to use for the coordinate transformation instead of letting GDAL select one automatically. You can use \code{\link{proj_pipelines}} to find available pipelines. When a pipeline is set, \code{y} is still used to set the output CRS}
 
-  \item{AOI}{SpatExtent or object that has a SpatExtent to set the area of interest for the transformation. This is used to select the most approprite transformation pipeline}
+  \item{AOI}{SpatExtent or object that has a SpatExtent to set the area of interest for the transformation. This is used to select the most appropriate transformation pipeline}
 
   \item{desired_accuracy}{numeric. Only use transformations with at least this accuracy (in metres). Use \code{-1} (the default) for no constraint. Requires GDAL >= 3.3}
 

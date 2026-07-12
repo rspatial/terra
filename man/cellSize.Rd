@@ -22,7 +22,7 @@ But note that for both angular (longitude/latitude) and for planar (projected) c
 \arguments{
   \item{x}{SpatRaster}
   \item{mask}{logical. If \code{TRUE}, cells that are \code{NA} in \code{x} are also \code{NA} in the output}
-  \item{lyrs}{logical. If \code{TRUE} and \code{mask=TRUE}, the output has the same number of layers as \code{x}. That is only useful if cases where the layers of \code{x} have different cells that are \code{NA}}
+  \item{lyrs}{logical. If \code{TRUE} and \code{mask=TRUE}, the output has the same number of layers as \code{x}. That is only useful in cases where the layers of \code{x} have different cells that are \code{NA}}
   \item{unit}{character. One of "m", "km", or "ha"}
   \item{transform}{logical. If \code{TRUE}, planar CRS data are transformed to lon/lat for accuracy}
   \item{rcx}{positive integer. The maximum number of rows and columns to be used to compute area of planar data if \code{transform=TRUE}. If \code{x} has more rows and/or columns, the raster is aggregated to match this limit, and values for the original cells are estimated by bilinear interpolation (see \code{resample}). This can save a lot of time}
