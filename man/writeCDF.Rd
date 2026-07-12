@@ -32,14 +32,14 @@ See \code{\link{depth}} and \code{\link{time}} for specifying the axes of the th
   \item{longname}{character. Long name of the dataset}
   \item{unit}{character. Unit of the data}
   \item{split}{logical. If \code{TRUE} each layer of \code{x} is treated as a sub-dataset}
-  \item{atts}{character. A vector of additional global attributes to write. The must be formatted like c("x=a value", "y=abc")}
+  \item{atts}{character. A vector of additional global attributes to write. They must be formatted like \code{c("x=a value", "y=abc")}}
   \item{gridmap}{character. The crs is always written to the file in standard formats. With this argument you can also write the format commonly used in netcdf files. Something like \code{c("grid_mapping_name=lambert_azimuthal_equal_area", "longitude_of_projection_origin=10", "latitude_of_projection_origin=52", "false_easting=4321000", "false_northing=3210000")}}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{timename}{character. The name of the "time" dimension}
   \item{prec}{character. One of "double", "float", "integer", "short", "byte" or "char"}
   \item{compression}{Can be set to an integer between 1 (least compression) and 9 (most compression)}
   \item{missval}{numeric, the number used to indicate missing values}
-  \item{tags}{logical. If \code{TRUE} the value returned by \code{\link{metags}} are written to the file as attributes}
+  \item{tags}{logical. If \code{TRUE} the values returned by \code{\link{metags}} are written to the file as attributes}
   \item{...}{additional arguments passed on to the SpatRasterDataset method, and from there possibly to \code{\link[ncdf4]{ncvar_def}}}
 }
 
