@@ -54,8 +54,8 @@ writeCDF(x, filename, overwrite=FALSE, timename="time", atts="",
 
 - atts:
 
-  character. A vector of additional global attributes to write. The must
-  be formatted like c("x=a value", "y=abc")
+  character. A vector of additional global attributes to write. They
+  must be formatted like `c("x=a value", "y=abc")`
 
 - gridmap:
 
@@ -88,7 +88,7 @@ writeCDF(x, filename, overwrite=FALSE, timename="time", atts="",
 
 - tags:
 
-  logical. If `TRUE` the value returned by
+  logical. If `TRUE` the values returned by
   [`metags`](https://rspatial.github.io/terra/reference/metags.md) are
   written to the file as attributes
 
@@ -155,7 +155,7 @@ x[1]
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
-#> source      : file229442db23fd.nc:TH
+#> source      : file22533c16f32d.nc:TH
 #> varname     : TH
 #> names       : TH_angle=0_1, TH_angle=2_1, TH_angle=0_2, TH_angle=2_2
 #> unit        : -
@@ -172,7 +172,7 @@ x[2]
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
-#> source      : file229442db23fd.nc:DBZH
+#> source      : file22533c16f32d.nc:DBZH
 #> varname     : DBZH
 #> names       : DBZH_~=10_1, DBZH_~=10_2, DBZH_~=20_1, DBZH_~=20_2, DBZH_~=30_1, DBZH_~=30_2
 #> unit        : Pa

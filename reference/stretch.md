@@ -4,8 +4,8 @@ Linear or histogram equalization stretch of values in a SpatRaster.
 
 For linear stretch, provide the desired output range (`minv` and `maxv`)
 and the lower and upper bounds in the original data, either as quantiles
-(`minq` and `maxq`, or as cell values (`smin` and `smax`). If `smin` and
-`smax` are both not `NA`, `minq` and `maxq` are ignored.
+(`minq` and `maxq`), or as cell values (`smin` and `smax`). If `smin`
+and `smax` are both not `NA`, `minq` and `maxq` are ignored.
 
 For histogram equalization, these arguments are ignored, but you can
 provide the desired scale of the output and the maximum number of cells

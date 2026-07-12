@@ -82,7 +82,7 @@ See depth and time for specifying the axes of the third and/or fourth dimension(
 <dd><p>logical. If <code>TRUE</code> each layer of <code>x</code> is treated as a sub-dataset</p></dd>
 
   <dt id="arg-atts">atts<a class="anchor" aria-label="anchor" href="#arg-atts"></a></dt>
-<dd><p>character. A vector of additional global attributes to write. The must be formatted like c("x=a value", "y=abc")</p></dd>
+<dd><p>character. A vector of additional global attributes to write. They must be formatted like <code>c("x=a value", "y=abc")</code></p></dd>
 
   <dt id="arg-gridmap">gridmap<a class="anchor" aria-label="anchor" href="#arg-gridmap"></a></dt>
 <dd><p>character. The crs is always written to the file in standard formats. With this argument you can also write the format commonly used in netcdf files. Something like <code>c("grid_mapping_name=lambert_azimuthal_equal_area", "longitude_of_projection_origin=10", "latitude_of_projection_origin=52", "false_easting=4321000", "false_northing=3210000")</code></p></dd>
@@ -103,7 +103,7 @@ See depth and time for specifying the axes of the third and/or fourth dimension(
 <dd><p>numeric, the number used to indicate missing values</p></dd>
 
   <dt id="arg-tags">tags<a class="anchor" aria-label="anchor" href="#arg-tags"></a></dt>
-<dd><p>logical. If <code>TRUE</code> the value returned by <code><a href="metags.html">metags</a></code> are written to the file as attributes</p></dd>
+<dd><p>logical. If <code>TRUE</code> the values returned by <code><a href="metags.html">metags</a></code> are written to the file as attributes</p></dd>
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments passed on to the SpatRasterDataset method, and from there possibly to <code><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html" class="external-link">ncvar_def</a></code></p></dd>
@@ -164,7 +164,7 @@ See depth and time for specifying the axes of the third and/or fourth dimension(
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 72, 36  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file229442db23fd.nc:TH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file22533c16f32d.nc:TH</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> varname     : TH</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : TH_angle=0_1, TH_angle=2_1, TH_angle=0_2, TH_angle=2_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unit        : -</span>
@@ -181,7 +181,7 @@ See depth and time for specifying the axes of the third and/or fourth dimension(
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 72, 36  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file229442db23fd.nc:DBZH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file22533c16f32d.nc:DBZH</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> varname     : DBZH</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : DBZH_~=10_1, DBZH_~=10_2, DBZH_~=20_1, DBZH_~=20_2, DBZH_~=30_1, DBZH_~=30_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unit        : Pa</span>

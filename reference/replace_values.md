@@ -1,7 +1,8 @@
 # Replace values of a SpatRaster
 
 Replace values of a SpatRaster. These are convenience functions for
-smaller objects only. For larger rasters see `link{classify}` or
+smaller objects only. For larger rasters see
+[`classify`](https://rspatial.github.io/terra/reference/classify.md) or
 [`subst`](https://rspatial.github.io/terra/reference/subst.md)
 
 ## Usage

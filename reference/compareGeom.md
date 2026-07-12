@@ -77,7 +77,9 @@ compareGeom(x, y, tolerance=0)
   numeric. For `SpatRaster` objects this is the difference in raster
   extent (expressed as the fraction of the raster resolution) that can
   be ignored when comparing alignment of rasters. If `NULL` the value
-  shown by `link{terraOptions}` is used
+  shown by
+  [`terraOptions`](https://rspatial.github.io/terra/reference/terraOptions.md)
+  is used
 
 ## Value
 

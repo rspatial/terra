@@ -136,7 +136,7 @@ project(x, from, to)
 - AOI:
 
   SpatExtent or object that has a SpatExtent to set the area of interest
-  for the transformation. This is used to select the most approprite
+  for the transformation. This is used to select the most appropriate
   transformation pipeline
 
 - desired_accuracy:

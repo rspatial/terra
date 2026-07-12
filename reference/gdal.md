@@ -10,7 +10,7 @@ spatial data and for some raster data processing. `PROJ` is used for
 transformation of coordinates ("projection") and `GEOS` is used for
 geometric operations with vector data.
 
-The current `GDAL` configuration options and obtained with
+The current `GDAL` configuration options are obtained with
 `getGDALconfig` and changed with `setGDALconfig`.
 
 `proj_ok` checks if the PROJ database with CRS definitions can be found.
