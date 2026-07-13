@@ -15,7 +15,7 @@
 \description{
 Cut out a part of a SpatRaster or SpatVector. 
 
-You can crop a SpatRaster with a SpatExtent, or with another object from which an extent can be obtained. Note that the SpatRaster returned may not have the exactly the same extent as the SpatExtent supplied because you can only select entire cells (rows and columns), and you cannot add new areas. See methods like \code{\link{resample}} and \code{\link{disagg}} to force SpatRasters to align and \code{\link{extend}} to add rows and/or columns.
+You can crop a SpatRaster with a SpatExtent, or with another object from which an extent can be obtained. Note that the SpatRaster returned may not have exactly the same extent as the SpatExtent supplied because you can only select entire cells (rows and columns), and you cannot add new areas. See methods like \code{\link{resample}} and \code{\link{disagg}} to force SpatRasters to align and \code{\link{extend}} to add rows and/or columns.
 
 You can only crop rectangular areas of a SpatRaster, but see argument \code{mask=TRUE} for setting cell values within SpatRaster to \code{NA}; or use the \code{\link{mask}} method after crop for additional masking options.
 
