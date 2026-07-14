@@ -126,7 +126,7 @@ lines(m, v, lwd=1, col="white")
 # color by the values of a variable
 plet(v, tiles="") |> points(p, cex=8)
 plet(v, "NAME_1", tiles="") |> points(p, field="value", cex=8, alpha=.9,
-				col=c("red", "blue", "yellow"), popUp=TRUE)
+				col=c("red", "blue", "yellow"), popup=TRUE)
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
   points(p, col="white", border="red", cex=12, popup=TRUE, lwd=3, lty="1 4",
