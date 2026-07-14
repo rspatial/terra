@@ -568,7 +568,7 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
     if (*(kupdate+j)==0) exit_cond1=0;
   }
   if (cnt1>max_iters) {
-    Rprintf("\nExceeding\n");
+    Rprintf("\nExceeding number of iterations in d8ltd/d8lad flow directions computation\n");
     exit_cond1=2;       
     
   }
