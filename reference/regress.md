@@ -95,10 +95,13 @@ x <- regress(s, 1:nlyr(s))
 # Suppose `y` has one layer per (N, P, K) treatment.
 if (FALSE) { # \dontrun{
 NPK <- data.frame(
-    N = c(0,  50, 100,   0,  50, 100,   0,  50, 100),
-    P = c(0,   0,   0,  25,  25,  25,  50,  50,  50),
-    K = c(0,  10,  20,   0,  10,  20,   0,  10,  20)
+    N = c(0, 0, 0, 50, 50, 50, 100, 100, 100),
+    P = c(0, 25, 50, 0, 25, 50, 0, 25, 50),
+    K = c(0, 0, 0, 10, 10, 10, 20, 20, 20)
 )
+y <- rast(ncol=2, nrow=2, nlyr=nrow(NPK))
+values(y) <- rep(1:nrow(NPK) * 200, each=4)
+
 # Default formula y ~ N + P + K:
 fit <- regress(y, NPK)
 
