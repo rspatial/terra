@@ -885,7 +885,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			if (panel) {
 				#map <- leaflet::addCircleMarkers(map, data=p, label=p$label, radius=1, opacity=1, col="red")
 				map <- leaflet::addLabelOnlyMarkers(map, label=p$label, data=p, 
-                      labelOptions = leaflet::labelOptions(noHide = T, textOnly = T))
+                      labelOptions = leaflet::labelOptions(noHide = TRUE, textOnly = TRUE))
 			}
 		} else {
 			nms <- make.unique(names(x))
