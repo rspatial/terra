@@ -74,7 +74,7 @@ int nextcell_point_conv1(int nx, int ny,int x,int y,double pv,int conv_type) {
     } else {
       iout=offset(nx, ny, x, y);
     }
-    //printf("iout=%d\n",iout);
+    //Rprintf("iout=%d\n",iout);
     return(iout);
     }
   
@@ -137,7 +137,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
    
     e1=*(e+nextcell_point_conv1(nx,ny,x,y,ddp1[j],conv_type));
     e2=*(e+nextcell_point_conv1(nx,ny,x,y,ddp2[j],conv_type));
-    //printf("ba2 j=%d facet=%d i=%d e0=%f e1=%f e2=%f\n",j,facet,i,e0,e1,e2);
+    //Rprintf("ba2 j=%d facet=%d i=%d e0=%f e1=%f e2=%f\n",j,facet,i,e0,e1,e2);
     //if (std::isnan(e1) | std::isnan(e0) | e1==e0) e1=1.05*e0; 
     //if (std::isnan(e2) | std::isnan(e0) | e2==e0) e2=1.05*e0;
        
@@ -212,9 +212,9 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
         
     } else  if (slope_mgn_temp==slope_mgn) {
        
-          //printf("\n i=%d j=%d ",i,j);
-          //printf("slope_mgn_temp=%f slope_mgn=%f mean_e_temp=%f mean_e=%f",slope_mgn_temp,slope_mgn,mean_e_temp,mean_e);
-          //printf("facet=%d \n",facet); 
+          //Rprintf("\n i=%d j=%d ",i,j);
+          //Rprintf("slope_mgn_temp=%f slope_mgn=%f mean_e_temp=%f mean_e=%f",slope_mgn_temp,slope_mgn,mean_e_temp,mean_e);
+          //Rprintf("facet=%d \n",facet); 
          
          if (mean_e_temp<mean_e) {
           slope_mgn=slope_mgn_temp;
@@ -230,9 +230,9 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
         
         
      }
-   //  printf("ab i=%d x=%f y=%f j=%d e0=%f e1=%f e2=%f",i,x,y,j,e0,e1,e2);
-   //  printf("slope_mgn_temp=%f slope_mgn=%f mean_e_temp=%f mean_e=%f \n",slope_mgn_temp,slope_mgn,mean_e_temp,mean_e);
-  //   printf("facet=%d \n\n",facet); 
+   //  Rprintf("ab i=%d x=%f y=%f j=%d e0=%f e1=%f e2=%f",i,x,y,j,e0,e1,e2);
+   //  Rprintf("slope_mgn_temp=%f slope_mgn=%f mean_e_temp=%f mean_e=%f \n",slope_mgn_temp,slope_mgn,mean_e_temp,mean_e);
+  //   Rprintf("facet=%d \n\n",facet); 
      
       
     }
@@ -241,7 +241,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
     if (facet==0)  for (int j=0; j<nncell; j++){
       
       //if (ddp1[j]==1) {
-      /// printf("ba2 j=%d facet=%d i=%d e0=%f e1=%f e2=%f\n",j,facet,i,e0,e1,e2);
+      /// Rprintf("ba2 j=%d facet=%d i=%d e0=%f e1=%f e2=%f\n",j,facet,i,e0,e1,e2);
       e1=*(e+nextcell_point_conv1(nx,ny,x,y,ddp1[j],conv_type));
       e2=*(e+nextcell_point_conv1(nx,ny,x,y,ddp2[j],conv_type));
       mean_e_temp=(e0+e1+e2)/3;
@@ -300,10 +300,10 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
       *(tdc+i)=L*std::sin(*(sr+i));
       *(tdd+i)=sqrt(2)*L*std::sin(M_PI/4-*(sr+i));
     }
-   // printf("j=%d ",j);
-   //cc20260617 printf("i=%d x=%f y=%f facet=%d e0=%f e1=%f e2=%f \n",i,x,y,facet,e0,e1,e2); 
+   // Rprintf("j=%d ",j);
+   //cc20260617 Rprintf("i=%d x=%f y=%f facet=%d e0=%f e1=%f e2=%f \n",i,x,y,facet,e0,e1,e2); 
    ///ghj double slope_test=(std::atan((e1-e2)/(e0-e1)));
-   //cc20260617 printf("slope_mgn=%f   slope_test=%f e0=%f e1=%f e2=%f  \n\n",*(sm+i),*(sr+i),e0,e1,e2);
+   //cc20260617 Rprintf("slope_mgn=%f   slope_test=%f e0=%f e1=%f e2=%f  \n\n",*(sm+i),*(sr+i),e0,e1,e2);
     
     
     
@@ -322,7 +322,7 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
                           double *atdc, double *atdd, double *atdplus,double *atdplus0,
                           double *pflow,int *has_upstream,int *kupdate,double *nidps,
                           double lambda,
-                          std::vector<double> ddp1,std::vector<double> ddp2,std::vector<double> sigma,int nncell,int conv_type,int use_lad)    {   
+                          std::vector<double> ddp1,std::vector<double> ddp2,std::vector<double> sigma,int nncell,int conv_type,int use_lad,int max_iters)    {   
    
  
   int x,y;
@@ -383,7 +383,7 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
    nextp=nextcell_point_conv1(nx,ny,x,y,pflow_estimate,conv_type);
    if (nextp!=i) {
      
-     *(has_upstream+nextp)=1;
+     *(has_upstream+nextp)=1+*(has_upstream+nextp);
    }
    *(kupdate+i)=0;
   } // intialization of atdplus+i)
@@ -391,36 +391,26 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   int cnt=0;
   int cnt1=0;
  if (lambda>0) do { 
-   // for (int i = 0; i < nx*ny; i++) {
-   //   *(has_upstream+nextp)=0;
-   // }
-  // for (int i = 0; i < nx*ny; i++) {
-     // pflow_estimate=*(pflow+i);
-     // nextp=nextcell_point_conv1(nx,ny,x,y,pflow_estimate,conv_type);
-     // *(has_upstream+i)=0;
-     // if (nextp!=i) {
-     //   
-     //   *(has_upstream+nextp)=1;
-     // } else {
-     //   
-     //   //*(has_upstream+nextp)=0;
-     //   
-     //}
-     
-     // DA RIVEDERE 
-   //}
-  //NIDP(&pflow[0],nx,ny,&nidps[0]); 
-   //while ();while ();
-   // NIPD 
-   // make computation void NIDP(int* pnext, int nx, int ny,double* nidp_value) {
-   // NIDP(&pnext[0],nx,ny,&nidp_value[0]); 
+  for (int i = 0; i < nx*ny; i++) {
+     *(has_upstream+i)=0;
+  }
+  for (int i = 0; i < nx*ny; i++) {
+     x = getCol(nx, ny, i);   // ATTENTION: base 0 or 1?
+     y = getRow(nx, ny, i); 
+     pflow_estimate=*(pflow+i);
+     nextp=nextcell_point_conv1(nx,ny,x,y,pflow_estimate,conv_type);
+     if (nextp!=i) {
+        *(has_upstream+nextp)=1+*(has_upstream+nextp);
+     }
+  }
+   
   for (int j = 0; j < nx*ny; j++) {
   int i=j; 
   
   if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) cnt++; // ???
   if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) do {
     *(atdplus+j)=*(atdplus0+j); // ?????
-    
+   /// *(has_upstream+j)=-2;
     exit_cond=0;
     *(kupdate+i)=cnt;
     x = getCol(nx, ny, i);   // ATTENTION: base 0 or 1
@@ -454,8 +444,8 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       //
  
 
-    // printf("HERE!!! x=%d y=%d i=%d facet=%d e0=%f e1=%f e2=%f L=%f atdc=%f atdd=%f\n",x,y,i,facet,e0,e1,e2,L,atdplus_nextc,atdplus_nextd);
-    // printf("HERE!!! x=%d y=%d i=%d facet=%d facetc=%d facetd=%d e0=%f e1=%f e2=%f L=%f tdc=%f tdd=%f tdcs=%f tdds=%f\n",x,y,i,facet,facetc,facetd,e0,e1,e2,L,*(tdc+nextc),*(tdd+nextd),*(tdc+nextc)*sigma[facetc],*(tdd+nextd)*sigma[facetd]);
+    // Rprintf("HERE!!! x=%d y=%d i=%d facet=%d e0=%f e1=%f e2=%f L=%f atdc=%f atdd=%f\n",x,y,i,facet,e0,e1,e2,L,atdplus_nextc,atdplus_nextd);
+    // Rprintf("HERE!!! x=%d y=%d i=%d facet=%d facetc=%d facetd=%d e0=%f e1=%f e2=%f L=%f tdc=%f tdd=%f tdcs=%f tdds=%f\n",x,y,i,facet,facetc,facetd,e0,e1,e2,L,*(tdc+nextc),*(tdd+nextd),*(tdc+nextc)*sigma[facetc],*(tdd+nextd)*sigma[facetd]);
     if ((e0<=e1) & (e0>e2)) { //// pit ???  //// coorect here 20250116
         //*(atdplus+nextd)=*(atdplus+nextd)+*(atdd+i); //DA VEDERE BENE
       pflow_estimate=ddp2[facet];
@@ -484,7 +474,7 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       
       double slo1=(e0-e1)/L;
       double slo2=(e0-e2)/(L*sqrt(2));
-     // printf("HERE!!! x=%d y=%d i=%d slo1=%f slo2=%f e0=%f e1=%f e2=%f L=%f\n",x,y,i,slo1,slo2,e0,e1,e2,L);
+     // Rprintf("HERE!!! x=%d y=%d i=%d slo1=%f slo2=%f e0=%f e1=%f e2=%f L=%f\n",x,y,i,slo1,slo2,e0,e1,e2,L);
       if (slo2>=slo1) {
         pflow_estimate=ddp2[facet];
         nextq=nextpd;
@@ -499,11 +489,11 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       
       
     }
-   //21 printf("zzx i=%d pflow=%f %f\n",i,pflow_estimate,*(pflow+i));
+   //21 Rprintf("zzx i=%d pflow=%f %f\n",i,pflow_estimate,*(pflow+i));
   //  if (pflow_estimate==*(pflow+i)) {
     //  exit_cond=1;
-  //21    printf("zzz pflow=%f pfow=%f\n",pflow_estimate,*(pflow+i));
-  //21    printf("zzz i=%d nextp=%d su j=%d facet=%d \n",i,nextp,j,facet);
+  //21    Rprintf("zzz pflow=%f pfow=%f\n",pflow_estimate,*(pflow+i));
+  //21    Rprintf("zzz i=%d nextp=%d su j=%d facet=%d \n",i,nextp,j,facet);
       
  //   }  else {
       
@@ -546,8 +536,8 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
    // *(kupdate+i)=cnt; // corrected on 20260429
   //  *(kupdate+nextp)=cnt;
    //// 20241030 
-   //cc 20260617 printf("x=%d y=%d atdd=%f atdc=%f tdd=%f tdc=%f sm=%f sr=%f pflow=%f kup=%d i=%d j=%d nextp=%d\n facet=%d e0=%f e1=%f e2=%f \n",x,y,*(atdd+i),*(atdc+i),*(tdd+i),*(tdc+i),*(sm+i),*(sr+i),*(pflow+i),*(kupdate+i),i,j,nextp,facet,e0,e1,e2);
-    printf("nextq=%d nextp=%d i=%d\n",nextq,nextp,i);
+   //cc 20260617 Rprintf("x=%d y=%d atdd=%f atdc=%f tdd=%f tdc=%f sm=%f sr=%f pflow=%f kup=%d i=%d j=%d nextp=%d\n facet=%d e0=%f e1=%f e2=%f \n",x,y,*(atdd+i),*(atdc+i),*(tdd+i),*(tdc+i),*(sm+i),*(sr+i),*(pflow+i),*(kupdate+i),i,j,nextp,facet,e0,e1,e2);
+   //// Rprintf("nextq=%d nextp=%d i=%d\n",nextq,nextp,i);
     if (nextp!=i) { // 20260429
       
       i=nextp;
@@ -562,10 +552,10 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
  // }
     
     //}  else {
-    //  printf("L2 i=%d nextp=%d su j=%d facet=%f pflow=%f\n",i,nextp,j,facet,*(pflow+i));
+    //  Rprintf("L2 i=%d nextp=%d su j=%d facet=%f pflow=%f\n",i,nextp,j,facet,*(pflow+i));
   //    exit_cond=1;
   //  }
-  ///  printf("j=%d su i=%d exit_cond=%d lambda=%f facet=%d\n",j,i,exit_cond,lambda,facet);
+  ///  Rprintf("j=%d su i=%d exit_cond=%d lambda=%f facet=%d\n",j,i,exit_cond,lambda,facet);
     
   } while (exit_cond==0);
   cnt1++;
@@ -577,8 +567,8 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
     
     if (*(kupdate+j)==0) exit_cond1=0;
   }
-  if (cnt1>100) {
-    printf("\nExceeding\n");
+  if (cnt1>max_iters) {
+    Rprintf("\nExceeding\n");
     exit_cond1=2;       
     
   }
@@ -613,7 +603,7 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
 }
 
 
-void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_lad,double*pflow) {
+void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_lad,int max_iters,double*pflow) {
   //std::vector<double> pOutv(nx*ny,0);
   std::vector<int> has_upstream(nx*ny,0);
   std::vector<int> sfacet(nx*ny,0);
@@ -669,7 +659,7 @@ void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_la
   
   transverse_deviation(&e[0],&tdc[0],&tdd[0],&sr[0],&sm[0],&sfacet[0],nx,ny,L,
                        
-                       &atdc[0], &atdd[0],&atdplus[0],&atdplus0[0], &pflow[0],&has_upstream[0],&kupdate[0],&npids[0],lambda,ddp1,ddp2,sigma,nncell,conv_type,use_lad);
+                       &atdc[0], &atdd[0],&atdplus[0],&atdplus0[0], &pflow[0],&has_upstream[0],&kupdate[0],&npids[0],lambda,ddp1,ddp2,sigma,nncell,conv_type,use_lad,max_iters);
   
   
   // NOVALUE
@@ -692,7 +682,7 @@ void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_la
 
   
   
-SpatRaster  SpatRaster::d8ltd(double lambda,int use_lad,SpatOptions &opt) {
+SpatRaster  SpatRaster::d8ltd(double lambda,int use_lad,int max_iters,SpatOptions &opt) {
     // DA TESTARE
     SpatRaster out=geometry();
     //std::vector<std::string> oname="watershed";
@@ -703,12 +693,12 @@ SpatRaster  SpatRaster::d8ltd(double lambda,int use_lad,SpatOptions &opt) {
     double Ly=yres();
     double L=Lx; // to check 
 
-    //printf("nx=%d ny=%d\n",nx,ny);
+    //Rprintf("nx=%d ny=%d\n",nx,ny);
     //Rcpp::IntegerVector pOut(nx*ny);
     // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
     std::vector<double> e=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
     std::vector<double> pflow(nx*ny,0);
-    d8ltd_computation(&e[0],nx,ny,L,lambda,use_lad,&pflow[0]);
+    d8ltd_computation(&e[0],nx,ny,L,lambda,use_lad,max_iters,&pflow[0]);
     
   
     

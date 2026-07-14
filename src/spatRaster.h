@@ -886,8 +886,8 @@ class SpatRaster {
 		SpatRaster NIDP2(SpatOptions &opt); 
 		SpatRaster flowAccu2(SpatOptions &opt); 
 		SpatRaster flowAccu2_weight(SpatRaster weight,SpatOptions &opt);
-		SpatRaster d8ltd(double lambda,int use_lad,SpatOptions &opt); 
-		SpatRaster pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter, double lambda,int use_lad,
+		SpatRaster d8ltd(double lambda,int use_lad,int max_iters,SpatOptions &opt); 
+		SpatRaster pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter, double lambda,int use_lad,int max_iters,
                          double U,double D,double beta,double theta_exp, // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
                          SpatOptions &opt);
 	

@@ -125,7 +125,7 @@ void pitfiller(int nx,int ny,double ipit, double *pitf,double *e,double *eout,do
 }
   
         
-void pitfiller_all(int nx,int ny, double *pitf,double *pitftemp,double *e,double *eout,double *flowdir,int niter,double lambda,int use_lad,double L,
+void pitfiller_all(int nx,int ny, double *pitf,double *pitftemp,double *e,double *eout,double *flowdir,int niter,double lambda,int max_iters,int use_lad,double L,
                    double U,double D,double beta,double theta_exp) // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
   
                    {
@@ -187,7 +187,7 @@ void pitfiller_all(int nx,int ny, double *pitf,double *pitftemp,double *e,double
     
     
     
-    d8ltd_computation(&eout[0],nx,ny,L,lambda,use_lad,&flowdir[0]); // flow direction computation 
+    d8ltd_computation(&eout[0],nx,ny,L,lambda,use_lad,max_iters,&flowdir[0]); // flow direction computation 
     pitfinder(&flowdir[0],nx,ny,&pitftemp[0],pits_on_boundary);    ; // pit finder 
      
       
@@ -202,7 +202,7 @@ void pitfiller_all(int nx,int ny, double *pitf,double *pitftemp,double *e,double
 }
   
   
-SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter, double lambda,int use_lad,
+SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter, double lambda,int use_lad,int max_iters,
   double U,double D,double beta,double theta_exp, // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
   SpatOptions &opt) {
     // DA TESTARE
@@ -223,7 +223,7 @@ SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter
     std::vector<double> eout(nx*ny,0);
     std::vector<double> pitftemp(nx*ny,0);
     
-    pitfiller_all(nx,ny,&pitf[0],&pitftemp[0],&e[0],&eout[0],&flowdirf[0],niter,lambda,use_lad,L,
+    pitfiller_all(nx,ny,&pitf[0],&pitftemp[0],&e[0],&eout[0],&flowdirf[0],niter,lambda,use_lad,max_iters,L,
                   U,D,beta,theta_exp); // see reference doi:10.1016/j.advwatres.2006.11.016
     
     

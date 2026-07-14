@@ -7,7 +7,7 @@ Fills pits (depressions with no outlet) in a digital elevation model (DEM) using
 }
 \usage{
 \S4method{pitfiller}{SpatRaster}(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
-                 deviation_type = "lad", U = 1, D = 300, beta = 0.9,
+                 deviation_type = "lad", max_iters=10^6, U = 1, D = 300, beta = 0.9,
                  theta_exp = 0.5, filename = "", ...)
 }
 \arguments{
@@ -17,6 +17,7 @@ Fills pits (depressions with no outlet) in a digital elevation model (DEM) using
   \item{niter}{Number of iterations. Default is 10.}
   \item{lambda}{Deviation parameter. Default is 0.}
   \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowdirD8lad}}.}
+  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowdirD8lad}}.}
   \item{U}{Uplift rate. See  equation parameters [Grimaldi at al, 2007].}
   \item{D}{Diffusion coefficient. See  equation parameters [Grimaldi at al, 2007].}
   \item{beta}{Erosion coefficient. See  equation parameters [Grimaldi at al, 2007].}
