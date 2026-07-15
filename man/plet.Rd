@@ -116,24 +116,29 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 if (require(leaflet) && (packageVersion("leaflet") > "2.1.1")) {
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
-p <- spatSample(as.polygons(v, ext=T), 30)
-values(p) = data.frame(id=11:40, name=sample(letters, 30, replace=TRUE))
+p <- spatSample(as.polygons(v, ext=TRUE), 30)
+values(p) = data.frame(id=11:40, value=rep(LETTERS[1:3], 10))
 
 m <- plet(v, "NAME_1", tiles="", border="blue")
-m <- points(m, p, col="red", cex=2, popup=T)
+m <- points(m, p, col="red", cex=2, popup=TRUE)
 lines(m, v, lwd=1, col="white")
 
 # color by the values of a variable
-plet(v, tiles="") |> points(p, field="name", cex=8)
+plet(v, tiles="") |> points(p, cex=8)
+plet(v, "NAME_1", tiles="") |> points(p, field="value", cex=8, alpha=.9,
+				col=c("red", "blue", "yellow"), popup=TRUE)
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
   points(p, col="white", border="red", cex=12, popup=TRUE, lwd=3, lty="1 4",
    	clusterOptions = leaflet::markerClusterOptions())
 
+# SpatVectorCollection
+
 s <- svc(v, p)
 names(s) <- c("the polys", "set of points")
 plet(s, col=c("red", "blue"), lwd=1)
 
+# SpatRaster 
 
 r <- rast(system.file("ex/elev.tif", package="terra"))
 plet(r, main="Hi\nthere", tiles=NULL) |> lines(v, lwd=1)
