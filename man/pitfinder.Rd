@@ -31,7 +31,7 @@ A \code{\link{SpatRaster-class}} (raster) map containing values >1 for each pit 
 
 \author{
 
-Emanuele Cordano
+Emanuele Cordano (implemantation of the source code)
 }
 
 \seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{flowAccumulation}},\code{\link{NIDP}}}

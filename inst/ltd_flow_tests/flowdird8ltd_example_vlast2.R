@@ -1,3 +1,5 @@
+rm(list=ls())
+
 library(calculus)
 library(terra)
 library(stringr)
