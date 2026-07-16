@@ -43,39 +43,37 @@ setMethod("flowAccumulation", signature(x="SpatRaster"),
 )
 
 setMethod("flowDir", signature(x="SpatRaster"), 
-          function(x,lambda=0.5,deviation_type=c("ltd","lad"),max_iters=10^6,filename="", ...) { 
-            ## http://www.idrologia.unimore.it/orlandini/web-archive/seminars/nyc-2008-2.pdf
-            ## ltd least transverse deviation
-            ## lad least angular deviation
-            deviation_type=deviation_type[1]
-            use_lad=0
-            if (deviation_type=="lad") use_lad=1
-            opt <- spatOptions(filename, ...)
-          ##  uselad=0
-            x@pntr <- x@pntr$d8ltd(lambda,use_lad,max_iters,opt)
-            names(x) <- sprintf("flowdir_%s_l=%s",deviation_type[1],as.character(lambda))
-            messages(x, "flowdirD8ltd") ## EC 20210318
-          }
+	function(x, lambda=0.5, deviation_type=c("ltd","lad"), max_iters=10^6, filename="", ...) { 
+		## http://www.idrologia.unimore.it/orlandini/web-archive/seminars/nyc-2008-2.pdf
+		## ltd least transverse deviation
+		## lad least angular deviation
+		deviation_type <- match.args(tolower(deviation_type), c("ltd", "lad"))
+		use_lad <- deviation_type=="lad"
+		opt <- spatOptions(filename, ...)
+		x@pntr <- x@pntr$d8ltd(lambda, use_lad, max_iters, opt)
+		names(x) <- sprintf("flowdir_%s_l=%s", deviation_type[1], as.character(lambda))
+		messages(x, "flowDir") ## EC 20210318
+	}
 )
 
 
 setMethod("pitfiller", signature(x="SpatRaster"), 
-          function(x,pit=NULL,flowdir=NULL,niter=10,lambda=0,deviation_type="lad",max_iters=10^6,U=1,D=300,beta=0.9,theta_exp=0.5,filename="",...) { 
-           
-            if (is.null(flowdir)) flowdir <- terrain(x,"flowdir") 
-            if (is.null(pitfinder)) pit <- pitfinder(flowdir) 
-            use_lad=1
-            if (deviation_type=="ltd") use_lad=0
-            flowdir[pit>0] <- 0 
-            opt <- spatOptions(filename, ...)
-            ##  uselad=0
-            print(pit)
-            x@pntr <- x@pntr$pitfillerm(pit@pntr,flowdir@pntr,niter,lambda,use_lad,max_iters,U,D,beta,theta_exp,opt)
-            messages(x, "pitfiller") ## EC 20210318
-          }
+	function(x,pit=NULL,flowdir=NULL,niter=10,lambda=0,deviation_type="lad",max_iters=10^6,U=1,D=300,beta=0.9,theta_exp=0.5,filename="",...) { 
+	 
+		if (is.null(flowdir)) flowdir <- terrain(x,"flowdir") 
+		if (is.null(pitfinder)) pit <- pitfinder(flowdir) 
+		use_lad=1
+		if (deviation_type=="ltd") use_lad=0
+		flowdir[pit>0] <- 0 
+		opt <- spatOptions(filename, ...)
+		##  uselad=0
+		print(pit)
+		x@pntr <- x@pntr$pitfillerm(pit@pntr,flowdir@pntr,niter,lambda,use_lad,max_iters,U,D,beta,theta_exp,opt)
+		messages(x, "pitfiller") ## EC 20210318
+	}
 )
 
 
 # SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter, double lambda,int use_lad,
-#                                    double U,double D,double beta,double theta_exp, // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
+#				    double U,double D,double beta,double theta_exp, // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
 # SpatOptions &opt) {

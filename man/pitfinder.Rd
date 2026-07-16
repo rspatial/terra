@@ -5,10 +5,10 @@
 \alias{pitfinder,SpatRaster-method}
 
 
-\title{Pit Finder in a Flow Dir SpatRaster for Watershed Extraction}
+\title{Find pits (depressions with no outlet)}
 
 \description{
-find pits (depressions with no outlet )
+find pits (depressions with no outlet) using a flow direction raster, to support the delineation of catchments.
 }
 
 \usage{
@@ -16,27 +16,24 @@ find pits (depressions with no outlet )
 }
 
 \arguments{
-
-  \item{x}{SpatRaster with flow-direcion. See \code{\link{terrain}}}
+  \item{x}{SpatRaster with flow-direcion. See \code{\link{flowDir}}}
    \item{pits_on_boundary}{logical if \code{TRUE} (default) pits are considered also on the boundary. If \code{FALSE} pits are considered only within the terrain domain.}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }
 
 \value{ 
-
-A \code{\link{SpatRaster-class}} (raster) map containing values >1 for each pit   and value 0 elsewhere. 
+\code{SpatRaster} with positive integers (1, 2, 3, ...) to identify pits and zero elsewhere. 
 }
 
 
 \author{
-
-Emanuele Cordano (implemantation of the source code)
+Emanuele Cordano
 }
 
 \seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{flowAccumulation}},\code{\link{NIDP}}}
-\examples{
 
+\examples{
 ## Creation of a Digital Elevation Model 
 
 elev <- array(NA,c(9,9))
@@ -72,12 +69,6 @@ flowdir <- terrain(elev,"flowdir")
 pits <- pitfinder(flowdir)
 pits2 <- pitfinder(flowdir,pits_on_boundary=FALSE)
 plot((pits>0)==(pits2>0))
-
-
-
 }
-
-
-
 
 \keyword{spatial}

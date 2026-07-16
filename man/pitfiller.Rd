@@ -18,11 +18,11 @@ Fills pits (depressions with no outlet) in a digital elevation model (DEM) using
 \arguments{
   \item{x}{SpatRaster with digital elevation model.}
   \item{pit}{SpatRaster with pits. See \code{\link{pitfinder}}.}
-  \item{flowdir}{SpatRaster with flow direction or \code{NULL}. If \code{NULL}, it is calculated internally. See \code{\link{flowdirD8lad}}.}
+  \item{flowdir}{SpatRaster with flow direction or \code{NULL}. If \code{NULL}, it is calculated internally. See \code{\link{flowDir}}.}
   \item{niter}{Number of iterations. Default is 10.}
   \item{lambda}{Deviation parameter. Default is 0.}
-  \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowdirD8lad}}.}
-  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowdirD8lad}}.}
+  \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowDir}}.}
+  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowDir}}.}
   \item{U}{Uplift rate. See  equation parameters [Grimaldi at al, 2007].}
   \item{D}{Diffusion coefficient. See  equation parameters [Grimaldi at al, 2007].}
   \item{beta}{Erosion coefficient. See  equation parameters [Grimaldi at al, 2007].}
@@ -31,8 +31,9 @@ Fills pits (depressions with no outlet) in a digital elevation model (DEM) using
   \item{...}{Additional arguments for writing files, as in \code{\link{writeRaster}}.}
 }
 \value{
-A \code{\link{SpatRaster}} object with pits filled.
+A \code{\link{SpatRaster}} with pits filled.
 }
+
 \details{
 The PEM4PIT (Physical Erosion Model for PIT and flat areas correction) equation [Grimaldi at al, 2007] corrects DEMs by simulating erosion processes. It improves hydrologic modeling by enhancing flow direction and contributing area representation. Function is still experimental. 
 
@@ -69,12 +70,15 @@ Niemann, J. D., Bras, R. L., & Veneziano, D. (2003). A physically based interpol
 
 Niemann, J. D., Bras, R. L., Veneziano, D., & Rinaldo, A. (2001). Impacts of surface elevation on the growth and scaling properties of simulated river networks. \emph{Geomorphology}, 40(1--2), 37--55. \doi{10.1016/S0169-555X(01)00036-8}
 }
+
 \author{
 Emanuele Cordano
 }
+
 \seealso{
-\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowdirD8lad}}, \code{\link{pitfinder}}
+\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowDir}}, \code{\link{pitfinder}}
 }
+
 \examples{
 f <- system.file("ex/elev.tif", package = "terra")
 elev <- rast(f) |> project(y = "epsg:32632")
