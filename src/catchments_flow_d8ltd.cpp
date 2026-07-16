@@ -10,11 +10,9 @@
 
 // TO BE IMPLEMENTED
 
-
 #include "spatRaster.h"
 #include "NA.h"
 #include <cmath> // per la funzione pow
-#include "catchments_flow_d8ltd.h"
 #include "catchments.h"
 
 #define NODATA_2 -999999
@@ -43,10 +41,7 @@
  * 
  */
 int nextcell_point_conv1(int nx, int ny,int x,int y,double pv,int conv_type) {
-  
-  
-  
-   
+     
     std::vector<double> idir={0,1,2,4,8,16,32,64,128}; // ESRI conv: 0 cell, ... (clockwise from right) 
     int iout=offset(nx,ny,x, y);
     if (conv_type==2) {

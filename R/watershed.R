@@ -42,7 +42,7 @@ setMethod("flowAccumulation", signature(x="SpatRaster"),
     }      
 )
 
-setMethod("flowdirD8ltd", signature(x="SpatRaster"), 
+setMethod("flowDir", signature(x="SpatRaster"), 
           function(x,lambda=0.5,deviation_type=c("ltd","lad"),max_iters=10^6,filename="", ...) { 
             ## http://www.idrologia.unimore.it/orlandini/web-archive/seminars/nyc-2008-2.pdf
             ## ltd least transverse deviation
@@ -57,17 +57,6 @@ setMethod("flowdirD8ltd", signature(x="SpatRaster"),
             messages(x, "flowdirD8ltd") ## EC 20210318
           }
 )
-
-setMethod("flowdirD8lad", signature(x="SpatRaster"), 
-          function(x,lambda=0.5,deviation_type=c("lad","ltd"),max_iters=10^6,filename="",...) { 
-            ## http://www.idrologia.unimore.it/orlandini/web-archive/seminars/nyc-2008-2.pdf
-            ## ltd least transverse deviation
-            ## lad least angular deviation
-           flowdirD8ltd(x=x,lambda=lambda,deviation_type=deviation_type,max_iters=max_iters,filename=filename,...)
-          }
-)
-
-## EC 20241027
 
 
 setMethod("pitfiller", signature(x="SpatRaster"), 

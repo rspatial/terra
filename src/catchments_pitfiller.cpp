@@ -1,9 +1,5 @@
 #include "spatRaster.h"
 
-
-
-#include "catchments_pitfiller.h"
-#include "catchments_flow_d8ltd.h"
 #include "catchments.h"
 
 
