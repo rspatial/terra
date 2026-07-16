@@ -88,7 +88,7 @@ typically used to represent vector fields such as wind directions, drainage flow
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/r/graphics/arrows.html" class="external-link">arrows</a></code>, <code><a href="SpatRaster-class.html">SpatRaster</a></code>, <code><a href="terrain.html">terrain</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/r/graphics/arrows.html" class="external-link">arrows</a></code>, <code><a href="terrain.html">terrain</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -98,14 +98,10 @@ typically used to represent vector fields such as wind directions, drainage flow
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span>  <span class="op">|&gt;</span> <span class="fu"><a href="aggregate.html">aggregate</a></span><span class="op">(</span>fact<span class="op">=</span><span class="fl">2</span>,fun<span class="op">=</span><span class="va">min</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"flowdir"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>,col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">terrain.colors</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">arrows_on_rast</span><span class="op">(</span><span class="va">d</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>,col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="arrows_on_rast-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -540,8 +540,7 @@ updates/improvements on the above instructions.
 - [`flowAccumulation(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowAccumulation.md)
   : Flow accumulation
 
-- [`flowdirD8ltd(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md)
-  [`flowdirD8lad(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md)
+- [`flowDir(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md)
   : Path-Based Nondisperive Flow Direction
 
 - [`focal(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/focal.md)

@@ -26,8 +26,7 @@ pitfiller(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
 - flowdir:
 
   SpatRaster with flow direction or `NULL`. If `NULL`, it is calculated
-  internally. See
-  [`flowdirD8lad`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
+  internally. See `flowdirD8lad`.
 
 - niter:
 
@@ -39,13 +38,12 @@ pitfiller(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
 
 - deviation_type:
 
-  Type of deviation. Default is `"lad"`. See
-  [`flowdirD8lad`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
+  Type of deviation. Default is `"lad"`. See `flowdirD8lad`.
 
 - max_iters:
 
   maximum iterations for drainage path starting points detection.See
-  [`flowdirD8lad`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
+  `flowdirD8lad`.
 
 - U:
 
@@ -150,111 +148,17 @@ Emanuele Cordano
 
 [`terrain`](https://rspatial.github.io/terra/reference/terrain.md),
 [`watershed`](https://rspatial.github.io/terra/reference/watershed.md),
-[`flowdirD8lad`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md),
+`flowdirD8lad`,
 [`pitfinder`](https://rspatial.github.io/terra/reference/pitfinder.md)
 
 ## Examples
 
 ``` r
-#### PLANAR HILLSOPE WITH PIT EXAMPLE 
-
-### PLANAR HILLSLOPE CREATION
-# Parameters
-res <- 100           # resolution in meters
-size_km <- 1       # size of the area in kilometers
-size_m <- size_km * 1000  # convert to meters
-
-ncol <- size_m / res  # number of columns
-nrow <- size_m / res  # number of rows
-
-# Create an empty raster
-r <- rast(nrows = nrow, ncols = ncol,
-          xmin = 0, xmax = size_m, ymin = 0, ymax = size_m,
-          resolution = res, crs = "")
-
-# Slope angle in degrees
-slope_deg <- 20
-slope_rad <- slope_deg * pi / 180  # convert to radians
-
-# Get Y coordinates of cell centers
-y_coords <- yFromRow(r, 1:nrow)
-
-# Compute elevation: elevationkg = distance * tan(slope)
-elevation <- outer(y_coords, rep(1, ncol), function(y, x) y * tan(slope_rad))
-# Assign elevation values to raster
-values(r) <- as.vector(elevation)
-elev0 <- r 
-
-### PLANAR HILLSLOPE 
-lambda=0##
-
-flowdir0 <- flowdirD8lad(elev0, lambda = lambda)
-
-
-
-
-plot(elev0,col=rev(terrain.colors(10)))
-arrows_on_rast(flowdir0, unit="flowdir",col="black",code=2,length=0.1)
-
-#> NULL
-
-### PLANAR HILLSOPE WITH PIT 
-
-elev1 <- elev0
-elev1[47] <- elev1[47]-40 ##40
-flowdir1 <- flowdirD8ltd(elev1, lambda = lambda)
-flowdir1a <- terrain(elev1,"flowdir")
-flowdir1a[flowdir1==0] <- 0
-plot(elev1,col=rev(terrain.colors(10)))
-##plot(elev1>as.numeric(elev1[47]))
-##arrows_on_rast(flowdir1a, unit="flowdir",col="blue",code=2,length=0.1)
-arrows_on_rast(flowdir1, unit="flowdir",col="black",code=2,length=0.1)
-
-#> NULL
-
-#### PIT DETECION AND FILLING 
-
-elev <- elev1
-
-
-flowdir <- flowdirD8lad(elev, lambda = lambda)
-pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
-elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda,niter=1000)
-#> class       : SpatRaster
-#> size        : 10, 10, 1  (nrow, ncol, nlyr)
-#> resolution  : 100, 100  (x, y)
-#> extent      : 0, 1000, 0, 1000  (xmin, xmax, ymin, ymax)
-#> coord. ref. : 
-#> source(s)   : memory
-#> name        : flowdir_lad_l=0
-#> min value   :               0
-#> max value   :               2
-
-
-flowdir2 <- flowdirD8lad(elev2, lambda = lambda)
-flowdir2a <- terrain(elev2, "flowdir")
-flowdir2a[flowdir2==0] <- 0
-
-pits2 <- pitfinder(flowdir2, pits_on_boundary = FALSE)
-
-plot(elev2,col=rev(terrain.colors(10)))
-
-arrows_on_rast(flowdir2a, unit="flowdir",col="blue",code=2,length=0.1)
-#> NULL
-arrows_on_rast(flowdir2, unit="flowdir",col="black",code=2,length=0.1)
-
-#> NULL
-
-
-
-
-#### LUX DIGITAL ELEVATION MODEL 
 f <- system.file("ex/elev.tif", package = "terra")
 elev <- rast(f) |> project(y = "epsg:32632")
 
-
 lambda <- 0.5 ## try also 0 (default)
-flowdir <- flowdirD8lad(elev, lambda = lambda)
+flowdir <- flowDir(elev, lambda = lambda)
 pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
 elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
 #> class       : SpatRaster
@@ -263,7 +167,7 @@ elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
 #> extent      : 263811.2, 324029.8, 5479328, 5565024  (xmin, xmax, ymin, ymax)
 #> coord. ref. : WGS 84 / UTM zone 32N (EPSG:32632)
 #> source(s)   : memory
-#> name        : flowdir_lad_l=0.5
+#> name        : flowdir_ltd_l=0.5
 #> min value   :                 0
 #> max value   :               112
 #> 
@@ -287,8 +191,6 @@ elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
 #> 
 #> Exceeding number of iterations in d8ltd/d8lad flow directions computation
 flowdir2 <- terrain(elev2, "flowdir")
-flowdir2 <- flowdirD8lad(elev2, lambda = lambda)
+flowdir2 <- flowDir(elev2, lambda = lambda)
 pits2 <- pitfinder(flowdir, pits_on_boundary = FALSE)
-
-
 ```

@@ -74,7 +74,6 @@ Emanuele Cordano
 ## See also
 
 [`arrows`](https://rdrr.io/r/graphics/arrows.html),
-[`SpatRaster`](https://rspatial.github.io/terra/reference/SpatRaster-class.md),
 [`terrain`](https://rspatial.github.io/terra/reference/terrain.md)
 
 ## Examples
@@ -85,11 +84,8 @@ f <- system.file("ex/elev_vinschgau.tif", package="terra")
 r <- rast(f)  |> aggregate(fact=2,fun=min)
 d <- terrain(r, "flowdir")
 
-
 plot(r,col=terrain.colors(10))
 arrows_on_rast(d, unit="flowdir",col="black")
 
 #> NULL
-
-
 ```

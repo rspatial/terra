@@ -49,11 +49,19 @@ SpatRasterDataset
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 p <- wrap(v)
-#> Error in paste0("(", x, ")"): non-string argument to .Internal(paste0)
 p
-#> Error: object 'p' not found
+#> [1] "This is a PackedSpatVector object. Use 'terra::unwrap()' to unpack it"
 vv <- vect(p)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'vect': object 'p' not found
 vv
-#> Error: object 'vv' not found
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 12, 6  (geometries, attributes)
+#> extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP
+#> type        : <num>    <chr> <num>    <chr> <num> <num>
+#> values      :     1 Diekirch     1 Clervaux   312 18081
+#>                   1 Diekirch     2 Diekirch   218 32543
+#>                   1 Diekirch     3  Redange   259 18664
+#>               ...
 ```

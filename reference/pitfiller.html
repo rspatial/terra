@@ -56,7 +56,7 @@
 <dd><p>SpatRaster with pits. See <code><a href="pitfinder.html">pitfinder</a></code>.</p></dd>
 
   <dt id="arg-flowdir">flowdir<a class="anchor" aria-label="anchor" href="#arg-flowdir"></a></dt>
-<dd><p>SpatRaster with flow direction or <code>NULL</code>. If <code>NULL</code>, it is calculated internally. See <code><a href="flowdirD8ltd.html">flowdirD8lad</a></code>.</p></dd>
+<dd><p>SpatRaster with flow direction or <code>NULL</code>. If <code>NULL</code>, it is calculated internally. See <code>flowdirD8lad</code>.</p></dd>
 
   <dt id="arg-niter">niter<a class="anchor" aria-label="anchor" href="#arg-niter"></a></dt>
 <dd><p>Number of iterations. Default is 10.</p></dd>
@@ -65,10 +65,10 @@
 <dd><p>Deviation parameter. Default is 0.</p></dd>
 
   <dt id="arg-deviation-type">deviation_type<a class="anchor" aria-label="anchor" href="#arg-deviation-type"></a></dt>
-<dd><p>Type of deviation. Default is <code>"lad"</code>. See <code><a href="flowdirD8ltd.html">flowdirD8lad</a></code>.</p></dd>
+<dd><p>Type of deviation. Default is <code>"lad"</code>. See <code>flowdirD8lad</code>.</p></dd>
 
   <dt id="arg-max-iters">max_iters<a class="anchor" aria-label="anchor" href="#arg-max-iters"></a></dt>
-<dd><p>maximum iterations for drainage path starting points detection.See <code><a href="flowdirD8ltd.html">flowdirD8lad</a></code>.</p></dd>
+<dd><p>maximum iterations for drainage path starting points detection.See <code>flowdirD8lad</code>.</p></dd>
 
   <dt id="arg-u">U<a class="anchor" aria-label="anchor" href="#arg-u"></a></dt>
 <dd><p>Uplift rate. See  equation parameters [Grimaldi at al, 2007].</p></dd>
@@ -122,110 +122,16 @@
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="terrain.html">terrain</a></code>, <code><a href="watershed.html">watershed</a></code>, <code><a href="flowdirD8ltd.html">flowdirD8lad</a></code>, <code><a href="pitfinder.html">pitfinder</a></code></p></div>
+    <div class="dont-index"><p><code><a href="terrain.html">terrain</a></code>, <code><a href="watershed.html">watershed</a></code>, <code>flowdirD8lad</code>, <code><a href="pitfinder.html">pitfinder</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#### PLANAR HILLSOPE WITH PIT EXAMPLE </span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">### PLANAR HILLSLOPE CREATION</span></span></span>
-<span class="r-in"><span><span class="co"># Parameters</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fl">100</span>           <span class="co"># resolution in meters</span></span></span>
-<span class="r-in"><span><span class="va">size_km</span> <span class="op">&lt;-</span> <span class="fl">1</span>       <span class="co"># size of the area in kilometers</span></span></span>
-<span class="r-in"><span><span class="va">size_m</span> <span class="op">&lt;-</span> <span class="va">size_km</span> <span class="op">*</span> <span class="fl">1000</span>  <span class="co"># convert to meters</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ncol</span> <span class="op">&lt;-</span> <span class="va">size_m</span> <span class="op">/</span> <span class="va">res</span>  <span class="co"># number of columns</span></span></span>
-<span class="r-in"><span><span class="va">nrow</span> <span class="op">&lt;-</span> <span class="va">size_m</span> <span class="op">/</span> <span class="va">res</span>  <span class="co"># number of rows</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create an empty raster</span></span></span>
-<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="va">nrow</span>, ncols <span class="op">=</span> <span class="va">ncol</span>,</span></span>
-<span class="r-in"><span>          xmin <span class="op">=</span> <span class="fl">0</span>, xmax <span class="op">=</span> <span class="va">size_m</span>, ymin <span class="op">=</span> <span class="fl">0</span>, ymax <span class="op">=</span> <span class="va">size_m</span>,</span></span>
-<span class="r-in"><span>          resolution <span class="op">=</span> <span class="va">res</span>, crs <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Slope angle in degrees</span></span></span>
-<span class="r-in"><span><span class="va">slope_deg</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></span>
-<span class="r-in"><span><span class="va">slope_rad</span> <span class="op">&lt;-</span> <span class="va">slope_deg</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">/</span> <span class="fl">180</span>  <span class="co"># convert to radians</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Get Y coordinates of cell centers</span></span></span>
-<span class="r-in"><span><span class="va">y_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="xyCellFrom.html">yFromRow</a></span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span><span class="op">:</span><span class="va">nrow</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Compute elevation: elevationkg = distance * tan(slope)</span></span></span>
-<span class="r-in"><span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/outer.html" class="external-link">outer</a></span><span class="op">(</span><span class="va">y_coords</span>, <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">ncol</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="va">y</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">tan</a></span><span class="op">(</span><span class="va">slope_rad</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Assign elevation values to raster</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="coerce.html">as.vector</a></span><span class="op">(</span><span class="va">elevation</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">elev0</span> <span class="op">&lt;-</span> <span class="va">r</span> </span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">### PLANAR HILLSLOPE </span></span></span>
-<span class="r-in"><span><span class="va">lambda</span><span class="op">=</span><span class="fl">0</span><span class="co">##</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">flowdir0</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowdirD8lad</a></span><span class="op">(</span><span class="va">elev0</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">elev0</span>,col<span class="op">=</span><span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">terrain.colors</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="arrows_on_rast.html">arrows_on_rast</a></span><span class="op">(</span><span class="va">flowdir0</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>,col<span class="op">=</span><span class="st">"black"</span>,code<span class="op">=</span><span class="fl">2</span>,length<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="pitfiller-1.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">### PLANAR HILLSOPE WITH PIT </span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">elev1</span> <span class="op">&lt;-</span> <span class="va">elev0</span></span></span>
-<span class="r-in"><span><span class="va">elev1</span><span class="op">[</span><span class="fl">47</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">elev1</span><span class="op">[</span><span class="fl">47</span><span class="op">]</span><span class="op">-</span><span class="fl">40</span> <span class="co">##40</span></span></span>
-<span class="r-in"><span><span class="va">flowdir1</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowdirD8ltd</a></span><span class="op">(</span><span class="va">elev1</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">flowdir1a</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev1</span>,<span class="st">"flowdir"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">flowdir1a</span><span class="op">[</span><span class="va">flowdir1</span><span class="op">==</span><span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">elev1</span>,col<span class="op">=</span><span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">terrain.colors</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">##plot(elev1&gt;as.numeric(elev1[47]))</span></span></span>
-<span class="r-in"><span><span class="co">##arrows_on_rast(flowdir1a, unit="flowdir",col="blue",code=2,length=0.1)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="arrows_on_rast.html">arrows_on_rast</a></span><span class="op">(</span><span class="va">flowdir1</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>,col<span class="op">=</span><span class="st">"black"</span>,code<span class="op">=</span><span class="fl">2</span>,length<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="pitfiller-2.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#### PIT DETECION AND FILLING </span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">elev</span> <span class="op">&lt;-</span> <span class="va">elev1</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">flowdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowdirD8lad</a></span><span class="op">(</span><span class="va">elev</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">elev2</span> <span class="op">&lt;-</span> <span class="fu">pitfiller</span><span class="op">(</span>x <span class="op">=</span> <span class="va">elev</span>, pit <span class="op">=</span> <span class="va">pits</span>,lambda<span class="op">=</span><span class="va">lambda</span>,niter<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> size        : 10, 10, 1  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 100, 100  (x, y)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 1000, 0, 1000  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : flowdir_lad_l=0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :               0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :               2</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowdirD8lad</a></span><span class="op">(</span><span class="va">elev2</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">flowdir2a</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev2</span>, <span class="st">"flowdir"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">flowdir2a</span><span class="op">[</span><span class="va">flowdir2</span><span class="op">==</span><span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">pits2</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir2</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">elev2</span>,col<span class="op">=</span><span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">terrain.colors</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="arrows_on_rast.html">arrows_on_rast</a></span><span class="op">(</span><span class="va">flowdir2a</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>,col<span class="op">=</span><span class="st">"blue"</span>,code<span class="op">=</span><span class="fl">2</span>,length<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"><span><span class="fu"><a href="arrows_on_rast.html">arrows_on_rast</a></span><span class="op">(</span><span class="va">flowdir2</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>,col<span class="op">=</span><span class="st">"black"</span>,code<span class="op">=</span><span class="fl">2</span>,length<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="pitfiller-3.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#### LUX DIGITAL ELEVATION MODEL </span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">elev</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"epsg:32632"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co">## try also 0 (default)</span></span></span>
-<span class="r-in"><span><span class="va">flowdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowdirD8lad</a></span><span class="op">(</span><span class="va">elev</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">flowdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowDir</a></span><span class="op">(</span><span class="va">elev</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">elev2</span> <span class="op">&lt;-</span> <span class="fu">pitfiller</span><span class="op">(</span>x <span class="op">=</span> <span class="va">elev</span>, pit <span class="op">=</span> <span class="va">pits</span>,lambda<span class="op">=</span><span class="va">lambda</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
@@ -234,7 +140,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 263811.2, 324029.8, 5479328, 5565024  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : WGS 84 / UTM zone 32N (EPSG:32632)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : flowdir_lad_l=0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : flowdir_ltd_l=0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   :               112</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -258,11 +164,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
 <span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev2</span>, <span class="st">"flowdir"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowdirD8lad</a></span><span class="op">(</span><span class="va">elev2</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowdirD8ltd.html">flowDir</a></span><span class="op">(</span><span class="va">elev2</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pits2</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
