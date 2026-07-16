@@ -1,4 +1,5 @@
 \docType{methods}
+
 \name{flowdir}
 
 \alias{flowDir}
@@ -8,17 +9,17 @@
 
 \description{
 Computes non-disperive flow/draiage direction according to path-based methods over grid-based digital elevation models. 
+This is an alternative to \code{\link{terrain}(v="flowdir")}.
 }
 
 \usage{
 \S4method{flowDir}{SpatRaster}(x, lambda=0.5, deviation_type=c("ltd","lad"), max_iters=10^6, filename="", ...) 
 }
 
-
 \arguments{
-  \item{x}{SpatRaster with elevation data, see \code{\link{terrain}}. }
-  \item{lambda}{Parameter between 0 and 1.}  
-  \item{deviation_type}{Character. Default is the first element of \code{=c("ltd","lad")}. If \code{"ltd"} (default) flow direction dispersion is deteceted with LTD criterion, if \code{"lad"} flow direction dispersion is deteceted with LTD criterion. See Orlandini et al., 2003 for details.}  
+  \item{x}{SpatRaster with elevation data}
+  \item{lambda}{Parameter between 0 and 1}  
+  \item{deviation_type}{Character. Default is the first element of \code{=c("ltd","lad")}. If \code{"ltd"} (default) flow direction dispersion is deteceted with LTD criterion, if \code{"lad"} flow direction dispersion is deteceted with LTD criterion. See Orlandini et al., 2003 for details}  
   \item{max_iters}{maximum iterations for drainage path starting points detection}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -29,17 +30,16 @@ SpatRaster
 }
 
 \details{
-The algorithm is an adaptation of the one proposed by Li et al, 2021 and Orlandini et al,2003
+The algorithm is an adaptation of the one proposed by Li et al, 2021 and Orlandini et al, 2003
 This function is experimental and under development: results are to be verified. 
 }
 
-\seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{flowAccumulation}}}
+\seealso{\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowAccumulation}}}
+
 
 \author{
-Zhenya Li at al, Stefano Orlandini at al. , Emanuele Cordano (R/C/C++ code implemetation)
+Emanuele Cordano
 }
-
-
 
 \references{
 
