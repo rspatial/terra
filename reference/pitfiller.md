@@ -26,7 +26,8 @@ pitfiller(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
 - flowdir:
 
   SpatRaster with flow direction or `NULL`. If `NULL`, it is calculated
-  internally. See `flowdirD8lad`.
+  internally. See
+  [`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
 
 - niter:
 
@@ -38,12 +39,13 @@ pitfiller(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
 
 - deviation_type:
 
-  Type of deviation. Default is `"lad"`. See `flowdirD8lad`.
+  Type of deviation. Default is `"lad"`. See
+  [`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
 
 - max_iters:
 
   maximum iterations for drainage path starting points detection.See
-  `flowdirD8lad`.
+  [`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
 
 - U:
 
@@ -76,7 +78,7 @@ pitfiller(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
 
 A
 [`SpatRaster`](https://rspatial.github.io/terra/reference/SpatRaster-class.md)
-object with pits filled.
+with pits filled.
 
 ## Details
 
@@ -148,7 +150,7 @@ Emanuele Cordano
 
 [`terrain`](https://rspatial.github.io/terra/reference/terrain.md),
 [`watershed`](https://rspatial.github.io/terra/reference/watershed.md),
-`flowdirD8lad`,
+[`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md),
 [`pitfinder`](https://rspatial.github.io/terra/reference/pitfinder.md)
 
 ## Examples
@@ -159,38 +161,15 @@ elev <- rast(f) |> project(y = "epsg:32632")
 
 lambda <- 0.5 ## try also 0 (default)
 flowdir <- flowDir(elev, lambda = lambda)
+#> Error in match.args(tolower(deviation_type), c("ltd", "lad")): could not find function "match.args"
 pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'pitfinder': object 'flowdir' not found
 elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
-#> class       : SpatRaster
-#> size        : 111, 78, 1  (nrow, ncol, nlyr)
-#> resolution  : 772.033, 772.033  (x, y)
-#> extent      : 263811.2, 324029.8, 5479328, 5565024  (xmin, xmax, ymin, ymax)
-#> coord. ref. : WGS 84 / UTM zone 32N (EPSG:32632)
-#> source(s)   : memory
-#> name        : flowdir_ltd_l=0.5
-#> min value   :                 0
-#> max value   :               112
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
-#> 
-#> Exceeding number of iterations in d8ltd/d8lad flow directions computation
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'i' in selecting a method for function '[<-': object 'pits' not found
 flowdir2 <- terrain(elev2, "flowdir")
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'terrain': object 'elev2' not found
 flowdir2 <- flowDir(elev2, lambda = lambda)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'flowDir': object 'elev2' not found
 pits2 <- pitfinder(flowdir, pits_on_boundary = FALSE)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'pitfinder': object 'flowdir' not found
 ```

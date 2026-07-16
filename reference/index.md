@@ -764,7 +764,7 @@
   : Pit Filler
 
 - [`pitfinder(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/pitfinder.md)
-  : Pit Finder in a Flow Dir SpatRaster for Watershed Extraction
+  : Find pits (depressions with no outlet)
 
 - [`plet(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
   [`plet(`*`<SpatRasterCollection>`*`)`](https://rspatial.github.io/terra/reference/plet.md)
