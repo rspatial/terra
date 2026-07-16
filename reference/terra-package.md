@@ -201,7 +201,7 @@ Also see the methods in section VIII
 | [`watershed`](https://rspatial.github.io/terra/reference/watershed.md) | Watersheds from flow directions |
 | [`flowAccumulation`](https://rspatial.github.io/terra/reference/flowAccumulation.md) | Flow accumulation from flow directions |
 | [`pitfinder`](https://rspatial.github.io/terra/reference/pitfinder.md) | Find pits in elevation |
-| [`NIDP`](https://rspatial.github.io/terra/reference/NIPD.md) | Immediate upstream flow counts |
+| [`NIDP`](https://rspatial.github.io/terra/reference/NIDP.md) | Immediate upstream flow counts |
 | ————————— | —————————————————————————————— |
 
 ## VI. Model predictions

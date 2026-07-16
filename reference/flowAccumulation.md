@@ -37,12 +37,12 @@ SpatRaster
 
 ## Details
 
-The algorithm is an adaptation of the one proposed by Zhou at al, 2019.
+The algorithm is an adaptation of the one proposed by Zhou et al., 2019.
 
 ## See also
 
 [`terrain`](https://rspatial.github.io/terra/reference/terrain.md),[`watershed`](https://rspatial.github.io/terra/reference/watershed.md),
-[`NIDP`](https://rspatial.github.io/terra/reference/NIPD.md)
+[`NIDP`](https://rspatial.github.io/terra/reference/NIDP.md)
 
 ## Author
 

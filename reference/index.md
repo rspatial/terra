@@ -6,7 +6,7 @@
   [`` `NAflag<-`( ``*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/NAflag.md)
   : Set the NA flag
 
-- [`NIDP(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/NIPD.md)
+- [`NIDP(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/NIDP.md)
   : Number of immediate adjacent cells flowing into each cell
 
 - [`RGB(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/RGB.md)
