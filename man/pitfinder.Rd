@@ -23,7 +23,7 @@ Find pits (depressions with no outlet)
 
 \value{ 
 
-A \code{\link{SpatRaster-class}} (raster) map containing value 1 for the pits and value 0 elsewhere. 
+A \code{\link{SpatRaster-class}} (raster) map containing values >1 for each pit and value 0 elsewhere. 
 }
 
 
