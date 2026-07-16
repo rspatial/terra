@@ -120,6 +120,9 @@
   [`Arith,matrix,SpatRaster-method`](https://rspatial.github.io/terra/reference/arith-generic.md)
   : Arithmetic
 
+- [`arrows_on_rast()`](https://rspatial.github.io/terra/reference/arrows_on_rast.md)
+  : Visualize Directional Arrows on a SpatRaster
+
 - [`as.character(`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/as.character.md)
   [`as.character(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/as.character.md)
   : Create a text representation of (the skeleton of) an object
@@ -430,6 +433,10 @@
 
 - [`flowAccumulation(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowAccumulation.md)
   : Flow accumulation
+
+- [`flowdirD8ltd(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md)
+  [`flowdirD8lad(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md)
+  : Path-Based Nondisperive Flow Direction
 
 - [`focal(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/focal.md)
   : Focal values
@@ -753,6 +760,9 @@
 
 - [`persp(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/persp.md)
   : Perspective plot
+
+- [`pitfiller(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/pitfiller.md)
+  : Pit Filler
 
 - [`pitfinder(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/pitfinder.md)
   : Pit Finder in a Flow Dir SpatRaster for Watershed Extraction

@@ -25,6 +25,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/approximate.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/ar_info.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/arith-generic.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/arrows_on_rast.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.character.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.data.frame.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/as.lines.html</loc></url>
@@ -94,6 +95,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/fillTime.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/flip.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/flowAccumulation.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/flowdirD8ltd.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/focal.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/focal3D.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/focalCpp.html</loc></url>
@@ -170,6 +172,7 @@
 <url><loc>https://rspatial.github.io/terra/reference/patches.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/perim.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/persp.html</loc></url>
+<url><loc>https://rspatial.github.io/terra/reference/pitfiller.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/pitfinder.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/plet.html</loc></url>
 <url><loc>https://rspatial.github.io/terra/reference/plot.html</loc></url>
