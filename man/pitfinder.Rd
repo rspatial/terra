@@ -31,22 +31,20 @@ find pits (depressions with no outlet) using a flow direction raster, to support
 Emanuele Cordano
 }
 
-\seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{flowAccumulation}},\code{\link{NIDP}}}
-
+\seealso{\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowAccumulation}}, \code{\link{NIDP}}}
 \examples{
-## Creation of a Digital Elevation Model 
+## example elevation data
 
 elev <- array(NA,c(9,9))
 dx <- 1
 dy <- 1 
 for (r in 1:nrow(elev)) {
-  x <- (r-5)*dx
-  for (c in 1:ncol(elev)) {
-    
-    y <- (c-5)*dy
-    elev[r,c] <- 10+5*(x^2+y^2)
+	x <- (r-5)*dx
+	for (c in 1:ncol(elev)) {
+		y <- (c-5)*dy
+		elev[r,c] <- 10+5*(x^2+y^2)
     }
-  } 
+} 
   
 elev <- cbind(elev,elev,elev,elev) 
 elev <- rbind(elev,elev,elev,elev) 
@@ -57,17 +55,16 @@ elev <- rast(elev)
 flowdir<- terrain(elev,v="flowdir")
 t(array(flowdir[],rev(dim(flowdir)[1:2])))
 
-## Pit Detect
-
+## detect pits
 pits <- pitfinder(flowdir)
 
 ## Application with example DEM
 
 elev <- rast(system.file('ex/elev.tif',package="terra"))
-flowdir <- terrain(elev,"flowdir")
+flowdir <- terrain(elev, "flowdir")
 
 pits <- pitfinder(flowdir)
-pits2 <- pitfinder(flowdir,pits_on_boundary=FALSE)
+pits2 <- pitfinder(flowdir, pits_on_boundary=FALSE)
 plot((pits>0)==(pits2>0))
 }
 
