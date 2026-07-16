@@ -6,7 +6,7 @@
 \title{Pit Filler}
 
 \description{
-Fills pits (depressions with no outlet) in a digital elevation model (DEM) using the PEM4PIT terrain erosion model.
+Fills pits (depressions with no outlet) in a elevation raster using the PEM4PIT terrain erosion model.
 }
 
 \usage{
@@ -16,20 +16,21 @@ Fills pits (depressions with no outlet) in a digital elevation model (DEM) using
 }
 
 \arguments{
-  \item{x}{SpatRaster with digital elevation model.}
-  \item{pit}{SpatRaster with pits. See \code{\link{pitfinder}}.}
-  \item{flowdir}{SpatRaster with flow direction or \code{NULL}. If \code{NULL}, it is calculated internally. See \code{\link{flowDir}}.}
-  \item{niter}{Number of iterations. Default is 10.}
-  \item{lambda}{Deviation parameter. Default is 0.}
-  \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowDir}}.}
-  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowDir}}.}
-  \item{U}{Uplift rate. See  equation parameters [Grimaldi at al, 2007].}
-  \item{D}{Diffusion coefficient. See  equation parameters [Grimaldi at al, 2007].}
-  \item{beta}{Erosion coefficient. See  equation parameters [Grimaldi at al, 2007].}
-  \item{theta_exp}{Exponent for contributing area. See  equation parameters [Grimaldi at al, 2007].}
-  \item{filename}{Character. Output filename.}
-  \item{...}{Additional arguments for writing files, as in \code{\link{writeRaster}}.}
+  \item{x}{SpatRaster with elevation values}
+  \item{pit}{SpatRaster with pits. See \code{\link{pitfinder}}}
+  \item{flowdir}{SpatRaster with flow direction or \code{NULL}. If \code{NULL}, it is calculated internally. See \code{\link{flowDir}}}
+  \item{niter}{Number of iterations. Default is 10}
+  \item{lambda}{Deviation parameter. Default is 0}
+  \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowDir}}}
+  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowDir}}}
+  \item{U}{Uplift rate. See Details}
+  \item{D}{Diffusion coefficient. See Details}
+  \item{beta}{Erosion coefficient. See Details}
+  \item{theta_exp}{Exponent for contributing area. See Details}
+  \item{filename}{Character. Output filename}
+  \item{...}{Additional arguments for writing files, as in \code{\link{writeRaster}}}
 }
+
 \value{
 A \code{\link{SpatRaster}} with pits filled.
 }

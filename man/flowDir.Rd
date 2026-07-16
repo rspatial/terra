@@ -11,12 +11,12 @@ Computes non-disperive flow/draiage direction according to path-based methods ov
 }
 
 \usage{
-\S4method{flowDir}{SpatRaster}(x, lambda=0.5, deviation_type=c("ltd","lad"), max_iters=10^6,filename="", ...) 
+\S4method{flowDir}{SpatRaster}(x, lambda=0.5, deviation_type=c("ltd","lad"), max_iters=10^6, filename="", ...) 
 }
 
 
 \arguments{
-  \item{x}{SpatRaster with elevation/terrain model , see \code{\link{terrain}}. }
+  \item{x}{SpatRaster with elevation data, see \code{\link{terrain}}. }
   \item{lambda}{Parameter between 0 and 1.}  
   \item{deviation_type}{Character. Default is the first element of \code{=c("ltd","lad")}. If \code{"ltd"} (default) flow direction dispersion is deteceted with LTD criterion, if \code{"lad"} flow direction dispersion is deteceted with LTD criterion. See Orlandini et al., 2003 for details.}  
   \item{max_iters}{maximum iterations for drainage path starting points detection}
