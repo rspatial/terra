@@ -21,10 +21,10 @@ Authors@R: c(
 			email="r.hijmans@gmail.com", comment=c(ORCID="0000-0001-5872-2872")),			
     person("Andrew", "Brown", role="aut", comment=c(ORCID="0000-0002-4565-533X")),
     person("Márcia", "Barbosa", role="aut", comment=c(ORCID="0000-0001-8972-7713")),
-    person("Krzysztof", "Dyba", role="ctb", comment=c(ORCID="0000-0002-8614-3816")),
+    person("Emanuele", "Cordano", role="aut",comment=c(ORCID="0000-0002-3508-5898")),
+    person("Krzysztof", "Dyba", role="aut", comment=c(ORCID="0000-0002-8614-3816")),
     person("Roger", "Bivand", role="ctb", comment=c(ORCID="0000-0003-2392-6140")),
     person("Michael", "Chirico", role="ctb", comment=c(ORCID="0000-0003-0787-087X")),
-    person("Emanuele", "Cordano", role="ctb",comment=c(ORCID="0000-0002-3508-5898")),
     person("Edzer", "Pebesma", role="ctb", comment=c(ORCID="0000-0001-8049-7069")),
     person("Barry", "Rowlingson", role="ctb", comment=c(ORCID="0000-0002-8586-6625")),
     person("Michael D.", "Sumner", role="ctb", comment=c(ORCID="0000-0002-2471-7511")))
