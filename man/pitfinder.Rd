@@ -12,11 +12,13 @@ Find pits (depressions with no outlet)
 }
 
 \usage{
-\S4method{pitfinder}{SpatRaster}(x,filename="",...) 
+\S4method{pitfinder}{SpatRaster}(x,pits_on_boundary=TRUE,filename="",...) 
 }
 
 \arguments{
-  \item{x}{SpatRaster with flow-direction. See \code{\link{terrain}}}
+
+  \item{x}{SpatRaster with flow-direcion. See \code{\link{terrain}}}
+   \item{pits_on_boundary}{logical if \code{TRUE} (default) pits are considered also on the boundary. If \code{FALSE} pits are considered only within the terrain domain.}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }
@@ -29,7 +31,7 @@ A \code{\link{SpatRaster-class}} (raster) map containing values >1 for each pit 
 
 \author{
 
-Emanuele Cordano
+Emanuele Cordano (implemantation of the source code)
 }
 
 \seealso{\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowAccumulation}}, \code{\link{NIDP}}}
@@ -68,8 +70,8 @@ elev <- rast(system.file('ex/elev.tif',package="terra"))
 flowdir <- terrain(elev,"flowdir")
 
 pits <- pitfinder(flowdir)
-
-
+pits2 <- pitfinder(flowdir,pits_on_boundary=FALSE)
+plot((pits>0)==(pits2>0))
 
 
 

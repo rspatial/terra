@@ -427,12 +427,8 @@ SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
 /// PITFINDER 
 
 // void watershed_v2(int* p, int nx, int ny, int x, int y, int* pOut)
-void pitfinder(double* p, int nx, int ny, double* pOut) {
-  //int* q;           // A pointer to a queue of raster cells (offset in memory) to be processed
-  //  int qSize = 50;   // Starting queue size, that can be dinamically incremented if needed
-  //int delta;        // Offset in memory from base queue address of a raster cell
-  //int n = 0;        // Number of raster cells to be processed in queue
-  //  int nLoop = 0;    // Counter for loops over cells
+void pitfinder(double* p, int nx, int ny, double* pOut,int pits_on_boundary)  {
+ 
   int x,y;
   int cnt=1;
   //  int pdown;
@@ -469,7 +465,13 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
   
 //  printf("BEFORE n=%d and size(n)=%d\n", n, sizeof(n));
   for (int i = 0; i < nx*ny; i++) {
-    *(pOut+i)=0;
+    
+    if (pits_on_boundary==0){
+      *(pOut+i)=*(p+i)*0; //20241106
+    } else {
+      *(pOut+i)=0;
+    }
+    
     
   }  
   for (int i = 0; i < nx*ny; i++) {
@@ -505,7 +507,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
           cnt++;
+       
         }
+      
       // *(pOut+i)=1;   // TO COMMENT          
       } 
     } else if (*(p+i) == 2) {
@@ -519,7 +523,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
           cnt++;
+       
         }
+      
       // *(pOut+i)=1;   // TO COMMENT 
       } 
             
@@ -535,7 +541,10 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
         cnt++;
+       
         }
+        
+    
         // *(pOut+i)=1;   // TO COMMENT 
       } 
             
@@ -550,7 +559,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
           cnt++;
+      
         }
+
         // *(pOut+i)=1;   // TO COMMENT 
       } 
     } else if (*(p+i) == 16) {
@@ -564,7 +575,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
           cnt++;
+       
         }
+
         // *(pOut+i)=1;   // TO COMMENT 
       } 
     } else if (*(p+i) == 32) {
@@ -578,7 +591,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
          *(pOut+i)=(double)cnt;
          cnt++;
+       
         }
+
         // *(pOut+i)=1;   // TO COMMENT 
         
       } 
@@ -593,7 +608,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
           cnt++;
-        }
+       
+        } 
+
       } 
     } else if (*(p+i) == 128) {
       // if (inRaster(nx, ny, x + 1, y-1)) {
@@ -606,7 +623,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
           cnt++;
-        } 
+       
+        }
+ 
        
       } 
     } else if (*(p+i)==0){
@@ -638,10 +657,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
 
 
 
-
 // TO INSERT::: std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
 //Rcpp::IntegerVector SpatRaster::watershed2(int pp_offset,SpatOptions opt) {
-SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
+SpatRaster  SpatRaster::pitfinder2(int pits_on_boundary, SpatOptions &opt) {
   // DA TESTARE
   SpatRaster out=geometry();
   //std::vector<std::string> oname="watershed";
@@ -669,7 +687,7 @@ SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
   
   
   ///see
-  pitfinder(&p[0],nx,ny,&pOutv[0]);
+  pitfinder(&p[0],nx,ny,&pOutv[0],pits_on_boundary);
   if (!out.writeStart(opt,filenames())) {
     readStop();
     return out;
@@ -683,7 +701,8 @@ SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
   
 }
 
-
+// =======
+//   >>>>>>> db96607c952c45e4f28d8aec867469757effb9f2:src/catchments.cpp
 
 ///////////////////////////////////////
 //// flow accumulation functions //////
