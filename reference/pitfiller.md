@@ -1,7 +1,7 @@
 # Pit Filler
 
-Fills pits (depressions with no outlet) in a digital elevation model
-(DEM) using the PEM4PIT terrain erosion model.
+Fills pits (depressions with no outlet) in a elevation raster using the
+PEM4PIT terrain erosion model.
 
 ## Usage
 
@@ -16,63 +16,61 @@ pitfiller(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
 
 - x:
 
-  SpatRaster with digital elevation model.
+  SpatRaster with elevation values
 
 - pit:
 
   SpatRaster with pits. See
-  [`pitfinder`](https://rspatial.github.io/terra/reference/pitfinder.md).
+  [`pitfinder`](https://rspatial.github.io/terra/reference/pitfinder.md)
 
 - flowdir:
 
   SpatRaster with flow direction or `NULL`. If `NULL`, it is calculated
   internally. See
-  [`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
+  [`flowDir`](https://rspatial.github.io/terra/reference/flowDir.md)
 
 - niter:
 
-  Number of iterations. Default is 10.
+  Number of iterations. Default is 10
 
 - lambda:
 
-  Deviation parameter. Default is 0.
+  Deviation parameter. Default is 0
 
 - deviation_type:
 
   Type of deviation. Default is `"lad"`. See
-  [`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
+  [`flowDir`](https://rspatial.github.io/terra/reference/flowDir.md)
 
 - max_iters:
 
   maximum iterations for drainage path starting points detection.See
-  [`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md).
+  [`flowDir`](https://rspatial.github.io/terra/reference/flowDir.md)
 
 - U:
 
-  Uplift rate. See equation parameters \[Grimaldi at al, 2007\].
+  Uplift rate. See Details
 
 - D:
 
-  Diffusion coefficient. See equation parameters \[Grimaldi at al,
-  2007\].
+  Diffusion coefficient. See Details
 
 - beta:
 
-  Erosion coefficient. See equation parameters \[Grimaldi at al, 2007\].
+  Erosion coefficient. See Details
 
 - theta_exp:
 
-  Exponent for contributing area. See equation parameters \[Grimaldi at
-  al, 2007\].
+  Exponent for contributing area. See Details
 
 - filename:
 
-  Character. Output filename.
+  Character. Output filename
 
 - ...:
 
   Additional arguments for writing files, as in
-  [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md).
+  [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md)
 
 ## Value
 
@@ -150,7 +148,7 @@ Emanuele Cordano
 
 [`terrain`](https://rspatial.github.io/terra/reference/terrain.md),
 [`watershed`](https://rspatial.github.io/terra/reference/watershed.md),
-[`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md),
+[`flowDir`](https://rspatial.github.io/terra/reference/flowDir.md),
 [`pitfinder`](https://rspatial.github.io/terra/reference/pitfinder.md)
 
 ## Examples

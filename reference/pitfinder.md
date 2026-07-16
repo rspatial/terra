@@ -15,7 +15,7 @@ pitfinder(x,pits_on_boundary=TRUE,filename="",...)
 - x:
 
   SpatRaster with flow-direcion. See
-  [`flowDir`](https://rspatial.github.io/terra/reference/flowdirD8ltd.md)
+  [`flowDir`](https://rspatial.github.io/terra/reference/flowDir.md)
 
 - pits_on_boundary:
 
