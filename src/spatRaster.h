@@ -878,14 +878,20 @@ class SpatRaster {
 
 		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);
 
+
     // watershed2 ecor 20210317; EC 20210702 
+
 		SpatRaster watershed2(int pp_offset,SpatOptions &opt); 
-		SpatRaster pitfinder2(SpatOptions &opt); 
+		SpatRaster pitfinder2(int pits_on_boundary, SpatOptions &opt); // EC 20250623
 		SpatRaster NIDP2(SpatOptions &opt); 
 		SpatRaster flowAccu2(SpatOptions &opt); 
 		SpatRaster flowAccu2_weight(SpatRaster weight,SpatOptions &opt);
-	// END watershed2 
-		
+		SpatRaster d8ltd(double lambda,int use_lad,int max_iters,SpatOptions &opt); 
+		SpatRaster pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter, double lambda,int use_lad,int max_iters,
+                         double U,double D,double beta,double theta_exp, // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
+                         SpatOptions &opt);
+	
+
 		SpatRaster hillshade(SpatRaster aspect, std::vector<double> angle, std::vector<double> direction, bool normalize, SpatOptions &opt);
 
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);

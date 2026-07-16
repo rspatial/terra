@@ -5,6 +5,18 @@ exportMethods("[", "[[", "!", "%in%", activeCat, "activeCat<-", "add<-", addCats
 
 exportMethods(watershed, pitfinder, NIDP, flowAccumulation)
 
+## END EC 20210702 ecor
+## EC 20240413 ecor
+exportMethods(flowdirD8ltd,flowdirD8lad)
+## END EC 20240413 ecor
+## EC 20241026
+exportMethods(pitfiller)
+## END EC 20241026
+
+###exportMethods(watershed2,pitfinder2,NIDP2,flowAccu2,flowAccu2_weight)
+## END EC 
+
+
 S3method(cbind, SpatVector)
 S3method(rbind, SpatVector)
 S3method(as.data.frame, SpatRaster)
@@ -23,4 +35,7 @@ S3method(str, SpatGraticule)
 
 export(add_abline, add_box, add_legend, add_grid, add_mtext, legend_cont, ar_info, clearVSIcache, combineLevels, focalMat, extractAlong, gdal, getGDALconfig, graticule, halo, libVersion, proj_ok, projNetwork, projPaths, setGDALconfig, map.pal, map_extent, north, sbar, terraOptions, tile_apply, tmpFiles, makeVRT, mem_info, free_RAM, same.crs, proj_pipelines, shade, gdalCache, fileBlocksize, vector_layers, vrt_tiles, names, round, unloadGDALdrivers, warp_scale, make.RGB)
 
-
+## addecd EC 
+export(arrows_on_rast)
+importFrom("graphics", "arrows")
+##
