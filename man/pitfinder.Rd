@@ -8,7 +8,7 @@
 \title{Pit Finder in a Flow Dir SpatRaster for Watershed Extraction}
 
 \description{
-find pits (depressions with no outlet )
+Find pits (depressions with no outlet)
 }
 
 \usage{
@@ -25,7 +25,7 @@ find pits (depressions with no outlet )
 
 \value{ 
 
-A \code{\link{SpatRaster-class}} (raster) map containing values >1 for each pit   and value 0 elsewhere. 
+A \code{\link{SpatRaster-class}} (raster) map containing values >1 for each pit and value 0 elsewhere. 
 }
 
 
@@ -34,7 +34,7 @@ A \code{\link{SpatRaster-class}} (raster) map containing values >1 for each pit 
 Emanuele Cordano (implemantation of the source code)
 }
 
-\seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{flowAccumulation}},\code{\link{NIDP}}}
+\seealso{\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowAccumulation}}, \code{\link{NIDP}}}
 \examples{
 
 ## Creation of a Digital Elevation Model 

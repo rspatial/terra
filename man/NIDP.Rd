@@ -16,7 +16,7 @@ Compute the number of immediate adjacent cells flowing into each cell
 }
 
 \arguments{
-  \item{x}{SpatRaster with flow-direction. see \code{\link{terrain}}}
+  \item{x}{SpatRaster with flow-direction. See \code{\link{terrain}}}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
@@ -26,7 +26,7 @@ SpatRaster
 }
 
 \details{
-NDIP is computed first to compute flow-accumulation with the algorithm by Zhou at al, 2019. 
+NIDP is computed first to compute flow-accumulation with the algorithm by Zhou et al., 2019. 
 }
 
 
