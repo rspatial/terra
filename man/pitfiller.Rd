@@ -1,33 +1,40 @@
 \name{pitfiller}
+
 \alias{pitfiller}
 \alias{pitfiller,SpatRaster-method}
+
 \title{Pit Filler}
+
 \description{
-Fills pits (depressions with no outlet) in a digital elevation model (DEM) using the PEM4PIT terrain erosion model.
+Fills pits (depressions with no outlet) in a elevation raster using the PEM4PIT terrain erosion model.
 }
+
 \usage{
 \S4method{pitfiller}{SpatRaster}(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
                  deviation_type = "lad", max_iters=10^6, U = 1, D = 300, beta = 0.9,
                  theta_exp = 0.5, filename = "", ...)
 }
+
 \arguments{
-  \item{x}{SpatRaster with digital elevation model.}
-  \item{pit}{SpatRaster with pits. See \code{\link{pitfinder}}.}
-  \item{flowdir}{SpatRaster with flow direction or \code{NULL}. If \code{NULL}, it is calculated internally. See \code{\link{flowdirD8lad}}.}
-  \item{niter}{Number of iterations. Default is 10.}
-  \item{lambda}{Deviation parameter. Default is 0.}
-  \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowdirD8lad}}.}
-  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowdirD8lad}}.}
-  \item{U}{Uplift rate. See  equation parameters [Grimaldi at al, 2007].}
-  \item{D}{Diffusion coefficient. See  equation parameters [Grimaldi at al, 2007].}
-  \item{beta}{Erosion coefficient. See  equation parameters [Grimaldi at al, 2007].}
-  \item{theta_exp}{Exponent for contributing area. See  equation parameters [Grimaldi at al, 2007].}
-  \item{filename}{Character. Output filename.}
-  \item{...}{Additional arguments for writing files, as in \code{\link{writeRaster}}.}
+  \item{x}{SpatRaster with elevation values}
+  \item{pit}{SpatRaster with pits. See \code{\link{pitfinder}}}
+  \item{flowdir}{SpatRaster with flow direction or \code{NULL}. If \code{NULL}, it is calculated internally. See \code{\link{flowDir}}}
+  \item{niter}{Number of iterations. Default is 10}
+  \item{lambda}{Deviation parameter. Default is 0}
+  \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowDir}}}
+  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowDir}}}
+  \item{U}{Uplift rate. See Details}
+  \item{D}{Diffusion coefficient. See Details}
+  \item{beta}{Erosion coefficient. See Details}
+  \item{theta_exp}{Exponent for contributing area. See Details}
+  \item{filename}{Character. Output filename}
+  \item{...}{Additional arguments for writing files, as in \code{\link{writeRaster}}}
 }
+
 \value{
-A \code{\link{SpatRaster}} object with pits filled.
+A \code{\link{SpatRaster}} with pits filled.
 }
+
 \details{
 The PEM4PIT (Physical Erosion Model for PIT and flat areas correction) equation [Grimaldi at al, 2007] corrects DEMs by simulating erosion processes. It improves hydrologic modeling by enhancing flow direction and contributing area representation. Function is still experimental. 
 
@@ -64,103 +71,25 @@ Niemann, J. D., Bras, R. L., & Veneziano, D. (2003). A physically based interpol
 
 Niemann, J. D., Bras, R. L., Veneziano, D., & Rinaldo, A. (2001). Impacts of surface elevation on the growth and scaling properties of simulated river networks. \emph{Geomorphology}, 40(1--2), 37--55. \doi{10.1016/S0169-555X(01)00036-8}
 }
+
 \author{
 Emanuele Cordano
 }
+
 \seealso{
-\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowdirD8lad}}, \code{\link{pitfinder}}
+\code{\link{terrain}}, \code{\link{watershed}}, \code{\link{flowDir}}, \code{\link{pitfinder}}
 }
+
 \examples{
-#### PLANAR HILLSOPE WITH PIT EXAMPLE 
-
-### PLANAR HILLSLOPE CREATION
-# Parameters
-res <- 100           # resolution in meters
-size_km <- 1       # size of the area in kilometers
-size_m <- size_km * 1000  # convert to meters
-
-ncol <- size_m / res  # number of columns
-nrow <- size_m / res  # number of rows
-
-# Create an empty raster
-r <- rast(nrows = nrow, ncols = ncol,
-          xmin = 0, xmax = size_m, ymin = 0, ymax = size_m,
-          resolution = res, crs = "")
-
-# Slope angle in degrees
-slope_deg <- 20
-slope_rad <- slope_deg * pi / 180  # convert to radians
-
-# Get Y coordinates of cell centers
-y_coords <- yFromRow(r, 1:nrow)
-
-# Compute elevation: elevationkg = distance * tan(slope)
-elevation <- outer(y_coords, rep(1, ncol), function(y, x) y * tan(slope_rad))
-# Assign elevation values to raster
-values(r) <- as.vector(elevation)
-elev0 <- r 
-
-### PLANAR HILLSLOPE 
-lambda=0##
-
-flowdir0 <- flowdirD8lad(elev0, lambda = lambda)
-
-
-
-
-plot(elev0,col=rev(terrain.colors(10)))
-arrows_on_rast(flowdir0, unit="flowdir",col="black",code=2,length=0.1)
-
-### PLANAR HILLSOPE WITH PIT 
-
-elev1 <- elev0
-elev1[47] <- elev1[47]-40 ##40
-flowdir1 <- flowdirD8ltd(elev1, lambda = lambda)
-flowdir1a <- terrain(elev1,"flowdir")
-flowdir1a[flowdir1==0] <- 0
-plot(elev1,col=rev(terrain.colors(10)))
-##plot(elev1>as.numeric(elev1[47]))
-##arrows_on_rast(flowdir1a, unit="flowdir",col="blue",code=2,length=0.1)
-arrows_on_rast(flowdir1, unit="flowdir",col="black",code=2,length=0.1)
-
-#### PIT DETECION AND FILLING 
-
-elev <- elev1
-
-
-flowdir <- flowdirD8lad(elev, lambda = lambda)
-pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
-elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda,niter=1000)
-
-
-flowdir2 <- flowdirD8lad(elev2, lambda = lambda)
-flowdir2a <- terrain(elev2, "flowdir")
-flowdir2a[flowdir2==0] <- 0
-
-pits2 <- pitfinder(flowdir2, pits_on_boundary = FALSE)
-
-plot(elev2,col=rev(terrain.colors(10)))
-
-arrows_on_rast(flowdir2a, unit="flowdir",col="blue",code=2,length=0.1)
-arrows_on_rast(flowdir2, unit="flowdir",col="black",code=2,length=0.1)
-
-
-
-
-#### LUX DIGITAL ELEVATION MODEL 
 f <- system.file("ex/elev.tif", package = "terra")
 elev <- rast(f) |> project(y = "epsg:32632")
 
-
 lambda <- 0.5 ## try also 0 (default)
-flowdir <- flowdirD8lad(elev, lambda = lambda)
+flowdir <- flowDir(elev, lambda = lambda)
 pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
 elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
 flowdir2 <- terrain(elev2, "flowdir")
-flowdir2 <- flowdirD8lad(elev2, lambda = lambda)
+flowdir2 <- flowDir(elev2, lambda = lambda)
 pits2 <- pitfinder(flowdir, pits_on_boundary = FALSE)
-
-
-
 }
 \keyword{spatial}

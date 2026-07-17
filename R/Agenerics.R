@@ -6,11 +6,8 @@ if (!isGeneric("watershed")) {setGeneric("watershed", function(x, ...) standardG
 if (!isGeneric("pitfinder")) {setGeneric("pitfinder", function(x, ...) standardGeneric("pitfinder"))}
 if (!isGeneric("NIDP")) {setGeneric("NIDP", function(x, ...) standardGeneric("NIDP"))}
 if (!isGeneric("flowAccumulation")) {setGeneric("flowAccumulation", function(x, ...) standardGeneric("flowAccumulation"))}
-if (!isGeneric("flowdirD8ltd")) {setGeneric("flowdirD8ltd", function(x, ...) standardGeneric("flowdirD8ltd"))}
-if (!isGeneric("flowdirD8lad")) {setGeneric("flowdirD8lad", function(x, ...) standardGeneric("flowdirD8lad"))}
-if (!isGeneric("pitfiller")) {setGeneric("pitfiller", function(x,pit, ...) standardGeneric("pitfiller"))}
-
-
+if (!isGeneric("flowDir")) {setGeneric("flowDir", function(x, ...) standardGeneric("flowDir"))}
+if (!isGeneric("pitfiller")) {setGeneric("pitfiller", function(x, pit, ...) standardGeneric("pitfiller"))}
 
 if (!isGeneric("tessellate")) {setGeneric("tessellate", function(x, ...) standardGeneric("tessellate"))}
 

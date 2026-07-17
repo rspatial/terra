@@ -27,7 +27,7 @@ SpatRaster
 }
 
 \details{
-The algorithm is an adaptation of the one proposed by Zhou at al, 2019. 
+The algorithm is an adaptation of the one proposed by Zhou et al., 2019. 
 }
 
 \seealso{\code{\link{terrain}},\code{\link{watershed}}, \code{\link{NIDP}}}
