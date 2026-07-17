@@ -47,8 +47,8 @@ setMethod("flowDir", signature(x="SpatRaster"),
 		## http://www.idrologia.unimore.it/orlandini/web-archive/seminars/nyc-2008-2.pdf
 		## ltd least transverse deviation
 		## lad least angular deviation
-		deviation_type <- match.args(tolower(deviation_type), c("ltd", "lad"))
-		use_lad <- deviation_type=="lad"
+		deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad"))
+		use_lad <- deviation_type == "lad"
 		opt <- spatOptions(filename, ...)
 		x@pntr <- x@pntr$d8ltd(lambda, use_lad, max_iters, opt)
 		names(x) <- sprintf("flowdir_%s_l=%s", deviation_type[1], as.character(lambda))
