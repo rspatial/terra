@@ -19,7 +19,7 @@ This is an alternative to \code{\link{terrain}(v="flowdir")}.
 \arguments{
   \item{x}{SpatRaster with elevation data}
   \item{lambda}{Parameter between 0 and 1}  
-  \item{deviation_type}{Character. Default is the first element of c("ltd", "lad"). If "ltd" (the default), nondispersive flow directions are determined using the least transversal deviation criterion (LTD). If "lad", nondispersive flow directions are determined using the least angular deviation (LAD) criterion. See Orlandini et al. (2003) for details.}  
+  \item{deviation_type}{Character. Default is the first element of c("ltd", "lad"). If \code{"ltd"} (the default), nondispersive flow directions are determined using the least transversal deviation criterion (LTD). If \code{"lad"}, nondispersive flow directions are determined using the least angular deviation (LAD) criterion. See Orlandini et al. (2003) for details.}  
   \item{max_iters}{maximum iterations for drainage path starting points detection}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
