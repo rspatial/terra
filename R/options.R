@@ -26,14 +26,14 @@
 
 }
 
-# resolve the "threads" argument of project/resample to a thread count.
+# resolve a "threads" argument to a thread count.
 # TRUE means "multi-threaded": use the terraOptions("threads") cap, falling
 # back to the number of available cores if that is 0 (no cap).
 # FALSE means single-threaded (0). A number is used as-is.
 .resolve_threads <- function(threads) {
 	if (is.logical(threads)) {
 		if (isTRUE(threads)) {
-			thr <- spatOptions()$threads
+			thr <- .terra_environment$options@pntr$threads
 			if (thr == 0) {
 				thr <- tryCatch(parallel::detectCores(), error=function(e) NA)
 				if (is.na(thr)) thr <- 8
@@ -91,6 +91,10 @@
 	if (any(s)) {
 		nms <- nms[s]
 		wopt <- wopt[s]
+		i <- which(nms == "threads")
+		if (length(i) > 0) {
+			wopt[[i]] <- .resolve_threads(wopt[[i]])
+		}
 		i <- which(nms == "names")
 		if (length(i) > 0) {
 			namevs <- trimws(unlist(strsplit(as.character(wopt[[i]]), ",")))
