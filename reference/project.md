@@ -110,7 +110,10 @@ project(x, from, to)
 
 - threads:
 
-  logical. If `TRUE` multiple threads are used (faster for large files)
+  logical or positive integer. If `TRUE`, multiple threads are used
+  (faster for large files), no more than the "threads" setting of
+  [`terraOptions`](https://rspatial.github.io/terra/reference/terraOptions.md).
+  A number sets the thread count for this call directly
 
 - use_gdal:
 

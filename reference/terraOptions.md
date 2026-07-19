@@ -58,25 +58,21 @@ functions.
 fraction of the raster resolution) that can be ignored when comparing
 alignment of rasters.
 
-**parallel** - logical. The master switch for terra's internal
-parallelism. When `TRUE` (the default in version \>= 1.9-21), the C++
-kernels that have been parallelized with Intel TBB (parts of `arith`,
-distance calculations on `SpatVector`, the fast `focal` path, etc.) will
-use multiple threads. When `FALSE`, all such kernels run on a single
-thread. Use `terra:::.have_TBB()` to check whether TBB support was
-compiled in; without TBB, this option has no effect. The same option can
-be set per call as a write option, e.g.
-`focal(r, w=21, fun="mean", wopt=list(parallel=TRUE))`.
+**parallel** - logical. If `TRUE` multiple threads are used (using the
+TBB library) where that was implemented (including distance calculations
+on `SpatVector` and some `focal` computations. Use `libVersion` to check
+whether TBB support is available.
 
 **threads** - non-negative integer. Cap on the number of threads used by
-parallel kernels (when `parallel=TRUE`) and by GDAL warp (in `project`,
-`resample`, `warp`). `0` (the default) means "no cap": TBB picks a
-sensible default (usually all logical CPUs) and GDAL uses
-`NUM_THREADS=ALL_CPUS`. A positive value caps both at that count, which
-is useful to leave room for other processes or to keep forked workers
-from each spawning hundreds of children. The value is honoured by every
-TBB-parallel kernel in terra through a single `tbb::task_arena`, and is
-forwarded to GDAL warp's `NUM_THREADS` option.
+parallel computation (when `parallel=TRUE`), by GDAL warp (in `project`
+and `resample` when `threads=TRUE`), and for compressed GeoTIFF writing.
+The default is `16`. This cap avoids run-away thread counts on machines
+with very many cores; more threads rarely help as most parallel
+computations are limited by memory bandwidth. No more threads than the
+number of available CPUs are used on machines with fewer CPUs. Set it to
+`0` to remove the cap ("use all CPUs"). Lower values are useful to leave
+room for other processes, or when running multiple R processes at the
+same time).
 
 ## Note
 
@@ -102,8 +98,8 @@ terraOptions()
 #> verbose   : FALSE
 #> memmax    : 16
 #> todisk    : FALSE
-#> threads   : 0
-#> tempdir   : /tmp/RtmpqDSwoz
+#> threads   : 16
+#> tempdir   : /tmp/Rtmp0UgVFf
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 3
@@ -119,7 +115,7 @@ terraOptions()
 #> memmax    : 16
 #> todisk    : FALSE
 #> threads   : 4
-#> tempdir   : /tmp/RtmpqDSwoz
+#> tempdir   : /tmp/Rtmp0UgVFf
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 10

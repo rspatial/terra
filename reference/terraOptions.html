@@ -65,8 +65,8 @@
 <p><b>progress</b> - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero.</p>
 <p><b>verbose</b> - logical. If <code>TRUE</code> debugging info is printed for some functions.</p>
 <p><b>tolerance</b> - numeric. Difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alignment of rasters.</p>
-<p><b>parallel</b> - logical. The master switch for terra's internal parallelism. When <code>TRUE</code> (the default in version &gt;= 1.9-21), the C++ kernels that have been parallelized with Intel TBB (parts of <code>arith</code>, distance calculations on <code>SpatVector</code>, the fast <code>focal</code> path, etc.) will use multiple threads. When <code>FALSE</code>, all such kernels run on a single thread. Use <code>terra:::.have_TBB()</code> to check whether TBB support was compiled in; without TBB, this option has no effect. The same option can be set per call as a write option, e.g. <code>focal(r, w=21, fun="mean", wopt=list(parallel=TRUE))</code>.</p>
-<p><b>threads</b> - non-negative integer. Cap on the number of threads used by parallel kernels (when <code>parallel=TRUE</code>) and by GDAL warp (in <code>project</code>, <code>resample</code>, <code>warp</code>). <code>0</code> (the default) means "no cap": TBB picks a sensible default (usually all logical CPUs) and GDAL uses <code>NUM_THREADS=ALL_CPUS</code>. A positive value caps both at that count, which is useful to leave room for other processes or to keep forked workers from each spawning hundreds of children. The value is honoured by every TBB-parallel kernel in terra through a single <code>tbb::task_arena</code>, and is forwarded to GDAL warp's <code>NUM_THREADS</code> option.</p>
+<p><b>parallel</b> - logical. If <code>TRUE</code> multiple threads are used (using the TBB library) where that was implemented (including distance calculations on <code>SpatVector</code> and some <code>focal</code> computations. Use <code>libVersion</code> to check whether TBB support is available.</p>
+<p><b>threads</b> - non-negative integer. Cap on the number of threads used by parallel computation (when <code>parallel=TRUE</code>), by GDAL warp (in <code>project</code> and <code>resample</code> when <code>threads=TRUE</code>), and for compressed GeoTIFF writing. The default is <code>16</code>. This cap avoids run-away thread counts on machines with very many cores; more threads rarely help as most parallel computations are limited by memory bandwidth. No more threads than the number of available CPUs are used on machines with fewer CPUs. Set it to <code>0</code> to remove the cap ("use all CPUs"). Lower values are useful to leave room for other processes, or when running multiple R processes at the same time).</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
@@ -88,8 +88,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> verbose   : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmax    : 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> threads   : 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpqDSwoz</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> threads   : 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/Rtmp0UgVFf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 3</span>
@@ -105,7 +105,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmax    : 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> threads   : 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpqDSwoz</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/Rtmp0UgVFf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 10</span>

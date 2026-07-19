@@ -72,7 +72,7 @@ If the origin and extent of the input and output are the same, you should consid
 
 
   <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
-<dd><p>logical. If <code>TRUE</code> multiple threads are used (faster for large files)</p></dd>
+<dd><p>logical or positive integer. If <code>TRUE</code>, multiple threads are used (faster for large files), no more than the "threads" setting of <code><a href="terraOptions.html">terraOptions</a></code>. A number sets the thread count for this call directly</p></dd>
 
 
   <dt id="arg-by-util">by_util<a class="anchor" aria-label="anchor" href="#arg-by-util"></a></dt>

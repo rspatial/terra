@@ -83,8 +83,9 @@ projPaths(paths, with_proj = TRUE)
 
 - lib:
 
-  character. "gdal", "proj", or "geos", or any other value to get the
-  versions numbers of all three
+  character. "gdal", "proj", "geos", "TBB", or any other value to get
+  the versions numbers of the first three and a logical value indicating
+  whether TBB paralellization is available
 
 - parse:
 
@@ -126,8 +127,7 @@ file-level metadata "GDALinfo"
 
 ## Value
 
-character vector of search paths. When setting paths, the result is
-returned invisibly.
+character vector in most cases.
 
 ## Note
 
@@ -158,10 +158,7 @@ gdal()
 gdal(2)
 #head(gdal(drivers=TRUE))
 libVersion("all", TRUE)
-#>      major minor sub
-#> gdal     3     8   4
-#> proj     9     4   0
-#> geos     3    12   1
+#> Error in strsplit(out, "\\."): non-character argument
 projNetwork()
 #> [1] NA
 projPaths()

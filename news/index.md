@@ -32,6 +32,9 @@
   [\#2115](https://github.com/rspatial/terra/issues/2115) by Breeze-Hu
 - `focal` with “min” or “max” and an unweighted window is now faster,
   especially with large windows
+- the “threads” option now defaults to 16 (instead of no limit) to avoid
+  run-away thread counts on machines with very many cores. The “threads”
+  argument of `project` and `resample` can now also be a number
 
 ### new
 
@@ -216,6 +219,8 @@ Released 2026-05-04
   `projNetwork(FALSE)`
   [\#1351](https://github.com/rspatial/terra/issues/1351) by Hassan
   Masoomi
+- TBB parallel processing is now turned on by default. See
+  [`?terraOptions`](https://rspatial.github.io/terra/reference/terraOptions.md)
 
 ### new
 
