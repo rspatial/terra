@@ -96,6 +96,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - better support for writing vsizip files [#1629](https://github.com/rspatial/terra/issues/1629) by Eric R. Scott
 - better error message if `project` fails because a transformation grid cannot be downloaded [#1425](https://github.com/rspatial/terra/issues/1425) by Kevin J Wolz
 - PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use `projNetwork(FALSE)` [#1351](https://github.com/rspatial/terra/issues/1351) by Hassan Masoomi
+- TBB parallel processing is now turned on by default. See `?terraOptions`
 
 
 ## new 
