@@ -132,17 +132,40 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co">## try also 0 (default)</span></span></span>
 <span class="r-in"><span><span class="va">flowdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowDir.html">flowDir</a></span><span class="op">(</span><span class="va">elev</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in match.args(tolower(deviation_type), c("ltd", "lad")):</span> could not find function "match.args"</span>
 <span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'pitfinder': object 'flowdir' not found</span>
 <span class="r-in"><span><span class="va">elev2</span> <span class="op">&lt;-</span> <span class="fu">pitfiller</span><span class="op">(</span>x <span class="op">=</span> <span class="va">elev</span>, pit <span class="op">=</span> <span class="va">pits</span>,lambda<span class="op">=</span><span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'i' in selecting a method for function '[&lt;-': object 'pits' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> size        : 111, 78, 1  (nrow, ncol, nlyr)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 772.033, 772.033  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 263811.2, 324029.8, 5479328, 5565024  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : WGS 84 / UTM zone 32N (EPSG:32632)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : flowdir_ltd_l=0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :               112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exceeding number of iterations in d8ltd/d8lad flow directions computation</span>
 <span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev2</span>, <span class="st">"flowdir"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'terrain': object 'elev2' not found</span>
 <span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowDir.html">flowDir</a></span><span class="op">(</span><span class="va">elev2</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'flowDir': object 'elev2' not found</span>
 <span class="r-in"><span><span class="va">pits2</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'pitfinder': object 'flowdir' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -24,10 +24,11 @@ flowDir(x, lambda=0.5, deviation_type=c("ltd","lad"), max_iters=10^6, filename="
 
 - deviation_type:
 
-  Character. Default is the first element of `=c("ltd","lad")`. If
-  `"ltd"` (default) flow direction dispersion is deteceted with LTD
-  criterion, if `"lad"` flow direction dispersion is deteceted with LTD
-  criterion. See Orlandini et al., 2003 for details
+  Character. Default is the first element of c("ltd", "lad"). If `"ltd"`
+  (the default), nondispersive flow directions are determined using the
+  least transversal deviation criterion (LTD). If `"lad"`, nondispersive
+  flow directions are determined using the least angular deviation (LAD)
+  criterion. See Orlandini et al. (2003) for details.
 
 - max_iters:
 
@@ -130,14 +131,10 @@ plot(elev2)
 
 ## Flow direction raster
 fdir1 <- flowDir(elev1, lambda=1)
-#> Error in match.args(tolower(deviation_type), c("ltd", "lad")): could not find function "match.args"
 fdir2 <- flowDir(elev2,lambda=1)
-#> Error in match.args(tolower(deviation_type), c("ltd", "lad")): could not find function "match.args"
 
 elev <- rast(system.file('ex/elev.tif',package="terra"))
 
 fdirlad1 <- flowDir(elev, lambda=0.5, deviation_type="lad")
-#> Error in match.args(tolower(deviation_type), c("ltd", "lad")): could not find function "match.args"
 fdirlad2 <- flowDir(elev, lambda=0.5, deviation_type="lad")
-#> Error in match.args(tolower(deviation_type), c("ltd", "lad")): could not find function "match.args"
 ```

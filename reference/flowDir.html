@@ -57,7 +57,7 @@ This is an alternative to <code><a href="terrain.html">terrain</a>(v="flowdir")<
 <dd><p>Parameter between 0 and 1</p></dd>
 
   <dt id="arg-deviation-type">deviation_type<a class="anchor" aria-label="anchor" href="#arg-deviation-type"></a></dt>
-<dd><p>Character. Default is the first element of <code>=c("ltd","lad")</code>. If <code>"ltd"</code> (default) flow direction dispersion is deteceted with LTD criterion, if <code>"lad"</code> flow direction dispersion is deteceted with LTD criterion. See Orlandini et al., 2003 for details</p></dd>
+<dd><p>Character. Default is the first element of c("ltd", "lad"). If <code>"ltd"</code> (the default), nondispersive flow directions are determined using the least transversal deviation criterion (LTD). If <code>"lad"</code>, nondispersive flow directions are determined using the least angular deviation (LAD) criterion. See Orlandini et al. (2003) for details.</p></dd>
 
   <dt id="arg-max-iters">max_iters<a class="anchor" aria-label="anchor" href="#arg-max-iters"></a></dt>
 <dd><p>maximum iterations for drainage path starting points detection</p></dd>
@@ -145,16 +145,12 @@ This function is experimental and under development: results are to be verified.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Flow direction raster</span></span></span>
 <span class="r-in"><span><span class="va">fdir1</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">elev1</span>, lambda<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in match.args(tolower(deviation_type), c("ltd", "lad")):</span> could not find function "match.args"</span>
 <span class="r-in"><span><span class="va">fdir2</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">elev2</span>,lambda<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in match.args(tolower(deviation_type), c("ltd", "lad")):</span> could not find function "match.args"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">elev</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'ex/elev.tif'</span>,package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fdirlad1</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">elev</span>, lambda<span class="op">=</span><span class="fl">0.5</span>, deviation_type<span class="op">=</span><span class="st">"lad"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in match.args(tolower(deviation_type), c("ltd", "lad")):</span> could not find function "match.args"</span>
 <span class="r-in"><span><span class="va">fdirlad2</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">elev</span>, lambda<span class="op">=</span><span class="fl">0.5</span>, deviation_type<span class="op">=</span><span class="st">"lad"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in match.args(tolower(deviation_type), c("ltd", "lad")):</span> could not find function "match.args"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
