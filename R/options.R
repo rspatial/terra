@@ -8,6 +8,13 @@
 	# check=T does not exist in ancient R
 	tmpdir <- try(tempdir(check = TRUE), silent=TRUE)
 	opt@pntr$tempdir <- normalizePath(tempdir(), winslash="/")
+
+	# respect the CRAN check limit on the number of cores
+	chk <- tolower(Sys.getenv("_R_CHECK_LIMIT_CORES_", ""))
+	if (chk %in% c("true", "warn")) {
+		opt@pntr$threads <- 2
+	}
+
 	.terra_environment$options <- opt
 	.terra_environment$devs <- NULL
 	.terra_environment$RStudio_warned <- FALSE
@@ -17,6 +24,28 @@
 		do.call(terraOptions, x)
 	}
 
+}
+
+# resolve the "threads" argument of project/resample to a thread count.
+# TRUE means "multi-threaded": use the terraOptions("threads") cap, falling
+# back to the number of available cores if that is 0 (no cap).
+# FALSE means single-threaded (0). A number is used as-is.
+.resolve_threads <- function(threads) {
+	if (is.logical(threads)) {
+		if (isTRUE(threads)) {
+			thr <- spatOptions()$threads
+			if (thr == 0) {
+				thr <- tryCatch(parallel::detectCores(), error=function(e) NA)
+				if (is.na(thr)) thr <- 8
+			}
+			thr
+		} else {
+			0
+		}
+	} else {
+		threads <- suppressWarnings(round(as.numeric(threads[1])))
+		if (is.na(threads) || (threads < 0)) 0 else threads
+	}
 }
 
 .option_names <- function() {

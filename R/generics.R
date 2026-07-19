@@ -733,7 +733,7 @@ setMethod("project", signature(x="SpatRaster"),
 			method[method == "mean"] <- "average"
 		}
 
-		opt <- spatOptions(filename, threads=threads, ...)
+		opt <- spatOptions(filename, threads=.resolve_threads(threads), ...)
 
 		if (is.list(pipeline)) {
 			px <- attr(pipeline, "from")			
@@ -1032,7 +1032,7 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 		if ((ycrs == "") && (xcrs != "")) {
 			crs(y) <- xcrs
 		}
-		opt <- spatOptions(filename, threads=threads, ...)
+		opt <- spatOptions(filename, threads=.resolve_threads(threads), ...)
 
 		if (by_util) {
 			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, "", numeric(0), -1.0, TRUE, 0, 0, opt)

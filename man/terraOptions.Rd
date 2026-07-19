@@ -40,7 +40,7 @@ The following options are available.
 
 \bold{parallel} - logical. If \code{TRUE} multiple threads are used (using the TBB library) where that was implemented (including distance calculations on \code{SpatVector} and some \code{focal} computations. Use \code{libVersion} to check whether TBB support is available.
 
-\bold{threads} - non-negative integer. Cap on the number of threads used by parallel kernels (when \code{parallel=TRUE}) and by GDAL warp (in \code{project}, \code{resample}, \code{warp}). \code{0} (the default) means "no cap": TBB picks a sensible default (usually all logical CPUs) and GDAL uses \code{NUM_THREADS=ALL_CPUS}. A positive value caps both at that count, which is useful to leave room for other processes or to keep forked workers from each spawning very many children.
+\bold{threads} - non-negative integer. Cap on the number of threads used by parallel computation (when \code{parallel=TRUE}), by GDAL warp (in \code{project} and \code{resample} when \code{threads=TRUE}), and for compressed GeoTIFF writing. The default is \code{16}. This cap avoids run-away thread counts on machines with very many cores; more threads rarely help as most parallel computations are limited by memory bandwidth. No more threads than the number of available CPUs are used on machines with fewer CPUs. Set it to \code{0} to remove the cap ("use all CPUs"). Lower values are useful to leave room for other processes, or when running multiple R processes at the same time).
 }
 
 \note{
