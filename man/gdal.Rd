@@ -48,7 +48,7 @@ projPaths(paths, with_proj = TRUE)
   \item{size}{numeric. The new cache size in MB}  
   \item{option}{character. GDAL configuration option name, or a "name=value" string (in which case the value argument is ignored}
   \item{value}{character. value for GDAL configuration option. Use "" to reset it to its default value}
-  \item{lib}{character. "gdal", "proj", or "geos", or any other value to get the versions numbers of all three}
+  \item{lib}{character. "gdal", "proj", "geos", "TBB", or any other value to get the versions numbers of the first three and a logical value indicating whether TBB paralellization is available}
   \item{parse}{logical. Should the version be parsed into three numerical values (major, minor and sub versions)?}
   \item{x}{character. Drivers names such as "GTiff" to be unloaded. Or "" to reload all drivers}
   \item{enable}{logical. If \code{TRUE}, enable PROJ network access for high-accuracy grid-based transformations. If \code{FALSE}, disable network access and use ballpark transformations. If missing, return the current network status}
@@ -61,7 +61,7 @@ projPaths(paths, with_proj = TRUE)
 \seealso{\code{\link{describe}} for file-level metadata "GDALinfo"}
 
 \value{
-character vector of search paths. When setting paths, the result is returned invisibly.
+character vector in most cases. 
 }
 
 \examples{
