@@ -7,7 +7,7 @@ Rectify a rotated SpatRaster into a non-rotated object
 ``` r
 # S4 method for class 'SpatRaster'
 rectify(x, method="bilinear", aoi=NULL, snap=TRUE,
-         filename="", ...)
+         threads=FALSE, filename="", ...)
 ```
 
 ## Arguments
@@ -32,6 +32,13 @@ rectify(x, method="bilinear", aoi=NULL, snap=TRUE,
   logical. If `TRUE`, the origin and resolution of the output are the
   same as would the case when `aoi = NULL`. Only relevant if `aoi` is a
   `SpatExtent`
+
+- threads:
+
+  logical or positive integer. If `TRUE`, multiple threads are used
+  (faster for large files), no more than the "threads" setting of
+  [`terraOptions`](https://rspatial.github.io/terra/reference/terraOptions.md).
+  A number sets the thread count for this call directly
 
 - filename:
 
