@@ -90,13 +90,13 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
                      double* tdc, double *tdd,double L,
                      std::vector<double> ddp1,std::vector<double> ddp2,std::vector<double> sigma,int nncell,int conv_type,int use_lad) {
   
-  int i;
+  //int i;
   ///int L=1; // dx=dy=L=1
-  int ncell=nx*ny;
+  //int ncell=nx*ny;
   double x,y;
  // int efacet=0;
   double e0,e1,e2;
-  int facet=0;
+  //int facet=0;
 //  std::vector<double> ddp1 = {2,2,4,4,6,6,8,8}; // this routine uses Orlandini-Li et, 2022's  convention
 //  std::vector<double> ddp2 = {1,3,3,5,5,7,7,1};
 // std::vector<double> sigma = {0,1,-1,1,-1,1,-1,1,-1};
@@ -123,7 +123,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
     double mean_e=e0;// not 0 corrected on 20260109
     double mean_e_temp=mean_e;// not 0 corrected on 20260109
     int facet=0;
-    double flow_angle_tan=0;
+    //double flow_angle_tan=0;
     
     
     for (int j=0; j<nncell; j++){
@@ -312,23 +312,24 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
 }
  
  
-void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
+// returns false if the maximum number of iterations was exceeded
+bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
                           
                           double *atdc, double *atdd, double *atdplus,double *atdplus0,
                           double *pflow,int *has_upstream,int *kupdate,double *nidps,
                           double lambda,
                           std::vector<double> ddp1,std::vector<double> ddp2,std::vector<double> sigma,int nncell,int conv_type,int use_lad,int max_iters)    {   
    
- 
+  bool ok = true;
   int x,y;
 
-  int k=1;
-  int niter=nx*ny;
+  //int k=1;
+  //int niter=nx*ny;
   int exit_cond=0;
   int exit_cond1=0;
-  int facet,nextc,nextd;
+  int facet; //,nextc,nextd;
   int nextp=0;
-  double atdplus_temp;
+  double atdplus_temp=0;
   double e0,e1,e2;
   double pflow_estimate=ddp1[0];
   
@@ -563,7 +564,7 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
     if (*(kupdate+j)==0) exit_cond1=0;
   }
   if (cnt1>max_iters) {
-    Rprintf("\nExceeding number of iterations in d8ltd/d8lad flow directions computation\n");
+    ok = false;
     exit_cond1=2;       
     
   }
@@ -594,11 +595,11 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
     
 
   
-  
+  return ok;
 }
 
 
-void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_lad,int max_iters,double*pflow) {
+bool d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_lad,int max_iters,double*pflow) {
   //std::vector<double> pOutv(nx*ny,0);
   std::vector<int> has_upstream(nx*ny,0);
   std::vector<int> sfacet(nx*ny,0);
@@ -652,7 +653,7 @@ void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_la
   
   
   
-  transverse_deviation(&e[0],&tdc[0],&tdd[0],&sr[0],&sm[0],&sfacet[0],nx,ny,L,
+  bool ok = transverse_deviation(&e[0],&tdc[0],&tdd[0],&sr[0],&sm[0],&sfacet[0],nx,ny,L,
                        
                        &atdc[0], &atdd[0],&atdplus[0],&atdplus0[0], &pflow[0],&has_upstream[0],&kupdate[0],&npids[0],lambda,ddp1,ddp2,sigma,nncell,conv_type,use_lad,max_iters);
   
@@ -667,6 +668,7 @@ void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_la
   //    *(pflow+i)=*(e+i);
   // }
   
+  return ok;
 }
 
 
@@ -685,7 +687,7 @@ SpatRaster  SpatRaster::d8ltd(double lambda,int use_lad,int max_iters,SpatOption
     int nx=ncol();
     int ny=nrow();
     double Lx=xres();
-    double Ly=yres();
+    //double Ly=yres();
     double L=Lx; // to check 
 
     //Rprintf("nx=%d ny=%d\n",nx,ny);
@@ -693,7 +695,9 @@ SpatRaster  SpatRaster::d8ltd(double lambda,int use_lad,int max_iters,SpatOption
     // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
     std::vector<double> e=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
     std::vector<double> pflow(nx*ny,0);
-    d8ltd_computation(&e[0],nx,ny,L,lambda,use_lad,max_iters,&pflow[0]);
+    if (!d8ltd_computation(&e[0],nx,ny,L,lambda,use_lad,max_iters,&pflow[0])) {
+      out.addWarning("exceeded the maximum number of iterations in d8ltd/d8lad flow directions computation");
+    }
     
   
     
