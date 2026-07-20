@@ -120,8 +120,8 @@
   [`Arith,matrix,SpatRaster-method`](https://rspatial.github.io/terra/reference/arith-generic.md)
   : Arithmetic
 
-- [`arrows_on_rast()`](https://rspatial.github.io/terra/reference/arrows_on_rast.md)
-  : Visualize Directional Arrows on a SpatRaster
+- [`as.arrows()`](https://rspatial.github.io/terra/reference/as.arrows.md)
+  : Add directional arrows from a SpatRaster to a plot
 
 - [`as.character(`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/as.character.md)
   [`as.character(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/as.character.md)
