@@ -33,7 +33,7 @@ void pitfiller(int nx,int ny,double ipit, double *pitf,double *e,double *eout,do
   double ev2=NAN_PITFILLER;
   double evm=ev1;
   int conv_type=1; // this variable is always 1 see nextcellpoint_conv1
-  int jk=WINIT_JK;
+ // int jk=WINIT_JK;
   int iss=0;
   
   
@@ -43,7 +43,7 @@ void pitfiller(int nx,int ny,double ipit, double *pitf,double *e,double *eout,do
     
   }
   // loop to detect which pixel of the pit is abjacent with the lowest elevation neighboring pixel
-  /*while (jk==WINIT_JK) */
+  
   for (int i=0;i<nx*ny;i++) if (*(pitf+i)==ipit) {
     int y=getRow(nx,ny,i); 
     int x=getCol(nx,ny,i);
@@ -209,7 +209,7 @@ SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter
     int ny=nrow();
     double Lx=xres();
     double Ly=yres();
-    double L=Lx; // to check 
+    double L=(Lx+Ly)/2; // to check 
     
   ////  printf("pitfiller\n");
     std::vector<double> e=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/

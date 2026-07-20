@@ -92,7 +92,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
   
   int i;
   ///int L=1; // dx=dy=L=1
-  int ncell=nx*ny;
+  //int ncell=nx*ny;
   double x,y;
  // int efacet=0;
   double e0,e1,e2;
@@ -123,7 +123,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
     double mean_e=e0;// not 0 corrected on 20260109
     double mean_e_temp=mean_e;// not 0 corrected on 20260109
     int facet=0;
-    double flow_angle_tan=0;
+    ///double flow_angle_tan=0;
     
     
     for (int j=0; j<nncell; j++){
@@ -322,8 +322,8 @@ void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
  
   int x,y;
 
-  int k=1;
-  int niter=nx*ny;
+  ///////int k=1;
+  ///////int niter=nx *ny;
   int exit_cond=0;
   int exit_cond1=0;
   int facet,nextc,nextd;
