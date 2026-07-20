@@ -95,7 +95,7 @@ libVersion <- function(lib="all", parse=FALSE) {
 	if (parse) {
 		if (lib=="all") {
 			out$TBB <- NULL
-		} else if (lib == "TBB") {
+		} else if (lib == "tbb") {
 			return(out)
 		}
 		nms <- names(out)
