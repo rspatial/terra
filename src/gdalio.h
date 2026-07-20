@@ -32,5 +32,5 @@ bool getNAvalue(GDALDataType gdt, double & naval);
 GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::string> allowed_drivers, std::vector<std::string> open_options);
 void gdal_capture_messages_begin();
 void gdal_capture_messages_end(bool emit);
-char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, bool parallel, std::vector<std::string> gdal_options);
+char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, bool parallel, unsigned threads, std::vector<std::string> gdal_options);
 std::vector<std::string> ncdf_filternames(std::vector<std::string> const &s);

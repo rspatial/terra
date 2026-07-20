@@ -1,4 +1,4 @@
-# version 1.9-39
+# version 1.9-40
 
 ## bug fixes
 
@@ -13,6 +13,7 @@
 - `points`, `lines` and `polys` can now color the geometries by the values of a variable (argument `y`) [#2119](https://github.com/rspatial/terra/issues/2119) by Márcia Barbosa
 - `focal` can now use TBB parallelization for built-in functions "max", "min", "median", "modal" and "sd" (in addition to "sum"/"mean") [#2115](https://github.com/rspatial/terra/issues/2115) by Breeze-Hu
 - `focal` with "min" or "max" and an unweighted window is now faster, especially with large windows
+- the "threads" option now defaults to 16 (instead of no limit) to avoid run-away thread counts on machines with very many cores. The "threads" argument of `project` and `resample` can now also be a number
 
 ## new 
 
@@ -96,6 +97,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - better support for writing vsizip files [#1629](https://github.com/rspatial/terra/issues/1629) by Eric R. Scott
 - better error message if `project` fails because a transformation grid cannot be downloaded [#1425](https://github.com/rspatial/terra/issues/1425) by Kevin J Wolz
 - PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use `projNetwork(FALSE)` [#1351](https://github.com/rspatial/terra/issues/1351) by Hassan Masoomi
+- TBB parallel processing is now turned on by default. See `?terraOptions`
 
 
 ## new 

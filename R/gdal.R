@@ -87,8 +87,10 @@ libVersion <- function(lib="all", parse=FALSE) {
 		out <- proj_version()
 	} else if (lib=="geos") {
 		out <- .geos_version()
+	} else if (lib=="TBB") {
+		return(.have_TBB())
 	} else {
-		out <- c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
+		out <- data.frame(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version(), TBB=.have_TBB())
 	}
 	if (parse) {
 		nms <- names(out)

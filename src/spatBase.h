@@ -128,12 +128,9 @@ class SpatOptions {
 
 		size_t ncopies = 4;
 		size_t minrows = 1;
-		// Maximum number of threads to use for parallel kernels (TBB
-		// task_arena cap, GDAL warp NUM_THREADS). 0 means "no cap"
-		// (use the TBB / GDAL default, typically all logical CPUs).
-		// Backwards compatible with the legacy bool semantics: a value
-		// of 0 acts as FALSE, anything > 0 acts as TRUE.
-		unsigned threads = 0;
+		// Maximum number of threads to use for parallel kernels (TBB task_arena cap, 
+		// GDAL warp NUM_THREADS). 0 means "no cap" 
+		unsigned threads = 16;
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
 		//std::string def_bandorder = "BIL";

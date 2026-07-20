@@ -372,7 +372,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
-bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<size_t> srcbands, std::vector<size_t> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, bool threads, std::string pipeline="", std::vector<double> AOI=std::vector<double>(), double desired_accuracy=-1.0, bool allow_ballpark=true, double xscale=0, double yscale=0) {
+bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<size_t> srcbands, std::vector<size_t> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, unsigned threads, std::string pipeline="", std::vector<double> AOI=std::vector<double>(), double desired_accuracy=-1.0, bool allow_ballpark=true, double xscale=0, double yscale=0) {
 
 	if (srcbands.size() != dstbands.size()) {
 		msg = "number of source bands must match number of dest bands";
@@ -435,9 +435,11 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 	psWarpOptions->papszWarpOptions =
       CSLSetNameValue( psWarpOptions->papszWarpOptions, "WRITE_FLUSH", "YES");
 
-	if (threads) {
+	if (threads > 0) {
+		// forward the actual thread cap rather than ALL_CPUS, so that
+		// terraOptions(threads=n) is honored by the warper
 		psWarpOptions->papszWarpOptions =
-			CSLSetNameValue( psWarpOptions->papszWarpOptions, "NUM_THREADS", "ALL_CPUS");
+			CSLSetNameValue( psWarpOptions->papszWarpOptions, "NUM_THREADS", std::to_string(threads).c_str());
 	}
 
 	if (xscale > 0) {
@@ -1297,8 +1299,8 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 			GDALWarpAppOptionsSetProgress(psWarpAppOptions, NULL, NULL );
 			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "INIT_DEST", "NO_DATA"); 
 			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "WRITE_FLUSH", "YES"); 
-			if (opt.threads) {
-				GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "NUM_THREADS", "ALL_CPUS"); 
+			if (opt.threads > 0) {
+				GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "NUM_THREADS", std::to_string(opt.threads).c_str());
 			}
 			if (xscale > 0) {
 				GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "XSCALE",
@@ -2078,7 +2080,7 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	}
 
 	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, topt.parallel, topt.gdal_options);
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, topt.parallel, topt.threads, topt.gdal_options);
 
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 
@@ -2191,7 +2193,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 	}
 
 	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.parallel, opt.gdal_options);
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.parallel, opt.threads, opt.gdal_options);
 	papszOptions = CSLSetNameValue(papszOptions, "DISTUNITS", "GEO");
 
 	SpatOptions ops(opt);

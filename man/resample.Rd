@@ -43,7 +43,7 @@ If the origin and extent of the input and output are the same, you should consid
   }
   
   
-  \item{threads}{logical. If \code{TRUE} multiple threads are used (faster for large files)}
+  \item{threads}{logical or positive integer. If \code{TRUE}, multiple threads are used (faster for large files), no more than the "threads" setting of \code{\link{terraOptions}}. A number sets the thread count for this call directly}
   
   \item{by_util}{logical. If \code{TRUE} the GDAL warp utility is used}
  

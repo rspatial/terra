@@ -67,7 +67,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
   \item{origin}{numeric. Can be used to set the origin of the output raster if \code{y} is a CRS}
   
-  \item{threads}{logical. If \code{TRUE} multiple threads are used (faster for large files)}
+  \item{threads}{logical or positive integer. If \code{TRUE}, multiple threads are used (faster for large files), no more than the "threads" setting of \code{\link{terraOptions}}. A number sets the thread count for this call directly}
 
   \item{use_gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise, a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
 

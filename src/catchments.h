@@ -97,14 +97,15 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
                      int conv_type,int use_lad);
 
 
-void transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
+// these return false if the maximum number of iterations was exceeded
+bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
                           
                           double *atdc, double *atdd, double *atdplus, double *atdplus0,
                           double *pflow,int *has_upstream,int *kupdate,double *npids,
                           double lambda,
                           std::vector<double> ddp1,std::vector<double> ddp2,std::vector<double> sigma,int nncell,int conv_type,int use_lad,int max_iters);
 
-void d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_lad,int max_iters,double *pflow);
+bool d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_lad,int max_iters,double *pflow);
 
 
 
@@ -120,7 +121,8 @@ void pitfiller(int nx,int ny,double ipit, double *pitf,double *e,double *eout,do
                double U,double D,double beta,double theta_exp); // see reference doi:10.1016/j.advwatres.2006.11.016
 /////void pitfiller_all(int nx,int ny, double *pitf,double *pitfdone,double* e,double *eout,double *flowdir); 
 
-void pitfiller_all(int nx,int ny, double *pitf,double *pitftemp,double* e,double *eout,double *flowdir,int niter,double lambda,int use_lad,double L,
+// returns false if the maximum number of iterations was exceeded
+bool pitfiller_all(int nx,int ny, double *pitf,double *pitftemp,double* e,double *eout,double *flowdir,int niter,double lambda,int use_lad,int max_iters,double L,
                     double U,double D,double beta,double theta_exp); // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
 
 

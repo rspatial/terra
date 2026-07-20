@@ -956,8 +956,8 @@ setMethod("quantile", signature(x="SpatVector"),
 
 
 setMethod("rectify", signature(x="SpatRaster"),
-	function(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", ...) {
-		opt <- spatOptions(filename, ...)
+	function(x, method="bilinear", aoi=NULL, snap=TRUE, threads=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, threads=threads, ...)
 		if (!is.null(aoi)) {
 			if (inherits(aoi, "SpatExtent")) {
 				aoi <- rast(aoi)
