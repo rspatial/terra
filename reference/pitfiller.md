@@ -30,15 +30,15 @@ pitfiller(x, pit, flowdir, niter = 10, lambda = 0,
 
 - niter:
 
-  Number of iterations. Default is 10
+  Number of iterations
 
 - lambda:
 
-  Deviation parameter. Default is 0
+  Deviation parameter
 
 - deviation_type:
 
-  Type of deviation. Default is `"lad"`. See
+  Type of deviation. See
   [`flowDir`](https://rspatial.github.io/terra/reference/flowDir.md)
 
 - max_iters:
