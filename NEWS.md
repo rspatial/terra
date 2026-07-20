@@ -19,6 +19,9 @@
 
 - `furdist` method to get the furthest distance from a point to any location on another geometry
 - `snapTo` method to move points to the nearest location on lines or polygons
+- `flowDir` 
+- `pittfiller`
+- `as.arrows`
 
 
 # version 1.9-34
