@@ -37,7 +37,7 @@ as.arrows <- function(x, unit=c("degrees", "radians", "flowdir"),
 	xdf$y1 <- xdf$y0+xdf$length*sin(xdf$angle)
 	
  #### y_centers, x_centers + dx, y_centers + dy, length = arrow_length, col = "black")	
-	arrows(x0=xdf$x0, y0=xdf$y0, x1=xdf$x1, y1=xdf$y1, length=length,...)
+	graphics::arrows(x0=xdf$x0, y0=xdf$y0, x1=xdf$x1, y1=xdf$y1, length=length,...)
 }	
 		
  
