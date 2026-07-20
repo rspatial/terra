@@ -48,6 +48,7 @@ setMethod("flowDir", signature(x="SpatRaster"),
 		## ltd least transverse deviation
 		## lad least angular deviation
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  if (length(deviation_type)<1) deviation_type <- "ltd"
 	  if (grepl(" ", deviation_type[1])) {
 	    deviation_type <- deviation_type[1] |>
@@ -62,6 +63,10 @@ setMethod("flowDir", signature(x="SpatRaster"),
 		deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad"))
 		
 		use_lad <- deviation_type=="lad"
+=======
+		deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad"))
+		use_lad <- deviation_type == "lad"
+>>>>>>> 4fb7fade7d313e14147261b00d649a0219e4397d
 =======
 		deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad"))
 		use_lad <- deviation_type == "lad"

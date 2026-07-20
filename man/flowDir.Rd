@@ -20,7 +20,11 @@ This is an alternative to \code{\link{terrain}(v="flowdir")}.
   \item{x}{SpatRaster with elevation data}
   \item{lambda}{Parameter between 0 and 1}  
 <<<<<<< HEAD
+<<<<<<< HEAD
   \item{deviation_type}{Character. Default is the first element of \code{=c("ltd","lad")}. If \code{"ltd"} (default) flow direction dispersion is deteceted with Least Transverse Deviation (LTD) criterion, if \code{"lad"} flow direction dispersion is deteceted with Least Angular Deviation (LAD) criterion. See Orlandini et al., 2003 for details}  
+=======
+  \item{deviation_type}{Character. Default is the first element of c("ltd", "lad"). If \code{"ltd"} (the default), nondispersive flow directions are determined using the least transversal deviation criterion (LTD). If \code{"lad"}, nondispersive flow directions are determined using the least angular deviation (LAD) criterion. See Orlandini et al. (2003) for details.}  
+>>>>>>> 4fb7fade7d313e14147261b00d649a0219e4397d
 =======
   \item{deviation_type}{Character. Default is the first element of c("ltd", "lad"). If \code{"ltd"} (the default), nondispersive flow directions are determined using the least transversal deviation criterion (LTD). If \code{"lad"}, nondispersive flow directions are determined using the least angular deviation (LAD) criterion. See Orlandini et al. (2003) for details.}  
 >>>>>>> 4fb7fade7d313e14147261b00d649a0219e4397d
