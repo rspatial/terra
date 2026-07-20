@@ -47,8 +47,21 @@ setMethod("flowDir", signature(x="SpatRaster"),
 		## http://www.idrologia.unimore.it/orlandini/web-archive/seminars/nyc-2008-2.pdf
 		## ltd least transverse deviation
 		## lad least angular deviation
+	  if (length(deviation_type)<1) deviation_type <- "ltd"
+	  if (grepl(" ", deviation_type[1])) {
+	    deviation_type <- deviation_type[1] |>
+	      trimws() |>              # remove leading/trailing whitespace (base R)
+	      strsplit("\\s+") |>      # split into words using regex (base R)
+	      unlist() |>              # flatten list into a character vector
+	      substr(1, 1) |>          # extract first character of each word
+	      paste(collapse = "")     # join initials into a single string
+	  } else {
+	    deviation_type <- deviation_type[1]
+	  }
 		deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad"))
-		use_lad <- deviation_type == "lad"
+		
+		use_lad <- deviation_type=="lad"
+		
 		opt <- spatOptions(filename, ...)
 		x@pntr <- x@pntr$d8ltd(lambda, use_lad, max_iters, opt)
 		names(x) <- sprintf("flowdir_%s_l=%s", deviation_type[1], as.character(lambda))
@@ -60,6 +73,9 @@ setMethod("flowDir", signature(x="SpatRaster"),
 setMethod("pitfiller", signature(x="SpatRaster"), 
 	function(x,pit=NULL,flowdir=NULL,niter=10,lambda=0,deviation_type="lad",max_iters=10^6,U=1,D=300,beta=0.9,theta_exp=0.5,filename="",...) { 
 	 
+	  
+	  deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad"))
+	  
 		if (is.null(flowdir)) flowdir <- terrain(x,"flowdir") 
 		if (is.null(pitfinder)) pit <- pitfinder(flowdir) 
 		use_lad=1
