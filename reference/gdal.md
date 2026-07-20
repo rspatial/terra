@@ -158,7 +158,10 @@ gdal()
 gdal(2)
 #head(gdal(drivers=TRUE))
 libVersion("all", TRUE)
-#> Error in strsplit(out, "\\."): non-character argument
+#>      major minor sub
+#> gdal     3     8   4
+#> proj     9     4   0
+#> geos     3    12   1
 projNetwork()
 #> [1] NA
 projPaths()
