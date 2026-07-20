@@ -19,9 +19,9 @@ Fills pits (depressions with no outlet) in a elevation raster using the PEM4PIT 
   \item{x}{SpatRaster with elevation values}
   \item{pit}{SpatRaster with pits identified with values > 0. See \code{\link{pitfinder}}}
   \item{flowdir}{SpatRaster with flow direction. See \code{\link{flowDir}}}
-  \item{niter}{Number of iterations. Default is 10}
-  \item{lambda}{Deviation parameter. Default is 0}
-  \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowDir}}}
+  \item{niter}{Number of iterations}
+  \item{lambda}{Deviation parameter}
+  \item{deviation_type}{Type of deviation. See \code{\link{flowDir}}}
   \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowDir}}}
   \item{U}{Uplift rate. See Details}
   \item{D}{Diffusion coefficient. See Details}
