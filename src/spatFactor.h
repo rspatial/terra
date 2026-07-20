@@ -32,34 +32,34 @@ public:
 	SpatFactor(std::vector<size_t> _values);
 	SpatFactor(std::vector<std::string> _values);
 
-	
+
 	std::vector<size_t> v;
 	//std::vector<size_t> levels;
 	std::vector<std::string> labels;
 	bool ordered = false;
-  
+
 	size_t size() const { return v.size(); }
 	bool empty() const { return v.empty(); }
-	
+
 	//void compute_levels();
 	void push_back(size_t x) { v.push_back(x); }
 
-	
+
 	bool set_labels(std::vector<std::string> _labels);
-	
+
 	void reserve(size_t n) { v.reserve(n); }
 	void resize(size_t n) { v.resize(n); }
 	void resize(size_t n, size_t x) {v.resize(n, x);}	
-	
+
 //	template <typename T>
 //	  SpatFactor(std::vector<T> _v) {
 //	   set_values(_v);
 //	}
-	
+
 	SpatFactor subset(std::vector<size_t> i);
 	std::string getLabel(size_t i) const;
 	std::vector<std::string> getLabels() const;
-	
+
 };
 
 #endif

@@ -522,7 +522,7 @@ std::vector<double> range_se(std::vector<double>& v, size_t s, size_t e) {
 		}
 	}
 	return x;
-	
+
 }
 
 
@@ -536,11 +536,11 @@ double modal_se_rm(std::vector<double>& v, size_t s, size_t e) {
 	);
 
 	if (count.size() == 0) return NAN;
-	
+
     std::map<double, size_t>::iterator mode =	
         std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
 		const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
-		
+
     return mode->first;
 }
 
@@ -557,7 +557,7 @@ double modal_se(std::vector<double>& v, size_t s, size_t e) {
     std::map<double, size_t>::iterator mode =	
         std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
 		const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
-		
+
     return mode->first;
 }
 
@@ -684,7 +684,7 @@ bool haveseFun(std::string fun) {
 
 bool getseFun(std::function<double(std::vector<double>&, size_t, size_t)> &fun,
 				std::string fname, bool narm) {
-					
+
 	if (fname == "mean") {
 		fun = narm ? mean_se_rm : mean_se;
 	} else if (fname == "sum") {

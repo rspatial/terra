@@ -1536,7 +1536,7 @@ void sortvecs(std::vector<double> &X, std::vector<double> &Y, std::vector<double
 	permute(X, p);
 	permute(Y, p);
 	permute(Z, p);
-  
+
 	p = sort_order_a(Y);
 	permute(X, p);
 	permute(Y, p);

@@ -34,7 +34,7 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 		setError("cannot read from rotated files. First use 'rectify'");
 		return;
 	}
-	
+
 	SpatRaster rs(source[src]);
 	size_t nl = rs.nlyr();
 	size_t nc = rs.ncol();
@@ -132,7 +132,7 @@ std::vector<double> SpatRaster::readRowColBlockFlat(size_t src, std::vector<int6
 		return errout;
 	}
 	std::vector<std::vector<double>> v = readRowColBlock(src, rows, cols);
-	
+
 	size_t nr = v[0].size();
 	size_t nl = v.size();
 	std::vector<double> out;
@@ -149,7 +149,7 @@ std::vector<double> SpatRaster::readRowColBlockFlat(size_t src, std::vector<int6
 
 
 std::vector<double> circ_dist(double xres, double yres, double d, size_t nrows, size_t ncols, std::vector<size_t> &dim, bool lonlat, double ymean) {
-	
+
 	size_t nx, ny;
 	std::string crs;
 	if (lonlat) {
@@ -203,7 +203,7 @@ std::vector<double> circ_dist(double xres, double yres, double d, size_t nrows, 
 std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<double> &x, const std::vector<double> &y, double b, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
-	
+
 	if (!hasValues()) {
 		setError("the raster has no values");
 		return out;
@@ -220,7 +220,7 @@ std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<dou
 	if (lonlat) {
 		ymean = vmean(y, true);
 	}
-	
+
 	std::vector<double> cb = circ_dist(xres(), yres(), b, nrow(), ncol(), dim, lonlat, ymean);
 	bool docb = false;
 	std::vector<bool> adj(cb.size(), false);
@@ -234,9 +234,9 @@ std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<dou
 		}
 		docb = true;
 	} else {
-		
+
 	}
-	
+
     std::vector<double> cells = cellFromXY(x, y);
 	std::vector<std::vector<double>> v = extractCell(cells, opt);
 
@@ -245,7 +245,7 @@ std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<dou
 
 	std::vector<std::size_t> pm = sort_order_a(cd);
 	permute(cd, pm);
-	
+
 	if (docb) {
 		size_t n = x.size();
 		for (size_t i=0; i<n; i++) {
@@ -265,12 +265,12 @@ std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<dou
 			}
 		}
 	}
-	
+
 	out.push_back(v[0]);
 	out.push_back(bestdist);
 	out.push_back(bestcell);
 	return out;
-	
+
 }
 
 
@@ -512,7 +512,7 @@ void SpatRaster::bilinearValues(std::vector<std::vector<double>> &out, const std
 		for (size_t j=0; j<nlyr(); j++) {
 //			Rcpp::Rcout << xy[0][ii] << " " << xy[0][ii+1] << " " << xy[0][ii+2] << " " << xy[0][ii+3] << std::endl;
 //			Rcpp::Rcout << xy[1][ii] << " " << xy[1][ii+1] << " " << xy[1][ii+2] << " " << xy[1][ii+3] << std::endl;
-			
+
 			std::vector<double> value = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], 
 												v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3], false);
 			out[j][i] = value[0];
@@ -531,7 +531,7 @@ std::vector<double> SpatRaster::bilinearCells(const std::vector<double> &x, cons
 	std::vector<double> res;
 	res.reserve(n * 8);
 	double v1=1, v2=1, v3=1, v4=1;
-	
+
     for (size_t i=0; i<n; i++) {
         size_t ii = i * 4;
 		//size_t j=0;
@@ -716,7 +716,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(const std::vector<double>
 		return out;
 	}
 	std::vector<std::vector<double>> out;
-	
+
     if (method == "bilinear") {
 		bilinearValues(out, x, y, opt);
 		if (cells) {
@@ -1474,7 +1474,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std:
 		} else {
 			cell = rasterizeCells(p, touches, small, opt);
 		}
-		
+
 		if (havefun) {
 			if (use_streaming) {
 				std::vector<ExtractCellAcc> acc(nl);
@@ -1527,7 +1527,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std:
 	}
 
 	if (havefun) return flat;
-	
+
 	size_t fsize = 0;
 	for (size_t i=0; i<out.size(); i++) { // geoms
 		fsize += (out[i].size()+1) * nl;
@@ -1562,7 +1562,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 		std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
 		return out;
 	}
-	
+
 	unsigned ns = nsrc();
 	unsigned lyr = 0;
 	size_t nc;

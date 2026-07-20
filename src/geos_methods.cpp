@@ -116,7 +116,7 @@ std::vector<std::vector<unsigned char>> SpatVector::wkb_raw() {
 	}
 	return out;
 }	
-	
+
 std::vector<std::string> SpatVector::hex() {
 	GEOSContextScope hGEOSCtxt;
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
@@ -387,7 +387,7 @@ SpatVector SpatVector::crop(SpatExtent e, bool wrap) {
 		out = coll.get(0);
 		out.df = df.subset_rows(out.df.iv[0]);
 	}
-	
+
 	out.srs = srs;
 	return out;
 #endif
@@ -756,12 +756,12 @@ SpatVector SpatVector::split_lines(SpatVector v) {
 			if (x[j] == 1) {
 				std::vector<std::vector<double>> xy2 = tmp.coordinates();
 				if (find_segments(hGEOSCtxt, xy1[0], xy1[1], xy2[0], xy2[1], si, sx, sy)) {
-					
+
 				}
 			}
 		}
 	}
-	
+
 */	
 	return out;
 
@@ -944,7 +944,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 	} else if (v.nrow() > 1) {
 		v = v.aggregate(false);
 	}
-	
+
 //	return intersect(v, false);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	std::vector<GeomPtr> result;
@@ -1108,7 +1108,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by, double param, boo
 		out.setError("unknown hull type");
 		return out;
 	}
-	
+
 	std::vector<GeomPtr> b(1);
 	b[0] = geos_ptr(h, hGEOSCtxt);
 	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
@@ -1243,7 +1243,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 		out.setError("no buffer distance provided");
 		return out;
 	} 
-	
+
 	bool islonlat = is_lonlat();
 	if (d.size() == 1 && d[0] == 0) {
 		islonlat = false; //faster
@@ -1286,7 +1286,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	if (singlesided) { 
 		GEOSBufferParams_setSingleSided_r(hGEOSCtxt, bufparms, 1);
 	} 
-	
+
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {
@@ -1316,7 +1316,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 		empty.srs = srs;
 		return empty;
 	}
-	
+
 	return out;
 }
 
@@ -1330,7 +1330,7 @@ SpatVector SpatVector::buffer2(std::vector<double> d, unsigned quadsegs) {
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {
-		
+
 //		Rcpp::Rcout << "buffer " << i;		
 		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), d[i], (int) quadsegs);
 //		Rcpp::Rcout << " done" << std::endl;
@@ -1609,7 +1609,7 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool pre
 	if (relation.substr(0, 5) == "equal") {
 		prepared = false;
 	}
-	
+
 	GEOSContextScope hGEOSCtxt;
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
@@ -3027,7 +3027,7 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel, const std::str
 	}
 	out.srs = srs;
 
-	
+
 	if (lonlat) {
 		SpatVector x = *this;
 		if (x.type() != "points") {

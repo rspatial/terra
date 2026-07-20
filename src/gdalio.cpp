@@ -427,12 +427,12 @@ std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector
 	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), filenames.size(), NULL, names, vrtops, &pbUsageError);
 	GDALBuildVRTOptionsFree(vrtops);
 	CSLDestroy( names );
-	
+
 	if(ds == NULL )  {
 		setError("cannot create vrt. Error #"+ std::to_string(pbUsageError));
 		return("");
 	}
-	
+
     size_t nSources = 0;
 	char **fileList = ds->GetFileList();
 	if (fileList != NULL) {
@@ -448,7 +448,7 @@ std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector
 		opt.msg.has_warning = true;
 		opt.msg.warnings = {"vrt did not use " + std::to_string(ufo.size() - nSources) + " of the " + std::to_string(ufo.size()) + " files"};
 	}
-	
+
 	return outfile;
 }
 
@@ -1129,13 +1129,13 @@ std::vector<std::string> SpatRaster::getAllFiles() {
 		if( poDS == NULL )  {
 			continue;
 		}
-		
+
 		char **filelist = poDS->GetFileList();
 		if (filelist != NULL) {
 			for (size_t i=0; filelist[i] != NULL; i++) {
 				files.push_back(filelist[i]);
 			}
-			
+
 			std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json", ".aux.xml"};
 			for (size_t j=0; j<exts.size(); j++) {
 				std::string f = source[src].filename + exts[j];
@@ -1147,11 +1147,11 @@ std::vector<std::string> SpatRaster::getAllFiles() {
 		CSLDestroy(filelist);
 		GDALClose( (GDALDatasetH) poDS );
 	}
-	
+
 	for (size_t i=0; i<files.size(); i++) {
 		std::replace(files[i].begin(), files[i].end(), '\\', '/');
 	}
-	
+
 	return files;
 }
 

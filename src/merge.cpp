@@ -105,7 +105,7 @@ static std::vector<RastInfo> collect_info(SpatRasterCollection &src) {
 
 static void read_block(SpatRasterCollection &src, std::vector<RastInfo> &ri, 
 		std::vector<BlockRead> &br, double bymax, double bymin, size_t n) {
-	
+
 	for (size_t i = 0; i < n; i++) {
 		br[i].active = false;
 		SpatExtent& ei = ri[i].ext;
@@ -279,7 +279,7 @@ SpatRaster SpatRasterCollection::blend(bool resample, std::string method, SpatOp
 		out.addWarning(std::to_string(warn) + " raster(s) that did not share the base geometry of the first raster were resampled");
 	}
 	return out;
-	
+
 }
 
 
@@ -416,7 +416,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, bool resample, std::str
 	if (warn > 0) {
 		out.addWarning(std::to_string(warn) + " raster(s) that did not share the base geometry of the first raster were resampled");
 	}
-	
+
 	return out;
 }
 

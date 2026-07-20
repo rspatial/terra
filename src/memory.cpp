@@ -104,7 +104,7 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 		}
 		bs.n = std::max(steps, bs.n);
 	}
-	
+
 	cs = nrow() / bs.n;
 	bs.n = std::ceil(nrow() / double(cs));
 

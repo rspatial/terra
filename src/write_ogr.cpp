@@ -148,7 +148,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	} else {
 		wkb = wkbUnknown;
 	}
-	
+
 	std::string s = srs.wkt;
 
 	OGRSpatialReference *SRS = NULL;
@@ -274,7 +274,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 	}
 
-	
+
 	if (ngeoms == 0) {
 		return poDS;
 	}
@@ -467,12 +467,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			}
 		}
     }
-	
+
 	if (transaction && (gcntr>0) && (poDS->CommitTransaction() != OGRERR_NONE)) {
 		poDS->RollbackTransaction();
 		setError("transaction commit failed");
 	}
-	
+
 	return poDS;
 }
 

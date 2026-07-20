@@ -233,7 +233,7 @@ SpatVector SpatVector::elongate(double length, bool flat) {
 	}
 
 	bool geo = (!flat) && is_lonlat();
-	
+
 	for (size_t i=0; i<n; i++) {
 		for (size_t j=0; j < out.geoms[i].size(); j++) {
 			SpatPart p = out.geoms[i].parts[j];
@@ -632,7 +632,7 @@ SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<
 		recycle(x0, n);
 		recycle(y0, n);
 	}
-	
+
 	double cos_angle, sin_angle;
 	std::function<void(std::vector<double>&, std::vector<double>&, const double&, const double&, const double&, const double&)>  rotate_it;
 	if (is_lonlat()) {
@@ -844,7 +844,7 @@ SpatVector SpatVector::thin_nodes(double threshold, std::string unit) {
 SpatVector SpatVector::removeSlivers(double dthres, double athres, size_t n) {
 
 	SpatVector out;
-	
+
 	if (geoms.empty() || geoms[0].gtype != polygons) {
 		out.setError("can only remove slivers from polygons");
 		return out;

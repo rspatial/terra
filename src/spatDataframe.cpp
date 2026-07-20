@@ -120,7 +120,7 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<size_t> range) {
 			r.push_back(range[i]);
 		}
 	}
-		
+
 	out.names = names;
 	out.itype = itype;
 	out.iplace = iplace;
@@ -1282,7 +1282,7 @@ SpatDataFrame SpatDataFrame::sortby(std::string field, bool descending) {
 	for (size_t i=0; i<fv.size(); i++) {
 		permute(out.fv[i].v, order);
 	}
-	
+
 	return out;
 }
 

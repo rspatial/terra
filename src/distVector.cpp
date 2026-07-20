@@ -55,7 +55,7 @@ double polDistLonLat(SpatVector &p1, SpatVector &p2, std::string unit, std::stri
 	} else {
 		d2seg = dist2segment_geo;		
 	}
-	
+
 	std::vector<double> dout;
 	std::vector<double> vx, vy;
 
@@ -148,7 +148,7 @@ std::vector<double> SpatVector::distLonLat(SpatVector p, std::string unit, std::
 /*
 	std::vector<int> inside = relate(p, "intersects", true, true);
 	Rcpp::Rcout << inside.size() << " " << ng << " " << np << std::endl;
-	
+
 	for (size_t i=0; i<ng; i++) {
 		for (size_t j=0; j<np; j++) {
 			if (inside[i*np+j]) {
@@ -183,7 +183,7 @@ std::vector<double> SpatVector::distLonLat(SpatVector p, std::string unit, std::
 	} else {
 		d2seg = dist2segment_geo;		
 	}
-	
+
 	std::vector<double> dout;
 	std::vector<double> vx, vy;
 
@@ -382,7 +382,7 @@ std::vector<double> SpatVector::nearestDistLonLat(std::vector<double> x, std::ve
 		if ((method == "geo") && (m != 1)) {
 			for (double& v : d) v *= m;
 		}
-		
+
 	} else { // if (type() == "points") {
 		std::vector<std::vector<double>> pts = coordinates();
 		if (method != "geo") {
@@ -407,7 +407,7 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 		setError("CRSs do not match");
 		return(d);
 	}
-	
+
 	size_t s = size();
 	size_t sx = x.size();
 	if ((s == 0) || (sx == 0)) {
@@ -556,7 +556,7 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 
 					double d1 = polDistLonLat(tmp2, tmp1, unit, method);	
 					double d2 = polDistLonLat(tmp1, tmp2, unit, method);
-					
+
 					d.push_back(std::min(d1, d2));
 				}
 			}
@@ -615,7 +615,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 		}
 		return out;
 	}
-	
+
 	std::string gtype = type();
 	std::function<double(double, double, double, double)> dfun;
 	if (gtype == "points") {
@@ -771,7 +771,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 				size_t s = size();
 				size_t n = ((s-1) * s)/2;
 				d.reserve(n);
-								
+
 				std::vector<double> dst;
 				for (size_t i=0; i<(s-1); i++) {
 					SpatVector tmp1 = subset_rows(long(i));
@@ -1141,9 +1141,9 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 
 //  not good for multipoints
 //	std::vector<std::vector<double>> xy = coordinates();
-	
+
 	if (is_lonlat()) {
-		
+
 		std::vector<double> gptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180, -180};
 		std::vector<double> gpty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0,   90};
 		SpatGeom ggeom(polygons);
@@ -1151,7 +1151,7 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 		SpatVector glob;
 		glob.addGeom(ggeom);	
 
-		
+
 		std::vector<double> brng(n);
 		for (size_t i=0; i<n; i++) {
 			brng[i] = i * step;
@@ -1257,7 +1257,7 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 							try {
 								split = fix_date_line(g, ptx, pty);
 							} catch(...) {}
-							
+
 							if (split & no_multipolygons) {
 								for (size_t j=0; j<g.parts.size(); j++) {
 									SpatGeom gg(g.parts[j], polygons);
@@ -1278,7 +1278,7 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 			}
 			out.addGeom(tmp.geoms[0]);
 		}
-		
+
 	} else { // not used (GEOS used for planar). Would need to be fixed for multipoints
 		std::vector<std::vector<double>> xy = coordinates();
 
@@ -1335,7 +1335,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 /*
 	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && 
 			((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
-				
+
 		SpatSRS insrs = x.srs;
 		x.setSRS("+proj=merc");
 		double f = 0.5 - (dist / 220000);
@@ -1396,7 +1396,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 	tmp = tmp.aggregate(true);
 
 	tmp.fix_lonlat_overflow();
-	
+
 	if (ispol) {
 		if (dist < 0) {
 			tmp = !ishole ? tmp.get_holes() : tmp.remove_holes();
