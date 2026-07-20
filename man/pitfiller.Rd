@@ -10,15 +10,15 @@ Fills pits (depressions with no outlet) in a elevation raster using the PEM4PIT 
 }
 
 \usage{
-\S4method{pitfiller}{SpatRaster}(x, pit = NULL, flowdir = NULL, niter = 10, lambda = 0,
+\S4method{pitfiller}{SpatRaster}(x, pit, flowdir, niter = 10, lambda = 0,
                  deviation_type = "lad", max_iters=10^6, U = 1, D = 300, beta = 0.9,
                  theta_exp = 0.5, filename = "", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster with elevation values}
-  \item{pit}{SpatRaster with pits. See \code{\link{pitfinder}}}
-  \item{flowdir}{SpatRaster with flow direction or \code{NULL}. If \code{NULL}, it is calculated internally. See \code{\link{flowDir}}}
+  \item{pit}{SpatRaster with pits identified with values > 0. See \code{\link{pitfinder}}}
+  \item{flowdir}{SpatRaster with flow direction. See \code{\link{flowDir}}}
   \item{niter}{Number of iterations. Default is 10}
   \item{lambda}{Deviation parameter. Default is 0}
   \item{deviation_type}{Type of deviation. Default is \code{"lad"}. See \code{\link{flowDir}}}
@@ -81,13 +81,14 @@ Emanuele Cordano
 }
 
 \examples{
-f <- system.file("ex/elev.tif", package = "terra")
-elev <- rast(f) |> project(y = "epsg:32632")
+elev <- rast(system.file("ex/elev.tif", package = "terra"))
+elev <- project(elev, "epsg:32632")
 
 lambda <- 0.5 ## try also 0 (default)
 flowdir <- flowDir(elev, lambda = lambda)
 pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
 elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
+
 flowdir2 <- terrain(elev2, "flowdir")
 flowdir2 <- flowDir(elev2, lambda = lambda)
 pits2 <- pitfinder(flowdir, pits_on_boundary = FALSE)
