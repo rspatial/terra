@@ -1,6 +1,6 @@
 # Path-Based Nondisperive Flow Direction
 
-Computes non-disperive flow/draiage direction according to path-based
+Computes nondispersive flow/drainage direction according to path-based
 methods over grid-based digital elevation models. This is an alternative
 to
 [`terrain`](https://rspatial.github.io/terra/reference/terrain.md)`(v="flowdir")`.
@@ -24,10 +24,10 @@ flowDir(x, lambda=0.5, deviation_type=c("ltd","lad"), max_iters=10^6, filename="
 
 - deviation_type:
 
-  Character. Default is the first element of c("ltd", "lad"). If `"ltd"`
-  (the default), nondispersive flow directions are determined using the
-  least transversal deviation criterion (LTD). If `"lad"`, nondispersive
-  flow directions are determined using the least angular deviation (LAD)
+  Character. Available options are `"ltd"` (the default) and `"lad"`. If
+  `"ltd"`, nondispersive flow directions are determined using the least
+  transversal deviation (LTD) criterion. If `"lad"`, nondispersive flow
+  directions are determined using the least angular deviation (LAD)
   criterion. See Orlandini et al. (2003) for details.
 
 - max_iters:
@@ -49,8 +49,8 @@ SpatRaster
 
 ## Details
 
-The algorithm is an adaptation of the one proposed by Li et al, 2021 and
-Orlandini et al, 2003 This function is experimental and under
+The algorithm is an adaptation of the one proposed by Li et al. (2022)
+and Orlandini et al. (2003). This function is experimental and under
 development: results are to be verified.
 
 ## See also
@@ -66,7 +66,7 @@ Emanuele Cordano
 ## References
 
 Orlandini, S., G. Moretti, M. Franchini, B. Aldighieri, and B. Testa
-(2003), Path-based methods for the determination of nondispersive
+(2003). Path-based methods for the determination of nondispersive
 drainage directions in grid-based digital elevation models, Water
 Resour. Res., 39, 1144, doi:10.1029/2002WR001639, 6.
 <https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2002WR001639>
@@ -131,7 +131,7 @@ plot(elev2)
 
 ## Flow direction raster
 fdir1 <- flowDir(elev1, lambda=1)
-fdir2 <- flowDir(elev2,lambda=1)
+fdir2 <- flowDir(elev2, lambda=1)
 
 elev <- rast(system.file('ex/elev.tif',package="terra"))
 
