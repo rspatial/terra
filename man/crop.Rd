@@ -46,15 +46,12 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
   \item{ext}{logical. Use the extent of \code{y} instead of \code{y}. This also changes the behavior when \code{y} is an extent in two ways: (1) points that are on the extent boundary are removed and (2) lon/lat extents that go beyond -180 or 180 degrees longitude are wrapped around the earth to include areas at the other end of the dateline}
 }
 
-
 \value{
 SpatRaster
 }
 
 \seealso{
-\code{\link{window}}, \code{\link{intersect}}, \code{\link{extend}}
-
-See \code{window} for a virtual and sometimes more efficient way to crop a dataset.
+\code{\link{intersect}}, \code{\link{subset}}, \code{\link{extend}}, \code{window} for a virtual and sometimes more efficient way to crop a raster.
 }
 
 \examples{
