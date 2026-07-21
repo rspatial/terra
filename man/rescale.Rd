@@ -31,7 +31,7 @@ Same as \code{x}
 }
 
 
-\seealso{\code{\link{t}}, \code{\link{shift}}, \code{\link{flip}}, \code{\link{rotate}}, \code{\link{inset}}}
+\seealso{\code{\link{t}}, \code{\link{shift}}, \code{\link{flip}}, \code{\link{rotate}}, \code{\link{inset}}, \code{\link{cartogram}}}
 
 \examples{
 f <- system.file("ex/lux.shp", package="terra")

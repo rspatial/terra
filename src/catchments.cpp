@@ -1005,7 +1005,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
       e1=*(e+nextcell_point_conv1(nx,ny,x,y,ddp1[j],conv_type));
       e2=*(e+nextcell_point_conv1(nx,ny,x,y,ddp2[j],conv_type));
       mean_e_temp=(e0+e1+e2)/3;
-      if (!(std::isnan(e1) | std::isnan(e2))) { // to rewrite 
+      if (!(std::isnan(e1) || std::isnan(e2))) { // to rewrite 
         if (e1<e_temp) {
           e_temp=e1;
           mean_e=mean_e_temp;
@@ -1107,7 +1107,7 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
    } else if ((e0<=e2) & (e0>e1)) {
      *(pflow+i)=ddp1[facet]; // initialization of pflow estimate .
      *(atdplus+i)= *(atdc+i);
-   } else if ((abs(*(atdc+i))<abs(*(atdd+i))) | ((abs(*(atdc+i))<=abs(*(atdd+i))) & (use_lad==1))){
+   } else if ((abs(*(atdc+i))<abs(*(atdd+i))) || ((abs(*(atdc+i))<=abs(*(atdd+i))) & (use_lad==1))){
      *(pflow+i)=ddp1[facet]; // initialization of pflow estimate .
      *(atdplus+i)= *(atdc+i);  
    } else if (abs(*(atdc+i))>=abs(*(atdd+i))) {
@@ -1189,7 +1189,7 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       nextq=nextpc;// ERRORE!!!
       pflow_estimate=ddp1[facet];
       atdplus_temp=atdplus_nextpc;
-    } else if ((abs(atdplus_nextpc)<abs(atdplus_nextpd)) | ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) & (use_lad==1))){
+    } else if ((abs(atdplus_nextpc)<abs(atdplus_nextpd)) || ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) & (use_lad==1))){
 
       pflow_estimate=ddp1[facet];
       nextq=nextpc; // cardinal
