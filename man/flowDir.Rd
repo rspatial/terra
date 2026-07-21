@@ -8,7 +8,7 @@
 \title{Path-Based Nondisperive Flow Direction}
 
 \description{
-Computes non-disperive flow/draiage direction according to path-based methods over grid-based digital elevation models. 
+Computes nondispersive flow/drainage direction according to path-based methods over grid-based digital elevation models. 
 This is an alternative to \code{\link{terrain}(v="flowdir")}.
 }
 
@@ -19,7 +19,7 @@ This is an alternative to \code{\link{terrain}(v="flowdir")}.
 \arguments{
   \item{x}{SpatRaster with elevation data}
   \item{lambda}{Parameter between 0 and 1}  
-  \item{deviation_type}{Character. Default is the first element of c("ltd", "lad"). If \code{"ltd"} (the default), nondispersive flow directions are determined using the least transversal deviation criterion (LTD). If \code{"lad"}, nondispersive flow directions are determined using the least angular deviation (LAD) criterion. See Orlandini et al. (2003) for details.}  
+  \item{deviation_type}{Character. Available options are \code{"ltd"} (the default) and \code{"lad"}. If \code{"ltd"}, nondispersive flow directions are determined using the least transversal deviation (LTD) criterion. If \code{"lad"}, nondispersive flow directions are determined using the least angular deviation (LAD) criterion. See Orlandini et al. (2003) for details.}  
   \item{max_iters}{maximum iterations for drainage path starting points detection}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -30,7 +30,7 @@ SpatRaster
 }
 
 \details{
-The algorithm is an adaptation of the one proposed by Li et al, 2021 and Orlandini et al, 2003
+The algorithm is an adaptation of the one proposed by Li et al. (2022) and Orlandini et al. (2003).
 This function is experimental and under development: results are to be verified. 
 }
 
@@ -43,7 +43,7 @@ Emanuele Cordano
 
 \references{
 
-Orlandini, S., G. Moretti, M. Franchini, B. Aldighieri, and B. Testa (2003), Path-based methods for the determination of nondispersive drainage directions in grid-based digital elevation models, Water Resour. Res., 39, 1144, doi:10.1029/2002WR001639, 6. \url{https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2002WR001639}
+Orlandini, S., G. Moretti, M. Franchini, B. Aldighieri, and B. Testa (2003). Path-based methods for the determination of nondispersive drainage directions in grid-based digital elevation models, Water Resour. Res., 39, 1144, doi:10.1029/2002WR001639, 6. \url{https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2002WR001639}
 
 Li, Z., Shi, P., Yang, T., Wang, C., Yong, B., & Song, Y. (2022). An improved D8-LTD for the extraction of total contributing area (TCA) by adopting the strategies of path independency and local dispersion. Water Resources Research, 58, e2021WR030948. https://doi.org/10.1029/2021WR030948 \url{https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2021WR030948}
 
@@ -79,7 +79,7 @@ plot(elev2)
 
 ## Flow direction raster
 fdir1 <- flowDir(elev1, lambda=1)
-fdir2 <- flowDir(elev2,lambda=1)
+fdir2 <- flowDir(elev2, lambda=1)
 
 elev <- rast(system.file('ex/elev.tif',package="terra"))
 
