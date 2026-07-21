@@ -58,20 +58,13 @@ setMethod("flowDir", signature(x="SpatRaster"),
 
 
 setMethod("pitfiller", signature(x="SpatRaster"), 
-	function(x, pit, flowdir, niter=10, lambda=0, deviation_type="lad", max_iters=10^6, U=1, D=300, beta=0.9, theta_exp=0.5,filename="",...) { 
-	 
+	function(x, pit, flowdir, niter=10, lambda=0, deviation_type="lad", max_iters=10^6, U=1, D=300, beta=0.9, theta_exp=0.5,filename="",...) { 	 
 		deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad")) 
 		use_lad = deviation_type == "ltd"
 		flowdir <- mask(flowdir, pit>0, maskvalue=TRUE) 
 		opt <- spatOptions(filename, ...)
-		##  uselad=0
-		print(pit)
 		x@pntr <- x@pntr$pitfillerm(pit@pntr, flowdir@pntr, niter, lambda, use_lad, max_iters, U, D, beta, theta_exp, opt)
 		messages(x, "pitfiller") ## EC 20210318
 	}
 )
 
-
-# SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter, double lambda,int use_lad,
-#				    double U,double D,double beta,double theta_exp, // see // see reference doi:10.1016/j.advwatres.2006.11.016)    
-# SpatOptions &opt) {
