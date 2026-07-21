@@ -51,7 +51,7 @@ SpatRaster
 }
 
 \seealso{
-\code{\link{intersect}}, \code{\link{subset}}, \code{\link{extend}}, \code{window} for a virtual and sometimes more efficient way to crop a raster.
+\code{\link{intersect}}, \code{\link{subset}}, \code{\link{extend}}, \code{\link{window}} for a virtual and sometimes more efficient way to crop a raster.
 }
 
 \examples{
