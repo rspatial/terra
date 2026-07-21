@@ -1414,7 +1414,7 @@ void pitfiller(int nx,int ny,double ipit, double *pitf,double *e,double *eout,do
       //nextv[is]=nextcell_point_conv1(nx,ny,xr,yr,*(flowdir+jv[is]),conv_type);
       // CORRECTION       
       ev[is] = *(e+jv[is]);
- ////     if (is_one_pixel==1) printf("ev[%d]=%f ev[0]=%f evdown=%f\n",is,ev[is],ev[0],evdown);
+ ////     if (is_one_pixel==1) Rprintf("ev[%d]=%f ev[0]=%f evdown=%f\n",is,ev[is],ev[0],evdown);
       evavg=evavg+ev[is];
       if ((ev[is]<=evdown) || (is==1)) evdown=ev[is];
       if (ev[is]<=ev[0]) is_one_pixel=0; // in case there is a pixel lower than the pit pixel!
@@ -1496,8 +1496,8 @@ SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter
     int nx=ncol();
     int ny=nrow();
     double Lx=xres();
-    //double Ly=yres();
-    double L=Lx; // to check 
+    double Ly=yres();
+    double L=(Lx+Ly)/2; // Lx and Ly are recommended to be equal for a correct usage of the function. 
     
   ////  printf("pitfiller\n");
     std::vector<double> e=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
