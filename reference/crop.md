@@ -102,10 +102,10 @@ SpatRaster
 ## See also
 
 [`intersect`](https://rspatial.github.io/terra/reference/intersect.md),
-[`extend`](https://rspatial.github.io/terra/reference/extend.md)
-
-See `window` for a virtual and sometimes more efficient way to crop a
-dataset.
+[`subset`](https://rspatial.github.io/terra/reference/subset.md),
+[`extend`](https://rspatial.github.io/terra/reference/extend.md),
+[`window`](https://rspatial.github.io/terra/reference/window.md) for a
+virtual and sometimes more efficient way to crop a raster.
 
 ## Examples
 

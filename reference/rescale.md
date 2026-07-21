@@ -48,7 +48,8 @@ Same as `x`
 [`shift`](https://rspatial.github.io/terra/reference/shift.md),
 [`flip`](https://rspatial.github.io/terra/reference/flip.md),
 [`rotate`](https://rspatial.github.io/terra/reference/rotate.md),
-[`inset`](https://rspatial.github.io/terra/reference/inset.md)
+[`inset`](https://rspatial.github.io/terra/reference/inset.md),
+[`cartogram`](https://rspatial.github.io/terra/reference/cartogram.md)
 
 ## Examples
 
