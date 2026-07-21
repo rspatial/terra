@@ -151,6 +151,126 @@ This function is experimental and under development: results are to be verified.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fdirlad1</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">elev</span>, lambda<span class="op">=</span><span class="fl">0.5</span>, deviation_type<span class="op">=</span><span class="st">"lad"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fdirlad2</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">elev</span>, lambda<span class="op">=</span><span class="fl">0.5</span>, deviation_type<span class="op">=</span><span class="st">"lad"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">###### EXPLICATIVE LONG EXAMPLE </span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://calculus.eguidotti.com" class="external-link">calculus</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘calculus’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:terra’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     wrap</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">color_palette</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">terrain.colors</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">### 1. GRID DEFINITION</span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="va">dy</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="va">xmin</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="va">xmax</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="va">ymin</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="va">ymax</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">xmin</span>, <span class="va">xmax</span>, by <span class="op">=</span> <span class="va">dx</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">ymin</span>, <span class="va">ymax</span>, by <span class="op">=</span> <span class="va">dy</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">### 2. DEFINE TWO ANALYTICAL ELEVATION FUNCTIONS</span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">model</span><span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"vshape"</span>,<span class="st">"paraboloid"</span>,<span class="st">"planar"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="va">model</span><span class="op">==</span><span class="st">"vshape"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">elev_f1</span> <span class="op">&lt;-</span>  <span class="st">"2.0*x*tanh(100*x) + 0.50*y"</span>  </span></span>
+<span class="r-in"><span>  <span class="va">elev_f2</span> <span class="op">&lt;-</span>   <span class="st">"2.0*x*tanh(100*x) - 0.50*y"</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="op">(</span><span class="va">model</span><span class="op">==</span><span class="st">"paraboloid"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">elev_f1</span> <span class="op">&lt;-</span> <span class="st">" 10*(x^2+y^2)^0.8"</span></span></span>
+<span class="r-in"><span>  <span class="va">elev_f2</span> <span class="op">&lt;-</span> <span class="st">" -10*(x^2+y^2)^0.8"</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="op">(</span><span class="va">model</span><span class="op">==</span><span class="st">"planar"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">elev_f1</span> <span class="op">&lt;-</span> <span class="st">" 2.0*x+0.225*y"</span></span></span>
+<span class="r-in"><span>  <span class="va">elev_f2</span> <span class="op">&lt;-</span> <span class="st">"2.0*x-0.225*y"</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">elev_f1</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span>  <span class="va">elev_f2</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">### 3. EVALUATE BOTH ELEVATION MODELS</span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">vars</span><span class="op">$</span><span class="va">elev1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://calculus.eguidotti.com/reference/evaluate.html" class="external-link">evaluate</a></span><span class="op">(</span><span class="va">elev_f1</span>, var <span class="op">=</span> <span class="va">vars</span><span class="op">[</span>,<span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"y"</span><span class="op">)</span><span class="op">]</span>,params<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ymin<span class="op">=</span><span class="va">ymin</span>,ymax<span class="op">=</span><span class="va">ymax</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vars</span><span class="op">$</span><span class="va">elev2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://calculus.eguidotti.com/reference/evaluate.html" class="external-link">evaluate</a></span><span class="op">(</span><span class="va">elev_f2</span>, var <span class="op">=</span> <span class="va">vars</span><span class="op">[</span>,<span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"y"</span><span class="op">)</span><span class="op">]</span>,params<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ymin<span class="op">=</span><span class="va">ymin</span>,ymax<span class="op">=</span><span class="va">ymax</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">### 5. BUILD RASTERS</span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">vars</span><span class="op">[</span>,<span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"y"</span>,<span class="st">"elev1"</span><span class="op">)</span><span class="op">]</span>, type<span class="op">=</span><span class="st">"xyz"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">vars</span><span class="op">[</span>,<span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"y"</span>,<span class="st">"elev2"</span><span class="op">)</span><span class="op">]</span>, type<span class="op">=</span><span class="st">"xyz"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">r1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"elev"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"elev"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">### 6. FLOW DIRECTIONS (terra + LAD/LTD)</span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="va">deviation_types</span><span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"lad"</span>,<span class="st">"ltd"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span>,<span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Elevation Model A</span></span></span>
+<span class="r-in"><span><span class="va">r1</span><span class="op">$</span><span class="va">flow_d8</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">r1</span><span class="op">$</span><span class="va">elev</span>, <span class="st">"flowdir"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Elevation Model B</span></span></span>
+<span class="r-in"><span><span class="va">r2</span><span class="op">$</span><span class="va">flow_d8</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">elev</span>, <span class="st">"flowdir"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">lambda</span> <span class="kw">in</span> <span class="va">lambdas</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="kw">for</span> <span class="op">(</span><span class="va">deviation_type</span> <span class="kw">in</span> <span class="va">deviation_types</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">it</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"flow_%s%03d"</span>, <span class="va">deviation_type</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">lambda</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">r1</span><span class="op">[[</span><span class="va">it</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">r1</span><span class="op">$</span><span class="va">elev</span>, lambda<span class="op">=</span><span class="va">lambda</span>, deviation_type<span class="op">=</span><span class="va">deviation_type</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">r2</span><span class="op">[[</span><span class="va">it</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">flowDir</span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">elev</span>, lambda<span class="op">=</span><span class="va">lambda</span>, deviation_type<span class="op">=</span><span class="va">deviation_type</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">### 7. VISUALIZATION EXAMPLES</span></span></span>
+<span class="r-in"><span><span class="co">### ---------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="va">nrr</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">+</span><span class="fu"><a href="dimensions.html">length</a></span><span class="op">(</span><span class="va">lambdas</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="dimensions.html">length</a></span><span class="op">(</span><span class="va">deviation_types</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">nrr</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Model A</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r1</span><span class="op">$</span><span class="va">elev</span>, main<span class="op">=</span><span class="st">"Elevation Model A"</span>, col<span class="op">=</span><span class="va">color_palette</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="as.arrows.html">as.arrows</a></span><span class="op">(</span><span class="va">r1</span><span class="op">$</span><span class="va">flow_d8</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Model B</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">elev</span>, main<span class="op">=</span><span class="st">"Elevation Model B"</span>, col<span class="op">=</span><span class="va">color_palette</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="as.arrows.html">as.arrows</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">flow_d8</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">lambda</span> <span class="kw">in</span> <span class="va">lambdas</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="kw">for</span> <span class="op">(</span><span class="va">deviation_type</span> <span class="kw">in</span> <span class="va">deviation_types</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">ita</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"flow_%s%03d"</span>, <span class="va">deviation_type</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">lambda</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r1</span><span class="op">$</span><span class="va">elev</span>, main<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Model A - %s lambda=%1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="va">deviation_type</span><span class="op">)</span>,<span class="va">lambda</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         col<span class="op">=</span><span class="va">color_palette</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="as.arrows.html">as.arrows</a></span><span class="op">(</span><span class="va">r1</span><span class="op">[[</span><span class="va">ita</span><span class="op">]</span><span class="op">]</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    </span></span>
+<span class="r-in"><span>    <span class="va">itb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"flow_%s%03d"</span>, <span class="va">deviation_type</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">lambda</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">elev</span>, main<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Model B - %s lambda=%1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="va">deviation_type</span><span class="op">)</span>,<span class="va">lambda</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         col<span class="op">=</span><span class="va">color_palette</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="as.arrows.html">as.arrows</a></span><span class="op">(</span><span class="va">r2</span><span class="op">[[</span><span class="va">itb</span><span class="op">]</span><span class="op">]</span>, unit<span class="op">=</span><span class="st">"flowdir"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-plt img"><img src="flowDir-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Analysis complete"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Analysis complete</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
