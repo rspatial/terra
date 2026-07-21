@@ -65,7 +65,6 @@ setMethod("pitfiller", signature(x="SpatRaster"),
 		flowdir <- mask(flowdir, pit>0, maskvalue=TRUE) 
 		opt <- spatOptions(filename, ...)
 		##  uselad=0
-		print(pit)
 		x@pntr <- x@pntr$pitfillerm(pit@pntr, flowdir@pntr, niter, lambda, use_lad, max_iters, U, D, beta, theta_exp, opt)
 		messages(x, "pitfiller") ## EC 20210318
 	}
