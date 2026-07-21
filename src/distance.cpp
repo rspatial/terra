@@ -106,13 +106,13 @@ double distHaversineRad(const double &lon1, const double &lat1, const double &lo
 std::vector<double> distance_lonlat(std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2) {
 	double a = 6378137.0;
 	double f = 1/298.257223563;
-	
+
 	size_t n = std::max(std::max(std::max(lon1.size(), lat1.size()), lon2.size()), lat2.size());
     recycle(lon1, n);
     recycle(lon2, n);
     recycle(lat1, n);
     recycle(lat2, n);
-	
+
 	std::vector<double> r(n);
 	double azi1, azi2;
 	struct geod_geodesic g;
@@ -134,7 +134,7 @@ std::vector<double> distance_lonlat_vd(std::vector<double> &lon1, std::vector<do
 std::vector<double> distance_lon(double &lon, std::vector<double> &lat) {
 	double a = 6378137.0;
 	double f = 1/298.257223563;
-	
+
 	size_t n = lat.size();
 	std::vector<double> r(n);
 	double azi1, azi2;
@@ -267,7 +267,7 @@ void directionToNearest_lonlat(std::vector<double> &azi, std::vector<double> &lo
 		deg2rad(lon1);
 		deg2rad(lat2);
 		deg2rad(lon2);
-		
+
 		azi.resize(n, NAN);
 
 		for (size_t i=0; i < n; i++) {
@@ -295,7 +295,7 @@ void directionToNearest_lonlat(std::vector<double> &azi, std::vector<double> &lo
 		}
 	}	
 }		
-		
+
 
 
 
@@ -470,7 +470,7 @@ void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> 
 		} else {
 			dfun = distCosine;			
 		}
-		
+
 		for (int i=0; i < n; i++) {
 			if (!std::isnan(lat1[i])) {
 				d[i] = dfun(lon1[i], lat1[i], lon2[0], lat2[0]);
@@ -532,7 +532,7 @@ void distanceToNearest_plane(std::vector<double> &d, const std::vector<double> &
 
 
 void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<double> &nlon, std::vector<double> &nlat, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, const std::string method) {
-	
+
 	size_t n = lon1.size();
 	size_t m = lon2.size();
 
@@ -540,9 +540,9 @@ void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<d
 	nlat.resize(n);
 	id.resize(n);
 	d.resize(n);
-	
+
 	if (method == "geo") {
-		
+
 		double a = 6378137.0;
 		double f = 1/298.257223563;
 		double azi1, azi2, s12;
@@ -572,14 +572,14 @@ void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<d
 			}
 		}
 	} else {
-		
+
 		std::function<double(double, double, double, double)> dfun;
 		if (method == "haversine") {
 			dfun = distHaversine;
 		} else {
 			dfun = distCosine;			
 		}	
-		
+
 		for (size_t i=0; i < n; i++) {
 			if (std::isnan(lat1[i])) {
 				nlon[i] = NAN;
@@ -624,7 +624,7 @@ void nearest_lonlat_self(std::vector<long> &id, std::vector<double> &d, std::vec
 	d.resize(n);
 
 	if (method == "geo") {
-		
+
 		double a = 6378137.0;
 		double f = 1/298.257223563;
 		double azi1, azi2, s12;

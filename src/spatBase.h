@@ -48,7 +48,7 @@
 
 class SpatMessages {
 	public:
-	
+
 		virtual ~SpatMessages(){}
 
 		bool has_error = false;
@@ -73,7 +73,7 @@ class SpatMessages {
 			has_error = false;
 			error = "";
 		}
-		
+
 		void addWarning(std::string s) {
 			has_warning = true;
 			warnings.push_back(s);
@@ -94,7 +94,7 @@ class SpatMessages {
 		void setMessage(std::string s) {
 			message = s;
 		}
-		
+
 /*		std::vector<std::string> getAll() {
 			std::string warns = getWarnings();
 			std::string error = getError();
@@ -116,7 +116,7 @@ class SpatOptions {
 		double tolerance = 0.1;
 		std::vector<double> offset = {0};
 		std::vector<double> scale = {1};
-		
+
 	public:
 		SpatOptions();
 		SpatOptions(const SpatOptions &opt);
@@ -147,7 +147,7 @@ class SpatOptions {
 		//bool ncdfcopy = false;
 		unsigned char value_type = 0;
 		std::string tmpfile = "";
-		
+
 		std::string datatype = "";
 		//std::string bandorder = "";
 		std::string filetype = "";
@@ -178,7 +178,7 @@ class SpatOptions {
 		void set_def_filetype(std::string d);
 
 		// single use
-		
+
 		void set_verbose(bool v);
 		void set_def_verbose(bool v);
 		void set_NAflag(double flag);
@@ -302,11 +302,11 @@ class SpatExtent {
 		SpatExtent round(int n);
 		SpatExtent floor();
 		SpatExtent ceil();
-		
+
 		std::vector<size_t> test_sample(size_t size, size_t N, bool replace, std::vector<double> w, unsigned seed);
 		std::vector<std::vector<double>> sampleRegular(size_t size, bool lonlat);
 		std::vector<std::vector<double>> sampleRandom(size_t size, bool lonlat, unsigned seed);
-		
+
 };
 
 

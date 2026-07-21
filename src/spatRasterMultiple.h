@@ -84,15 +84,15 @@ class SpatRasterStack {
 		SpatRaster collapse();
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
-		
-		
+
+
 		//std::map<std::string, std::string> tags;
 		std::vector<std::vector<std::string>> tags;
 		bool addTag(std::string name, std::string value, std::string domain);
 		bool removeTag(std::string name, std::string domain);
 		std::string getTag(std::string name, std::string domain);
 		std::vector<std::vector<std::string>> getTags();
-		
+
 };
 
 
@@ -112,7 +112,7 @@ class SpatRasterCollection {
 		std::vector<std::string> getWarnings() { return msg.getWarnings();}
 		std::string getError() { return msg.getError();}
 		std::string getMessage() { return msg.getMessage();}
-	
+
 		std::vector<SpatRaster> ds;
 //		SpatExtent extent;
 		bool readStart();
@@ -124,17 +124,17 @@ class SpatRasterCollection {
 		SpatRasterCollection(std::vector<std::string> fnames, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, bool group);
 //		void setExtent();
 		SpatExtent getExtent();
-		
+
 		SpatRasterCollection(size_t n);
 		size_t size();
 		bool empty();
 		void resize(size_t n);
 		void push_back(SpatRaster r, std::string name);
 		void erase(size_t i); 
-		
+
 		void readBlock(SpatRaster &r, std::vector<std::vector<double>> &v, BlockSize bs, size_t i, std::vector<size_t> use, SpatOptions opt);
 		std::string make_vrt(std::vector<std::string> options, bool reverse, SpatOptions &opt);
-		
+
 		SpatRasterCollection crop(SpatExtent e, std::string snap, bool expand, std::vector<size_t> use, SpatOptions &opt);
 		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<size_t> use, SpatOptions &opt);
 		std::vector<int> getValueType(bool unique);
@@ -152,7 +152,7 @@ class SpatRasterCollection {
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> nms);
 		std::vector<std::string> filenames();
-		
+
 		SpatRasterStack read_into(SpatRaster &tmp, size_t row, size_t nrows);
 
 		std::vector<std::vector<std::string>> tags;

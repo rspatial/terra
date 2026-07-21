@@ -482,7 +482,7 @@ static SpatGeom linearize_to_spatgeom(OGRGeometry *poGeometry, bool &ok) {
 
 void addOGRgeometry(SpatVector &x, OGRGeometry *poGeometry) {
 	SpatGeom g;
-		
+
 	OGRwkbGeometryType gtype = wkbFlatten(poGeometry->getGeometryType());
 	if (gtype == wkbPoint) {
 		g = getPointGeom(poGeometry);
@@ -514,13 +514,13 @@ void addOGRgeometry(SpatVector &x, OGRGeometry *poGeometry) {
 
 
 bool SpatVector::addRawGeoms(std::vector<unsigned char*> wkbs, std::vector<size_t> sizes) {
-	
+
 	if (wkbs.size() == 0) {
 		SpatGeom g = emptyGeom();
 		addGeom(g);
 		return true;
 	}
-	
+
 	for (size_t i=0; i<wkbs.size(); i++) {
 		OGRGeometry *poGeometry;
 		OGRErr err = OGRGeometryFactory::createFromWkb(wkbs[i], NULL, &poGeometry, sizes[i]);
@@ -533,7 +533,7 @@ bool SpatVector::addRawGeoms(std::vector<unsigned char*> wkbs, std::vector<size_
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -623,7 +623,7 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 			return false;
 		}
 	}
-	
+
 	if (filter.nrow() > 0) {
 		if (filter.type() != "polygons") {
 			filter = filter.hull("convex");
@@ -898,7 +898,7 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
 			openops = CSLSetNameValue(openops, opt[0].c_str(), opt[1].c_str());
 		}
 	}
-		
+
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, openops, NULL ));
 	if (poDS == NULL) {
 		std::string alt = kmz_vsizip_fallback(fname);
@@ -1002,10 +1002,10 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 }
 
 bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::string dialect, std::vector<double> extent, SpatVector filter) {
-	
+
 	OGRLayer *poLayer;
 	poLayer = poDS->GetLayer(0);
-	
+
 	std::string errmsg;
 	std::vector<std::string> wrnmsg;
 

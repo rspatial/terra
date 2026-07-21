@@ -787,7 +787,7 @@ void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vec
 	std::vector<double> X, Y;
 	SpatGeom g;
 	g.gtype = getGType(type);
-	
+
 	for (size_t i=0; i<gid.size(); i++) {
 		if ((lastgeom != gid[i]) || (lastpart != part[i]) || (isPoly && (lasthole != hole[i]))) {
 			if (X.empty()) {
@@ -1114,7 +1114,7 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 		v.addWarning("input has no geometries");
 		return v;
 	}
-	
+
 	if (geoms[0].gtype == points) {
 		SpatVector v = *this;
 		v.addWarning("returning a copy");

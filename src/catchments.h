@@ -99,7 +99,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
 
 // these return false if the maximum number of iterations was exceeded
 bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
-                          
+
                           double *atdc, double *atdd, double *atdplus, double *atdplus0,
                           double *pflow,int *has_upstream,int *kupdate,double *npids,
                           double lambda,

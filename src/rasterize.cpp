@@ -32,11 +32,11 @@
 SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double> &y, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1, false, false, false);
-	
+
 	if (!out.writeStart(opt, filenames())) {
 		return out;
 	}
-	
+
 	if (y.size() != x.size()) {
 		out.setError("number of x and y coordinates do not match");
 		return out;
@@ -127,7 +127,7 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 					}
 				}				
 			}			
-			
+
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
 		}
 	} else if (fun == "sum") {
@@ -532,14 +532,14 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	std::string driver, filename;
 	GDALDatasetH rstDS;
 	double naval;
-	
+
 	if (!opt.datatype_set) {
 		if ((value < -16777216) || (value > 16777216)) {
 			opt.datatype = "FLT8S";
 		}
 	}
 
-	
+
 	if (!getDSh(rstDS, out, filename, driver, naval, update, background, opt)) {
 		return out;
 	}
@@ -594,7 +594,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 #include "vecmath.h"
 SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values,
 	double background, bool touches, std::string fun, bool weights, bool update, bool minmax, SpatOptions &opt) {
-	
+
 	std::string gtype = x.type();
 	bool ispol = gtype == "polygons";
 	if (weights) update = false;
@@ -729,12 +729,12 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	std::vector<int> bands(out.nlyr());
 	std::iota(bands.begin(), bands.end(), 1);
 	rep_each(values, out.nlyr());
-	
+
 	SpatRaster temp = out;
   	if (!out.writeStart(opt, filenames())) {
 		return out;
 	}
-	
+
 	bool hasError = false;
 	SpatExtent e = temp.getExtent();
 	SpatRaster tmp;
@@ -768,8 +768,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		} else if (!tmp.getDShMEM(rstDS, tmp, naval, background, opt)) {
 			return tmp;
 		}
-		
-	
+
+
 		if (i==1) for (double &d : values) d = std::isnan(d) ? naval : d;
 
 		CPLErr err;
@@ -827,16 +827,16 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		std::vector<double> v = tmp.getValues(-1, topt);
 		if (!out.writeBlock(v, i)) return out;
 	}
-	
+
 	CSLDestroy(papszOptions);	
 	for (size_t i=0; i<ogrGeoms.size(); i++) {
 		OGR_G_DestroyGeometry(ogrGeoms[i]);
 	}
 	if (update) readStop();
 	out.writeStop();
-	
+
 	if (hasError) return tmp; 
-		
+
 	return out;
 }
 

@@ -227,7 +227,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, bool falseNA, SpatO
 		readBlock(a, out.bs, i);
 		x.readBlock(b, out.bs, i);
 		recycle(a,b);
-		
+
 		if (oper == "+") {
 			std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::plus<double>());
 		} else if (oper == "-") {
@@ -468,7 +468,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		out.setError("unknown arith function");
 		return out;
 	}
-	
+
 	if (logical) {
 		out.setValueType(3);
 	} else if (oper != "/") {
@@ -613,7 +613,7 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}
-	
+
 	size_t nx = x.size();
 	if (nx == 0) {
 		out.setError("cannot compute with nothing");
@@ -647,7 +647,7 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 		recycle(x, nl * dim[0]);
 		dim[1] = nl;
 	}
-	
+
 	bool logical;
 	bool falseNA=false;
 	if (!smooth_operator(oper, logical, reverse, falseNA)) {
@@ -657,7 +657,7 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 	if (logical) {
 		out.setValueType(3);
 	} 
-	
+
 	if (logical) {
 		out.setValueType(3);
 	} else if (oper != "/") {
@@ -689,7 +689,7 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 	}
 
 	size_t nc = ncol();
-	
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, out.bs, i);
@@ -731,7 +731,7 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 						v[s+k] /= xj[k];
 					}
 				}
-				
+
 			} else if (oper == "^") {				
 				if (reverse) {
 					for (size_t k=0; k<off; k++) {
@@ -1022,7 +1022,7 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 	if ((!hasValues()) || (!x.hasValues())) {
 		return out;
 	} 
-	
+
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);

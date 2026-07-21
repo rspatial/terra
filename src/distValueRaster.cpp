@@ -42,7 +42,7 @@ void dist_bounds_values(const std::vector<double>& vx, const std::vector<double>
 			dfun = distance_geo;
 		}
 
-		
+
 		for (size_t i=0; i<rx.size(); i++) {
 			size_t thisone = 0;
 			for (size_t j=oldfirst; j<vx.size(); j++) {
@@ -127,7 +127,7 @@ void dist_only_vals(std::vector<double> &d, std::vector<double> &dv, const std::
 			}
 
 		} else { // not geo
-	
+
 			std::function<double(double, double, double, double)> dfun;
 			if (method == "haversine") {
 				dfun = distance_hav;
@@ -135,7 +135,7 @@ void dist_only_vals(std::vector<double> &d, std::vector<double> &dv, const std::
 				dfun = distance_cos;
 			} 
 			if (skip) {
-				
+
 				for (size_t i=0; i<rxs; i++) {
 					if (std::isnan(v[i])) {
 						d.push_back(inf);
@@ -166,7 +166,7 @@ void dist_only_vals(std::vector<double> &d, std::vector<double> &dv, const std::
 				}
 			} 
 		}
-		
+
 	} else { // not lonlat
 		if (skip) {
 			for (size_t i=0; i<rxs; i++) {
@@ -250,7 +250,7 @@ SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<do
 		opt.steps = std::max(opt.steps, (size_t) 4);
 		opt.progress = opt.progress * 2;
 	}
-	
+
  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
@@ -405,7 +405,7 @@ SpatRaster SpatRaster::distanceValues(double target, double exclude, bool keepNA
 		p = out.as_points_value(1, ops);
 		std::vector<std::vector<double>> vv = extractXY(p[0], p[1], "", false);
 		return distance_crds_vals(p[0], p[1], vv[0], method, true, setNA, unit, opt);
-		
+
 	}
 	if (p.empty()) {
 		return out.init({0}, opt);

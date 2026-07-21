@@ -73,7 +73,7 @@ std::vector<int> month_days(int year) {
 std::vector<int> SpatDate::ymd() {
   int year, month, day;
   long x = v;
-  
+
   if (x >= 0) {
     long days = 0;
     year = 1969;
@@ -119,9 +119,9 @@ int date_from_ymd(std::vector<int> ymd) {
 
   int year = 1970;
   long day = -1;
-  
+
   if (ymd[0] > 1970) {
-    
+
     for (int i=0; i<(ymd[0]-1970); i++) {
       day += 365 + isleapyear(year);
       year++;
@@ -131,7 +131,7 @@ int date_from_ymd(std::vector<int> ymd) {
       day += mdays[i];
     }
     day += ymd[2];
-    
+
   } else {
 
     day = -1;
@@ -148,8 +148,8 @@ int date_from_ymd(std::vector<int> ymd) {
   }
   return(day);
 }
-  
- 
+
+
 bool SpatDate::is_leap_year() {
 	std::vector<int> d = ymd();
 	return isleapyear( d[0] );
@@ -163,7 +163,7 @@ SpatDate::SpatDate(const int& year, const int& month, const int& day) {
 
 SpatDate::SpatDate(int doy, int year) {
 	if (doy == 0) doy = 1;
-	
+
 	if (doy < 0) {  // this is a weird case, but let's try to handle it
 		while ( doy < 0 ) {
 			year--;

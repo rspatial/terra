@@ -95,7 +95,7 @@ std::vector<double> dist_bounds(const std::vector<double>& vx, const std::vector
 			dfun = distance_geo;
 		}
 
-		
+
 		for (size_t i=0; i<rx.size(); i++) {
 			size_t thisone = 0;
 			for (size_t j=oldfirst; j<vx.size(); j++) {
@@ -172,7 +172,7 @@ void dist_only(std::vector<double> &d, const std::vector<double>& vx, const std:
 			}
 
 		} else { // not geo
-	
+
 			std::function<double(double, double, double, double)> dfun;
 			if (method == "haversine") {
 				dfun = distance_hav;
@@ -180,7 +180,7 @@ void dist_only(std::vector<double> &d, const std::vector<double>& vx, const std:
 				dfun = distance_cos;
 			} 
 			if (skip) {
-				
+
 				for (size_t i=0; i<rxs; i++) {
 					if (std::isnan(v[i])) {
 						d.push_back(inf);
@@ -208,7 +208,7 @@ void dist_only(std::vector<double> &d, const std::vector<double>& vx, const std:
 				}
 			} 
 		}
-		
+
 	} else { // not lonlat
 		if (skip) {
 			for (size_t i=0; i<rxs; i++) {
@@ -284,7 +284,7 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 		opt.steps = std::max(opt.steps, (size_t) 4);
 		opt.progress = opt.progress * 2;
 	}
-	
+
  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
@@ -1321,7 +1321,7 @@ SpatRaster SpatRaster::distance_vector_lonlat_fast_geo(SpatVector p, std::string
 SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string unit, const std::string& method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	
+
 	if (source[0].srs.is_empty() && p.srs.is_empty()) {
 		out.addWarning("unknown CRSs. Results can be wrong");
 	} else if (!source[0].srs.is_same(p.srs, false)) {
@@ -1401,7 +1401,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 			if (p.nrow() > 1) {
 				p = p.aggregate(true);
 			}
-			
+
 			std::vector<double> cells;
 			size_t nc = ncol();
 
@@ -1422,12 +1422,12 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 				pnts.srs = source[0].srs;
 				pnts.setPointsGeometry(rxy[0], rxy[1]);
 				std::vector<double> d = pnts.distance(p, false, unit, method, false, opt);
-					
+
 				if (!out.writeBlock(d, i)) return out;
 			}
 			readStop();
 			out.writeStop();
-			
+
 		} else {
 		//p = p.aggregate(false);
 			if ((method != "geo") && (method != "cosine") && (method != "haversine")) {
@@ -1545,7 +1545,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, std::string unit, SpatOptio
 	double m=1;
 //	if (!get_m(m, source[0].srs, lonlat, unit)) {
 	if (!source[0].srs.m_dist(m, lonlat, unit)) {
-		
+
 		out.setError("invalid unit");
 		return(out);
 	}
@@ -1685,7 +1685,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		out = edges(false, false, "inner", 8, 0, ops);
 		p = out.as_points_value(1, ops);
 	}
-	
+
 	if (p.empty()) {
 		out = out.init({0}, opt);
 	} else if (values) {
@@ -2073,11 +2073,11 @@ SpatRaster SpatRaster::gridDistance(double m, SpatOptions &opt) {
 
 	std::vector<double> res = resolution();
 	size_t nc = ncol();
-	
+
 	if (source[0].srs.is_empty()) {
 		out.addWarning("unknown CRS. Results can be wrong");
 	}
-	
+
 	bool lonlat = is_lonlat();
     std::vector<double> d, v;
 	std::vector<double> above(nc, std::numeric_limits<double>::infinity());
@@ -2868,7 +2868,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 	if (!group.readStart()) {
 		return {{NAN}};
 	}
-	
+
 	size_t nc = ncol();
 	size_t nl = nlyr();
 	std::vector<std::map<double, std::map<double, double>>> m(nl);
@@ -3037,7 +3037,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 			}
 		}
 	}
-	
+
 	readStop();
 	group.readStop();
 	std::vector<std::vector<double>> out(nl);
@@ -3055,7 +3055,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 	return out;
 }
 
-	
+
 
 
 size_t get_k(const std::vector<double> &r, std::default_random_engine &generator, std::uniform_int_distribution<> &U) {
@@ -3709,7 +3709,7 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 		out.setError("you must provide a value for aspect and direction");
 		return out;		
 	}
-	
+
 	std::vector<std::string> nms;
 
 	if ((angle.size() > 1) || (direction.size() > 1)) {
@@ -3729,7 +3729,7 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 				nms.push_back(nmi);
 			}
 		}
-				
+
 		for (size_t i=0; i<nl; i++) {
 			ops.names = {nms[i]};
 			SpatRaster r = hillshade(aspect, {angle[i]}, {direction[i]}, normalize, ops);
@@ -3904,7 +3904,7 @@ SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 		cbs.row[i] -= 1;
 		cbs.nrows[i] += 1;
 	}
-	
+
 	size_t nc = ncol();	
 	double xr = xres();	
 	std::vector<double> resx = { xr };	
@@ -3955,10 +3955,10 @@ struct PatchUnionFind {
 	double find(double id) {
 		if (std::isnan(id)) return id;
 		if (id < start_id) return id; 
-		
+
 		size_t idx = (size_t)(id - start_id);
 		if (parents[idx] == id) return id;
-		
+
 		parents[idx] = find(parents[idx]); 
 		return parents[idx];
 	}
@@ -3996,7 +3996,7 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 	bool d4 = dirs == 4;
 	size_t stopnc = nc-1;
 	std::vector<double> d;
-	
+
 	auto check_neighbor = [&](double val, double neighbor_val, double neighbor_patch, std::vector<double>& candidates) {
 		if (!std::isnan(neighbor_val) && !std::isnan(neighbor_patch)) {
 			if (is_equal(val, neighbor_val)) {
@@ -4047,7 +4047,7 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 			assign_patch(i, d);
 		}
 	}
-	
+
 	size_t i = stopnc;
 	if (!std::isnan(vals[i])) {
 		d.clear();
@@ -4198,7 +4198,7 @@ SpatRaster SpatRaster::patches(size_t directions, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
-	
+
 	opt.set_filenames({""}); 
   	if (!out.writeStart(opt, filenames())) {
 		readStop();
@@ -4211,7 +4211,7 @@ SpatRaster SpatRaster::patches(size_t directions, SpatOptions &opt) {
 	std::vector<double> above_v(nc, NAN);
 	std::vector<std::vector<size_t>> rcl(2);
 	std::vector<double> v;
-	
+
 	bool is_global = is_global_lonlat();
 
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -4220,13 +4220,13 @@ SpatRaster SpatRaster::patches(size_t directions, SpatOptions &opt) {
 		broom_patches(v, p, above_p, above_v, directions, ncps, out.bs.nrows[i], nc, rcl, is_global);
 		if (!out.writeBlock(p, i)) return out;
 	}
-	
+
 	readStop();
 	out.writeStop();
-	
+
 	std::string filename = opt.get_filename();
 	opt.set_filenames({filename});
-	
+
 	if (!rcl[0].empty()) {
 		std::vector<std::vector<double>> rc = patches_getRCL(rcl, ncps);
 		out = out.reclassify(rc, 3, true, false, 0.0, false, false, false, opt);
@@ -4260,7 +4260,7 @@ std::vector<double> dn_bounds(const std::vector<double>& vx, const std::vector<d
 			dfun = distance_geo;
 		}
 
-		
+
 		for (size_t i=0; i<rx.size(); i++) {
 			size_t thisone = 0;
 			for (size_t j=oldfirst; j<vx.size(); j++) {
@@ -4350,7 +4350,7 @@ const std::vector<double> v;
 			}
 
 		} else { // not geo
-	
+
 			std::function<double(double, double, double, double)> dfun;
 			if (method == "haversine") {
 				dfun = distance_hav;
@@ -4358,7 +4358,7 @@ const std::vector<double> v;
 				dfun = distance_cos;
 			} 
 			if (skip) {
-				
+
 				for (size_t i=0; i<rxs; i++) {
 					if (std::isnan(v[i])) {
 						d.push_back(inf);
@@ -4391,7 +4391,7 @@ const std::vector<double> v;
 				}
 			} 
 		}
-		
+
 	} else { // not lonlat
 		if (skip) {
 			for (size_t i=0; i<rxs; i++) {

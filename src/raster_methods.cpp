@@ -33,7 +33,7 @@
 
 SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, 
 	double othersValue, SpatOptions &opt) {
-		
+
 	SpatRaster out = geometry();
 
 	if (!opt.datatype_set) {
@@ -62,17 +62,17 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 			size_t range = max_v - min_v + 1;
 			double mem_req_bytes = (double)range * 8.0 + (double)range / 8.0;
 			double mem_budget_bytes = opt.get_memmin() * 8.0;
-					
+
 			if (mem_req_bytes < mem_budget_bytes) {
 				use_direct_lut = true;
 			}
 		}
 	}
-		
+
 	std::vector<double> lut;
 	std::vector<bool> lut_set;
 	SpatHashMap<double, double> lookup_map;
-		
+
 	if (use_direct_lut) {
 		size_t range = max_v - min_v + 1;
 		lut.resize(range);
@@ -93,7 +93,7 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 			}
 		}
 	}
-		
+
 	if (!readStart()) {
 		out.setError(getError());
 		return out;
@@ -102,7 +102,7 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 		readStop();
 		return out;
 	}
-		
+
 	std::vector<double> v;
 	// Per-cell kernels. The bodies are pure functions of v[j] (and read-only
 	// state captured from the surrounding scope), so they parallelise cleanly:
@@ -917,11 +917,11 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 		}
 	}
 	out.source[0].srs = source[0].srs;
-	
+
 	if (hasTime()) {
 		out.setTime(getTime(), getTimeStep(), getTimeZone());
 	}
-	
+
 	if (!source[0].hasValues) {
 		return out;
 	}

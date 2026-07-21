@@ -144,7 +144,7 @@ T vmedian(std::vector<T>& v, bool narm) {
 		std::sort(vv.begin(), vv.end());
 		return (vv[n2] + vv[n2-1]) / 2;
 	}
-	
+
 }
 
 
@@ -626,14 +626,14 @@ T vmodal_old(std::vector<T>& v, bool narm) {
         }
         ++(counts[j]);
     }
-	
+
     size_t maxCount = 0;
 	for (size_t i = 1; i < n; ++i) {
 		if (counts[i] > counts[maxCount]) {
 			maxCount = i;
 		}
 	}
-	
+
     return v[maxCount];
 }
 
@@ -648,15 +648,15 @@ T vmodal(std::vector<T>& v, bool narm) {
 			}
 		);
 		if (count.size() == 0) return NAN;
-		
+
 		std::map<double, size_t>::iterator mode =	
 			std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
 			const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
-			
+
 		return mode->first;
 
 	}  else {
-	
+
 		std::map<double, size_t> count;
 		for(size_t i=0; i<v.size(); i++) {
 			if (std::isnan(v[i])) {
@@ -669,7 +669,7 @@ T vmodal(std::vector<T>& v, bool narm) {
 		std::map<double, size_t>::iterator mode =	
 			std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
 			const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
-			
+
 		return mode->first;
 	}
 	}
@@ -825,7 +825,7 @@ std::vector<size_t> order(const std::vector<T> &v) {
 
 template <typename T>
 double expH(std::vector<T> d, bool narm) {
-  
+
 	std::unordered_map<T, unsigned int> counts;
 	double s = 0;
 	if (narm) {
@@ -854,7 +854,7 @@ double expH(std::vector<T> d, bool narm) {
 		double p = pair.second / s;
 		sump += p * log(p);
 	}
-  
+
 	return exp(-sump);
 }
 

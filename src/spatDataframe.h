@@ -34,7 +34,7 @@ class SpatDataFrame {
 		virtual ~SpatDataFrame(){}
 
 		SpatDataFrame skeleton();
-	
+
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
@@ -42,7 +42,7 @@ class SpatDataFrame {
 		bool hasWarning() { return msg.has_warning; }
 		std::vector<std::string> getWarnings() { return msg.getWarnings(); }
 		std::string getError() { return msg.getError(); }
-	
+
 		std::vector<std::string> names;
 		std::vector<size_t> itype; //0 double, 1 long, 2 string, 3 bool, 4 time, 5 factor
 		std::vector<size_t> iplace;
@@ -55,7 +55,7 @@ class SpatDataFrame {
 		std::string NAS = "____NA_+";
 		long NAL = std::numeric_limits<long>::min();
 		SpatTime_t NAT = std::numeric_limits<SpatTime_t>::min();
-		
+
 		size_t nrow() const;
 		size_t ncol() const;
 		SpatDataFrame subset_rows(std::vector<long> range);
@@ -80,10 +80,10 @@ class SpatDataFrame {
 		int8_t getBvalue(size_t i, size_t j) const;
 		SpatTime_t getTvalue(size_t i, size_t j) const;
 		SpatFactor getFvalue(size_t i, size_t j);
-	
+
 		void add_row();
 		void add_rows(size_t n);
-		
+
 		//void set_values(std::vector<double> x, std::string name);
 		//void set_values(std::vector<long> x, std::string name);
 		//void set_values(std::vector<std::string> x, std::string name);
@@ -114,7 +114,7 @@ class SpatDataFrame {
 
 		void resize_cols(size_t n);
 		void reserve(size_t n);
-		
+
 		bool rbind(SpatDataFrame &x);
 		bool cbind(SpatDataFrame &x);
 
@@ -123,7 +123,7 @@ class SpatDataFrame {
 
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> nms);
-		
+
 		std::vector<std::string> get_datatypes();	
 		std::string get_datatype(std::string field);
 		std::string get_datatype(int field);

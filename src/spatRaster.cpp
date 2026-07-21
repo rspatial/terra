@@ -286,7 +286,7 @@ SpatRaster SpatRaster::geometry(size_t nlyrs, bool properties, bool time, bool u
 			s.hasUnit = true;
 			s.unit = getUnit();
 		}
-		
+
 		std::vector<std::string> un = getSourceNames();
 		std::sort(un.begin(), un.end() );
 		un.erase(std::unique(un.begin(), un.end()), un.end());
@@ -335,7 +335,7 @@ SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool
 			}
 		}
 	}	
-	
+
 	return geometry(nlyrs, properties, time, units, tags);
 }
 
@@ -847,7 +847,7 @@ bool SpatRaster::setTime(std::vector<int64_t> time, std::string step, std::strin
 	if (time.size() != nlyr()) {
 		return false;
 	}
-	
+
 	std::vector<std::string> steps = {"seconds", "raw", "days", "yearmonths", "years", "months"};
 	if (!is_in_vector(step, steps)) {
 		return false;
@@ -1216,7 +1216,7 @@ SpatRaster SpatRaster::makeCategorical(long layer, SpatOptions &opt) {
 	r.math2("round", 0, fopt);
 	std::vector<std::vector<double>> u = r.unique(true, NAN, true, fopt);
 	std::vector<std::string> names = r.getNames();
-	
+
 	for (size_t i=0; i<r.nlyr(); i++) { 
 		std::vector<long> uu(u[i].size());
 		std::vector<std::string> s(u[i].size());
@@ -1226,7 +1226,7 @@ SpatRaster SpatRaster::makeCategorical(long layer, SpatOptions &opt) {
 		}
 		r.setLabels(i, uu, s, names[i]);
 	}
-	
+
 	if (nlyr() == r.nlyr()) {
 		return r;
 	} else {
@@ -1924,7 +1924,7 @@ int64_t SpatRaster::rowFromY(double y) {
 
 
 void SpatRaster::xyFromCell( std::vector<std::vector<double>> &xy ) {
-	
+
 	SpatExtent extent = getExtent();
 	double xmin = extent.xmin;
 	double ymax = extent.ymax;
@@ -2478,7 +2478,7 @@ std::vector<double> SpatRaster::cells_notna_novalues(SpatOptions &opt) {
 		SpatRaster x = nonan(true, topt);
 		return x.cells_notna_novalues(opt);
 	}
-	
+
 	std::vector<double> out;
 	BlockSize bs = getBlockSize(opt);
 
@@ -2816,11 +2816,11 @@ void SpatRaster::addLyrTags(std::vector<size_t> lyrs, std::vector<std::string> n
 
 	size_t n = std::max(std::max(lyrs.size(), names.size()), values.size());
 	if (n == 0) return;
-	
+
 	recycle(lyrs, n);
 	recycle(names, n);
 	recycle(values, n);
-	
+
 	size_t nl = nlyr();
 	for (size_t i=0; i<lyrs.size(); i++) {
 		if (lyrs[i] >= nl) continue;
