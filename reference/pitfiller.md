@@ -43,7 +43,7 @@ pitfiller(x, pit, flowdir, niter = 10, lambda = 0,
 
 - max_iters:
 
-  maximum iterations for drainage path starting points detection.See
+  Maximum iterations for drainage path starting points detection. See
   [`flowDir`](https://rspatial.github.io/terra/reference/flowDir.md)
 
 - U:
@@ -159,12 +159,9 @@ elev <- project(elev, "epsg:32632")
 lambda <- 0.5 ## try also 0 (default)
 flowdir <- flowDir(elev, lambda = lambda)
 pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
-elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
-#> Error in (function (cond) .Internal(C_tryCatchHelper(addr, 1L, cond)))(structure(list(message = "argument \"flowdir\" is missing, with no default",     call = .local(x, pit, ...)), class = c("evalError", "missingArgError", "error", "condition"))): error in evaluating the argument 'x' in selecting a method for function 'mask': argument "flowdir" is missing, with no default
+elev2 <- pitfiller(x = elev, pit = pits, flowdir = flowdir, lambda = lambda)
 
 flowdir2 <- terrain(elev2, "flowdir")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'terrain': object 'elev2' not found
 flowdir2 <- flowDir(elev2, lambda = lambda)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'flowDir': object 'elev2' not found
 pits2 <- pitfinder(flowdir, pits_on_boundary = FALSE)
 ```

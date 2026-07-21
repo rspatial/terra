@@ -7,7 +7,8 @@
 
 - **Andrew Brown**. Author. [](https://orcid.org/0000-0002-4565-533X)
 
-- **Márcia Barbosa**. Author. [](https://orcid.org/0000-0001-8972-7713)
+- **A. Márcia Barbosa**. Author.
+  [](https://orcid.org/0000-0001-8972-7713)
 
 - **Emanuele Cordano**. Author.
   [](https://orcid.org/0000-0002-3508-5898)
@@ -34,12 +35,12 @@
 Source:
 [`DESCRIPTION`](https://github.com/rspatial/terra/blob/master/DESCRIPTION)
 
-Hijmans R, Brown A, Barbosa M, Cordano E, Dyba K (2026). *terra: Spatial
+Hijmans R, Brown A, Barbosa A, Cordano E, Dyba K (2026). *terra: Spatial
 Data Analysis*. R package version 1.9-40, <https://rspatial.org/>.
 
     @Manual{,
       title = {terra: Spatial Data Analysis},
-      author = {Robert J. Hijmans and Andrew Brown and Márcia Barbosa and Emanuele Cordano and Krzysztof Dyba},
+      author = {Robert J. Hijmans and Andrew Brown and A. Márcia Barbosa and Emanuele Cordano and Krzysztof Dyba},
       year = {2026},
       note = {R package version 1.9-40},
       url = {https://rspatial.org/},

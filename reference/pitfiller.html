@@ -68,7 +68,7 @@
 <dd><p>Type of deviation. See <code><a href="flowDir.html">flowDir</a></code></p></dd>
 
   <dt id="arg-max-iters">max_iters<a class="anchor" aria-label="anchor" href="#arg-max-iters"></a></dt>
-<dd><p>maximum iterations for drainage path starting points detection.See <code><a href="flowDir.html">flowDir</a></code></p></dd>
+<dd><p>Maximum iterations for drainage path starting points detection. See <code><a href="flowDir.html">flowDir</a></code></p></dd>
 
   <dt id="arg-u">U<a class="anchor" aria-label="anchor" href="#arg-u"></a></dt>
 <dd><p>Uplift rate. See Details</p></dd>
@@ -133,13 +133,10 @@
 <span class="r-in"><span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co">## try also 0 (default)</span></span></span>
 <span class="r-in"><span><span class="va">flowdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowDir.html">flowDir</a></span><span class="op">(</span><span class="va">elev</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">elev2</span> <span class="op">&lt;-</span> <span class="fu">pitfiller</span><span class="op">(</span>x <span class="op">=</span> <span class="va">elev</span>, pit <span class="op">=</span> <span class="va">pits</span>,lambda<span class="op">=</span><span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (cond) .Internal(C_tryCatchHelper(addr, 1L, cond)))(structure(list(message = "argument \"flowdir\" is missing, with no default",     call = .local(x, pit, ...)), class = c("evalError", "missingArgError", "error", "condition"))):</span> error in evaluating the argument 'x' in selecting a method for function 'mask': argument "flowdir" is missing, with no default</span>
+<span class="r-in"><span><span class="va">elev2</span> <span class="op">&lt;-</span> <span class="fu">pitfiller</span><span class="op">(</span>x <span class="op">=</span> <span class="va">elev</span>, pit <span class="op">=</span> <span class="va">pits</span>, flowdir <span class="op">=</span> <span class="va">flowdir</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev2</span>, <span class="st">"flowdir"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'terrain': object 'elev2' not found</span>
 <span class="r-in"><span><span class="va">flowdir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="flowDir.html">flowDir</a></span><span class="op">(</span><span class="va">elev2</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'flowDir': object 'elev2' not found</span>
 <span class="r-in"><span><span class="va">pits2</span> <span class="op">&lt;-</span> <span class="fu"><a href="pitfinder.html">pitfinder</a></span><span class="op">(</span><span class="va">flowdir</span>, pits_on_boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
@@ -148,7 +145,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Robert J. Hijmans, Andrew Brown, Márcia Barbosa, Emanuele Cordano, Krzysztof Dyba.</p>
+  <p>Developed by Robert J. Hijmans, Andrew Brown, A. Márcia Barbosa, Emanuele Cordano, Krzysztof Dyba.</p>
 </div>
 
 <div class="pkgdown-footer-right">
