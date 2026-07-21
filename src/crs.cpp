@@ -515,11 +515,11 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 		s.setError( "Cannot do this transformation" );
 		return(s);
 	}
-	
+
 	s.setSRS(crs);
 	s.df = df;
 	std::vector<size_t> keeprows;
-	
+
 	if (partial) {
 		#if GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR > 1
 		poCT->SetEmitErrors(false);
@@ -559,8 +559,8 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 				s.addGeom(gg);
 			}
 		}
-		
-		
+
+
 	} else {
 
 		for (size_t i=0; i < size(); i++) {
@@ -595,7 +595,7 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 			}
 		}
 	}
-	
+
 	OCTDestroyCoordinateTransformation(poCT);
 	if (size() > 0 && std::isnan(s.extent.xmin)) {
 		s.addWarning("transformation produced no valid coordinates (may need a grid file that could not be downloaded)");

@@ -68,7 +68,7 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 	long longNA = NA<long>::value;
 	std::string stringNA = v->NAS;
 	SpatTime_t timeNA = NA<SpatTime_t>::value;
-	
+
 	std::vector<std::string> nms = v->names;
 	std::vector<size_t> itype = v->itype;
 	for (size_t i=0; i < n; i++) {
@@ -220,7 +220,7 @@ RCPP_MODULE(spat){
 
 /*
 	class_<SpatVector2>("SpatVector2")
-	
+
 		.constructor()
 		.field("x", &SpatVector2::X)
 		.field("y", &SpatVector2::Y)
@@ -488,7 +488,7 @@ RCPP_MODULE(spat){
 
 		.method("addWKB", &addWKB)
 //		.method("pointInPolygon", &SpatVector::pointInPolygon)
-		
+
 		.method("deepcopy", &SpatVector::deepCopy)
 		.method("show", &SpatVector::show)
 		.method("wkt", &SpatVector::wkt)
@@ -729,7 +729,7 @@ RCPP_MODULE(spat){
 		.constructor()
 	 // .constructor<std::string, int>()
 		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, size_t, std::vector<std::string>, std::vector<std::string>, std::vector<int>, bool, bool, std::vector<std::string>, int>()
-		
+
 		.constructor<std::vector<size_t>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)
 
@@ -944,7 +944,7 @@ RCPP_MODULE(spat){
 		.method("arith_rast", (SpatRaster (SpatRaster::*)(SpatRaster, std::string, bool, SpatOptions&) )( &SpatRaster::arith ))
 		.method("arith_numb", (SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, bool,SpatOptions&) )( &SpatRaster::arith))
 		.method("arith_m", &SpatRaster::arith_m)
-		
+
 		.method("rst_area", &SpatRaster::rst_area)
 		.method("sum_area", &SpatRaster::sum_area)
 		.method("sum_area_group", &SpatRaster::sum_area_group)
@@ -975,10 +975,10 @@ RCPP_MODULE(spat){
 		.method("vectDistance", &SpatRaster::distance_vector)
 		.method("rastDirection", &SpatRaster::direction)
 		.method("vectDirectionRasterize", &SpatRaster::direction_rasterize)
-		
+
 //		.method("vectDistanceDirect", &SpatRaster::distance_spatvector)
 //		.method("vectDistanceRasterize", &SpatRaster::distance_rasterize)
-		
+
 		.method("get_tiles_ext", &SpatRaster::get_tiles_extent)
 		.method("get_tiles_ext_vect", &SpatRaster::get_tiles_extent_vect)
 		.method("make_tiles", &SpatRaster::make_tiles)
@@ -1015,7 +1015,7 @@ RCPP_MODULE(spat){
 		.method("extractVector", &SpatRaster::extractVector)
 		.method("extractVectorFlat", &SpatRaster::extractVectorFlat)
 		.method("extractBuffer", &SpatRaster::extractBuffer)
-			
+
 		.method("flip", &SpatRaster::flip)
 		.method("focal", &SpatRaster::focal)
 		.method("focal2", &SpatRaster::focal2)
@@ -1061,7 +1061,7 @@ RCPP_MODULE(spat){
 		.method("modal", &SpatRaster::modal)
 		.method("quantile", &SpatRaster::quantile)
 		.method("rasterize", &SpatRaster::rasterize)
-		
+
 		.method("rasterizePointsV", ( SpatRaster (SpatRaster::*)(SpatVector&, std::string, std::vector<double>&, bool, double, SpatOptions&) )( &SpatRaster::rasterizePoints))
 
 		.method("rasterizePointsXY", ( SpatRaster (SpatRaster::*)(std::vector<double>&, std::vector<double>&, std::string, std::vector<double>&, bool, double, SpatOptions&) )( &SpatRaster::rasterizePoints))
@@ -1190,7 +1190,7 @@ RCPP_MODULE(spat){
 		.method("ext", &SpatRasterStack::getExtent)
 		.method("filenames", &SpatRasterStack::filenames)
 		.method("show", &SpatRasterStack::show)
-		
+
 		.method("get_crs", &SpatRasterStack::getSRS)
 		.property("names", &SpatRasterStack::get_names, &SpatRasterStack::set_names)
 		.property("long_names", &SpatRasterStack::get_longnames, &SpatRasterStack::set_longnames)

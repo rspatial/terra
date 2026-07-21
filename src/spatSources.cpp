@@ -160,7 +160,7 @@ void SpatRaster::checkDepth(SpatRaster &x) {
 	}
 	setDepthName(uname);
 	x.setDepthName(uname);
-		
+
 	std::string nm = source[0].depthname;
 	std::string xnm = x.source[0].depthname;
 	if (nm != xnm) {
@@ -174,7 +174,7 @@ void SpatRaster::checkDepth(SpatRaster &x) {
 	} else {
 		dname = nm;
 	}
-	
+
 	setDepthName(dname);
 	x.setDepthName(dname);
 }

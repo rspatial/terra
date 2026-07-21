@@ -518,7 +518,7 @@ std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, st
 		hole.push_back(0);
 		return true;
 	}	
-		
+
 	double xvalue = 0;
 	double yvalue = 0;
 	for (int p=0; p < npts; p++) {
@@ -618,7 +618,7 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 	std::vector<size_t> pl_gid, pl_gp, pl_hole;
 	std::vector<double> pt_x, pt_y, ln_x, ln_y, pl_x, pl_y;
 	std::vector<long> pts_ids, lin_ids, pol_ids;
-	
+
 	bool track_ids = !ids.empty(); 	
 	if (track_ids) {
 		pol_ids.reserve(geoms.size());

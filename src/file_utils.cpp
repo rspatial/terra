@@ -402,13 +402,13 @@ std::string tempFile(std::string tmpdir, std::string fname, std::string ext) {
     'n','o','p','q','r','s','t','u','v','w','x','y','z' };
 
     std::uniform_int_distribution<std::mt19937::result_type> rand_nr(0, characters.size()-1); 
-	
+
     std::string randname;
 	randname.reserve(15);
     for (int i = 0; i < 15; i++) {
         randname += characters[rand_nr(my_rgen)];
     }
-  
+
 	std::string filename =  tmpdir + "/spat_" + fname + "_" + randname + ext;
 	if (file_exists(filename)) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));

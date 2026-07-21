@@ -214,7 +214,7 @@ std::vector<int> getymd(std::string s) {
 	} catch(...) {
 		out = std::vector<int>(6);
 	}
-	
+
 	return out;
 }
 
@@ -310,7 +310,7 @@ SpatTime_t get_time_noleap(int syear, int smonth, int sday, int shour, int smin,
 	int mn = rem * 60;
 	rem -= mn;
 	int sc = rem * 60;
-	
+
 	return get_time(year+syear, month, day, hr, mn, sc);
 }
 
@@ -356,7 +356,7 @@ SpatTime_t get_time_360(int syear, int smonth, int sday, int shour, int smin, in
 	int mn = rem * 60;
 	rem -= mn;
 	int sc = rem * 60;
-	
+
 	return get_time(year+syear, month, day, hr, mn, sc);
 }
 

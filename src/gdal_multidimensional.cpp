@@ -241,7 +241,7 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 	bool seconds = false;
 	bool foundorigin = false;
 	std::string step;
-	
+
 	lowercase(origin);
 	if ((origin.find("seconds")) != std::string::npos) {
 		seconds = true;
@@ -329,7 +329,7 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 			}
 			days = true;
 		} 
-	
+
 		if (days) {
 			step = "days";
 			std::vector<int> ymd = getymd(origin);
@@ -535,8 +535,8 @@ static bool md_fill_source_from_marray(
 	size_t ndim = dimData.size();
 	dimvals.reserve(ndim);
 	dimcalendar.reserve(ndim);
-	
-	
+
+
     for (size_t i=0; i<ndim; i++) {
 		size_t n = dimData[i]->GetSize();
         dimcount.push_back(n);
@@ -547,7 +547,7 @@ static bool md_fill_source_from_marray(
 		dimvals.push_back(std::vector<double>(n));
 
 		const auto indvar = dimData[i]->GetIndexingVariable();
-		
+
 		if (indvar == NULL) {
 			dimvals[i].resize(n);
 			std::iota(dimvals[i].begin(), dimvals[i].end(), 1);			
@@ -575,7 +575,7 @@ static bool md_fill_source_from_marray(
 	if (!s.source_name.empty() && (s.source_name.front() == '/')) {
 		s.source_name.erase(0, 1); 
     }
-	
+
 	auto lname = poVar->GetAttribute("long_name");
 	if (lname) s.source_name_long = lname->ReadAsString();
 
@@ -685,7 +685,7 @@ static bool md_fill_source_from_marray(
 	res = (end - start) / (s.nrow-1);
 	e.ymax = end + 0.5 * res;
 	e.ymin = start - 0.5 * res;
-	
+
 	s.flipped = false;
 	if ((!noflip) && (e.ymin > e.ymax)) {
 		std::swap(e.ymin, e.ymax);
@@ -764,7 +764,7 @@ static bool md_fill_source_from_marray(
 			s.depth[L] = dvz[idx[pos_iz]];
 		}
 	}
-	
+
 	for (size_t i = 0; i < dimmap.size(); i++) {
 		s.m_dims.push_back((size_t) dimmap[i]);
 	}
@@ -795,7 +795,7 @@ static bool md_fill_source_from_marray(
 		} catch(...) {}
 		gdal_capture_messages_end(false);
 	} 
-	
+
 	if (wkt.empty()) {
 		bool lonlat_extent = (s.extent.xmin >= -181 && s.extent.xmax <= 361 &&
 		                      s.extent.ymin >= -91 && s.extent.ymax <= 91);
@@ -840,7 +840,7 @@ static bool md_fill_source_from_marray(
 			s.scale = std::vector<double>(s.nlyr, scale);
 		}
 	}
-	
+
 	s.rotated = false;
 	s.memory = false;
 	s.filename = fname;
@@ -1227,7 +1227,7 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 }
 
 bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, const std::vector<int64_t> &cols) {
-	
+
 //	Rcpp::Rcout << "readRowColMulti " << src << "\n";
 	if (!readStartMulti(src)) {
 		return false;
@@ -1381,7 +1381,7 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 		}
 	}
 */
-	
+
     GDALDriver *poDriver;
     poDriver = GetGDALDriverManager()->GetDriverByName(driver.c_str());
 
@@ -1394,7 +1394,7 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 	}
 
     auto rg = poDS->GetRootGroup();
-	
+
 	std::vector<std::shared_ptr<GDALDimension>> dim_ptrs;
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 
@@ -1427,11 +1427,11 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 	xFromCol(dvals);
 	count = {nx};
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
-	
+
 	std::string vname = source[0].source_name.empty() ? "array" : source[0].source_name;
-	
+
     var = rg->CreateMDArray(vname, dim_ptrs, GDALExtendedDataType::Create(GDT_Float64));
-	
+
 
 	std::string wkt = source[0].srs.wkt;
 	if (!wkt.empty()) {
@@ -1536,7 +1536,7 @@ void getSampleRowCol2(std::vector<int64_t> &oldrow, std::vector<int64_t> &oldcol
 	//double cstart = std::floor(0.5 * cf);
 	double rstart = 0.5 * rf;
 	double cstart = 0.5 * cf;
-	
+
 	std::vector<int64_t> xcol, xrow;
 	xcol.reserve(sncol);
 	for (size_t i =0; i<sncol; i++) {
@@ -1645,7 +1645,7 @@ std::vector<double> SpatRaster::readSampleMulti(size_t src, size_t srows, size_t
 
 SpatRaster SpatRaster::writeRasterM(SpatOptions &opt) {
 	SpatRaster out;
-	
+
 	std::vector<std::string> fnames = opt.get_filenames();
 
 	if (!writeStartMulti(opt, {""})) {
@@ -1661,7 +1661,7 @@ SpatRaster SpatRaster::writeRasterM(SpatOptions &opt) {
 
 	std::vector<std::string> empty;
 	std::vector<int> dims = {-1};
-	
+
 	out.constructFromFileMulti(fnames[0], {0}, empty, empty, empty, dims, false, false, {""});
 	return out;
 }
@@ -1684,7 +1684,7 @@ std::vector<std::vector<std::string>> SpatRaster::dim_names() {
 		}
 	}
 	return(out);
-	
+
 }
 
 std::vector<std::vector<size_t>> SpatRaster::dim_order() {

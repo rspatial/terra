@@ -119,7 +119,7 @@ class SpatVector {
 		std::string source = "";
 		std::string source_layer = "";
 		size_t geom_count = 0;
-		
+
 		SpatVector();
 		//SpatVector(const SpatVector &x);
 		SpatVector(SpatGeom g);
@@ -230,13 +230,13 @@ class SpatVector {
 		SpatVector get_holes();
 		SpatVector set_holes(SpatVector x, size_t i);
 		SpatVector remove_duplicate_nodes(int digits);
-		
+
 		bool read(std::string fname, std::string layer, std::string query, std::vector<double> ext, SpatVector filter, bool as_proxy, std::string what, std::string dialect, std::vector<std::string> options);
-		
+
 		bool write(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string>);
 
 		void make_CCW();
-		
+
 #ifdef useGDAL
 		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options);
 		GDALDataset* GDAL_ds();
@@ -275,7 +275,7 @@ class SpatVector {
 			SpatDataFrame empty;
 			df = empty;
 		};
-		
+
 		bool set_df(SpatDataFrame x) {
 			if (x.nrow() != nrow()) {
 				setError("nrow dataframe does not match nrow geometry");
@@ -331,7 +331,7 @@ class SpatVector {
 		std::vector<std::string> wkb();
 		std::vector<std::string> hex();
 		std::vector<std::vector<unsigned char>> wkb_raw(); 
-		
+
 		SpatVector from_hex(std::vector<std::string> x, std::string srs);
 		SpatVector make_nodes();
 		SpatVector polygonize();
@@ -354,7 +354,7 @@ class SpatVector {
 		SpatVector buffer3(std::vector<double> d, unsigned quadsegs);
 //		SpatVector buffer4(double d);
 //		SpatVector bufferclip(std::vector<double> d, std::string jointype, double miter_limit, int precision, double arc_tolerance);
-		
+
 		SpatVector buffer(std::vector<double> d, unsigned quadsegs, std::string capstyle, std::string joinstyle, double mitrelimit, bool singlesided);
 		SpatVector buffer_lonlat(std::string vt, std::vector<double> d, unsigned quadsegs);
 
@@ -413,7 +413,7 @@ class SpatVector {
 		SpatVector nearest_point(SpatVector v, bool parallel, const std::string method);
 		SpatVector nearest_point(const std::string method);
 		std::vector<int> nearest_geometry(SpatVector v);
-		
+
 		SpatVector sample(size_t n, std::string method, unsigned seed);
 		SpatVector sample_geom(std::vector<size_t> n, std::string method, unsigned seed);
 
@@ -431,7 +431,7 @@ class SpatVector {
 		SpatVector round(int digits);
 		std::vector<size_t> nullGeoms();
 		std::vector<bool> naGeoms();
-				
+
 };
 
 
@@ -443,11 +443,11 @@ class SpatVectorCollection {
 		virtual ~SpatVectorCollection(){}
 		SpatVectorCollection();
 		SpatVectorCollection(std::string filename, std::string layer, std::string query, std::string dialect, std::vector<double> extent, SpatVector filter);
-		
-		
+
+
 		SpatVectorCollection deepCopy() { return *this; }
 		bool read(std::string fname, std::string layer, std::string query, std::string dialect, std::vector<double> extent, SpatVector filter);
-		
+
 		bool read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::string dialect, std::vector<double> extent, SpatVector filter);
 
 //		SpatVectorCollection create(std::string filename);
@@ -505,12 +505,12 @@ class SpatVectorCollection {
 			}
 			return out;
 		}
-		
+
 		SpatVector append();
 		SpatVectorCollection from_hex_col(std::vector<std::string> x, std::string srs);
 
 		std::string show();
-		
+
 };
 
 

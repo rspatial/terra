@@ -188,7 +188,7 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 */
 
 //	auto tabtype = pRAT->GetTableType(); perhaps check for "GRTT_ATHEMATIC" #1845
-	
+
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
@@ -411,7 +411,7 @@ bool colsFromRat(SpatDataFrame &d, SpatDataFrame &out) {
 //	if (k >= 0) {
 	int k = 0;  
 	size_t j = d.iplace[k];
-		
+
 	if (d.itype[k] == 1) {
 		out.add_column(d.iv[j], "value");
 	} else if (d.itype[k] == 0) {
@@ -634,7 +634,7 @@ void get_tags(std::vector<std::string> meta, std::string prefix,  std::vector<st
 			}
 		}
 	}
-	
+
 }
 
 
@@ -966,7 +966,7 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 	if (n == 0) return false;
 	const GDAL_GCP *gcp;
 	gcp	= poDataset->GetGCPs();
-	
+
 	double adfGeoTransform[6];
 	if (GDALGCPsToGeoTransform(n, gcp, adfGeoTransform, true)) {
 		//for (size_t i=0; i<6; i++) {
@@ -1005,7 +1005,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		setError("no raster data in WCS:");
 		return false;
 	}
-	
+
 	bool apply_so = true;
 	std::vector<std::string> clean_ops = options;
 	size_t opsz = options.size();
@@ -1166,7 +1166,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 	}
-	
+
 	SpatRasterSource s;
 
 	CSLConstList metasrc = poDataset->GetMetadata();
@@ -1298,10 +1298,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::vector<std::string> datm, unts;
 	datm.reserve(s.nlyr);
 	unts.reserve(s.nlyr);
-	
+
 	int bs1, bs2;
 	for (size_t i = 0; i < s.nlyr; i++) {
-		
+
 		poBand = poDataset->GetRasterBand(i+1);
 
 		if (s.hasTime) {
@@ -1329,7 +1329,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			//for (size_t j = 0; j<bandmeta[i].size(); j++) {
 			//	Rcpp::Rcout << bandmeta[i][j] << std::endl;
 			//}
-			
+
 			CSLConstList meterra = poBand->GetMetadata("USER_TAGS");
 			if (meterra != NULL) {
 //				std::vector<std::string> meta;
@@ -1420,7 +1420,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 		SpatCategories crat;
 		//bool found_rat = false;
-		
+
 		if (!s.hasCategories[i]) {
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if (rat != NULL) {
@@ -1459,7 +1459,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				nm = nms[s.cats[i].index];
 			}
 		}
-		
+
 		if (nm.empty()) {
 			if (!bandname.empty()) {
 				nm = bandname;
@@ -1478,7 +1478,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	if (s.hasTime) {
-			
+
 		if (datm[0].find('T') != std::string::npos) {
 			s.timestep = "seconds";
 		} else {
@@ -1509,7 +1509,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		for (size_t i=0; i<datm.size(); i++) {
 			s.time[i] = parse_time(datm[i]);
 		}
-		
+
 
 // try units from json
 		if (unts.empty()) {
@@ -1524,8 +1524,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				s.hasUnit = true;
 			}
 		}
-		
-		
+
+
 	} else {
 
 		std::vector<int64_t> timestamps;
@@ -1558,7 +1558,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::vector<std::string> metadata;
 
 	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
-		
+
 		CSLConstList m = poDataset->GetMetadata();
 		if (m) {
 			while (*m != nullptr) {
@@ -1666,7 +1666,7 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 				std::replace(d.begin()+start, d.begin()+start+n, flag, na);
 			}
 		}
-		
+
 		if (haveso[i]) {
 			for (size_t j=start; j<(start+n); j++) {
 				d[j] = d[j] * scale[i] + offset[i];
@@ -1787,7 +1787,7 @@ std::vector<double> SpatRaster::readValuesGDAL(size_t src, size_t row, size_t nr
 	}
 
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
-	
+
     if( poDataset == NULL )  {
 		if (!file_exists(source[src].filename )) {
 			setError("file does not exist: " + source[src].filename);
@@ -1869,7 +1869,7 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 	}
 
 	std::vector<std::string> openops = source[src].open_ops;
-	
+
 	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 3
 	// do nothing
 	#else 
@@ -1877,7 +1877,7 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 		openops.push_back("OVERVIEW_LEVEL=NONE");
 	}
 	#endif
-	
+
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, openops);
 
     if( poDataset == NULL )  {
@@ -2061,7 +2061,7 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 		setError("cannot read values");
 		return;
 	}
-	
+
 
 }
 
@@ -2470,7 +2470,7 @@ std::vector<int64_t> ncdf_time(const std::vector<std::string> &metadata, std::ve
 	std::vector<double> raw;
 	raw.reserve(vals.size());
 	for (size_t i=0; i<vals.size(); i++) {
-		
+
 		double dval;
 		if (get_double(vals[i], dval)) {
 			raw.push_back(dval);
@@ -2609,7 +2609,7 @@ std::vector<int64_t> ncdf_time(const std::vector<std::string> &metadata, std::ve
 			}
 			days = true;
 		} 
-	
+
 		if (days) {
 			step = "days";
 			std::vector<int> ymd = getymd(origin);
@@ -2798,7 +2798,7 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 	std::vector<double> mdepth;
 	bool hasdepth = true;
 	ncdf_names(bandmeta, nms, mdepth, hasdepth, depthname);
-	
+
 
 /*
 	for (size_t i=0; i<nms.size(); i++) {
@@ -2808,7 +2808,7 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 		Rcpp::Rcout << std::endl;
 	}
 */
-	
+
 	if (hasdepth) {
 		depth = mdepth;
 		hasDepth = true;
@@ -2822,7 +2822,7 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 			}
 		}
 	}
-	
+
 	if (!nms[1].empty()) {
 		names = nms[1];
 		make_unique_names(names);
@@ -2840,7 +2840,7 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 		}
 		recycle(unit, nlyr);
 	}
-	
+
 	if (!nms[0].empty()) {
 		std::string step;
 		std::vector<int64_t> x;
@@ -2864,7 +2864,7 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 
 	std::vector<std::vector<std::string>> out(4);
 	if (m.empty()) return out;
-	
+
 	bool ft1 = false;
 	bool ft2 = false;
 
@@ -2873,7 +2873,7 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 		std::string comm, time1, time2, units = "";
 
 		for (size_t j=0; j<m[i].size(); j++) {
-			
+
 			size_t pos = m[i][j].find("GRIB_COMMENT=");
 			if (pos != std::string::npos) {
 				comm = m[i][j];
@@ -2919,7 +2919,7 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 		out[2].push_back(time1);
 		out[3].push_back(time2);
 	}
-	
+
 	if (!ft1) {
 		if (ft2) {
 			out[2] = out[3];
@@ -2934,7 +2934,7 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.empty()) return;
-	
+
 	std::vector<std::vector<std::string>> nms = grib_names(bandmeta);
 
 	if (nms[0].size() != names.size()) return;
@@ -2974,7 +2974,7 @@ void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>>
 		timestep = "seconds";
 		hasTime = true;
 	}
-	
+
 }
 
 
@@ -2983,7 +2983,7 @@ std::vector<std::vector<std::string>> tiff_names(const std::vector<std::vector<s
 
 	std::vector<std::vector<std::string>> out(4);
 	if (m.empty()) return out;
-	
+
 	for (size_t i=0; i<m.size(); i++) {
 
 		std::string time, units = "";
@@ -3022,7 +3022,7 @@ std::vector<std::vector<std::string>> tiff_names(const std::vector<std::vector<s
 		out[1].push_back(units);
 		out[2].push_back(time);
 	}
-	
+
 	return out;
 }
 
@@ -3030,7 +3030,7 @@ std::vector<std::vector<std::string>> tiff_names(const std::vector<std::vector<s
 void SpatRasterSource::set_names_time_tif(std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.empty()) return;
-	
+
 	std::vector<std::vector<std::string>> nms = tiff_names(bandmeta);
 
 	if (nms[1].size() == nlyr) {
@@ -3062,6 +3062,6 @@ void SpatRasterSource::set_names_time_tif(std::vector<std::vector<std::string>> 
 		timestep = "seconds";
 		hasTime = true;
 	}
-	
+
 }
 

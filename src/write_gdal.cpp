@@ -168,7 +168,7 @@ bool is_ratct(SpatDataFrame &d) {
 	std::vector<std::string> ss = {"red", "green", "blue", "r", "g", "b"};
 	std::vector<std::string> nms = d.names;
 	size_t cnt = 0;
-	
+
 	for (size_t i=0; i<nms.size(); i++) {
 		std::string name = nms[i];
 		lowercase(name);
@@ -342,7 +342,7 @@ void removeVatJson(std::string filename) {
 bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
 	std::string filename = opt.get_filename();
-	
+
 	if (filename.empty()) {
 		setError("empty filename");
 		return(false);
@@ -368,7 +368,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			return(false);
 		}
 	}
-	
+
 	  CSLConstList papszMetadata;
     papszMetadata = poDriver->GetMetadata();
     if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE)) {
@@ -597,7 +597,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::vector<std::string> nms = getNames();
 	double naflag=NAN;
 	bool hasNAflag = opt.has_NAflag(naflag);
-	
+
 //	if (driver == "AAIGrid" && std::isnan(naflag)) {
 		// avoid nan as flag
 //		naflag = -3.40282347E+38;
@@ -657,7 +657,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		ustr = getUnit();
 		wunit = true;
 	}
-	
+
 	for (size_t i=0; i < nlyr(); i++) {
 
 		poBand = poDS->GetRasterBand(i+1);
@@ -760,7 +760,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				poBand->SetColorInterpretation(GCI_BlueBand);
 			}
 		}
-		
+
 		if (scoff) {
 			if (source[0].has_scale_offset[i]) {
 				bool failed = (poBand->SetScale(scale[i])) != CE_None;
@@ -780,7 +780,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	if (scoffwarning) {
 		addWarning("could not set offset");
 	}
-	
+
 	std::vector<double> rs = resolution();
 	SpatExtent extent = getExtent();
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
@@ -866,7 +866,7 @@ void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const d
     vmin = std::numeric_limits<double>::max();
     vmax = std::numeric_limits<double>::lowest();
     bool none = true;
-	
+
 	if (!std::isnan(exclude)) {
 		for (Iterator v = start; v !=end; ++v) {
 			if (!std::isnan(*v) && (exclude != *v)) {
@@ -1100,7 +1100,7 @@ bool SpatRaster::writeStopGDAL() {
 	}
 
 	//source[0].gdalconnection->FlushCache();
-	
+
 	if (copy_driver.empty()) {
 		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	} else {

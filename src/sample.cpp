@@ -66,7 +66,7 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 	opt.ncopies *= 2;
 	BlockSize bs = getBlockSize(opt);
 	std::vector<double> vals, vcell, vwght, outvals, outcell;
-	
+
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, bs, i);
@@ -110,7 +110,7 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 		std::map<double, size_t> tab = table(vals);
 		std::vector<std::vector<double>> tv = table2vector2(tab);
 		size_t start = 0;
-				
+
 		std::mt19937 gen2(seed);
 		for (size_t j=0; j<tv[0].size(); j++) {
 			size_t size_j = add_set.count(tv[0][j]) ? szz + 1 : szz;
@@ -148,7 +148,7 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 	return(out);
 }
 
-	
+
 
 
 void get_nx_ny(double size, size_t &nx, size_t &ny) {
@@ -234,7 +234,7 @@ SpatRaster SpatRaster::sampleRegularRaster(double size, bool overview) {
 		out.setError("sample size must be > 0");
 		return out;
 	}
-	
+
 	double f = std::min(1.0, sqrt(size / ncell()));
 	size_t nr = std::min((size_t)ceil(nrow() * f), nrow());
 	size_t nc = std::min((size_t)ceil(ncol() * f), ncol());
@@ -392,7 +392,7 @@ std::vector<double> SpatRaster::sampleRowCol(size_t nr, size_t nc) {
 	}
 	nr = std::min(nr, nrow());
 	nc = std::min(nc, ncol());
-	
+
 	if ((nr == nrow()) && (nc == ncol())) {
 		out.resize(ncell());
 		std::iota(out.begin(), out.end(), 0);
@@ -427,7 +427,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 		}
 		return out;
 	}
-	
+
 	std::vector<double> cells = sampleRowCol(nr, nc);
 	if (cells.empty()) return out;
 	return extractCell(cells, opt);
@@ -840,7 +840,7 @@ SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 	}
 
 	if (gt == "lines") {
-		
+
 		std::vector<double> x, y;
 		std::vector<double> steps;
 		steps.reserve(n);		
@@ -922,7 +922,7 @@ SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 		out.setError(getError());
 		return out;
 	}
-	
+
 	double suma = accumulate(a.begin(), a.end(), 0.0);
 	std::vector<std::vector<double>> pxy(2);
 

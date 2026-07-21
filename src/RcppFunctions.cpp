@@ -646,7 +646,7 @@ double getGDALCacheSizeMB(bool vsi) {
 			return(NAN);
 		}
 		return(v);
-		
+
 	} else {
 		return static_cast<double>(GDALGetCacheMax64() / 1024 / 1024);
 	}
@@ -790,7 +790,7 @@ void removeDriver(std::vector<std::string> d) {
 
 // [[Rcpp::export(name = ".pearson")]]
 double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
- 
+
 	if (narm) {
 		size_t n = x.size()-1;
 		for (long i=n; i >= 0; i--) {
@@ -823,7 +823,7 @@ double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
 
 // [[Rcpp::export(name = ".weighted_pearson")]]
 double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm=true) {
-  
+
 	if (narm) {
 		size_t n = x.size()-1;
 		for (long i=n; i >= 0; i--) {
