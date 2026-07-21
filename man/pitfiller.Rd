@@ -22,7 +22,7 @@ Fills pits (depressions with no outlet) in a elevation raster using the PEM4PIT 
   \item{niter}{Number of iterations}
   \item{lambda}{Deviation parameter}
   \item{deviation_type}{Type of deviation. See \code{\link{flowDir}}}
-  \item{max_iters}{maximum iterations for drainage path starting points detection.See \code{\link{flowDir}}}
+  \item{max_iters}{Maximum iterations for drainage path starting points detection. See \code{\link{flowDir}}}
   \item{U}{Uplift rate. See Details}
   \item{D}{Diffusion coefficient. See Details}
   \item{beta}{Erosion coefficient. See Details}
@@ -89,9 +89,11 @@ flowdir <- flowDir(elev, lambda = lambda)
 pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
 fill <- pitfiller(elev, pits, flowdir, lambda=lambda)
 
+elev2 <- pitfiller(x = elev, pit = pits, flowdir = flowdir, lambda = lambda)
 flowdir2 <- terrain(elev2, "flowdir")
 flowdir2 <- flowDir(elev2, lambda = lambda)
 pits2 <- pitfinder(flowdir2, pits_on_boundary = FALSE)
 fill2 <- pitfiller(elev, pits2, flowdir2, lambda=lambda)
 }
+
 \keyword{spatial}
