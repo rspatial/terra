@@ -87,10 +87,11 @@ elev <- project(elev, "epsg:32632")
 lambda <- 0.5 ## try also 0 (default)
 flowdir <- flowDir(elev, lambda = lambda)
 pits <- pitfinder(flowdir, pits_on_boundary = FALSE)
-elev2 <- pitfiller(x = elev, pit = pits,lambda=lambda)
+fill <- pitfiller(elev, pits, flowdir, lambda=lambda)
 
 flowdir2 <- terrain(elev2, "flowdir")
 flowdir2 <- flowDir(elev2, lambda = lambda)
-pits2 <- pitfinder(flowdir, pits_on_boundary = FALSE)
+pits2 <- pitfinder(flowdir2, pits_on_boundary = FALSE)
+fill2 <- pitfiller(elev, pits2, flowdir2, lambda=lambda)
 }
 \keyword{spatial}
