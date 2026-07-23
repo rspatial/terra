@@ -20,7 +20,7 @@ as.arrows(x, unit=c("degrees", "radians", "flowdir"),
   \item{arrow_length}{Numeric. Length of the arrows to be plotted}
   \item{clockwise}{Logical. Default is \code{FALSE}. If \code{TRUE}, angles measured in radians or degrees are considered clockwise}
   \item{angle_from_x_axis}{Anti-clockwise angle from x (or horizontal) axis to the reference direction}
-  \item{angle_from_h_axis}{Anti-clockwise angle from x (or horizontal) axis to the reference direction. In the case of northing wind direction it is often used \code{angle_x_axis=90, unit="deg", clockwise=TRUE}}
+  \item{angle_from_h_axis}{Anti-clockwise angle from x (or horizontal) axis to the reference direction. In the case of northing wind direction it is often used \code{angle_from_x_axis=90, unit="deg", clockwise=TRUE}}
   \item{length,...}{Additional graphical parameters passed to \code{\link[graphics]{arrows}}}
 }
 
