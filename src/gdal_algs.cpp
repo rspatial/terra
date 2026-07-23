@@ -2142,7 +2142,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 	if (hasScaleOffset()) {
 		SpatOptions opt2(opt);
 		SpatRaster app = apply_so(opt2);
-		app.proximity(target, exclude, keepNA, unit, buffer, maxdist, remove_zero, opt);
+		return app.proximity(target, exclude, keepNA, unit, buffer, maxdist, remove_zero, opt);
 	}
 
 	if (source[0].extset || source[0].flipped) { 
@@ -2156,6 +2156,16 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 		}
 		return etmp.proximity(target, exclude, keepNA, unit, buffer, maxdist, remove_zero, opt);
 	}
+
+	// GDAL computes distances in CRS units. 
+	double m = 1;
+	if (!buffer) {
+		if (!source[0].srs.m_dist(m, is_lonlat(), unit)) {
+			out.setError("invalid distance unit. Should be 'm' or 'km'");
+			return out;
+		}
+	}
+	bool scale = (m != 1);
 
 	std::string filename = opt.get_filename();
 	std::string driver;
@@ -2201,7 +2211,8 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 	bool mask = false;
 	std::vector<double> mvals;
 	if ((!buffer) && (maxdist > 0)) {
-		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToAlmostChar(maxdist).c_str());
+		// maxdist is expressed in "unit"; GDAL expects CRS units
+		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToAlmostChar(maxdist / m).c_str());
 	}
 
 	if (buffer) {
@@ -2247,7 +2258,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 	}
 
 	std::string tmpfile = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
-	std::string fname = mask ? tmpfile : filename;
+	std::string fname = (mask || scale) ? tmpfile : filename;
 	if (!out.create_gdalDS(hDstDS, fname, driver, false, 0, {false}, {1}, {0}, ops)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
@@ -2276,7 +2287,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 		}
 		GDALClose(hDstDS);
 	} else {
-		if (!mask) {
+		if (!(mask || scale)) {
 			double adfMinMax[2];
 			GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
 			GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
@@ -2285,9 +2296,17 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 		out = SpatRaster(fname, {-1}, {""}, {}, {}, false, false, {});
 	}
 
-	if (mask) {
+	if (scale) {
+		if (mask) {
+			SpatOptions topt(opt);
+			out = out.arith(m, "*", false, false, topt);
+			out = out.mask(*this, false, mvals, NAN, opt);
+		} else {
+			out = out.arith(m, "*", false, false, opt);
+		}
+	} else if (mask) {
 		out = out.mask(*this, false, mvals, NAN, opt);
-	} 
+	}
 	return out;
 }
 
