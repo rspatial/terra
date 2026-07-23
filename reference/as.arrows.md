@@ -43,7 +43,7 @@ as.arrows(x, unit=c("degrees", "radians", "flowdir"),
 
   Anti-clockwise angle from x (or horizontal) axis to the reference
   direction. In the case of northing wind direction it is often used
-  `angle_x_axis=90, unit="deg", clockwise=TRUE`
+  `angle_from_x_axis=90, unit="deg", clockwise=TRUE`
 
 - length,...:
 

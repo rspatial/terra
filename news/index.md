@@ -13,6 +13,10 @@
 - terra did not compile with GDAL \< 3.5
   [\#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang
   Viechtbauer
+- `distance<SpatRaster>` with a planar CRS ignored the “unit” (and
+  misinterpreted the “maxdist”) argument
+  [\#2139](https://github.com/rspatial/terra/issues/2139) by Jakub
+  Nowosad
 
 ### enhancements
 
