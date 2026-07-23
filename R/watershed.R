@@ -58,9 +58,13 @@ setMethod("flowDir", signature(x="SpatRaster"),
 
 
 setMethod("pitfiller", signature(x="SpatRaster"), 
-	function(x, pit, flowdir, niter=10, lambda=0, deviation_type="lad", max_iters=10^6, U=1, D=300, beta=0.9, theta_exp=0.5,filename="",...) { 	 
+	function(x, pit, flowdir=NULL, niter=10, lambda=0, deviation_type="lad", max_iters=10^6, U=1, D=300, beta=0.9, theta_exp=0.5,filename="",...) { 
 		deviation_type <- match.arg(tolower(deviation_type), c("ltd", "lad")) 
-		use_lad = deviation_type == "ltd"
+		use_lad = deviation_type == "lad"
+		if (is.character(flowdir)) flowdir <- rast(flowdir)
+		if (is.null(flowdir)) {
+		  flowdir <- flowDir(x,deviation_type=deviation_type,lambda=lambda,max_iters=max_iters)
+		}
 		flowdir <- mask(flowdir, pit>0, maskvalue=TRUE) 
 		opt <- spatOptions(filename, ...)
 		x@pntr <- x@pntr$pitfillerm(pit@pntr, flowdir@pntr, niter, lambda, use_lad, max_iters, U, D, beta, theta_exp, opt)
