@@ -5,6 +5,7 @@
 - multidim vrt can now be opened [#2107](https://github.com/rspatial/terra/issues/2107)  by Michael Sumner
 - terra did not compile with GDAL > 3.0.4 & < 3.8 [#2109](https://github.com/rspatial/terra/issues/2109) by Andrew Gene Brown
 - terra did not compile with GDAL < 3.5 [#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang Viechtbauer
+- `distance<SpatRaster>` with a planar CRS ignored the "unit" (and misinterpreted the "maxdist") argument [#2139](https://github.com/rspatial/terra/issues/2139) by Jakub Nowosad
 
 ## enhancements
 
