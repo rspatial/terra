@@ -197,7 +197,7 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 		}
 		value <- .txtCRS(value)
 		if (warn && (crs(x) != "") && (value != "")) {
-			message("Assigning a new crs. Use 'project' to transform a SpatRaster to a new crs")
+			message("Assigning a new crs, i.e. overriding object metadata. Undo and use project() to instead transform to a new crs")
 		}
 		x@pntr <- x@pntr$deepcopy()
 		x@pntr$set_crs(value)
@@ -264,7 +264,7 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 		}
 		value <- .txtCRS(value)
 		if (warn && (crs(x) != "") && (value != "")) {
-			message("Assigning a new crs. Use 'project' to transform a SpatVector to a new crs")
+			message("Assigning a new crs, i.e. overriding object metadata. Undo and use project() to instead transform to a new crs")
 		}
 		x@pntr <- x@pntr$deepcopy()
 		x@pntr$set_crs(value)
