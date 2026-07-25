@@ -59,9 +59,10 @@
   location on another geometry
 - `snapTo` method to move points to the nearest location on lines or
   polygons
-- `flowDir`
-- `pittfiller`
-- `as.arrows`
+- `flowDir` method to compute path-based nondisperive flow direction by
+  Emanuele Cordano
+- `pittfiller` method by Emanuele Cordano
+- `as.arrows` to show direction arrows on a raster by Emanuele Cordano
 
 ## version 1.9-34
 
