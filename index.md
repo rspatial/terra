@@ -26,12 +26,10 @@ But if you think you have found a bug, or if you want to request a new
 feature, please file an
 [issue](https://github.com/rspatial/terra/issues).
 
-`terra` replaces the [raster](https://github.com/rspatial/raster)
-package. The interfaces of `terra` and `raster` are similar, but `terra`
-is simpler, faster and can do more. You can try
-[tappa](https://github.com/rspatial/tappa/) if want the terra
-functionality in Python; or you can use the C++ library to [roll your
-own](https://github.com/rspatial/terra/tree/master/cmdapp) application.
+You can try [tappa](https://github.com/rspatial/tappa/) if want the
+terra functionality in Python; or you can use the C++ library to [roll
+your own](https://github.com/rspatial/terra/tree/master/cmdapp)
+application.
 
 ## Installation
 
