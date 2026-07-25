@@ -7,6 +7,7 @@
 - terra did not compile with GDAL < 3.5 [#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang Viechtbauer
 - `distance<SpatRaster>` with a planar CRS ignored the "unit" (and misinterpreted the "maxdist") argument [#2139](https://github.com/rspatial/terra/issues/2139) by Jakub Nowosad
 - `focal` returned wrong values (in some versions Inf) near the end of a chunk when processing a raster in chunks (with restrictive memory options) if the last chunk had fewer rows than half the window size [#2138](https://github.com/rspatial/terra/issues/2138) by Chris Littleboy
+- `rasterize` with points could crash R (or silently corrupt memory) when the output raster was processed in chunks and the last point fell before the last chunk [#2142](https://github.com/rspatial/terra/issues/2142) by Agustín Lobo
 - output of `cartogram(x, type="nc")` was invisible [#2134](https://github.com/rspatial/terra/issues/2134) by Márcia Barbosa
  
 
