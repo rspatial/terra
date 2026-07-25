@@ -26,8 +26,8 @@ README.md
 ^\.Rproj\.user$
 
 ^_pkgdown\.yml$
-^docs$
 ^pkgdown$
 
 data/
 ^_
+^doc

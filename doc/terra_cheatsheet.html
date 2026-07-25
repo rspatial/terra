@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>terra :: CHEAT SHEET</title>
+<style>
+:root{
+  --ink:#26323a;        /* basalt */
+  --paper:#fcfcfa;
+  --rast:#3f7457;       /* moss green — SpatRaster */
+  --rast-bg:#eef4f0;
+  --vect:#3a6b8e;       /* hydro blue — SpatVector */
+  --vect-bg:#edf2f6;
+  --both:#a06a24;       /* contour ochre — raster + vector */
+  --both-bg:#f6f1e7;
+  --meta:#57616b;       /* general / meta */
+  --meta-bg:#eff1f3;
+  --mut:#5c666d;
+  --line:#d8dcde;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4 landscape;margin:0}
+html,body{background:#fff}
+body{font-family:"Inter",sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:297mm;height:210mm;padding:6mm 7mm 5mm 7mm;page-break-after:always;position:relative;background:var(--paper);overflow:hidden;display:flex;flex-direction:column}
+.page:last-child{page-break-after:auto}
+
+/* ---------- masthead ---------- */
+header{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2.5px solid var(--ink);padding-bottom:4px;margin-bottom:6px}
+.title{display:flex;align-items:baseline;gap:10px}
+.title h1{font-size:21pt;font-weight:800;letter-spacing:-.02em}
+.title h1 .tt{font-family:"JetBrains Mono",monospace;font-weight:800}
+.title .sub{font-size:8.5pt;color:var(--mut);font-weight:500}
+.legend{display:flex;gap:12px;align-items:center;font-size:6.6pt;font-weight:600;color:var(--mut)}
+.legend .k{display:flex;gap:4px;align-items:center;text-transform:uppercase;letter-spacing:.06em}
+.legend .sw{width:9px;height:9px;border-radius:2px}
+header.small h1{font-size:13pt}
+header.small{padding-bottom:3px;margin-bottom:6px}
+
+/* ---------- column layout ---------- */
+.cols{flex:1;column-count:4;column-gap:5mm;column-fill:auto;overflow:hidden}
+
+/* ---------- sections ---------- */
+section{break-inside:avoid;margin-bottom:4px;border:1px solid var(--line);border-radius:4px;background:#fff;overflow:hidden}
+section h2{display:flex;align-items:center;gap:5px;font-size:7.4pt;font-weight:700;letter-spacing:.01em;padding:2px 6px;color:#fff}
+section h2 svg{flex:none}
+section .bd{padding:2px 6px 3px}
+section.r h2{background:var(--rast)}
+section.v h2{background:var(--vect)}
+section.b h2{background:var(--both)}
+section.m h2{background:var(--meta)}
+section.r{border-color:#c4d6cc}
+section.v{border-color:#c3d2de}
+section.b{border-color:#e0d0b4}
+
+.e{font-size:6.6pt;line-height:1.26;margin:1px 0;text-indent:-7px;padding-left:7px}
+.e b{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:6.25pt;letter-spacing:-.015em}
+section.r .e b{color:#2c5940}
+section.v .e b{color:#2b5674}
+section.b .e b{color:#7d5116}
+section.m .e b{color:#3c4650}
+.e span{color:var(--mut)}
+.e i{color:var(--mut);font-style:italic}
+.note{font-size:6.1pt;color:var(--mut);line-height:1.3;margin:2px 0 1px;padding:3px 5px;background:var(--meta-bg);border-radius:3px;text-indent:0}
+section.r .note{background:var(--rast-bg)}
+section.v .note{background:var(--vect-bg)}
+section.b .note{background:var(--both-bg)}
+.sub-h{font-size:6.3pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);margin:4px 0 1px}
+
+/* pictogram rows */
+.pict{display:flex;gap:6px;align-items:flex-start;margin:2px 0}
+.pict svg{flex:none;margin-top:1px}
+
+/* pictogram strips */
+.strip{display:flex;justify-content:space-between;gap:2px;margin:3px 0 1px;padding:3px 2px 2px;background:#f7f9f8;border-radius:3px}
+.strip .p{display:flex;flex-direction:column;align-items:center;gap:1px;flex:1}
+.strip .p em{font-style:normal;font-family:"JetBrains Mono",monospace;font-size:5.7pt;font-weight:700;color:#4a5560}
+/* migration table */
+table{width:100%;border-collapse:collapse;font-size:6.4pt}
+th{font-size:6.2pt;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);text-align:left;padding:1px 3px;border-bottom:1px solid var(--line)}
+td{padding:.5px 3px;border-bottom:1px solid #eef0f1;font-family:"JetBrains Mono",monospace;font-size:6.35pt;letter-spacing:-.01em}
+td:first-child{color:#8a8f94}
+td:last-child{font-weight:700;color:#3c4650}
+tr:last-child td{border-bottom:none}
+
+/* footer */
+footer{display:flex;justify-content:space-between;align-items:center;font-size:6.3pt;color:var(--mut);border-top:1px solid var(--line);padding-top:3px;margin-top:4px}
+footer b{font-weight:700}
+footer .mono{font-family:"JetBrains Mono",monospace}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ PAGE 1 : RASTER ══════════════════════ -->
+<div class="page">
+<header>
+  <div class="title">
+    <svg width="30" height="30" viewBox="0 0 30 30" style="flex:none;align-self:center;margin-right:2px">
+<g fill="none" stroke="#3f7457" stroke-width="1.1">
+<rect x="1" y="1" width="28" height="28" rx="2" fill="#eef4f0"/>
+<path d="M8 1v28M15 1v28M22 1v28M1 8h28M1 15h28M1 22h28"/>
+</g>
+<path d="M4 24 L11 13 L18 17 L26 5" fill="none" stroke="#a06a24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="#3a6b8e"><circle cx="4" cy="24" r="2.1"/><circle cx="11" cy="13" r="2.1"/><circle cx="18" cy="17" r="2.1"/><circle cx="26" cy="5" r="2.1"/></g>
+</svg>
+    <h1>Spatial data with <span class="tt">terra</span> :: <span style="font-weight:300">CHEAT SHEET</span></h1>
+    <div class="sub">raster + vector analysis with SpatRaster &amp; SpatVector</div>
+  </div>
+  <div class="legend">
+    <span class="k"><span class="sw" style="background:var(--rast)"></span>SpatRaster</span>
+    <span class="k"><span class="sw" style="background:var(--vect)"></span>SpatVector</span>
+    <span class="k"><span class="sw" style="background:var(--both)"></span>Raster ↔ Vector</span>
+    <span class="k"><span class="sw" style="background:var(--meta)"></span>General</span>
+  </div>
+</header>
+
+<div class="cols">
+
+<section class="m">
+<h2>The classes</h2>
+<div class="bd">
+<div class="e"><b>SpatRaster</b> <span>— grid of equal-size cells with one or more layers. Can be file-backed: huge files are read in chunks, not loaded into RAM.</span></div>
+<div class="e"><b>SpatVector</b> <span>— points, lines or polygons + attribute table (like a data.frame with geometries).</span></div>
+<div class="e"><b>SpatExtent</b> <span>— rectangular bounding box.</span> <b>ext(xmin, xmax, ymin, ymax)</b></div>
+<div class="e"><b>sds(r1, r2)</b> <span>— SpatRasterDataset: sub-datasets (variables × time, e.g. NetCDF).</span></div>
+<div class="e"><b>sprc(list)</b> <span>— SpatRasterCollection: rasters whose geometry does not align.</span></div>
+<div class="e"><b>svc(v1, v2)</b> <span>— SpatVectorCollection.</span></div>
+<div class="note">Spat* objects hold C++ pointers: <b style="font-family:'JetBrains Mono'">wrap(x)</b> / <b style="font-family:'JetBrains Mono'">unwrap(x)</b> before .rds or parallel workers (saveRDS wraps for you).</div>
+</div>
+</section>
+
+<section class="r">
+<h2>Create &amp; read</h2>
+<div class="bd">
+<div class="e"><b>r &lt;- rast("dem.tif")</b> <span>— read any GDAL source: GeoTIFF, NetCDF, COG, "/vsicurl/https://…"</span></div>
+<div class="e"><b>rast("x.nc", subds="tmp", lyrs=1:12)</b> <span>— pick sub-dataset / layers</span></div>
+<div class="e"><b>rast(nrows=18, ncols=36, xmin=-180, xmax=180, ymin=-90, ymax=90, crs="EPSG:4326")</b> <span>— from scratch</span></div>
+<div class="e"><b>rast(matrix)</b>, <b>rast(array)</b>, <b>rast(df, type="xyz")</b> <span>— from R data</span></div>
+<div class="e"><b>rast(r)</b> <span>— template: same geometry, no values</span></div>
+<div class="e"><b>rast(v, res=100)</b> <span>— template from a SpatVector's extent</span></div>
+<div class="e"><b>vrt(files)</b> <span>— virtual mosaic of many tiles</span></div>
+<div class="e"><b>describe("f.tif")</b> <span>— file metadata (gdalinfo)</span></div>
+<div class="e"><b>writeRaster(r, "out.tif", overwrite=TRUE)</b> <span>— write; set</span> <b>datatype="INT2S"</b>, <b>gdal=c("COMPRESS=LZW")</b></div>
+<div class="e"><b>writeCDF(r, "out.nc")</b> <span>— write NetCDF</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Inspect</h2>
+<div class="bd">
+<div class="e"><b>nrow(r); ncol(r); nlyr(r); ncell(r)</b> <span>— dimensions &amp; n layers</span></div>
+<div class="e"><b>res(r); ext(r); origin(r)</b> <span>— resolution, extent, origin</span></div>
+<div class="e"><b>crs(r, describe=TRUE)</b> <span>— coordinate reference system</span></div>
+<div class="e"><b>names(r) &lt;- c("a","b")</b> <span>— layer names; also</span> <b>varnames()</b>, <b>units()</b>, <b>time()</b></div>
+<div class="e"><b>minmax(r)</b> <span>— min/max per layer (</span><b>setMinMax(r)</b> <span>to compute)</span></div>
+<div class="e"><b>summary(r)</b>, <b>unique(r)</b>, <b>freq(r)</b> <span>— value counts</span></div>
+<div class="e"><b>inMemory(r); sources(r)</b> <span>— in RAM or on disk?</span></div>
+<div class="e"><b>datatype(r)</b> <span>— on-disk data type (e.g. INT2S, FLT4S)</span></div>
+<div class="e"><b>head(r)</b>; <b>tail(r)</b> <span>— peek at values</span></div>
+<div class="e"><b>compareGeom(r1, r2)</b> <span>— same extent / res / crs?</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Cells, coordinates &amp; values</h2>
+<div class="bd">
+<div class="e"><b>values(r)</b> <span>— all values as matrix;</span> <b>values(r) &lt;- x</b> <span>to set</span></div>
+<div class="e"><b>r[42]; r[3, 5]; r[1:2, ]</b> <span>— index by cell or row, col</span></div>
+<div class="e"><b>extract(r, cbind(x, y))</b> <span>— values at coordinates</span></div>
+<div class="e"><b>cells(r, v)</b> <span>— cell numbers covered by a SpatVector</span></div>
+<div class="e"><b>xyFromCell(r, cell)</b> ↔ <b>cellFromXY(r, xy)</b></div>
+<div class="e"><b>rowColFromCell(r, cell)</b> ↔ <b>cellFromRowCol(r, row, col)</b></div>
+<div class="e"><b>crds(r)</b> <span>— coordinates of (non-NA) cells</span></div>
+<div class="e"><b>spatSample(r, 100, "random")</b> <span>— also "regular", "stratified";</span> <b>as.points=TRUE</b>, <b>na.rm=TRUE</b> <span>(works on SpatVector/SpatExtent too)</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Subset &amp; combine layers</h2>
+<div class="bd">
+<div class="e"><b>r[[2]]; r[[c("a","b")]]; r$a</b> <span>— select layers</span></div>
+<div class="e"><b>subset(r, 1:3)</b> <span>— by index or name;</span> <b>negate=TRUE</b> <span>to drop</span></div>
+<div class="e"><b>c(r1, r2)</b> <span>— stack layers (must align);</span> <b>add(r) &lt;- s</b> <span>in place</span></div>
+<div class="e"><b>rep(r, 3)</b> <span>— replicate layers</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Map algebra</h2>
+<div class="bd">
+<div class="e"><b>r * 10 + s; sqrt(r); log(r)</b> <span>— cell-wise arithmetic &amp; math</span></div>
+<div class="e"><b>r &gt; 3; r == 1; r %in% c(1,3)</b> <span>— comparisons → boolean raster</span></div>
+<div class="e"><b>ifel(r &gt; 3, 1, NA)</b> <span>— if-else</span></div>
+<div class="e"><b>mean(r); sum(r1, r2); min(r); which.max(r)</b> <span>— across layers</span></div>
+<div class="e"><b>app(r, fun=sum, na.rm=TRUE)</b> <span>— apply function over layers, per cell</span></div>
+<div class="e"><b>lapp(c(r, s), \(x, y) (x - y) / (x + y))</b> <span>— layers as function arguments</span></div>
+<div class="e"><b>tapp(r, index="months", fun=mean)</b> <span>— by group of layers (e.g. time)</span></div>
+<div class="e"><b>xapp(r, s, fun=cor)</b> <span>— function over two SpatRasters</span></div>
+<div class="e"><b>roll(r, n=5, "mean")</b> <span>— rolling;</span> <b>diff(r)</b>, <b>cumsum(r)</b> <span>— over layers</span></div>
+<div class="e"><b>weighted.mean(r, w=1:12)</b>; <b>rowSums(r)</b>; <b>colMeans(r)</b></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Change cell values</h2>
+<div class="bd">
+<div class="e"><b>classify(r, rcl=cbind(from, to, becomes))</b> <span>— reclassify ranges</span></div>
+<div class="e"><b>subst(r, from=1, to=100)</b> <span>— substitute specific values</span></div>
+<div class="e"><b>clamp(r, 0, 1)</b> <span>— truncate to range;</span> <b>thresh(r)</b> <span>— auto-threshold</span></div>
+<div class="e"><b>scale(r); scale_linear(r, 0, 1); stretch(r)</b> <span>— rescale</span></div>
+<div class="e"><b>mask(r, m)</b> <span>— NA where m is NA;</span> <b>inverse=TRUE</b>, <b>updatevalue=0</b></div>
+<div class="e"><b>cover(r, s)</b> <span>— fill NA cells of r with values of s</span></div>
+<div class="e"><b>init(r, fun=runif)</b> <span>— fill with values</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Change geometry</h2>
+<div class="bd">
+<div class="strip"><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><rect x="1" y="1" width="24" height="18" rx="1.5" fill="#eef4f0" stroke="#9db8a9" stroke-width=".8"/><path d="M7 1v18M13 1v18M19 1v18M1 7h24M1 13h24" stroke="#9db8a9" stroke-width=".6" fill="none"/><rect x="7" y="7" width="12" height="6" fill="#3f7457" opacity=".85"/><rect x="5.5" y="5.5" width="15" height="9" fill="none" stroke="#a06a24" stroke-width="1" stroke-dasharray="2 1.4"/></svg><em>crop</em></div><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><rect x="1" y="1" width="24" height="18" rx="1.5" fill="#eef4f0" stroke="#9db8a9" stroke-width=".8"/><path d="M7 1v18M13 1v18M19 1v18M1 7h24M1 13h24" stroke="#9db8a9" stroke-width=".6" fill="none"/><path d="M6 15 Q4 8 9 6 Q14 3 18 6 Q23 9 20 14 Q16 18 11 17 Z" fill="#3f7457" opacity=".85"/><path d="M6 15 Q4 8 9 6 Q14 3 18 6 Q23 9 20 14 Q16 18 11 17 Z" fill="none" stroke="#a06a24" stroke-width="1"/></svg><em>mask</em></div><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><rect x="1" y="3" width="10" height="14" fill="#eef4f0" stroke="#9db8a9" stroke-width=".8"/><path d="M3.5 3v14M6 3v14M8.5 3v14M1 6.5h10M1 10h10M1 13.5h10" stroke="#9db8a9" stroke-width=".5"/><path d="M13 10h3.4" stroke="#4a5560" stroke-width="1"/><path d="M15.6 8.4 18 10l-2.4 1.6z" fill="#4a5560"/><rect x="19" y="3" width="6" height="14" fill="#dcede2" stroke="#3f7457" stroke-width=".9"/><path d="M19 10h6M22 3v14" stroke="#3f7457" stroke-width=".7"/></svg><em>aggregate</em></div><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><g transform="rotate(-8 6 10)"><rect x="1" y="3" width="10" height="14" fill="#eef4f0" stroke="#9db8a9" stroke-width=".8"/><path d="M4.3 3v14M7.7 3v14M1 7.7h10M1 12.3h10" stroke="#9db8a9" stroke-width=".5"/></g><path d="M13 10h3.4" stroke="#4a5560" stroke-width="1"/><path d="M15.6 8.4 18 10l-2.4 1.6z" fill="#4a5560"/><rect x="19" y="3" width="6" height="14" fill="#dcede2" stroke="#3f7457" stroke-width=".9"/><path d="M19 7.7h6M19 12.3h6M22 3v14" stroke="#3f7457" stroke-width=".7"/></svg><em>resample</em></div></div>
+<div class="e"><b>crop(r, e)</b> <span>— cut to extent of any object;</span> <b>mask=TRUE</b> <span>clips to polygon</span></div>
+<div class="e"><b>extend(r, e)</b> <span>— add (NA) rows/cols;</span> <b>trim(r)</b> <span>— drop outer NA margins</span></div>
+<div class="e"><b>merge(r1, r2)</b> <span>— combine rasters, first has priority</span></div>
+<div class="e"><b>mosaic(r1, r2, fun="mean")</b> <span>— combine, summarizing overlaps</span></div>
+<div class="e"><b>aggregate(r, fact=10, fun="mean")</b> <span>— to coarser cells</span></div>
+<div class="e"><b>disagg(r, fact=10, method="bilinear")</b> <span>— to finer cells</span></div>
+<div class="e"><b>resample(r, template, method="bilinear")</b> <span>— transfer to another grid</span></div>
+<div class="e"><b>project(r, "EPSG:3035")</b> <span>— reproject; use</span> <b>method="near"</b> <span>for categorical data;</span> <b>project(r, y)</b> <span>matches y's grid</span></div>
+<div class="e"><b>shift(r, dx=1); flip(r, "vertical"); rotate(r); t(r)</b></div>
+<div class="e"><b>align(ext(v), r)</b> <span>— snap an extent to r's grid</span></div>
+<div class="e"><b>is.rotated(r)</b>; <b>rectify(r)</b> <span>— fix a rotated raster</span></div>
+<div class="e"><b>divide(r, n=4)</b> <span>— subdivide into parts</span></div>
+<div class="e"><b>impose(sprc(r1, r2), r)</b> <span>— force a collection onto one grid</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Focal (neighborhood)</h2>
+<div class="bd">
+<div class="e"><b>focal(r, w=3, fun="mean", na.policy="omit")</b> <span>— moving window</span></div>
+<div class="e"><b>focal(r, w=focalMat(r, 1000, "circle"), fun=sum)</b> <span>— weights matrix ("circle", "Gauss", "rectangle")</span></div>
+<div class="e"><b>focal3D(r, c(3,3,3), fun=mean)</b> <span>— window across rows, cols &amp; layers</span></div>
+<div class="e"><b>focalPairs(r, w=3, "pearson")</b>, <b>focalReg(r, 3)</b> <span>— two-layer windows</span></div>
+<div class="e"><b>focalValues(r, w=3)</b> <span>— neighborhood values as a matrix</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Terrain &amp; hydrology</h2>
+<div class="bd">
+<div class="e"><b>terrain(r, v=c("slope","aspect"), unit="radians")</b> <span>— also "TPI", "TRI", "roughness", "flowdir"</span></div>
+<div class="e"><b>shade(slope, aspect, angle=45, direction=315)</b> <span>— hillshade</span></div>
+<div class="e"><b>viewshed(r, loc=c(x, y))</b> <span>— visible cells;</span> <b>surfArea(r)</b> <span>— 3-D area</span></div>
+<div class="e"><b>flowAccumulation(flowDir(r))</b>; <b>watershed(fd, pp)</b> <span>— catchments</span></div>
+<div class="e"><b>pitfinder(fd)</b>; <b>pitfiller(r)</b> <span>— find / fill depressions</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Distance, patches &amp; cost</h2>
+<div class="bd">
+<div class="e"><b>distance(r)</b> <span>— from NA cells to nearest non-NA;</span> <b>distance(r, v)</b> <span>— to a SpatVector</span></div>
+<div class="e"><b>direction(r)</b> <span>— direction to nearest non-NA cell</span></div>
+<div class="e"><b>costDist(r, target=0)</b> <span>— cost-weighted distance</span></div>
+<div class="e"><b>gridDist(r)</b> <span>— distance moving over the grid, NA = barrier</span></div>
+<div class="e"><b>patches(r, directions=8)</b> <span>— label connected cell clumps</span></div>
+<div class="e"><b>sieve(r, threshold=10)</b> <span>— remove small patches</span></div>
+<div class="e"><b>boundaries(r)</b> <span>— detect edge cells</span></div>
+<div class="e"><b>buffer(r, width=500)</b> <span>— TRUE within distance of non-NA cells</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Summaries</h2>
+<div class="bd">
+<div class="e"><b>global(r, "mean", na.rm=TRUE)</b> <span>— one statistic per layer</span></div>
+<div class="e"><b>zonal(r, z, fun="mean")</b> <span>— statistics per zone (raster or polygons)</span></div>
+<div class="e"><b>freq(r)</b>; <b>crosstab(c(r, s))</b> <span>— (cross-)tabulate counts</span></div>
+<div class="e"><b>expanse(r, unit="km")</b> <span>— area of non-NA cells;</span> <b>cellSize(r)</b> <span>— cell-area raster (geodesic-aware)</span></div>
+<div class="e"><b>layerCor(r, "cor")</b> <span>— between-layer correlation</span></div>
+<div class="e"><b>quantile(r)</b>; <b>autocor(r)</b> <span>— Moran's I</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Categorical rasters</h2>
+<div class="bd">
+<div class="e"><b>levels(r) &lt;- data.frame(id=1:3, cover=c("forest","water","urban"))</b></div>
+<div class="e"><b>cats(r)</b>; <b>activeCat(r) &lt;- 2</b> <span>— get / choose category table</span></div>
+<div class="e"><b>catalyze(r)</b> <span>— factor → numeric layers;</span> <b>as.factor(r)</b></div>
+<div class="e"><b>segregate(r)</b> <span>— one 0/1 layer per class (one-hot)</span></div>
+<div class="e"><b>concats(r, s)</b> <span>— combine two categorical layers</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Time series</h2>
+<div class="bd">
+<div class="e"><b>time(r) &lt;- as.Date("2026-01-01") + 0:364</b> <span>— assign layer times</span></div>
+<div class="e"><b>has.time(r)</b>; <b>timeInfo(r)</b>; <b>depth(r)</b> <span>— third dimension</span></div>
+<div class="e"><b>tapp(r, "yearmonths", mean)</b> <span>— aggregate over time</span></div>
+<div class="e"><b>fillTime(r)</b> <span>— insert missing time steps as NA layers</span></div>
+<div class="e"><b>approximate(r)</b> <span>— interpolate NA cells across layers</span></div>
+<div class="e"><b>mergeTime(sds(r1, r2))</b> <span>— merge overlapping timelines</span></div>
+<div class="e"><b>clamp_ts(r)</b> <span>— clamp a time series</span></div>
+</div>
+</section>
+
+<section class="r">
+<h2>Colors &amp; RGB</h2>
+<div class="bd">
+<div class="e"><b>RGB(r) &lt;- c(3, 2, 1)</b> <span>— declare which layers are the R, G, B channels;</span> <b>has.RGB(r)</b></div>
+<div class="e"><b>colorize(r, "col")</b> <span>— RGB layers → single layer + color table; also "hsv", "hsl", "rgb"</span></div>
+<div class="e"><b>coltab(r) &lt;- data.frame(value=1:3, col=c("red","gold","navy"))</b> <span>— color table for categorical rasters;</span> <b>has.colors(r)</b></div>
+</div>
+</section>
+
+</div>
+</div>
+
+<!-- ══════════════════════ PAGE 2 : VECTOR + BRIDGE ══════════════════════ -->
+<div class="page">
+<header class="small">
+  <div class="title">
+    <h1><span class="tt">terra</span> :: vectors, raster ↔ vector, plotting</h1>
+  </div>
+  <div class="legend">
+    <span class="k"><span class="sw" style="background:var(--rast)"></span>SpatRaster</span>
+    <span class="k"><span class="sw" style="background:var(--vect)"></span>SpatVector</span>
+    <span class="k"><span class="sw" style="background:var(--both)"></span>Raster ↔ Vector</span>
+    <span class="k"><span class="sw" style="background:var(--meta)"></span>General</span>
+  </div>
+</header>
+
+<div class="cols">
+
+<section class="v">
+<h2>Create &amp; read</h2>
+<div class="bd">
+<div class="e"><b>v &lt;- vect("parcels.gpkg")</b> <span>— any GDAL/OGR source (.shp, .gpkg, GeoJSON, PostGIS, …)</span></div>
+<div class="e"><b>vect("f.gpkg", query="SELECT … WHERE …", extent=e)</b> <span>— partial read;</span> <b>proxy=TRUE</b> <span>reads no geometries yet</span></div>
+<div class="e"><b>vect(cbind(x, y), atts=df, crs="EPSG:4326")</b> <span>— points from coords</span></div>
+<div class="e"><b>vect("POLYGON ((0 0, 5 0, 5 5, 0 0))")</b> <span>— from WKT</span></div>
+<div class="e"><b>vect(sf_object)</b> <span>— from sf;</span> <b>sf::st_as_sf(v)</b> <span>goes back</span></div>
+<div class="e"><b>writeVector(v, "out.gpkg", overwrite=TRUE)</b></div>
+<div class="e"><b>vector_layers("f.gpkg")</b> <span>— list layers in a file</span></div>
+</div>
+</section>
+
+<section class="v">
+<h2>Attributes</h2>
+<div class="bd">
+<div class="e"><b>values(v)</b> / <b>as.data.frame(v)</b> <span>— attribute table;</span> <b>v$pop</b>, <b>v[["pop"]]</b></div>
+<div class="e"><b>v$dens &lt;- v$pop / expanse(v, "km")</b> <span>— add / compute a column</span></div>
+<div class="e"><b>merge(v, df, by="id")</b> <span>— join a data.frame</span></div>
+<div class="e"><b>subset(v, v$pop &gt; 1e5, select=c("name","pop"))</b> <span>— or</span> <b>v[v$pop &gt; 1e5, 1:2]</b></div>
+<div class="e"><b>sort(v, "pop")</b>; <b>unique(v)</b>; <b>na.omit(v)</b>; <b>head(v)</b></div>
+<div class="e"><b>as.data.frame(v, geom="WKT")</b> <span>— attributes + geometry as text</span></div>
+</div>
+</section>
+
+<section class="v">
+<h2>Geometry properties</h2>
+<div class="bd">
+<div class="e"><b>geom(v)</b> <span>— vertices matrix;</span> <b>crds(v)</b> <span>— coordinates</span></div>
+<div class="e"><b>geomtype(v)</b>; <b>is.points(v)</b>, <b>is.lines(v)</b>, <b>is.polygons(v)</b></div>
+<div class="e"><b>nrow(v)</b> <span>— n geometries;</span> <b>nseg(v)</b> <span>— n segments</span></div>
+<div class="e"><b>expanse(v, unit="km")</b> <span>— polygon area (geodesic for lon/lat)</span></div>
+<div class="e"><b>perim(v)</b> <span>— perimeter / line length</span></div>
+<div class="e"><b>is.valid(v)</b>; <b>makeValid(v)</b> <span>— check / repair geometries</span></div>
+</div>
+</section>
+
+<section class="v">
+<h2>Derive geometries</h2>
+<div class="bd">
+<div class="strip" style="background:#f6f8fa"><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><circle cx="13" cy="10" r="7.5" fill="#3a6b8e" opacity=".18" stroke="#3a6b8e" stroke-width=".9" stroke-dasharray="2 1.3"/><circle cx="13" cy="10" r="2.2" fill="#3a6b8e"/></svg><em>buffer</em></div><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><path d="M4 15 L6 5 L14 2.5 L23 8 L19 17 L9 18 Z" fill="#edf2f6" stroke="#3a6b8e" stroke-width=".9"/><circle cx="13" cy="10.5" r="2.2" fill="#a06a24"/></svg><em>centroids</em></div><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><path d="M4.5 13.5 L8 3.5 L18 2.5 L23 9 L19 17.5 L8.5 17.5 Z" fill="#edf2f6" stroke="#3a6b8e" stroke-width="1" stroke-dasharray="2.2 1.4"/><g fill="#3a6b8e"><circle cx="8" cy="3.5" r="1.6"/><circle cx="18" cy="2.5" r="1.6"/><circle cx="23" cy="9" r="1.6"/><circle cx="19" cy="17.5" r="1.6"/><circle cx="8.5" cy="17.5" r="1.6"/><circle cx="4.5" cy="13.5" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/></g></svg><em>hull</em></div><div class="p"><svg width="26" height="20" viewBox="0 0 26 20"><path d="M2 16 L5 12 L7 14 L10 8 L12 11 L15 4 L18 8 L21 3 L24 5" fill="none" stroke="#9db1c1" stroke-width="1"/><path d="M2 16 L10 8.5 L16 6 L24 5" fill="none" stroke="#3a6b8e" stroke-width="1.5" stroke-linecap="round"/></svg><em>simplify</em></div></div>
+<div class="e"><b>buffer(v, width=100)</b> <span>— geodesic-aware buffer (m for lon/lat)</span></div>
+<div class="e"><b>centroids(v, inside=TRUE)</b> <span>— point guaranteed inside</span></div>
+<div class="e"><b>hull(v, "convex")</b> <span>— also "rectangle", "circle", "concave_ratio"</span></div>
+<div class="e"><b>voronoi(v)</b>; <b>delaunay(v)</b></div>
+<div class="e"><b>simplifyGeom(v, tolerance=.01)</b> <span>— fewer nodes;</span> <b>densify(v, 100)</b> <span>— more</span></div>
+<div class="e"><b>fillHoles(v)</b>; <b>gaps(v)</b> <span>— holes &amp; slivers between polygons</span></div>
+<div class="e"><b>disagg(v)</b> <span>— multipart → single parts;</span> <b>aggregate(v, "region")</b> <span>— dissolve by attribute</span></div>
+<div class="e"><b>snap(v, tol=.1)</b> <span>— topology cleanup;</span> <b>removeDupNodes(v)</b></div>
+</div>
+</section>
+
+<section class="v">
+<h2>Transform &amp; topology</h2>
+<div class="bd">
+<div class="e"><b>shift(v, dx=100, dy=0)</b> <span>— move;</span> <b>spin(v, angle=30)</b> <span>— rotate;</span> <b>rescale(v, .5)</b> <span>— shrink / grow around a center</span></div>
+<div class="e"><b>flip(v, "vertical")</b>; <b>t(v)</b> <span>— mirror / swap x-y</span></div>
+<div class="e"><b>normalize.longitude(v)</b>; <b>rotate(v)</b> <span>— fix dateline-crossing data / 0–360° longitudes</span></div>
+<div class="e"><b>mergeLines(v)</b>; <b>makeNodes(v)</b> <span>— connect lines, nodes at intersections</span></div>
+<div class="e"><b>elongate(v, length=10)</b>; <b>densify(v, 100)</b> <span>— extend lines, add vertices</span></div>
+</div>
+</section>
+
+<section class="v">
+<h2>Overlay</h2>
+<div class="bd">
+<div class="strip" style="background:#f6f8fa"><div class="p"><svg width="28" height="20" viewBox="0 0 28 20"><g fill="#edf2f6" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g><clipPath id="ci"><circle cx="10" cy="10" r="7.2"/></clipPath><circle cx="17.5" cy="10" r="7.2" fill="#3a6b8e" opacity=".85" clip-path="url(#ci)"/><g fill="none" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g></svg><em>intersect</em></div><div class="p"><svg width="28" height="20" viewBox="0 0 28 20"><g fill="#edf2f6" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g><g fill="#3a6b8e" opacity=".85"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g><g fill="none" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g></svg><em>union</em></div><div class="p"><svg width="28" height="20" viewBox="0 0 28 20"><g fill="#edf2f6" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g><mask id="me"><circle cx="10" cy="10" r="7.2" fill="#fff"/><circle cx="17.5" cy="10" r="7.2" fill="#000"/></mask><circle cx="10" cy="10" r="7.2" fill="#3a6b8e" opacity=".85" mask="url(#me)"/><g fill="none" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g></svg><em>erase</em></div><div class="p"><svg width="28" height="20" viewBox="0 0 28 20"><g fill="#edf2f6" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g><mask id="ms1"><circle cx="10" cy="10" r="7.2" fill="#fff"/><circle cx="17.5" cy="10" r="7.2" fill="#000"/></mask><mask id="ms2"><circle cx="17.5" cy="10" r="7.2" fill="#fff"/><circle cx="10" cy="10" r="7.2" fill="#000"/></mask><circle cx="10" cy="10" r="7.2" fill="#3a6b8e" opacity=".85" mask="url(#ms1)"/><circle cx="17.5" cy="10" r="7.2" fill="#3a6b8e" opacity=".85" mask="url(#ms2)"/><g fill="none" stroke="#3a6b8e" stroke-width=".9"><circle cx="10" cy="10" r="7.2"/><circle cx="17.5" cy="10" r="7.2"/></g></svg><em>symdif</em></div></div>
+<div class="e"><b>intersect(v1, v2)</b> <span>— intersection, attributes of both</span></div>
+<div class="e"><b>union(v1, v2)</b> <span>— all pieces;</span> <b>symdif(v1, v2)</b> <span>— all but overlap</span></div>
+<div class="e"><b>erase(v1, v2)</b> <span>— v1 minus v2;</span> <b>erase(v)</b> <span>— remove self-overlaps</span></div>
+<div class="e"><b>crop(v, e)</b> <span>— clip to extent / polygons;</span> <b>mask(v, m)</b></div>
+<div class="e"><b>cover(v1, v2)</b> <span>— replace overlapping parts</span></div>
+<div class="e"><b>v[p, ]</b> <span>— subset geometries that intersect p</span></div>
+</div>
+</section>
+
+<section class="v">
+<h2>Spatial relations</h2>
+<div class="bd">
+<div class="e"><b>relate(v1, v2, "intersects")</b> <span>— matrix; also "touches", "within", "contains", "overlaps", "crosses", or a DE-9IM pattern</span></div>
+<div class="e"><b>is.related(v1, v2, "intersects")</b> <span>— one logical per geometry</span></div>
+<div class="e"><b>adjacent(v)</b> <span>— neighboring polygons</span></div>
+<div class="e"><b>nearest(v1, v2)</b>; <b>nearby(v, distance=1000)</b></div>
+<div class="e"><b>distance(v1, v2)</b> <span>— geodesic distance matrix (m)</span></div>
+<div class="e"><b>sharedPaths(v)</b> <span>— shared borders</span></div>
+</div>
+</section>
+
+<section class="v">
+<h2>Points, density &amp; routes</h2>
+<div class="bd">
+<div class="e"><b>thin(pts, 1000)</b> <span>— subset points by a minimum distance</span></div>
+<div class="e"><b>agitate(pts)</b> <span>— jitter overlapping points</span></div>
+<div class="e"><b>snapTo(pts, lns)</b> <span>— snap points onto the nearest line / edge</span></div>
+<div class="e"><b>dots(polys, "pop", size=1000)</b> <span>— dot-density map: one dot per 1000</span></div>
+<div class="e"><b>cartogram(polys, "pop", "nc")</b> <span>— area ∝ variable; also "circles"</span></div>
+<div class="e"><b>spatSample(polys, 100, "random")</b> <span>— random points in polygons</span></div>
+<div class="e"><b>furdist(v1, v2)</b> <span>— distance to the furthest location</span></div>
+<div class="e"><b>n &lt;- netw(lns)</b>; <b>shortestPath(n, from, to)</b> <span>— network routing</span></div>
+</div>
+</section>
+
+<section class="b">
+<h2>CRS &amp; projection</h2>
+<div class="bd">
+<div class="e"><b>crs(x)</b> <span>— WKT;</span> <b>crs(x, describe=TRUE)$code</b> <span>— EPSG code</span></div>
+<div class="e"><b>crs(x) &lt;- "EPSG:4326"</b> <span>— declare / overwrite. Does NOT transform!</span></div>
+<div class="e"><b>project(x, "EPSG:3035")</b> <span>— transform raster or vector; accepts EPSG, WKT, proj4, or a template object</span></div>
+<div class="e"><b>same.crs(x, y)</b>; <b>is.lonlat(x)</b></div>
+<div class="note">Many terra functions (distance, expanse, buffer, cellSize…) compute geodesically for lon/lat data — often no need to project first.</div>
+</div>
+</section>
+
+<section class="b">
+<h2>Raster ↔ vector</h2>
+<div class="bd">
+<div class="e"><b>extract(r, pts)</b> <span>— values at points, one column per layer;</span> <b>bind=TRUE</b> <span>returns SpatVector</span></div>
+<div class="e"><b>extract(r, polys, fun=mean, na.rm=TRUE)</b> <span>— summarize per polygon;</span> <b>exact=TRUE</b> <span>weights by cover fraction</span></div>
+<div class="e"><b>zonal(r, polys, fun="mean")</b> <span>— fast polygon statistics</span></div>
+<div class="e"><b>extractAlong(r, line)</b> <span>— cell values along a line</span></div>
+<div class="e"><b>rasterize(v, r, field="value", fun="max", background=NA)</b></div>
+<div class="e"><b>rasterizeGeom(v, r, "count")</b> <span>— or "length", "area" per cell</span></div>
+<div class="e"><b>crop(r, v, mask=TRUE)</b> <span>— clip raster to polygon outline</span></div>
+<div class="e"><b>as.points(r)</b>; <b>as.lines(r)</b>; <b>as.contour(r)</b></div>
+<div class="e"><b>as.polygons(r)</b> <span>— dissolves by value;</span> <b>aggregate=FALSE</b> <span>keeps cells</span></div>
+</div>
+</section>
+
+<section class="b">
+<h2>Interpolation &amp; prediction</h2>
+<div class="bd">
+<div class="e"><b>interpIDW(r, pts, "z", radius=1e4)</b> <span>— inverse-distance weighted</span></div>
+<div class="e"><b>interpNear(r, pts, "z")</b> <span>— nearest-neighbor interpolation</span></div>
+<div class="e"><b>interpolate(r, model)</b> <span>— any spatial model with predict (kriging via gstat, thin-plate splines via fields::Tps, …)</span></div>
+<div class="e"><b>predict(r, model)</b> <span>— glm / randomForest / … ; layer names must match the model's predictor names</span></div>
+<div class="e"><b>k_means(r, centers=5)</b>; <b>prcomp(r)</b> <span>— clustering, PCA</span></div>
+</div>
+</section>
+
+<section class="m">
+<h2>Plotting</h2>
+<div class="bd">
+<div class="e"><b>plot(r)</b> <span>— map;</span> <b>col=map.pal("viridis")</b>, <b>breaks=</b>, <b>range=</b>, <b>legend=</b></div>
+<div class="e"><b>plot(r, type="interval")</b> <span>— or "classes", "continuous"</span></div>
+<div class="e"><b>plot(v, "pop", type="interval")</b> <span>— choropleth</span></div>
+<div class="e"><b>plotRGB(r, 3, 2, 1, stretch="lin")</b> <span>— satellite composite</span></div>
+<div class="e"><b>lines(v); points(v); polys(v); text(v, "name"); halo(x, y, "lab")</b> <span>— add to map</span></div>
+<div class="e"><b>sbar(50, "bottomright"); north()</b> <span>— scale bar, north arrow</span></div>
+<div class="e"><b>panel(r)</b> <span>— multi-layer panel, shared legend;</span> <b>inset()</b></div>
+<div class="e"><b>plet(r)</b> <span>— interactive leaflet map</span></div>
+<div class="e"><b>hist(r); pairs(r); persp(r); contour(r, add=TRUE)</b></div>
+</div>
+</section>
+
+<section class="m">
+<h2>Big data &amp; performance</h2>
+<div class="bd">
+<div class="e"><b>terraOptions(memfrac=.7, tempdir="…", progress=10)</b></div>
+<div class="e"><b>fun(r, …, filename="out.tif", wopt=list(…))</b> <span>— most functions write directly to disk: safe for huge rasters</span></div>
+<div class="e"><b>window(r) &lt;- e</b> <span>— restrict all reads to an extent</span></div>
+<div class="e"><b>makeTiles(r, y, "tile_.tif")</b> <span>— split into tiles;</span> <b>tile_apply(r, fun)</b> <span>— process tiles in parallel</span></div>
+<div class="e"><b>app(r, fun, cores=4)</b> <span>— parallel apply (also predict, …)</span></div>
+<div class="e"><b>mem_info(r)</b>; <b>free_RAM()</b>; <b>tmpFiles(remove=TRUE)</b></div>
+</div>
+</section>
+
+<section class="m">
+<h2>Map furniture &amp; extras</h2>
+<div class="bd">
+<div class="e"><b>g &lt;- graticule(lon=30, lat=30, crs="+proj=robin")</b> <span>— graticule to plot / add;</span> <b>add_grid()</b> <span>— reference grid</span></div>
+<div class="e"><b>add_legend("topleft", legend=…)</b>; <b>legend_cont()</b> <span>— continuous legend;</span> <b>add_mtext()</b>, <b>add_box()</b></div>
+<div class="e"><b>animate(r, pause=.25)</b> <span>— flip through layers</span></div>
+<div class="e"><b>barplot(r)</b>; <b>boxplot(r, z)</b> <span>— values of r grouped by z</span></div>
+</div>
+</section>
+
+<section class="m">
+<h2>Extents (SpatExtent)</h2>
+<div class="bd">
+<div class="e"><b>e &lt;- ext(5.7, 6.6, 49.4, 50.2)</b> <span>— xmin, xmax, ymin, ymax</span></div>
+<div class="e"><b>xmin(e) &lt;- 5.5</b> <span>— also</span> <b>xmax()</b>, <b>ymin()</b>, <b>ymax()</b></div>
+<div class="e"><b>union(e1, e2)</b>; <b>intersect(e1, e2)</b> <span>— combine extents</span></div>
+<div class="e"><b>e * 2; e + 0.5</b> <span>— grow / shrink;</span> <b>align(e, r)</b> <span>— snap to r's grid</span></div>
+<div class="e"><b>as.polygons(e, crs="EPSG:4326")</b> <span>— extent → SpatVector</span></div>
+<div class="e"><b>draw()</b> <span>— digitize an extent on a plotted map</span></div>
+</div>
+</section>
+
+<section class="m">
+<h2>GDAL &amp; files</h2>
+<div class="bd">
+<div class="e"><b>gdal()</b> <span>— GDAL version;</span> <b>gdal(drivers=TRUE)</b> <span>— supported formats</span></div>
+<div class="e"><b>describe("f.tif")</b>; <b>vector_layers("f.gpkg")</b> <span>— what's in a file?</span></div>
+<div class="e"><b>setGDALconfig("GDAL_PAM_ENABLED", "FALSE")</b> <span>— e.g. no .aux.xml files</span></div>
+<div class="e"><b>gdalCache(2000)</b> <span>— GDAL cache size (MB)</span></div>
+<div class="e"><b>libVersion("proj")</b> <span>— GDAL / PROJ / GEOS versions</span></div>
+</div>
+</section>
+
+<section class="m">
+<h2>Compare &amp; validate</h2>
+<div class="bd">
+<div class="e"><b>compareGeom(x, y)</b> <span>— same extent, resolution, crs?</span></div>
+<div class="e"><b>all.equal(x, y)</b>; <b>identical(x, y)</b> <span>— geometry + values</span></div>
+<div class="e"><b>is.empty(e)</b>; <b>is.valid(v)</b>; <b>hasValues(r)</b></div>
+<div class="e"><b>is.lonlat(x)</b>; <b>is.rotated(r)</b>; <b>is.flipped(r)</b></div>
+</div>
+</section>
+
+<section class="m">
+<h2>Interactive (on a plotted map)</h2>
+<div class="bd">
+<div class="e"><b>click(r)</b> <span>— query values by clicking;</span> <b>click(v)</b></div>
+<div class="e"><b>draw("polygon")</b> <span>— digitize a polygon, line, extent or points</span></div>
+<div class="e"><b>zoom(r)</b> <span>— zoom to a drawn extent;</span> <b>sel(v)</b> <span>— select by drawing</span></div>
+</div>
+</section>
+
+</div>
+
+<footer>
+  <div><b>Learn more</b>: tutorials at <b>rspatial.org</b> · reference at <b>rspatial.github.io/terra</b> · <span class="mono">install.packages("terra")</span></div>
+  <div>Based on terra 1.9-40 (2026) · terra is by Robert J. Hijmans · community cheat sheet, CC BY 4.0</div>
+</footer>
+</div>
+
+</body>
+</html>
