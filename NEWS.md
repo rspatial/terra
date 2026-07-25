@@ -6,6 +6,9 @@
 - terra did not compile with GDAL > 3.0.4 & < 3.8 [#2109](https://github.com/rspatial/terra/issues/2109) by Andrew Gene Brown
 - terra did not compile with GDAL < 3.5 [#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang Viechtbauer
 - `distance<SpatRaster>` with a planar CRS ignored the "unit" (and misinterpreted the "maxdist") argument [#2139](https://github.com/rspatial/terra/issues/2139) by Jakub Nowosad
+- `focal` returned wrong values (in some versions Inf) near the end of a chunk when processing a raster in chunks (with restrictive memory options) if the last chunk had fewer rows than half the window size [#2138](https://github.com/rspatial/terra/issues/2138) by Chris Littleboy
+- output of `cartogram(x, type="nc")` was invisible [#2134](https://github.com/rspatial/terra/issues/2134) by Márcia Barbosa
+ 
 
 ## enhancements
 
@@ -15,6 +18,7 @@
 - `focal` can now use TBB parallelization for built-in functions "max", "min", "median", "modal" and "sd" (in addition to "sum"/"mean") [#2115](https://github.com/rspatial/terra/issues/2115) by Breeze-Hu
 - `focal` with "min" or "max" and an unweighted window is now faster, especially with large windows
 - the "threads" option now defaults to 16 (instead of no limit) to avoid run-away thread counts on machines with very many cores. The "threads" argument of `project` and `resample` can now also be a number
+
 
 ## new 
 
