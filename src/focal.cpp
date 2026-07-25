@@ -564,9 +564,6 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		return out;
 	}
 	size_t hw0 = w[0]/2;
-	size_t dhw0 = hw0 * 2;
-	//size_t fsz = hw0*nc;
-	size_t fsz2 = dhw0*nc;
 
 	bool dofun = false;
 	std::function<double(std::vector<double>&, bool)> fFun;
@@ -579,130 +576,67 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		dofun = true;
 	}
 
-	std::vector<double> fill;
-	if (nl == 1) {
-		for (size_t i = 0; i < out.bs.n; i++) {
-			unsigned rstart, roff;
-			unsigned rnrows = out.bs.nrows[i];
-			if (i == 0) {
-				rstart = 0;
-				roff = dhw0;
-				if (i != (out.bs.n-1)) {
-					rnrows += hw0;
-				}
+	// Each block reads the rows it needs (the block rows plus hw0 halo rows
+	// above and below), clamped to the raster. Halo rows that fall outside
+	// the raster are padded with the fillvalue, or with a copy of the first/
+	// last row if expand=true. This is correct for any block layout (#2138)
+	for (size_t i = 0; i < out.bs.n; i++) {
+		const int64_t bnr = out.bs.nrows[i];
+		const int64_t r0 = (int64_t) out.bs.row[i] - (int64_t) hw0;
+		const int64_t r1 = (int64_t) out.bs.row[i] + bnr + (int64_t) hw0; // exclusive
+		const int64_t rs = std::max(r0, (int64_t) 0);
+		const int64_t re = std::min(r1, (int64_t) nr);
+
+		std::vector<double> vincomb;
+		readValues(vincomb, rs, re - rs, 0, nc);
+		const size_t off = nc * (size_t)(re - rs);
+
+		std::vector<double> voutcomb;
+		if (nl > 1) voutcomb.reserve(nc * (size_t)bnr * nl);
+		for (size_t lyr=0; lyr<nl; lyr++) {
+			std::vector<double> vin, vout;
+			if (nl == 1) {
+				vin = std::move(vincomb);
 			} else {
-				rstart = out.bs.row[i] + hw0;
-				roff = hw0;
-				if (i == (out.bs.n-1)) {
-					rnrows -= hw0;
-				}
+				vin = std::vector<double>(vincomb.begin() + lyr*off, vincomb.begin() + (lyr+1)*off);
 			}
-			std::vector<double> vout, vin;
-			readValues(vin, rstart, rnrows, 0, nc);
-			vout.clear();
-
-			if (i==0) {
+			if (rs > r0) { // pad rows above the raster
+				std::vector<double> pad;
+				pad.reserve((size_t)(rs - r0) * nc);
+				for (int64_t k = 0; k < (rs - r0); k++) {
+					if (expand) {
+						pad.insert(pad.end(), vin.begin(), vin.begin() + nc);
+					} else {
+						pad.insert(pad.end(), nc, fillvalue);
+					}
+				}
+				vin.insert(vin.begin(), pad.begin(), pad.end());
+			}
+			if (re < r1) { // pad rows below the raster
 				if (expand) {
-					fill.reserve(dhw0 * nc);
-					for (size_t i=0; i<dhw0; i++) {
-						fill.insert(fill.end(), vin.begin(), vin.begin()+nc);
+					std::vector<double> pad(vin.end() - nc, vin.end());
+					for (int64_t k = 0; k < (r1 - re); k++) {
+						vin.insert(vin.end(), pad.begin(), pad.end());
 					}
 				} else {
-					fill.resize(fsz2, fillvalue);
+					vin.insert(vin.end(), (size_t)(r1 - re) * nc, fillvalue);
 				}
-			}
-
-			vin.insert(vin.begin(), fill.begin(), fill.end());
-
-			if (i == (out.bs.n-1)) {
-				if (expand) {
-					fill.resize(0);
-					fill.reserve(dhw0 * nc);
-					for (size_t i=1; i<dhw0; i++) {
-						fill.insert(fill.end(), vin.end()-nc, vin.end());
-					}
-				} else {
-					std::fill(fill.begin(), fill.end(), fillvalue);
-				}
-				vin.insert(vin.end(), fill.begin(), fill.end());
 			}
 
 			if (dofun) {
-				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun, opt);
+				focal_win_fun(vin, vout, nc, hw0, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun, opt);
 			} else if (fun == "mean") {
-				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
+				focal_win_mean(vin, vout, nc, hw0, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
 			} else {
-				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
+				focal_win_sum(vin, vout, nc, hw0, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
 			}
-
-			if (i != (out.bs.n-1)) {
-				fill = {vin.end() - fsz2, vin.end() };
-			}
-			if (!out.writeBlock(vout, i)) return out;
-		}
-	} else {
-		for (size_t i = 0; i < out.bs.n; i++) {
-			unsigned rstart, roff;
-			unsigned rnrows = out.bs.nrows[i];
-			if (i != (out.bs.n-1)) {
-				rnrows += hw0;
-			}
-			if (i == 0) {
-				rstart = 0;
-				roff = dhw0;
+			if (nl == 1) {
+				voutcomb = std::move(vout);
 			} else {
-				rstart = out.bs.row[i] - hw0;
-				roff = hw0;
-				rnrows += hw0;
-			}
-
-			std::vector<double> vout, voutcomb, vin, vincomb;
-			size_t off=0;
-			readValues(vincomb, rstart, rnrows, 0, nc);
-			off = nc * rnrows; //out.bs.nrows[i];
-			voutcomb.reserve(vincomb.size());
-			for (size_t lyr=0; lyr<nl; lyr++) {
-				vout.clear();
-				size_t lyroff = lyr * off;
-				vin = {vincomb.begin() + lyroff, vincomb.begin() + lyroff + off};
-				if (i==0) {
-					if (expand) {
-						fill.resize(0);
-						fill.reserve(dhw0 * nc);
-						for (size_t i=0; i<dhw0; i++) {
-							fill.insert(fill.end(), vin.begin(), vin.begin()+nc);
-						}
-					} else {
-						fill.resize(fsz2, fillvalue);
-					}
-					vin.insert(vin.begin(), fill.begin(), fill.end());
-				}
-
-				if (i == (out.bs.n-1)) {
-					if (expand) {
-						fill.resize(0);
-						fill.reserve(dhw0 * nc);
-						for (size_t i=1; i<dhw0; i++) {
-							fill.insert(fill.end(), vin.end()-nc, vin.end());
-						}
-
-					} else {
-						std::fill(fill.begin(), fill.end(), fillvalue);
-					}
-					vin.insert(vin.end(), fill.begin(), fill.end());
-				}
-
-				if (dofun) {
-					focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun, opt);
-				} else if (fun == "mean") {
-					focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
-				} else {
-					focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, opt);
-				}
 				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
 			}
-			if (!out.writeBlock(voutcomb, i)) return out;
 		}
+		if (!out.writeBlock(voutcomb, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -1326,8 +1260,6 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 	if (!out.writeStart(opt, filenames())) { readStop(); return out; }
 
 	const size_t hw0 = w[0] / 2;
-	const size_t dhw0 = hw0 * 2;
-	const size_t fsz2 = dhw0 * nc;
 
 	// dispatch decisions (precomputed once)
 	const bool is_sum  = (fun == "sum");
@@ -1397,109 +1329,61 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 		}
 	};
 
-	std::vector<double> fill;
-	if (nl == 1) {
-		for (size_t i = 0; i < out.bs.n; i++) {
-			unsigned rstart, roff;
-			unsigned rnrows = out.bs.nrows[i];
-			if (i == 0) {
-				rstart = 0;
-				roff = dhw0;
-				if (i != (out.bs.n - 1)) rnrows += hw0;
-			} else {
-				rstart = out.bs.row[i] + hw0;
-				roff = hw0;
-				if (i == (out.bs.n - 1)) rnrows -= hw0;
-			}
-			std::vector<double> vout, vin;
-			readValues(vin, rstart, rnrows, 0, nc);
-			vout.clear();
+	// Each block reads the rows it needs (the block rows plus hw0 halo rows
+	// above and below), clamped to the raster. Halo rows that fall outside
+	// the raster are padded with the fillvalue, or with a copy of the first/
+	// last row if expand=true. This is correct for any block layout (#2138)
+	for (size_t i = 0; i < out.bs.n; i++) {
+		const int64_t bnr = out.bs.nrows[i];
+		const int64_t r0 = (int64_t) out.bs.row[i] - (int64_t) hw0;
+		const int64_t r1 = (int64_t) out.bs.row[i] + bnr + (int64_t) hw0; // exclusive
+		const int64_t rs = std::max(r0, (int64_t) 0);
+		const int64_t re = std::min(r1, (int64_t) nr);
 
-			if (i == 0) {
+		std::vector<double> vincomb;
+		readValues(vincomb, rs, re - rs, 0, nc);
+		const size_t off = nc * (size_t)(re - rs);
+
+		std::vector<double> voutcomb;
+		if (nl > 1) voutcomb.reserve(nc * (size_t)bnr * nl);
+		for (size_t lyr = 0; lyr < nl; lyr++) {
+			std::vector<double> vin, vout;
+			if (nl == 1) {
+				vin = std::move(vincomb);
+			} else {
+				vin = std::vector<double>(vincomb.begin() + lyr*off, vincomb.begin() + (lyr+1)*off);
+			}
+			if (rs > r0) { // pad rows above the raster
+				std::vector<double> pad;
+				pad.reserve((size_t)(rs - r0) * nc);
+				for (int64_t k = 0; k < (rs - r0); k++) {
+					if (expand) {
+						pad.insert(pad.end(), vin.begin(), vin.begin() + nc);
+					} else {
+						pad.insert(pad.end(), nc, fillvalue);
+					}
+				}
+				vin.insert(vin.begin(), pad.begin(), pad.end());
+			}
+			if (re < r1) { // pad rows below the raster
 				if (expand) {
-					fill.reserve(dhw0 * nc);
-					for (size_t k = 0; k < dhw0; k++) {
-						fill.insert(fill.end(), vin.begin(), vin.begin() + nc);
+					std::vector<double> pad(vin.end() - nc, vin.end());
+					for (int64_t k = 0; k < (r1 - re); k++) {
+						vin.insert(vin.end(), pad.begin(), pad.end());
 					}
 				} else {
-					fill.resize(fsz2, fillvalue);
+					vin.insert(vin.end(), (size_t)(r1 - re) * nc, fillvalue);
 				}
 			}
-			vin.insert(vin.begin(), fill.begin(), fill.end());
 
-			if (i == (out.bs.n - 1)) {
-				if (expand) {
-					fill.resize(0);
-					fill.reserve(dhw0 * nc);
-					for (size_t k = 1; k < dhw0; k++) {
-						fill.insert(fill.end(), vin.end() - nc, vin.end());
-					}
-				} else {
-					std::fill(fill.begin(), fill.end(), fillvalue);
-				}
-				vin.insert(vin.end(), fill.begin(), fill.end());
-			}
-
-			run_block(vin, vout, roff, out.bs.nrows[i]);
-
-			if (i != (out.bs.n - 1)) {
-				fill = {vin.end() - fsz2, vin.end()};
-			}
-			if (!out.writeBlock(vout, i)) { readStop(); return out; }
-		}
-	} else {
-		for (size_t i = 0; i < out.bs.n; i++) {
-			unsigned rstart, roff;
-			unsigned rnrows = out.bs.nrows[i];
-			if (i != (out.bs.n - 1)) rnrows += hw0;
-			if (i == 0) {
-				rstart = 0;
-				roff = dhw0;
+			run_block(vin, vout, hw0, out.bs.nrows[i]);
+			if (nl == 1) {
+				voutcomb = std::move(vout);
 			} else {
-				rstart = out.bs.row[i] - hw0;
-				roff = hw0;
-				rnrows += hw0;
-			}
-
-			std::vector<double> vout, voutcomb, vin, vincomb;
-			size_t off = 0;
-			readValues(vincomb, rstart, rnrows, 0, nc);
-			off = nc * rnrows;
-			voutcomb.reserve(vincomb.size());
-			for (size_t lyr = 0; lyr < nl; lyr++) {
-				vout.clear();
-				size_t lyroff = lyr * off;
-				vin = {vincomb.begin() + lyroff, vincomb.begin() + lyroff + off};
-				if (i == 0) {
-					if (expand) {
-						fill.resize(0);
-						fill.reserve(dhw0 * nc);
-						for (size_t k = 0; k < dhw0; k++) {
-							fill.insert(fill.end(), vin.begin(), vin.begin() + nc);
-						}
-					} else {
-						fill.resize(fsz2, fillvalue);
-					}
-					vin.insert(vin.begin(), fill.begin(), fill.end());
-				}
-				if (i == (out.bs.n - 1)) {
-					if (expand) {
-						fill.resize(0);
-						fill.reserve(dhw0 * nc);
-						for (size_t k = 1; k < dhw0; k++) {
-							fill.insert(fill.end(), vin.end() - nc, vin.end());
-						}
-					} else {
-						std::fill(fill.begin(), fill.end(), fillvalue);
-					}
-					vin.insert(vin.end(), fill.begin(), fill.end());
-				}
-
-				run_block(vin, vout, roff, out.bs.nrows[i]);
 				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
 			}
-			if (!out.writeBlock(voutcomb, i)) { readStop(); return out; }
 		}
+		if (!out.writeBlock(voutcomb, i)) { readStop(); return out; }
 	}
 	out.writeStop();
 	readStop();
