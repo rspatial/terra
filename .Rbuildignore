@@ -31,3 +31,5 @@ README.md
 data/
 ^_
 ^doc
+
+inst/flow
