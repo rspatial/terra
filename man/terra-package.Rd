@@ -686,9 +686,10 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 
 \section{\bold{Comparison with the raster package}}{
 
----------------------------------------------------------------------------------------------------------------------}
-
+---------------------------------------------------------------------------------------------------------------------
 "terra" was written to replace the "raster" package. "terra" has a very similar, but simpler, interface; it is faster, and it can do much more. This section highlights some of the differences between the two packages. 
+
+}
 
 
 \section{XXXI. New method names}{
