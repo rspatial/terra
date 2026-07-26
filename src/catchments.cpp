@@ -1189,7 +1189,7 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       nextq=nextpc;// ERRORE!!!
       pflow_estimate=ddp1[facet];
       atdplus_temp=atdplus_nextpc;
-    } else if ((abs(atdplus_nextpc)<abs(atdplus_nextpd)) || ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) & (use_lad==1))){
+    } else if ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) || ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) & (use_lad==1))){ // Orlandini et al, eq 3-4 
 
       pflow_estimate=ddp1[facet];
       nextq=nextpc; // cardinal
