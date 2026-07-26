@@ -147,8 +147,8 @@ vect(x)
 
 - quiet:
 
-  logical. If `TRUE` a warning is given when `x` is a data.frame and the
-  values for geom and/or the crs are guessed from the data
+  logical. If `FALSE` a warning is given when `x` is a data.frame and
+  the values for geom and/or the crs are guessed from the data
 
 ## See also
 
