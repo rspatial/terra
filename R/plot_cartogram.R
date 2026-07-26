@@ -34,7 +34,7 @@ setMethod("cartogram", signature(x="SpatVector"),
 			r <- lapply(1:length(v), function(i) {
 				rescale(x[i,], ff[i], x0=cxy[i,1], y0=cxy[i,2])
 			})
-			b = do.call(rbind, r)
+			do.call(rbind, r)
 		}
 	}
 )

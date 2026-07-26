@@ -106,7 +106,19 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 	}
 
 	cs = nrow() / bs.n;
+	// methods that read beyond block boundaries (e.g. focal) set opt.minrows
+	// to assure that all blocks, including the last one, have enough rows (#2138)
+	if (cs < opt.minrows) {
+		cs = std::min(opt.minrows, nrow());
+	}
 	bs.n = std::ceil(nrow() / double(cs));
+
+	size_t lastrows = nrow() - (bs.n - 1) * cs;
+	if ((lastrows < opt.minrows) && (bs.n > 1)) {
+		// merge a too-small remainder block with the one before it (#2138)
+		bs.n -= 1;
+		lastrows += cs;
+	}
 
 	bs.row = std::vector<size_t>(bs.n);
 	bs.nrows = std::vector<size_t>(bs.n, cs);
@@ -115,7 +127,7 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 		bs.row[i] = r;
 		r += cs;
 	}
-	bs.nrows[bs.n-1] = cs - ((bs.n * cs) - nrow());
+	bs.nrows[bs.n-1] = lastrows;
 	return bs;
 }
 

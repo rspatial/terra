@@ -189,6 +189,8 @@ setMethod("crs", signature("SpatRasterDataset"),
 	x
 }
 
+crs_msg <- "Replacing a CRS only makes sense if the original was wrong.\nIf your goal is to transform the data to the new CRS, use `project` instead."
+
 setMethod("crs<-", signature("SpatRaster", "ANY"),
 	function(x, warn=FALSE, value) {
 		if (missing(value)) {
@@ -197,7 +199,7 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 		}
 		value <- .txtCRS(value)
 		if (warn && (crs(x) != "") && (value != "")) {
-			message("Assigning a new crs. Use 'project' to transform a SpatRaster to a new crs")
+			message(crs_msg)
 		}
 		x@pntr <- x@pntr$deepcopy()
 		x@pntr$set_crs(value)
@@ -264,7 +266,7 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 		}
 		value <- .txtCRS(value)
 		if (warn && (crs(x) != "") && (value != "")) {
-			message("Assigning a new crs. Use 'project' to transform a SpatVector to a new crs")
+			message(crs_msg)
 		}
 		x@pntr <- x@pntr$deepcopy()
 		x@pntr$set_crs(value)
