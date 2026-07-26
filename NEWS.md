@@ -5,6 +5,11 @@
 - multidim vrt can now be opened [#2107](https://github.com/rspatial/terra/issues/2107)  by Michael Sumner
 - terra did not compile with GDAL > 3.0.4 & < 3.8 [#2109](https://github.com/rspatial/terra/issues/2109) by Andrew Gene Brown
 - terra did not compile with GDAL < 3.5 [#2111](https://github.com/rspatial/terra/issues/2111) by Wolfgang Viechtbauer
+- `distance<SpatRaster>` with a planar CRS ignored the "unit" (and misinterpreted the "maxdist") argument [#2139](https://github.com/rspatial/terra/issues/2139) by Jakub Nowosad
+- `focal` returned wrong values (in some versions Inf) near the end of a chunk when processing a raster in chunks (with restrictive memory options) if the last chunk had fewer rows than half the window size [#2138](https://github.com/rspatial/terra/issues/2138) by Chris Littleboy
+- `rasterize` with points could crash R (or silently corrupt memory) when the output raster was processed in chunks and the last point fell before the last chunk [#2142](https://github.com/rspatial/terra/issues/2142) by Agustín Lobo
+- output of `cartogram(x, type="nc")` was invisible [#2134](https://github.com/rspatial/terra/issues/2134) by Márcia Barbosa
+ 
 
 ## enhancements
 
@@ -15,13 +20,14 @@
 - `focal` with "min" or "max" and an unweighted window is now faster, especially with large windows
 - the "threads" option now defaults to 16 (instead of no limit) to avoid run-away thread counts on machines with very many cores. The "threads" argument of `project` and `resample` can now also be a number
 
+
 ## new 
 
 - `furdist` method to get the furthest distance from a point to any location on another geometry
 - `snapTo` method to move points to the nearest location on lines or polygons
-- `flowDir` 
-- `pittfiller`
-- `as.arrows`
+- `flowDir` method to compute path-based nondisperive flow direction by Emanuele Cordano
+- `pittfiller` method by Emanuele Cordano
+- `as.arrows` to show direction arrows on a raster by Emanuele Cordano
 
 
 # version 1.9-34

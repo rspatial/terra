@@ -18,8 +18,6 @@ Additional classes include \code{SpatExtent}, which is used to define a spatial 
 
 These classes hold a C++ pointer to the data "reference class". You should not write scripts that directly access this pointer, as its user-interface is not stable. These pointers make the code run fast, but they cannot be "serialized". That is they cannot be recovered from a saved R session, or passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}} and \code{\link{saveRDS}}. See these \href{https://rspatial.org/pkg/10-parallel.html}{guidelines} for parallelization with terra objects.
 
-The "terra" package is a replacement of the "raster" package. "terra" has a very similar, but simpler, interface; it is faster, and it can do much more. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
-
 Below is a list of some of the most important methods grouped by theme. 
 
 ---------------------------------------------------------------------------------------------------------------------
@@ -688,7 +686,11 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 
 \section{\bold{Comparison with the raster package}}{
 
----------------------------------------------------------------------------------------------------------------------}
+---------------------------------------------------------------------------------------------------------------------
+"terra" was written to replace the "raster" package. "terra" has a very similar, but simpler, interface; it is faster, and it can do much more. This section highlights some of the differences between the two packages. 
+
+}
+
 
 \section{XXXI. New method names}{
 
