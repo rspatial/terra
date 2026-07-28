@@ -1074,11 +1074,25 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   double atdplus_temp=0;
   double e0,e1,e2;
   double pflow_estimate=ddp1[0];
+  
+  /// ORDER E ; 
+  ///
+  ///
+  ///
+  ///
+  ///
+  std::vector<int> ide(nx*ny,0);
+  std::iota(ide.begin(), ide.end(), 0); 
+  std::sort(ide.begin(), ide.end(),[&](int a, int b){ return e[a] > e[b]; });
+  
 
+  
   for (int i = 0; i < nx*ny; i++) {
     
     *(has_upstream+i)=0;
     *(flowaccm+i)=1;
+    //Rprintf("i=%d, ide=%d e=%f  \n",i,ide[i],*(e+ide[i])); 
+    //Rprintf("i=%d, ,, e=%f  \n",i,*(e+i)); 
   } 
 
   for (int i = 0; i < nx*ny; i++) { 
@@ -1146,7 +1160,8 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
      }
   }
 
-  for (int j = 0; j < nx*ny; j++) {
+  for (int jjk = 0; jjk < nx*ny; jjk++) {
+  int j=ide[jjk];  
   int i=j; 
   int flowacci=*(flowaccm+i);
   if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) cnt++; // ???
@@ -1243,9 +1258,9 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
       
     } else {
-      *(pflow+nextp)=pflow_estimate;
-      *(kupdate+nextp)=cnt;
-      *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
+  //    *(pflow+nextp)=pflow_estimate;
+   //   *(kupdate+nextp)=cnt;
+  //    *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
       
     }
     if (nextp!=i) { // 20260429      
@@ -1548,4 +1563,16 @@ SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter
 
 
 //// END PITFILLER 
+// 
+// 
+// /// added by ecor on 2026 07 27 
+// 
+// int cmp_desc(const void *a, const void *b) {
+//   int ia = *(const int*)a;
+//   int ib = *(const int*)b;
+//   
+//   if (global_v[ia] < global_v[ib]) return 1;
+//   if (global_v[ia] > global_v[ib]) return -1;
+//   return 0;
+// }
 
