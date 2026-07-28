@@ -1230,15 +1230,30 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 	const size_t coldim = source[src].m_dims[0];
 	const size_t rowdim = source[src].m_dims[1];
 
-	// all values of the extra (non-spatial) dimensions are read
+	// read the smallest contiguous non spatial dimensions
 	std::vector<size_t> count(ndims, 1);
-	std::vector<size_t> extra_sizes;
+	std::vector<size_t> extra_sizes, extra_off;
 	size_t prod_extra = 1;
-	for (size_t j = 2; j < ndim; j++) {
-		size_t gd = source[src].m_dims[j];
-		count[gd] = source[src].m_size[gd];
-		extra_sizes.push_back(count[gd]);
-		prod_extra *= count[gd];
+	{
+		std::vector<size_t> idx;
+		for (size_t j = 2; j < ndim; j++) {
+			extra_sizes.push_back(source[src].m_size[source[src].m_dims[j]]);
+		}
+		std::vector<size_t> lo(extra_sizes.size(), SIZE_MAX), hi(extra_sizes.size(), 0);
+		for (size_t j = 0; j < nl; j++) {
+			md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
+			for (size_t e = 0; e < idx.size(); e++) {
+				lo[e] = std::min(lo[e], idx[e]);
+				hi[e] = std::max(hi[e], idx[e]);
+			}
+		}
+		for (size_t j = 2; j < ndim; j++) {
+			size_t e = j - 2;
+			size_t gd = source[src].m_dims[j];
+			count[gd] = hi[e] - lo[e] + 1;
+			extra_off.push_back(lo[e]);
+			prod_extra *= count[gd];
+		}
 	}
 
 	// array (file) row/col for each point; out-of-range points remain NAN
@@ -1258,11 +1273,14 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 	std::vector<GUInt64> offset(ndims, 0);
+	for (size_t j = 2; j < ndim; j++) {
+		offset[source[src].m_dims[j]] = extra_off[j-2];
+	}
 	std::vector<size_t> idx;
 	std::vector<double> buf;
 	bool readfail = false;
 
-	// read the region [r0..r1] x [c0..c1] (with all extra dimension values)
+	// read the region [r0..r1] x [c0..c1] (with the extra dimension slab)
 	// in a single Read, and assign the values for the np points in pp
 	auto read_region = [&](size_t r0, size_t r1, size_t c0, size_t c1,
 			const size_t *pp, size_t np) {
@@ -1283,7 +1301,7 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 		for (size_t j = 0; j < nl; j++) {
 			md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
 			for (size_t e = 0; e < extra_sizes.size(); e++) {
-				layer_linear[j] += idx[e] * stride[source[src].m_dims[2 + e]];
+				layer_linear[j] += (idx[e] - extra_off[e]) * stride[source[src].m_dims[2 + e]];
 			}
 		}
 		buf.resize(sz);
@@ -1348,9 +1366,28 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 			g0 = g1;
 		}
 	} else {
-		for (size_t g = 0; (g < pts.size()) && (!readfail); g++) {
-			size_t p = pts[g];
-			read_region(frow[p], frow[p], fcol[p], fcol[p], &pts[g], 1);
+		// not chunked. A single read of the bounding box of all points is
+		// much faster than many small reads, unless the points are sparse 
+		bool dense = false;
+		size_t r0=0, r1=0, c0=0, c1=0;
+		if (pts.size() > 1) {
+			r0 = frow[pts[0]]; r1 = r0;
+			c0 = fcol[pts[0]]; c1 = c0;
+			for (size_t g = 1; g < pts.size(); g++) {
+				size_t p = pts[g];
+				r0 = std::min(r0, frow[p]); r1 = std::max(r1, frow[p]);
+				c0 = std::min(c0, fcol[p]); c1 = std::max(c1, fcol[p]);
+			}
+			size_t boxcells = (r1 - r0 + 1) * (c1 - c0 + 1);
+			dense = (boxcells <= (64 * pts.size())) && ((boxcells * prod_extra) <= maxbuf);
+		}
+		if (dense) {
+			read_region(r0, r1, c0, c1, &pts[0], pts.size());
+		} else {
+			for (size_t g = 0; (g < pts.size()) && (!readfail); g++) {
+				size_t p = pts[g];
+				read_region(frow[p], frow[p], fcol[p], fcol[p], &pts[g], 1);
+			}
 		}
 	}
 

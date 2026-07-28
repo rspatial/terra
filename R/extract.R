@@ -282,13 +282,26 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	} else {
 
 		lyrs <- unique(layer) 
-		e <- rep(NA, length(layer))
-		yy <- y[,0]
-		for (lyr in lyrs) {
-			xlyr <- x[[lyr]]
-			i <- which(layer == lyr)
-			ylyr <- yy[i]
-			e[i] <- xlyr@pntr$extractVectorFlat(ylyr@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+		if ((geo == "points") && (!isTRUE(cells[1])) && (!isTRUE(xy[1])) &&
+				((nrow(y) * length(lyrs)) <= 2^26)) {
+			# extract all used layers with a single call and then select the 
+			# requested layer for each point. Much faster than one call per layer,
+			# especially for files with compressed chunks (#2145)
+			xlyr <- x[[lyrs]]
+			e <- xlyr@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], method, FALSE, FALSE, FALSE, FALSE, opt)
+			messages(xlyr, "extract")
+			e <- matrix(e, ncol=length(lyrs))
+			e <- e[cbind(1:nrow(e), match(layer, lyrs))]
+			xlyr <- xlyr[[1]]
+		} else {
+			e <- rep(NA, length(layer))
+			yy <- y[,0]
+			for (lyr in lyrs) {
+				xlyr <- x[[lyr]]
+				i <- which(layer == lyr)
+				ylyr <- yy[i]
+				e[i] <- xlyr@pntr$extractVectorFlat(ylyr@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+			}
 		}
 		nc <- nl <- 1
 		cn <- c("ID", "value")
