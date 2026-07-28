@@ -175,20 +175,6 @@ static void md_layer_to_indices(size_t layer, const std::vector<size_t> &sizes,
 	}
 }
 
-// Linear index into a GDAL MDArray Read buffer: dim 0 slowest, dim N-1 fastest,
-// with strides[k] = product of count[m] for m > k (see GDALMDArray::Read).
-static size_t md_layer_to_read_linear(size_t layer_id, const std::vector<size_t> &extra_sizes,
-		const std::vector<size_t> &m_dims_terra, const std::vector<size_t> &stride_all) {
-	std::vector<size_t> idx;
-	md_layer_to_indices(layer_id, extra_sizes, idx);
-	size_t linear = 0;
-	for (size_t e = 0; e < idx.size(); e++) {
-		size_t gd = m_dims_terra[2 + e];
-		linear += idx[e] * stride_all[gd];
-	}
-	return linear;
-}
-
 // GDAL row-major: last dimension in the array (highest index) varies fastest in the
 // read buffer. Terra uses one row = fixed latitude, columns = longitude (lon fastest
 // within the row). If lon's index > lat's (ix > iy), the read buffer is already
@@ -1228,7 +1214,6 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 
 bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, const std::vector<int64_t> &cols) {
 
-//	Rcpp::Rcout << "readRowColMulti " << src << "\n";
 	if (!readStartMulti(src)) {
 		return false;
 	}
@@ -1237,115 +1222,143 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 
 	out.resize(outstart + nl);
 	for (size_t i = outstart; i < outstart + nl; i++) {
-		out[i].clear();
-		out[i].reserve(n);
+		out[i].assign(n, NAN);
 	}
 
-	std::vector<GUInt64> offset(source[src].m_ndims, 0);
-
-	size_t ndim = source[src].m_dims.size();
-	std::vector<size_t> count(source[src].m_ndims, 1);
-
+	const size_t ndims = source[src].m_ndims;
+	const size_t ndim = source[src].m_dims.size();
+	const size_t coldim = source[src].m_dims[0];
 	const size_t rowdim = source[src].m_dims[1];
+
+	// all values of the extra (non-spatial) dimensions are read
+	std::vector<size_t> count(ndims, 1);
 	std::vector<size_t> extra_sizes;
+	size_t prod_extra = 1;
 	for (size_t j = 2; j < ndim; j++) {
-		extra_sizes.push_back(source[src].m_size[source[src].m_dims[j]]);
+		size_t gd = source[src].m_dims[j];
+		count[gd] = source[src].m_size[gd];
+		extra_sizes.push_back(count[gd]);
+		prod_extra *= count[gd];
 	}
-	std::vector<size_t> idx;
+
+	// array (file) row/col for each point; out-of-range points remain NAN
+	const int64_t nr1 = (int64_t) nrow() - 1;
+	const int64_t nc1 = (int64_t) ncol() - 1;
+	std::vector<size_t> frow(n), fcol(n);
+	std::vector<size_t> pts;
+	pts.reserve(n);
+	for (size_t p = 0; p < n; p++) {
+		if ((rows[p] < 0) || (rows[p] > nr1) || (cols[p] < 0) || (cols[p] > nc1)) {
+			continue;
+		}
+		frow[p] = source[src].flipped ? (size_t) rows[p] : (size_t) (nr1 - rows[p]);
+		fcol[p] = (size_t) cols[p];
+		pts.push_back(p);
+	}
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
+	std::vector<GUInt64> offset(ndims, 0);
+	std::vector<size_t> idx;
+	std::vector<double> buf;
+	bool readfail = false;
 
-	if (ndim > 2) {
-		for (size_t j = 2; j < ndim; j++) {
-			size_t gab = source[src].m_dims[j];
-			count[gab] = source[src].m_size[gab];
+	// read the region [r0..r1] x [c0..c1] (with all extra dimension values)
+	// in a single Read, and assign the values for the np points in pp
+	auto read_region = [&](size_t r0, size_t r1, size_t c0, size_t c1,
+			const size_t *pp, size_t np) {
+		std::vector<size_t> cnt = count;
+		cnt[rowdim] = r1 - r0 + 1;
+		cnt[coldim] = c1 - c0 + 1;
+		offset[rowdim] = r0;
+		offset[coldim] = c0;
+		// strides of the in-memory Read result (dim 0 slowest, last dim fastest)
+		std::vector<size_t> stride(ndims);
+		size_t sz = 1;
+		for (size_t k = ndims; k > 0; k--) {
+			stride[k-1] = sz;
+			sz *= cnt[k-1];
 		}
-		std::vector<size_t> stride_all(source[src].m_ndims);
-		for (size_t k = 0; k < source[src].m_ndims; k++) {
-			size_t st = 1;
-			for (size_t m = k + 1; m < source[src].m_ndims; m++) {
-				st *= count[m];
-			}
-			stride_all[k] = st;
-		}
-		size_t prod = 1;
-		for (size_t j = 2; j < ndim; j++) {
-			prod *= count[source[src].m_dims[j]];
-		}
-		std::vector<double> buf(prod);
-		std::vector<size_t> layer_linear(nl);
+		// linear offset of each layer within one (row, col) position
+		std::vector<size_t> layer_linear(nl, 0);
 		for (size_t j = 0; j < nl; j++) {
-			layer_linear[j] = md_layer_to_read_linear(source[src].layers[j], extra_sizes,
-				source[src].m_dims, stride_all);
+			md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
+			for (size_t e = 0; e < extra_sizes.size(); e++) {
+				layer_linear[j] += idx[e] * stride[source[src].m_dims[2 + e]];
+			}
 		}
-		for (size_t p = 0; p < n; p++) {
-			if (std::isnan(cols[p]) || std::isnan(rows[p])) {
-				for (size_t j = 0; j < nl; j++) {
-					out[outstart + j].push_back(NAN);
-				}
-				continue;
-			}
-			offset[source[src].m_dims[0]] = cols[p];
-			if (!source[src].flipped) {
-				offset[rowdim] = nrow() - rows[p] - 1;
-			} else {
-				offset[rowdim] = rows[p];
-			}
-			source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &buf[0], NULL, 0);
-			if (source[src].m_hasNA) {
-				std::replace(buf.begin(), buf.end(), source[src].m_missing_value, (double)NAN);
-			}
+		buf.resize(sz);
+		if (!source[src].m_array->Read(&offset[0], &cnt[0], nullptr, NULL, dt, &buf[0], NULL, 0)) {
+			readfail = true;
+			return;
+		}
+		if (source[src].m_hasNA) {
+			std::replace(buf.begin(), buf.end(), source[src].m_missing_value, (double)NAN);
+		}
+		for (size_t q = 0; q < np; q++) {
+			size_t p = pp[q];
+			size_t base = (frow[p] - r0) * stride[rowdim] + (fcol[p] - c0) * stride[coldim];
 			for (size_t j = 0; j < nl; j++) {
-				out[outstart + j].push_back(buf[layer_linear[j]]);
+				out[outstart + j][p] = buf[base + layer_linear[j]];
 			}
+		}
+	};
+
+	// Compressed files are decompressed one chunk at a time. 
+	// so group points by chunk for a single read (#2145)
+	size_t bx = 0, by = 0;
+	std::vector<GUInt64> bsz = source[src].m_array->GetBlockSize();
+	if (bsz.size() == ndims) {
+		by = (size_t) bsz[rowdim];
+		bx = (size_t) bsz[coldim];
+	}
+	// largest allowed region read (in doubles; 64M = 512MB)
+	const size_t maxbuf = 67108864;
+
+	if (((bx > 1) || (by > 1)) && (pts.size() > 1)) {
+		if (bx == 0) bx = source[src].m_size[coldim];
+		if (by == 0) by = source[src].m_size[rowdim];
+		size_t nchunkx = (source[src].m_size[coldim] + bx - 1) / bx;
+		auto chunkid = [&](size_t p) {
+			return (frow[p] / by) * nchunkx + fcol[p] / bx;
+		};
+		std::sort(pts.begin(), pts.end(), [&](size_t a, size_t b) {
+			return chunkid(a) < chunkid(b);
+		});
+		size_t g0 = 0;
+		while ((g0 < pts.size()) && (!readfail)) {
+			size_t cid = chunkid(pts[g0]);
+			size_t r0 = frow[pts[g0]], r1 = r0;
+			size_t c0 = fcol[pts[g0]], c1 = c0;
+			size_t g1 = g0 + 1;
+			while ((g1 < pts.size()) && (chunkid(pts[g1]) == cid)) {
+				size_t p = pts[g1];
+				r0 = std::min(r0, frow[p]); r1 = std::max(r1, frow[p]);
+				c0 = std::min(c0, fcol[p]); c1 = std::max(c1, fcol[p]);
+				g1++;
+			}
+			size_t region = (r1 - r0 + 1) * (c1 - c0 + 1) * prod_extra;
+			if (region <= maxbuf) {
+				read_region(r0, r1, c0, c1, &pts[g0], g1 - g0);
+			} else {
+				for (size_t g = g0; (g < g1) && (!readfail); g++) {
+					size_t p = pts[g];
+					read_region(frow[p], frow[p], fcol[p], fcol[p], &pts[g], 1);
+				}
+			}
+			g0 = g1;
 		}
 	} else {
-		if (source[src].in_order(true)) {
-			for (size_t j = 2; j < ndim; j++) {
-				size_t gd = source[src].m_dims[j];
-				count[gd] = source[src].m_size[gd];
-			}
-		} else {
-			for (size_t j = 2; j < ndim; j++) {
-				count[source[src].m_dims[j]] = 1;
-			}
-		}
-		std::vector<double> v(nl, NAN);
-		for (size_t p = 0; p < n; p++) {
-			if (std::isnan(cols[p]) || std::isnan(rows[p])) {
-				for (size_t j = 0; j < nl; j++) {
-					out[outstart + j].push_back(NAN);
-				}
-				continue;
-			}
-			offset[source[src].m_dims[0]] = cols[p];
-			if (!source[src].flipped) {
-				offset[rowdim] = nrow() - rows[p] - 1;
-			} else {
-				offset[rowdim] = rows[p];
-			}
-
-			if (source[src].in_order(true)) {
-				source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &v[0], NULL, 0);
-			} else {
-				for (size_t j = 0; j < nl; j++) {
-					md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
-					for (size_t e = 0; e < extra_sizes.size(); e++) {
-						offset[source[src].m_dims[2 + e]] = idx[e];
-					}
-					source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &v[j], NULL, 0);
-				}
-			}
-			if (source[src].m_hasNA) {
-				std::replace(v.begin(), v.end(), source[src].m_missing_value, (double)NAN);
-			}
-			for (size_t j = 0; j < nl; j++) {
-				out[outstart + j].push_back(v[j]);
-			}
+		for (size_t g = 0; (g < pts.size()) && (!readfail); g++) {
+			size_t p = pts[g];
+			read_region(frow[p], frow[p], fcol[p], fcol[p], &pts[g], 1);
 		}
 	}
 
-	readStopMulti(src);	
+	readStopMulti(src);
+	if (readfail) {
+		setError("cannot read values from " + source[src].filename);
+		return false;
+	}
 	return true;
 }
 
