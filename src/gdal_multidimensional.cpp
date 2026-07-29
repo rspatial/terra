@@ -491,11 +491,49 @@ static std::vector<std::string> md_arrays_usable_for_raster(
 }
 
 
+// HDF4 does not attach indexing variables to the dimensions of an ResolveMDArray. 
+// Get it from the group that owns the dimensions
+static std::shared_ptr<GDALMDArray> md_get_indexing_var(
+		const std::shared_ptr<GDALDimension> &dim,
+		const std::shared_ptr<GDALGroup> &root) {
+
+	auto indvar = dim->GetIndexingVariable();
+	if (indvar || (root == nullptr)) {
+		return indvar;
+	}
+	const std::string full = dim->GetFullName();
+	const std::string name = dim->GetName();
+	std::shared_ptr<GDALGroup> g = root;
+	if (full.size() > (name.size() + 1)) {
+		// the path of the owning group: the full name without the
+		// leading "/" and without the trailing "/<name>"
+		std::string path = full.substr(0, full.size() - name.size() - 1);
+		size_t p0 = 1;
+		while ((g != nullptr) && (p0 < path.size())) {
+			size_t p1 = path.find('/', p0);
+			if (p1 == std::string::npos) p1 = path.size();
+			g = g->OpenGroup(path.substr(p0, p1-p0));
+			p0 = p1 + 1;
+		}
+	}
+	if (g == nullptr) {
+		return nullptr;
+	}
+	for (const auto &gd : g->GetDimensions()) {
+		if (gd->GetName() == name) {
+			return gd->GetIndexingVariable();
+		}
+	}
+	return nullptr;
+}
+
+
 static bool md_fill_source_from_marray(
 	SpatRaster &parent,
 	const std::string &fname,
 	const std::string &array_request_name,
 	std::shared_ptr<GDALMDArray> poVar,
+	std::shared_ptr<GDALGroup> poRootGroup,
 	std::vector<std::string> options,
 	bool noflip,
 	bool guessCRS,
@@ -523,6 +561,7 @@ static bool md_fill_source_from_marray(
 	dimcalendar.reserve(ndim);
 
 
+	std::vector<std::shared_ptr<GDALMDArray>> indvars(ndim);
     for (size_t i=0; i<ndim; i++) {
 		size_t n = dimData[i]->GetSize();
         dimcount.push_back(n);
@@ -532,7 +571,8 @@ static bool md_fill_source_from_marray(
 		std::vector<size_t> count = {n};
 		dimvals.push_back(std::vector<double>(n));
 
-		const auto indvar = dimData[i]->GetIndexingVariable();
+		indvars[i] = md_get_indexing_var(dimData[i], poRootGroup);
+		const auto &indvar = indvars[i];
 
 		if (indvar == NULL) {
 			dimvals[i].resize(n);
@@ -645,7 +685,7 @@ static bool md_fill_source_from_marray(
 		if (dimvals[ii].size() <= 2) {
 			continue;
 		}
-		const auto indvar2 = dimData[ii]->GetIndexingVariable();
+		const auto &indvar2 = indvars[ii];
 		if (indvar2 == NULL) {
 			continue;
 		}
@@ -738,7 +778,7 @@ static bool md_fill_source_from_marray(
 	if (it >= 0 && pos_it != (size_t) -1 && !time_coord.empty()) {
 		for (size_t L = 0; L < s.nlyr; L++) {
 			md_layer_to_indices(L, extra_sizes, idx);
-			s.time[L] = time_coord[idx[pos_it]];
+			s.setTime(L, time_coord[idx[pos_it]]);
 		}
 	}
 	if (iz >= 0 && pos_iz != (size_t) -1) {
@@ -747,7 +787,7 @@ static bool md_fill_source_from_marray(
 		const std::vector<double> &dvz = dimvals[iz];
 		for (size_t L = 0; L < s.nlyr; L++) {
 			md_layer_to_indices(L, extra_sizes, idx);
-			s.depth[L] = dvz[idx[pos_iz]];
+			s.setDepth(L, dvz[idx[pos_iz]]);
 		}
 	}
 
@@ -980,7 +1020,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		SpatRasterSource s;
 		s.open_drivers = drivers;
 		std::vector<std::string> opts_copy = options;
-		if (!md_fill_source_from_marray(*this, fname, arrays_to_use[ai], poVar, std::move(opts_copy), noflip, guessCRS, single_var, s)) {
+		if (!md_fill_source_from_marray(*this, fname, arrays_to_use[ai], poVar, poRootGroup, std::move(opts_copy), noflip, guessCRS, single_var, s)) {
 			if (single_var) {
 				return false;
 			}
@@ -1065,7 +1105,7 @@ bool SpatRaster::readStartMulti(size_t src) {
     }
 
 
-	if (source[src].has_scale_offset[0]) {
+	if (source[src].getHasScaleOffset(0)) {
 		source[src].m_array = poVar->GetUnscaled();
 	} else {
 		source[src].m_array = poVar;
@@ -1230,15 +1270,30 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 	const size_t coldim = source[src].m_dims[0];
 	const size_t rowdim = source[src].m_dims[1];
 
-	// all values of the extra (non-spatial) dimensions are read
+	// read the smallest contiguous non spatial dimensions
 	std::vector<size_t> count(ndims, 1);
-	std::vector<size_t> extra_sizes;
+	std::vector<size_t> extra_sizes, extra_off;
 	size_t prod_extra = 1;
-	for (size_t j = 2; j < ndim; j++) {
-		size_t gd = source[src].m_dims[j];
-		count[gd] = source[src].m_size[gd];
-		extra_sizes.push_back(count[gd]);
-		prod_extra *= count[gd];
+	{
+		std::vector<size_t> idx;
+		for (size_t j = 2; j < ndim; j++) {
+			extra_sizes.push_back(source[src].m_size[source[src].m_dims[j]]);
+		}
+		std::vector<size_t> lo(extra_sizes.size(), SIZE_MAX), hi(extra_sizes.size(), 0);
+		for (size_t j = 0; j < nl; j++) {
+			md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
+			for (size_t e = 0; e < idx.size(); e++) {
+				lo[e] = std::min(lo[e], idx[e]);
+				hi[e] = std::max(hi[e], idx[e]);
+			}
+		}
+		for (size_t j = 2; j < ndim; j++) {
+			size_t e = j - 2;
+			size_t gd = source[src].m_dims[j];
+			count[gd] = hi[e] - lo[e] + 1;
+			extra_off.push_back(lo[e]);
+			prod_extra *= count[gd];
+		}
 	}
 
 	// array (file) row/col for each point; out-of-range points remain NAN
@@ -1258,11 +1313,14 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 	std::vector<GUInt64> offset(ndims, 0);
+	for (size_t j = 2; j < ndim; j++) {
+		offset[source[src].m_dims[j]] = extra_off[j-2];
+	}
 	std::vector<size_t> idx;
 	std::vector<double> buf;
 	bool readfail = false;
 
-	// read the region [r0..r1] x [c0..c1] (with all extra dimension values)
+	// read the region [r0..r1] x [c0..c1] (with the extra dimension slab)
 	// in a single Read, and assign the values for the np points in pp
 	auto read_region = [&](size_t r0, size_t r1, size_t c0, size_t c1,
 			const size_t *pp, size_t np) {
@@ -1283,7 +1341,7 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 		for (size_t j = 0; j < nl; j++) {
 			md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
 			for (size_t e = 0; e < extra_sizes.size(); e++) {
-				layer_linear[j] += idx[e] * stride[source[src].m_dims[2 + e]];
+				layer_linear[j] += (idx[e] - extra_off[e]) * stride[source[src].m_dims[2 + e]];
 			}
 		}
 		buf.resize(sz);
@@ -1348,9 +1406,28 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 			g0 = g1;
 		}
 	} else {
-		for (size_t g = 0; (g < pts.size()) && (!readfail); g++) {
-			size_t p = pts[g];
-			read_region(frow[p], frow[p], fcol[p], fcol[p], &pts[g], 1);
+		// not chunked. A single read of the bounding box of all points is
+		// much faster than many small reads, unless the points are sparse 
+		bool dense = false;
+		size_t r0=0, r1=0, c0=0, c1=0;
+		if (pts.size() > 1) {
+			r0 = frow[pts[0]]; r1 = r0;
+			c0 = fcol[pts[0]]; c1 = c0;
+			for (size_t g = 1; g < pts.size(); g++) {
+				size_t p = pts[g];
+				r0 = std::min(r0, frow[p]); r1 = std::max(r1, frow[p]);
+				c0 = std::min(c0, fcol[p]); c1 = std::max(c1, fcol[p]);
+			}
+			size_t boxcells = (r1 - r0 + 1) * (c1 - c0 + 1);
+			dense = (boxcells <= (64 * pts.size())) && ((boxcells * prod_extra) <= maxbuf);
+		}
+		if (dense) {
+			read_region(r0, r1, c0, c1, &pts[0], pts.size());
+		} else {
+			for (size_t g = 0; (g < pts.size()) && (!readfail); g++) {
+				size_t p = pts[g];
+				read_region(frow[p], frow[p], fcol[p], fcol[p], &pts[g], 1);
+			}
 		}
 	}
 

@@ -699,7 +699,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 		bool ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, md);
 		if (ok) {
 			std::string sname = sub.source[0].source_name;
-			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true);
+			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].getUnit(0), true);
 		}
 		return;
 	}
@@ -745,7 +745,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 					}
 					if (ok) {
 						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
-						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
+						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].getUnit(0), true)) {
 							addWarning("skipped (different geometry): " + s);
 						}
 					} else {
@@ -1356,38 +1356,29 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
 
-		s.has_scale_offset[i] = false;
-
+		double lscale = 1, loffset = 0;
 		if (apply_so) {
 			double offset = poBand->GetOffset(&success);
-			if (success) {
-				if (offset != 0) {
-					s.offset[i] = offset;
-					s.has_scale_offset[i] = true;
-				}
+			if (success && (offset != 0)) {
+				loffset = offset;
 			}
 			double scale = poBand->GetScale(&success);
-			if (success) {
-				if (scale != 1) {
-					s.scale[i] = scale;
-					s.has_scale_offset[i] = true;
-				}
+			if (success && (scale != 1)) {
+				lscale = scale;
 			}
-			if (s.has_scale_offset[i]) {
-				adfMinMax[0] = adfMinMax[0] * s.scale[i] + s.offset[i];
-				adfMinMax[1] = adfMinMax[1] * s.scale[i] + s.offset[i];
-			}
+		}
+		s.setScaleOffset(i, lscale, loffset);
+		if (s.getHasScaleOffset(i)) {
+			adfMinMax[0] = adfMinMax[0] * lscale + loffset;
+			adfMinMax[1] = adfMinMax[1] * lscale + loffset;
 		}
 
 		if( (bGotMin && bGotMax) ) {
-			s.hasRange[i] = true;
-			s.range_min[i] = adfMinMax[0];
-			s.range_max[i] = adfMinMax[1];
+			s.setRange(i, adfMinMax[0], adfMinMax[1]);
 		}
 
 		poBand->GetBlockSize(&bs1, &bs2);
-		s.blockcols[i] = bs1;
-		s.blockrows[i] = bs2;
+		s.setBlockSize(i, bs2, bs1);
 		s.dtype = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
 
 
@@ -1404,8 +1395,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 		GDALColorTable *ct = poBand->GetColorTable();
 		if( ct != NULL ) {
-			s.hasColors[i] = true;
-			s.cols[i] = GetCOLdf(ct);
+			s.setCol(i, GetCOLdf(ct));
 		}
 
 		std::string bandname = poBand->GetDescription();
@@ -1413,20 +1403,17 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		char **cat = poBand->GetCategoryNames();
 		if (cat != NULL)	{
 			SpatCategories scat = GetCategories(cat, bandname);
-
-			s.cats[i] = scat;
-			s.hasCategories[i] = true;
+			s.setCat(i, scat);
 		}
 
 		SpatCategories crat;
 		//bool found_rat = false;
 
-		if (!s.hasCategories[i]) {
+		if (!s.hasCat(i)) {
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if (rat != NULL) {
 				if (GetRAT(rat, crat, gdrv)) {
-					s.cats[i] = crat;
-					s.hasCategories[i] = true;
+					s.setCat(i, crat);
 //				} else {
 //					found_rat = false;
 				}
@@ -1436,27 +1423,26 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		//		s.cats[i].d.cbind(crat.d); // needs more checking.
 		//	} else {
 
-		if (!s.hasCategories[i]) {
+		if (!s.hasCat(i)) {
 			if (GetVAT(fname, crat)) {
-				s.cats[i] = crat;
-				s.hasCategories[i] = true;
+				s.setCat(i, crat);
 				//found_rat = true;
 			}
 		}
 
-		if ((!s.hasColors[i]) && s.hasCategories[i]) {
+		if ((!s.hasCol(i)) && s.hasCat(i)) {
 			SpatDataFrame ratcols;
 			if (colsFromRat(crat.d, ratcols)) {
-				s.hasColors[i] = true;
-				s.cols[i] = ratcols;
+				s.setCol(i, ratcols);
 			}
 		}
 
 		std::string nm = "";
-		if (s.hasCategories[i]) {
-			if ((s.cats[i].index >= 0) && (s.cats[i].index < (int)s.cats[i].d.ncol())) {
-				std::vector<std::string> nms = s.cats[i].d.get_names();
-				nm = nms[s.cats[i].index];
+		if (s.hasCat(i)) {
+			SpatCategories icat = s.getCat(i);
+			if ((icat.index >= 0) && (icat.index < (int)icat.d.ncol())) {
+				std::vector<std::string> nms = icat.d.get_names();
+				nm = nms[icat.index];
 			}
 		}
 
@@ -1471,10 +1457,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
-		if ((!s.has_scale_offset[i]) && (in_string(dtype, "Int") || (dtype == "Byte"))) {
-			s.valueType[i] = 1;
+		if ((!s.getHasScaleOffset(i)) && (in_string(dtype, "Int") || (dtype == "Byte"))) {
+			s.setValueType(i, 1);
 		}
-		s.names[i] = nm;
+		s.setName(i, nm);
 	}
 
 	if (s.hasTime) {
@@ -1507,7 +1493,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 		for (size_t i=0; i<datm.size(); i++) {
-			s.time[i] = parse_time(datm[i]);
+			s.setTime(i, parse_time(datm[i]));
 		}
 
 

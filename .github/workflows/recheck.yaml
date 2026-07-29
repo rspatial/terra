@@ -12,14 +12,17 @@ on:
         - most
       pattern:
         type: string
-        description: 'grep pattern to subset packages'
-        default: 'this does not work'
+        description: 'case insensitive pattern to subset packages'
+        default: 'a-z'
         
 name: Reverse dependency check
 
 jobs:
   revdep_check:
     name: Reverse check ${{ inputs.which }} dependents
-    uses: r-devel/recheck/.github/workflows/recheck.yml@v1
+    #uses: r-devel/recheck/.github/workflows/recheck.yml@v1
+    uses: ./.github/workflows/recheck_pattern.yaml
     with:
       which: ${{ inputs.which }}
+      pattern:  ${{ inputs.pattern }}
+
