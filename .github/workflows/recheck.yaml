@@ -13,13 +13,15 @@ on:
       pattern:
         type: string
         description: 'grep pattern to subset packages'
-        default: 'this does not work'
+        default: 'a-z'
         
 name: Reverse dependency check
 
 jobs:
   revdep_check:
     name: Reverse check ${{ inputs.which }} dependents
-    uses: r-devel/recheck/.github/workflows/recheck.yml@v1
+    #uses: r-devel/recheck/.github/workflows/recheck.yml@v1
+    uses: recheck_pattern.yml@v1
     with:
       which: ${{ inputs.which }}
+      pattern:  ${{ inputs.pattern }}

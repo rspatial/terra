@@ -1,0 +1,187 @@
+name: Run a recheck
+
+on:
+  workflow_call:
+    inputs:
+      which:
+        description: Should be 'strong' or 'most'.
+        type: string
+        default: strong
+        required: false
+      pattern:
+        description: E.g. 'a-k'
+        type: string
+        default: strong
+        required: false
+      subdirectory:
+        description: Subdirectory of R package to be checked
+        required: false
+        type: string
+        default: ''
+      repository:
+        description: Repository to checkout (as owner/repo)
+        required: false
+        type: string
+        default: ''
+      ref:
+        description: The branch, tag or SHA to checkout
+        required: false
+        type: string
+        default: ''
+
+env:
+  R_LIBS_USER: ${{github.workspace}}/pkglib
+  _R_CHECK_FORCE_SUGGESTS_: 'FALSE'
+  _R_CHECK_CRAN_INCOMING_: 'FALSE'
+  _R_CHECK_VIGNETTES_SKIP_RUN_MAYBE_: 'TRUE' #remove for R-4.4
+  _R_CHECK_ELAPSED_TIMEOUT_: 3600
+  GITHUB_ACTIONS: ''
+  CI: ''
+
+jobs:
+  prepare:
+    name: Prepare dependencies
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/r-devel/recheck
+      volumes:
+        - /usr:/host/usr
+    outputs:
+      oldfile: ${{ steps.filenames.outputs.oldfile }}
+      newfile: ${{ steps.filenames.outputs.newfile }}
+    steps:
+      - name: prepare
+        run: |
+          rm -Rf /host/usr/share/dotnet /host/usr/local/lib/android
+          mkdir -p $R_LIBS_USER
+          R -e ".libPaths()"
+
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.ref }}
+          path: source
+
+      - name: Set package source directory
+        run: |
+          if [ "${{ inputs.subdirectory }}" ]; then
+            echo "PKG_SOURCE_DIR=source/${{ inputs.subdirectory }}" >> $GITHUB_ENV
+          else
+            echo "PKG_SOURCE_DIR=source" >> $GITHUB_ENV
+          fi
+
+      - name: download dependencies
+        run: rechecktools::install_recheck_deps('${{env.PKG_SOURCE_DIR}}', '${{inputs.which}}')
+        shell: Rscript {0}
+
+      - name: build source package
+        run: |
+          mkdir newpkg
+          R CMD build ${{env.PKG_SOURCE_DIR}}
+          mv *.tar.gz newpkg/
+          rm -Rf source
+
+      - name: Get old version of package
+        shell: Rscript {0}
+        run: |
+          dir.create("oldpkg")
+          pkg <- sub("_.*", "", list.files("newpkg"))
+          download.packages(pkg, "oldpkg", repos = "https://cran.r-project.org")
+
+      - name: Get file names
+        id: filenames
+        run: |
+          echo "oldfile=$(cd oldpkg; echo *.tar.gz)" >> "$GITHUB_OUTPUT"
+          echo "newfile=$(cd newpkg; echo *.tar.gz)" >> "$GITHUB_OUTPUT"
+
+      - name: Save package and library
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            pkglib
+            newpkg
+            oldpkg
+          key: ${{ runner.os }}-${{ github.run_id }}-${{github.run_attempt}}
+
+  checks:
+    needs: prepare
+    runs-on: ubuntu-latest
+    name: Recheck ${{matrix.check == 'oldpkg' && needs.prepare.outputs.oldfile || needs.prepare.outputs.newfile}} (${{matrix.check}})
+    container:
+      image: ghcr.io/r-devel/recheck
+      volumes:
+        - /usr:/host/usr
+    timeout-minutes: 600
+    strategy:
+      matrix:
+        check: [ 'oldpkg', 'newpkg' ]
+    steps:
+
+      - name: Free disk space
+        run: rm -Rf /host/usr/share/dotnet /host/usr/local/lib/android
+
+      - name: Download package and library
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            pkglib
+            newpkg
+            oldpkg
+          key: ${{ runner.os }}-${{ github.run_id }}-${{github.run_attempt}}
+
+      - name: Run checks
+        shell: Rscript {0}
+        run: |
+          checkdir <- "${{matrix.check}}"
+          options(repos = c(CRAN = 'https://cloud.r-project.org'))
+          reverse <- list(repos = 'https://cloud.r-project.org', which = "${{ inputs.which }}")
+          Sys.setenv(R_PROFILE="nothing") # do not set binary p3m mirror in child proc
+          if (pattern != "") {
+            pat <- tolower(paste0("[", pattern, "]"))
+            pat <- paste0(c(pat, toupper(pat)), "*.tar.gz")
+            tools::check_packages_in_dir(checkdir, pfiles = pat, reverse = reverse, Ncpus = parallel::detectCores())
+          } else {
+            tools::check_packages_in_dir(checkdir, reverse = reverse, Ncpus = parallel::detectCores())          
+          }
+          details <- tools::check_packages_in_dir_details(checkdir)
+          write.csv(details, file.path(checkdir, 'check-details.csv'))
+          writeLines(paste(format(details), collapse = "\n\n"), file.path(checkdir, 'check-details.txt'))
+          tools::summarize_check_packages_in_dir_results(checkdir)
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ${{matrix.check}}-checklogs
+          path: |
+            ${{matrix.check}}/*/*.log
+            ${{matrix.check}}/*/*.out
+            ${{matrix.check}}/*/*.Rout
+            ${{matrix.check}}/*/*.fail
+            ${{matrix.check}}/Outputs
+            ${{matrix.check}}/check-details.*
+
+  results:
+    name: Show results
+    needs: checks
+    runs-on: ubuntu-latest
+    container: ghcr.io/r-hub/r-minimal/r-minimal:latest
+    steps:
+      - name: Download log files
+        uses: actions/download-artifact@v7
+
+      - name: Get results
+        shell: Rscript {0}
+        run: |
+          cat("\n------- Check results summary ------\n")
+          tools::summarize_check_packages_in_dir_results("newpkg-checklogs")
+
+          # Check for regressions
+          cat("\n------- Check for regressions ------\n")
+          changes <- tools::check_packages_in_dir_changes("newpkg-checklogs", "oldpkg-checklogs")
+          if(nrow(changes)){
+            cat("Changes:\n")
+            print(changes)
+            stop("Found potential problems")
+          } else {
+            cat("No changes between old and new version\n")
+          }
