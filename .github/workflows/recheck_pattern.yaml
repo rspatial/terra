@@ -140,7 +140,7 @@ jobs:
           pattern <- "${{ inputs.pattern }}"
           if (pattern != "") {
             pat <- tolower(paste0("[", pattern, "]"))
-            pat <- paste0(c(pat, toupper(pat)), "*.tar.gz")
+            pat <- Sys.glob(paste0(c(pat, toupper(pat)), "*.tar.gz"))
             tools::check_packages_in_dir(checkdir, pfiles = pat, reverse = reverse, Ncpus = parallel::detectCores())
           } else {
             tools::check_packages_in_dir(checkdir, reverse = reverse, Ncpus = parallel::detectCores())          
