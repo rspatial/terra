@@ -3257,7 +3257,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		return x;
 	}
 
-	out.source[0].names[0] = value;
+	out.source[0].setName(0, value);
 
 	if (!out.writeStart(opt, filenames())) {
 		readStop();

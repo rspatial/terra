@@ -1438,8 +1438,8 @@ std::vector<std::vector<double>> SpatRaster::getScaleOffset() {
 
 bool SpatRaster::hasScaleOffset() {
 	for (size_t i=0; i<source.size(); i++) {
-		for (size_t j=0; j<source[i].has_scale_offset.size(); j++) {
-			if (source[i].has_scale_offset[j]) return true;
+		for (size_t j=0; j<source[i].nlyr; j++) {
+			if (source[i].getHasScaleOffset(j)) return true;
 		}
 	}
 	return false;
@@ -1473,25 +1473,21 @@ bool SpatRaster::setScaleOffset(std::vector<double> sc, std::vector<double> of) 
 					for (size_t p=loff; p<(loff+nc); p++) {
 						source[i].values[p] = source[i].values[p] * sc[k] + of[k];
 					}
-					source[i].range_min[j] = source[i].range_min[j] * sc[k] + of[k];
-					source[i].range_max[j] = source[i].range_max[j] * sc[k] + of[k];
+					source[i].setRangeMin(j, source[i].getRangeMin(j) * sc[k] + of[k]);
+					source[i].setRangeMax(j, source[i].getRangeMax(j) * sc[k] + of[k]);
 				}
 				k++;
 			}
 		} else {
 			for (size_t j=0; j<source[i].nlyr; j++) {
-				if (source[i].has_scale_offset[j]) {
-					source[i].range_min[j] = (source[i].range_min[j] - source[i].offset[j]) / source[i].scale[j];
-					source[i].range_max[j] = (source[i].range_max[j] - source[i].offset[j]) / source[i].scale[j];
+				if (source[i].getHasScaleOffset(j)) {
+					source[i].setRangeMin(j, (source[i].getRangeMin(j) - source[i].getOffset(j)) / source[i].getScale(j));
+					source[i].setRangeMax(j, (source[i].getRangeMax(j) - source[i].getOffset(j)) / source[i].getScale(j));
 				}
-				source[i].scale[j] = sc[k];
-				source[i].offset[j] = of[k];
+				source[i].setScaleOffset(j, sc[k], of[k]);
 				if ((sc[k] != 1) || (of[k] != 0)) {
-					source[i].has_scale_offset[j] = true;
-					source[i].range_min[j] = source[i].range_min[j] * sc[k] + of[k];
-					source[i].range_max[j] = source[i].range_max[j] * sc[k] + of[k];
-				} else {
-					source[i].has_scale_offset[j] = false;
+					source[i].setRangeMin(j, source[i].getRangeMin(j) * sc[k] + of[k]);
+					source[i].setRangeMax(j, source[i].getRangeMax(j) * sc[k] + of[k]);
 				}
 				k++;
 			}
@@ -1532,7 +1528,7 @@ bool SpatRaster::setCatIndex(size_t layer, int index) {
 	if (index < nc) {
 		cat.index = index;
 		if (index >= 0) {
-			source[sl[0]].names[sl[1]] = cat.d.names[index];
+			source[sl[0]].setName(sl[1], cat.d.names[index]);
 		}
 		return true;
 	} else {

@@ -699,7 +699,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 		bool ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, md);
 		if (ok) {
 			std::string sname = sub.source[0].source_name;
-			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true);
+			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].getUnit(0), true);
 		}
 		return;
 	}
@@ -745,7 +745,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 					}
 					if (ok) {
 						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
-						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
+						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].getUnit(0), true)) {
 							addWarning("skipped (different geometry): " + s);
 						}
 					} else {
@@ -1356,38 +1356,29 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
 
-		s.has_scale_offset[i] = false;
-
+		double lscale = 1, loffset = 0;
 		if (apply_so) {
 			double offset = poBand->GetOffset(&success);
-			if (success) {
-				if (offset != 0) {
-					s.offset[i] = offset;
-					s.has_scale_offset[i] = true;
-				}
+			if (success && (offset != 0)) {
+				loffset = offset;
 			}
 			double scale = poBand->GetScale(&success);
-			if (success) {
-				if (scale != 1) {
-					s.scale[i] = scale;
-					s.has_scale_offset[i] = true;
-				}
+			if (success && (scale != 1)) {
+				lscale = scale;
 			}
-			if (s.has_scale_offset[i]) {
-				adfMinMax[0] = adfMinMax[0] * s.scale[i] + s.offset[i];
-				adfMinMax[1] = adfMinMax[1] * s.scale[i] + s.offset[i];
-			}
+		}
+		s.setScaleOffset(i, lscale, loffset);
+		if (s.getHasScaleOffset(i)) {
+			adfMinMax[0] = adfMinMax[0] * lscale + loffset;
+			adfMinMax[1] = adfMinMax[1] * lscale + loffset;
 		}
 
 		if( (bGotMin && bGotMax) ) {
-			s.hasRange[i] = true;
-			s.range_min[i] = adfMinMax[0];
-			s.range_max[i] = adfMinMax[1];
+			s.setRange(i, adfMinMax[0], adfMinMax[1]);
 		}
 
 		poBand->GetBlockSize(&bs1, &bs2);
-		s.blockcols[i] = bs1;
-		s.blockrows[i] = bs2;
+		s.setBlockSize(i, bs2, bs1);
 		s.dtype = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
 
 
@@ -1466,10 +1457,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
-		if ((!s.has_scale_offset[i]) && (in_string(dtype, "Int") || (dtype == "Byte"))) {
-			s.valueType[i] = 1;
+		if ((!s.getHasScaleOffset(i)) && (in_string(dtype, "Int") || (dtype == "Byte"))) {
+			s.setValueType(i, 1);
 		}
-		s.names[i] = nm;
+		s.setName(i, nm);
 	}
 
 	if (s.hasTime) {
@@ -1502,7 +1493,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 		for (size_t i=0; i<datm.size(); i++) {
-			s.time[i] = parse_time(datm[i]);
+			s.setTime(i, parse_time(datm[i]));
 		}
 
 

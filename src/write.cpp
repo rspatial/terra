@@ -521,7 +521,7 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 void SpatRaster::setRange(SpatOptions &opt, bool force) {
 
 	for (size_t i=0; i<nsrc(); i++) {
-		if (source[i].hasRange[0] && (!force)) continue;
+		if (source[i].getHasRange(0) && (!force)) continue;
 		if (source[i].memory) {
 			source[i].setRange();
 		} else {

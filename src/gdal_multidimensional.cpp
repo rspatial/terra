@@ -778,7 +778,7 @@ static bool md_fill_source_from_marray(
 	if (it >= 0 && pos_it != (size_t) -1 && !time_coord.empty()) {
 		for (size_t L = 0; L < s.nlyr; L++) {
 			md_layer_to_indices(L, extra_sizes, idx);
-			s.time[L] = time_coord[idx[pos_it]];
+			s.setTime(L, time_coord[idx[pos_it]]);
 		}
 	}
 	if (iz >= 0 && pos_iz != (size_t) -1) {
@@ -787,7 +787,7 @@ static bool md_fill_source_from_marray(
 		const std::vector<double> &dvz = dimvals[iz];
 		for (size_t L = 0; L < s.nlyr; L++) {
 			md_layer_to_indices(L, extra_sizes, idx);
-			s.depth[L] = dvz[idx[pos_iz]];
+			s.setDepth(L, dvz[idx[pos_iz]]);
 		}
 	}
 
@@ -1105,7 +1105,7 @@ bool SpatRaster::readStartMulti(size_t src) {
     }
 
 
-	if (source[src].has_scale_offset[0]) {
+	if (source[src].getHasScaleOffset(0)) {
 		source[src].m_array = poVar->GetUnscaled();
 	} else {
 		source[src].m_array = poVar;

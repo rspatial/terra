@@ -621,16 +621,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	for (size_t i=0; i<scale.size(); i++) {
 		//if (scale[i] == 0) scale[i] = 1;
 		if ((scale[i] != 1) || (offset[i] != 0)) {
-			if (!scoff) {
-				source[0].has_scale_offset = std::vector<bool>(nl, false);
-				scoff = true;
-			}
-			source[0].has_scale_offset[i] = true;
+			scoff = true;
+			break;
 		}
 	}
 	if (scoff) {
-		source[0].scale  = scale;
-		source[0].offset = offset;
+		for (size_t i=0; i<scale.size(); i++) {
+			source[0].setScaleOffset(i, scale[i], offset[i]);
+		}
 	}
 
 	bool scoffwarning = false;
@@ -765,15 +763,13 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		}
 
 		if (scoff) {
-			if (source[0].has_scale_offset[i]) {
+			if (source[0].getHasScaleOffset(i)) {
 				bool failed = (poBand->SetScale(scale[i])) != CE_None;
 				if (!failed) {
 					failed = (poBand->SetOffset(offset[i])) != CE_None;
 				}
 				if (failed) {
-					source[0].has_scale_offset[i] = false;
-					source[0].scale[i]  = 1;
-					source[0].offset[i] = 0;
+					source[0].setScaleOffset(i, 1, 0);
 					scoffwarning = true;
 				}
 			}
@@ -814,8 +810,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	source[0].nlyrfile = nlyr();
 	source[0].dtype = datatype;
 	for (size_t i =0; i<nlyr(); i++) {
-		source[0].range_min[i] = NAN; //std::numeric_limits<double>::max();
-		source[0].range_max[i] = NAN; //std::numeric_limits<double>::lowest();
+		source[0].unsetRange(i);
 	}
 	source[0].driver = "gdal" ;
 	source[0].filename = filename;
@@ -923,10 +918,12 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 
 	size_t n = vals.size() / nl;
 	for (size_t i=0; i<nl; i++) {
-		if (source[0].has_scale_offset[i]) {
+		if (source[0].getHasScaleOffset(i)) {
 			size_t start = i*n;
+			double of = source[0].getOffset(i);
+			double sc = source[0].getScale(i);
 			for (size_t j=start; j<(start+n); j++) {
-				vals[j] = (vals[j] - source[0].offset[i]) / source[0].scale[i];
+				vals[j] = (vals[j] - of) / sc;
 			}
 		}
 	}
@@ -963,12 +960,12 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 //				vmax = vmax * source[0].scale[i] + source[0].offset[i];
 //			}
 			if (!std::isnan(vmin)) {
-				if (std::isnan(source[0].range_min[i])) {
-					source[0].range_min[i] = vmin;
-					source[0].range_max[i] = vmax;
+				if (std::isnan(source[0].getRangeMin(i))) {
+					source[0].setRangeMin(i, vmin);
+					source[0].setRangeMax(i, vmax);
 				} else {
-					source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
-					source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
+					source[0].setRangeMin(i, std::min(source[0].getRangeMin(i), vmin));
+					source[0].setRangeMax(i, std::max(source[0].getRangeMax(i), vmax));
 				}
 			}
 		}
@@ -1088,17 +1085,17 @@ bool SpatRaster::writeStopGDAL() {
 				poBand->SetStatistics(mn, mx, av, sd);
 			} else {
 				if (datatype.substr(0,3) == "INT") {
-					source[0].range_min[i] = trunc(source[0].range_min[i]);
-					source[0].range_max[i] = trunc(source[0].range_max[i]);
+					source[0].setRangeMin(i, trunc(source[0].getRangeMin(i)));
+					source[0].setRangeMax(i, trunc(source[0].getRangeMax(i)));
 				} else if (datatype == "FLT4S") { // match precision
-					source[0].range_min[i] = (float) source[0].range_min[i]; 
-					source[0].range_max[i] = (float) source[0].range_max[i]; 
+					source[0].setRangeMin(i, (float) source[0].getRangeMin(i));
+					source[0].setRangeMax(i, (float) source[0].getRangeMax(i));
 				}
-				poBand->SetStatistics(source[0].range_min[i], source[0].range_max[i], -9999., -9999.);
+				poBand->SetStatistics(source[0].getRangeMin(i), source[0].getRangeMax(i), -9999., -9999.);
 			}
-			source[0].hasRange[i] = true;
+			source[0].setHasRange(i, true);
 		} else {
-			source[0].hasRange[i] = false;
+			source[0].setHasRange(i, false);
 		}
 	}
 
@@ -1303,7 +1300,7 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 					GDALClose(hDS);
 					return false;
 				}
-				GDALSetDescription(poBand, source[i].names[b].c_str());
+				GDALSetDescription(poBand, source[i].getName(b).c_str());
 			}
 		}
 		if (crs) {

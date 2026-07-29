@@ -144,7 +144,7 @@ class SpatRasterSource {
 		//std::vector<std::string> dataType;
 
 		std::vector<bool> hasColors;
-		// color tables are stored sparsely (keyed by layer), see "cats" above
+		// color tables are stored sparsely
 		std::map<size_t, SpatDataFrame> cols;
 		SpatDataFrame legend;
 
@@ -189,6 +189,51 @@ class SpatRasterSource {
 			for (size_t i=0; (i<c.size()) && (i<hasColors.size()); i++) {
 				if (hasColors[i]) cols[i] = c[i];
 			}
+		}
+
+		// per-layer metadata accessors to eventually change the underlying storage 
+		// e.g. computing values on the fly for sources with very many layers
+		std::string getName(size_t i) const { return names[i]; }
+		void setName(size_t i, const std::string &v) { names[i] = v; }
+		int64_t getTime(size_t i) const { return time[i]; }
+		void setTime(size_t i, int64_t v) { time[i] = v; }
+		double getDepth(size_t i) const { return depth[i]; }
+		void setDepth(size_t i, double v) { depth[i] = v; }
+		std::string getUnit(size_t i) const { return unit[i]; }
+		void setUnit(size_t i, const std::string &v) { unit[i] = v; }
+		unsigned char getValueType(size_t i) const { return valueType[i]; }
+		void setValueType(size_t i, unsigned char v) { valueType[i] = v; }
+		bool getHasRange(size_t i) const { return hasRange[i]; }
+		double getRangeMin(size_t i) const { return range_min[i]; }
+		double getRangeMax(size_t i) const { return range_max[i]; }
+		// these two do not change hasRange (used while accumulating stats);
+		// use setRange/unsetRange to also set the hasRange flag
+		void setRangeMin(size_t i, double v) { range_min[i] = v; }
+		void setRangeMax(size_t i, double v) { range_max[i] = v; }
+		void setHasRange(size_t i, bool v) { hasRange[i] = v; }
+		void setRange(size_t i, double mn, double mx) {
+			hasRange[i] = true;
+			range_min[i] = mn;
+			range_max[i] = mx;
+		}
+		void unsetRange(size_t i) {
+			hasRange[i] = false;
+			range_min[i] = NAN;
+			range_max[i] = NAN;
+		}
+		int getBlockRows(size_t i) const { return blockrows[i]; }
+		int getBlockCols(size_t i) const { return blockcols[i]; }
+		void setBlockSize(size_t i, int brows, int bcols) {
+			blockrows[i] = brows;
+			blockcols[i] = bcols;
+		}
+		bool getHasScaleOffset(size_t i) const { return has_scale_offset[i]; }
+		double getScale(size_t i) const { return scale[i]; }
+		double getOffset(size_t i) const { return offset[i]; }
+		void setScaleOffset(size_t i, double sc, double of) {
+			scale[i] = sc;
+			offset[i] = of;
+			has_scale_offset[i] = (sc != 1) || (of != 0);
 		}
 
 		bool memory=true;

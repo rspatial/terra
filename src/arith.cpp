@@ -1415,7 +1415,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	if (fun == "range") {
 		return range(add, narm, opt);
 	}
-	out.source[0].names[0] = fun;
+	out.source[0].setName(0, fun);
 	std::function<double(std::vector<double>&, bool)> sumFun;
 	if (fun == "std") {
 		sumFun = vstdev;
@@ -1471,7 +1471,7 @@ SpatRaster SpatRaster::summary(std::string fun, bool narm, SpatOptions &opt) {
 SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool narm, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
-	out.source[0].names[0] = "modal" ;
+	out.source[0].setName(0, "modal");
   	if (!hasValues()) { return out; }
 
 
@@ -1525,8 +1525,8 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &opt) {
 	SpatRaster out = geometry(2);
 	out.source[0].names.resize(2);
-	out.source[0].names[0] = "range_min" ;
-	out.source[0].names[1] = "range_max" ;
+	out.source[0].setName(0, "range_min");
+	out.source[0].setName(1, "range_max");
   	if (!hasValues()) { return out; }
 
 	if (!readStart()) {

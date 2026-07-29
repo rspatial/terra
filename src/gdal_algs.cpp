@@ -2032,8 +2032,8 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	}
 
 	double minval = -9999;
-	if (source[0].hasRange[0]) {
-		minval = source[0].range_min[0] - 9999;
+	if (source[0].getHasRange(0)) {
+		minval = source[0].getRangeMin(0) - 9999;
 	}
 	SpatOptions topt(opt);
 
