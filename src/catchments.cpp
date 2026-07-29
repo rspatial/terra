@@ -1562,17 +1562,4 @@ SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter
 }
 
 
-//// END PITFILLER 
-// 
-// 
-// /// added by ecor on 2026 07 27 
-// 
-// int cmp_desc(const void *a, const void *b) {
-//   int ia = *(const int*)a;
-//   int ib = *(const int*)b;
-//   
-//   if (global_v[ia] < global_v[ib]) return 1;
-//   if (global_v[ia] > global_v[ib]) return -1;
-//   return 0;
-// }
 
