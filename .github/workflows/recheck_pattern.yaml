@@ -9,7 +9,7 @@ on:
         default: strong
         required: false
       pattern:
-        description: E.g. 'a-k'
+        description: case-insensitive package subset pattern such as 'a-k'
         type: string
         default: ''
         required: false
@@ -134,10 +134,10 @@ jobs:
         shell: Rscript {0}
         run: |
           checkdir <- "${{matrix.check}}"
-          pattern <- "${{ inputs.pattern }}"
           options(repos = c(CRAN = 'https://cloud.r-project.org'))
           reverse <- list(repos = 'https://cloud.r-project.org', which = "${{ inputs.which }}")
           Sys.setenv(R_PROFILE="nothing") # do not set binary p3m mirror in child proc
+          pattern <- "${{ inputs.pattern }}"
           if (pattern != "") {
             pat <- tolower(paste0("[", pattern, "]"))
             pat <- paste0(c(pat, toupper(pat)), "*.tar.gz")

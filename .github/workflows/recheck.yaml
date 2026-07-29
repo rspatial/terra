@@ -12,7 +12,7 @@ on:
         - most
       pattern:
         type: string
-        description: 'grep pattern to subset packages'
+        description: 'case insensitive pattern to subset packages'
         default: 'a-z'
         
 name: Reverse dependency check
