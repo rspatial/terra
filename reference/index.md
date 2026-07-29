@@ -401,7 +401,7 @@
   [`extract(`*`<SpatRaster>`*`,`*`<matrix>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
   [`extract(`*`<SpatRaster>`*`,`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
   [`extract(`*`<SpatVector>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
-  : Extract values from a SpatRaster
+  : Extract values from a SpatRaster or polygon SpatVector
 
 - [`extractAlong()`](https://rspatial.github.io/terra/reference/extractAlong.md)
   : extract values along lines

@@ -107,8 +107,8 @@ x <- is.na(r1)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
 #> name        : lyr.1
-#> min value   :     0
-#> max value   :     1
+#> min value   : FALSE
+#> max value   :  TRUE
 r1 == r2 
 #> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
@@ -117,8 +117,8 @@ r1 == r2
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
 #> name        : lyr.1
-#> min value   :     0
-#> max value   :     0
+#> min value   : FALSE
+#> max value   : FALSE
 compare(r1, r2, "==")
 #> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
@@ -127,8 +127,8 @@ compare(r1, r2, "==")
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
 #> name        : lyr.1
-#> min value   :     0
-#> max value   :     0
+#> min value   : FALSE
+#> max value   : FALSE
 compare(r1, r2, "==", TRUE)
 #> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)

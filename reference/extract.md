@@ -1,9 +1,9 @@
-# Extract values from a SpatRaster
+# Extract values from a SpatRaster or polygon SpatVector
 
-Extract values from a SpatRaster for a set of locations. The locations
-can be a SpatVector (points, lines, polygons), a data.frame or matrix
-with (x, y) or (longitude, latitude – in that order!) coordinates, or a
-vector with cell numbers.
+Extract values from a SpatRaster or a polygon SpatVector for a set of
+locations. The locations can be a SpatVector (points, lines, polygons),
+a data.frame or matrix with (x, y) or (longitude, latitude – in that
+order!) coordinates, or a vector with cell numbers.
 
 When argument `y` is a `SpatVector` the first column has the ID (record
 number) of the `SpatVector` used (unless you set `ID=FALSE`).

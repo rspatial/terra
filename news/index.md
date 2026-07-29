@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-40
+## version 1.9-41
 
 ### bug fixes
 
@@ -36,6 +36,9 @@
 - faster sampling of multidim rasters
   [\#2110](https://github.com/rspatial/terra/issues/2110) by Michael
   Sumner
+- `extract` was very slow for multidim (e.g. NetCDF) files with
+  compressed chunks
+  [\#2145](https://github.com/rspatial/terra/issues/2145) by Kodi Arfer
 - `centroids` gained argument “correct” that moves centroids that are
   not on their geometry to the nearest location on the geometry
   (`inside=FALSE`) or to an alternative location that is inside the
