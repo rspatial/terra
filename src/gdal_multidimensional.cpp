@@ -491,11 +491,49 @@ static std::vector<std::string> md_arrays_usable_for_raster(
 }
 
 
+// HDF4 does not attach indexing variables to the dimensions of an ResolveMDArray. 
+// Get it from the group that owns the dimensions
+static std::shared_ptr<GDALMDArray> md_get_indexing_var(
+		const std::shared_ptr<GDALDimension> &dim,
+		const std::shared_ptr<GDALGroup> &root) {
+
+	auto indvar = dim->GetIndexingVariable();
+	if (indvar || (root == nullptr)) {
+		return indvar;
+	}
+	const std::string full = dim->GetFullName();
+	const std::string name = dim->GetName();
+	std::shared_ptr<GDALGroup> g = root;
+	if (full.size() > (name.size() + 1)) {
+		// the path of the owning group: the full name without the
+		// leading "/" and without the trailing "/<name>"
+		std::string path = full.substr(0, full.size() - name.size() - 1);
+		size_t p0 = 1;
+		while ((g != nullptr) && (p0 < path.size())) {
+			size_t p1 = path.find('/', p0);
+			if (p1 == std::string::npos) p1 = path.size();
+			g = g->OpenGroup(path.substr(p0, p1-p0));
+			p0 = p1 + 1;
+		}
+	}
+	if (g == nullptr) {
+		return nullptr;
+	}
+	for (const auto &gd : g->GetDimensions()) {
+		if (gd->GetName() == name) {
+			return gd->GetIndexingVariable();
+		}
+	}
+	return nullptr;
+}
+
+
 static bool md_fill_source_from_marray(
 	SpatRaster &parent,
 	const std::string &fname,
 	const std::string &array_request_name,
 	std::shared_ptr<GDALMDArray> poVar,
+	std::shared_ptr<GDALGroup> poRootGroup,
 	std::vector<std::string> options,
 	bool noflip,
 	bool guessCRS,
@@ -523,6 +561,7 @@ static bool md_fill_source_from_marray(
 	dimcalendar.reserve(ndim);
 
 
+	std::vector<std::shared_ptr<GDALMDArray>> indvars(ndim);
     for (size_t i=0; i<ndim; i++) {
 		size_t n = dimData[i]->GetSize();
         dimcount.push_back(n);
@@ -532,7 +571,8 @@ static bool md_fill_source_from_marray(
 		std::vector<size_t> count = {n};
 		dimvals.push_back(std::vector<double>(n));
 
-		const auto indvar = dimData[i]->GetIndexingVariable();
+		indvars[i] = md_get_indexing_var(dimData[i], poRootGroup);
+		const auto &indvar = indvars[i];
 
 		if (indvar == NULL) {
 			dimvals[i].resize(n);
@@ -645,7 +685,7 @@ static bool md_fill_source_from_marray(
 		if (dimvals[ii].size() <= 2) {
 			continue;
 		}
-		const auto indvar2 = dimData[ii]->GetIndexingVariable();
+		const auto &indvar2 = indvars[ii];
 		if (indvar2 == NULL) {
 			continue;
 		}
@@ -980,7 +1020,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		SpatRasterSource s;
 		s.open_drivers = drivers;
 		std::vector<std::string> opts_copy = options;
-		if (!md_fill_source_from_marray(*this, fname, arrays_to_use[ai], poVar, std::move(opts_copy), noflip, guessCRS, single_var, s)) {
+		if (!md_fill_source_from_marray(*this, fname, arrays_to_use[ai], poVar, poRootGroup, std::move(opts_copy), noflip, guessCRS, single_var, s)) {
 			if (single_var) {
 				return false;
 			}
