@@ -11,7 +11,7 @@ on:
       pattern:
         description: E.g. 'a-k'
         type: string
-        default: strong
+        default: ''
         required: false
       subdirectory:
         description: Subdirectory of R package to be checked
@@ -134,6 +134,7 @@ jobs:
         shell: Rscript {0}
         run: |
           checkdir <- "${{matrix.check}}"
+          pattern <- "${{ inputs.pattern }}"
           options(repos = c(CRAN = 'https://cloud.r-project.org'))
           reverse <- list(repos = 'https://cloud.r-project.org', which = "${{ inputs.which }}")
           Sys.setenv(R_PROFILE="nothing") # do not set binary p3m mirror in child proc
