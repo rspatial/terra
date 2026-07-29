@@ -569,9 +569,9 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	out.setNames(getNames());
 	if ((method == "near") || (method == "mode")) {
 		out.source[0].hasColors = hasColors();
-		out.source[0].cols = getColors();
+		out.source[0].setCols(getColors());
 		out.source[0].hasCategories = hasCategories();
-		out.source[0].cats = getCategories();
+		out.source[0].setCats(getCategories());
 		out.rgb = rgb;
 		out.rgblyrs = rgblyrs;
 		out.rgbtype = rgbtype;
@@ -839,9 +839,9 @@ SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string meth
 	out.setNames(getNames());
 	if (method == "near") {
 		out.source[0].hasColors = hasColors();
-		out.source[0].cols = getColors();
+		out.source[0].setCols(getColors());
 		out.source[0].hasCategories = hasCategories();
-		out.source[0].cats = getCategories();
+		out.source[0].setCats(getCategories());
 		out.rgb = rgb;
 		out.rgblyrs = rgblyrs;
 		out.rgbtype = rgbtype;
@@ -1085,9 +1085,9 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	out.setNames(getNames());
 	if ((method == "near") || (method == "mode")) {
 		out.source[0].hasColors = hasColors();
-		out.source[0].cols = getColors();
+		out.source[0].setCols(getColors());
 		out.source[0].hasCategories = hasCategories();
-		out.source[0].cats = getCategories();
+		out.source[0].setCats(getCategories());
 		out.rgb = rgb;
 		out.rgblyrs = rgblyrs;
 		out.rgbtype = rgbtype;
@@ -1970,9 +1970,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 			cdf.iv[3].push_back(col->c4);
 		}
 		out.source[0].hasColors.resize(1);
-		out.source[0].hasColors[0] = true;
-		out.source[0].cols.resize(1);
-		out.source[0].cols[0] = cdf;
+		out.source[0].setCol(0, cdf);
 	} else {
 		if (GDALSetRasterColorTable(hTarget, hColorTable) != CE_None) {
 			out.setError("cannot set color table");

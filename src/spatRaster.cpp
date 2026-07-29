@@ -260,9 +260,9 @@ SpatRaster SpatRaster::geometry(size_t nlyrs, bool properties, bool time, bool u
 // should be within "if (keepnlyr)" block?
 	if (properties) {
 		s.hasColors = hasColors();
-		s.cols = getColors();
+		s.setCols(getColors());
 		s.hasCategories = hasCategories();
-		s.cats = getCategories();
+		s.setCats(getCategories());
 	}
 	s.resize(nlyrs);
 	std::vector<std::string> nms;
@@ -1257,7 +1257,7 @@ bool SpatRaster::createCategories(size_t layer, SpatOptions &opt) {
 	SpatCategories cat;
 	cat.d.add_column(s, "category");
 	cat.index = 0;
-	source[sl[0]].cats[sl[1]] = cat;
+	source[sl[0]].setCat(sl[1], cat);
 	return true;
 }
 
@@ -1365,12 +1365,7 @@ bool SpatRaster::setLabels(size_t layer, std::vector<long> values, std::vector<s
 	cats.d.add_column(labels, name);
 	cats.index = 1;
 
-	if (source[sl[0]].cats.size() <= sl[1]) {
-		source[sl[0]].cats.resize(sl[1]+1);
-		source[sl[0]].hasCategories.resize(sl[1]+1);
-	}
-	source[sl[0]].cats[sl[1]] = cats;
-	source[sl[0]].hasCategories[sl[1]] = true;
+	source[sl[0]].setCat(sl[1], cats);
 	return true;
 }
 
@@ -1389,11 +1384,7 @@ bool SpatRaster::setCategories(size_t layer, SpatDataFrame d, size_t index) {
 	cats.d = d;
 	cats.index = index;
 
-	if (source[sl[0]].cats.size() < sl[1]) {
-		source[sl[0]].cats.resize(sl[1]);
-	}
-	source[sl[0]].cats[sl[1]] = cats;
-	source[sl[0]].hasCategories[sl[1]] = true;
+	source[sl[0]].setCat(sl[1], cats);
 	return true;
 }
 
@@ -1403,25 +1394,22 @@ bool SpatRaster::removeCategories(long layer) {
 		setError("invalid layer number");
 		return(false);
 	}
-	SpatCategories s;
 	if (layer < 0) {
 		for (size_t i=0; i<source.size(); i++) {
-			for (size_t j=0; j<source[i].cats.size(); j++) {
-				source[i].cats[j] = s;
-				source[i].hasCategories[j] = false;
+			for (size_t j=0; j<source[i].nlyr; j++) {
+				source[i].unsetCat(j);
 			}
 		}
 	} else {
 		std::vector<size_t> sl = findLyr(layer);
-		source[sl[0]].cats[sl[1]] = s;
-		source[sl[0]].hasCategories[sl[1]] = false;
+		source[sl[0]].unsetCat(sl[1]);
 	}
 	return true;
 }
 
 SpatCategories SpatRaster::getLayerCategories(size_t layer) {
     std::vector<size_t> sl = findLyr(layer);
-	SpatCategories cat = source[sl[0]].cats[sl[1]];
+	SpatCategories cat = source[sl[0]].getCat(sl[1]);
 	return cat;
 }
 
@@ -1429,7 +1417,9 @@ std::vector<SpatCategories> SpatRaster::getCategories() {
 	std::vector<SpatCategories> cats;
 	cats.reserve(nlyr());
 	for (size_t i=0; i<source.size(); i++) {
-		cats.insert(cats.end(), source[i].cats.begin(), source[i].cats.end());
+		for (size_t j=0; j<source[i].nlyr; j++) {
+			cats.push_back(source[i].getCat(j));
+		}
 	}
 	return cats;
 }
@@ -1534,11 +1524,15 @@ bool SpatRaster::setCatIndex(size_t layer, int index) {
 		return(false);
 	}
     std::vector<size_t> sl = findLyr(layer);
-	int nc = source[sl[0]].cats[sl[1]].d.ncol();
+	if (!source[sl[0]].hasCat(sl[1])) {
+		return false;
+	}
+	SpatCategories &cat = source[sl[0]].catRef(sl[1]);
+	int nc = cat.d.ncol();
 	if (index < nc) {
-		source[sl[0]].cats[sl[1]].index = index;
+		cat.index = index;
 		if (index >= 0) {
-			source[sl[0]].names[sl[1]] = source[sl[0]].cats[sl[1]].d.names[index];
+			source[sl[0]].names[sl[1]] = cat.d.names[index];
 		}
 		return true;
 	} else {
@@ -1551,7 +1545,7 @@ int SpatRaster::getCatIndex(size_t layer) {
 		return( -1 );
 	}
     std::vector<size_t> sl = findLyr(layer);
-	return source[sl[0]].cats[sl[1]].index;
+	return source[sl[0]].getCat(sl[1]).index;
 }
 
 SpatRaster SpatRaster::dropLevels() {
@@ -1603,8 +1597,11 @@ SpatRaster SpatRaster::dropLevels() {
 
 std::vector<SpatDataFrame> SpatRaster::getColors() {
 	std::vector<SpatDataFrame> cols;
+	cols.reserve(nlyr());
 	for (size_t i=0; i<source.size(); i++) {
-		cols.insert(cols.end(), source[i].cols.begin(), source[i].cols.end());
+		for (size_t j=0; j<source[i].nlyr; j++) {
+			cols.push_back(source[i].getCol(j));
+		}
 	}
 	return cols;
 }
@@ -1626,15 +1623,7 @@ bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
 	}
 
     std::vector<size_t> sl = findLyr(layer);
-	if (source[sl[0]].cols.size() < (sl[1]+1)) {
-		source[sl[0]].cols.resize(sl[1]+1);
-	}
-	if (source[sl[0]].hasColors.size() < (sl[1]+1)) {
-		source[sl[0]].hasColors.resize(sl[1]+1);
-	}
-
-	source[sl[0]].cols[sl[1]] = cols;
-	source[sl[0]].hasColors[sl[1]] = (cols.nrow() > 0);
+	source[sl[0]].setCol(sl[1], cols);
 	return true;
 }
 
@@ -1644,10 +1633,8 @@ bool SpatRaster::removeColors(size_t layer) {
 		return false;
 	}
     std::vector<size_t> sl = findLyr(layer);
-	if (source[sl[0]].hasColors[sl[1]]) {
-		SpatDataFrame d;
-		source[sl[0]].cols[sl[1]] = d;
-		source[sl[0]].hasColors[sl[1]] = false;
+	if (source[sl[0]].hasCol(sl[1])) {
+		source[sl[0]].unsetCol(sl[1]);
 	}
 	return true;
 }

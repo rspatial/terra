@@ -420,13 +420,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	bool cat = hasCats[0];
 	bool warnCT = true;
 
-	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
+	SpatCategories cat0;
+	if (cat) cat0 = source[0].getCat(0);
+	bool rat = cat ? is_rat(cat0.d) : false;
 	if (rat) {
 		// needs redesign. Is CT also part of RAT? 
 		// other layers affected? etc.
 		warnCT = false;
 		if (hasCT[0]) {
-			if (is_ratct(source[0].cats[0].d)) {
+			if (is_ratct(cat0.d)) {
 				std::fill(hasCT.begin(), hasCT.end(), false);
 			} else if (ct[0].nrow() < 256) {
 				if (opt.datatype_set && (datatype != "INT1U")) {
@@ -669,8 +671,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			}
 		}
 		if (hasCats[i]) {
-			if (is_rat(source[0].cats[i].d)) {
-				if (!setRat(poBand, source[0].cats[i].d)) {
+			SpatCategories icat = source[0].getCat(i);
+			if (is_rat(icat.d)) {
+				if (!setRat(poBand, icat.d)) {
 					addWarning("could not write attribute table");
 				}
 			} else {

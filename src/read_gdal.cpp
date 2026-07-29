@@ -1404,8 +1404,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 		GDALColorTable *ct = poBand->GetColorTable();
 		if( ct != NULL ) {
-			s.hasColors[i] = true;
-			s.cols[i] = GetCOLdf(ct);
+			s.setCol(i, GetCOLdf(ct));
 		}
 
 		std::string bandname = poBand->GetDescription();
@@ -1413,20 +1412,17 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		char **cat = poBand->GetCategoryNames();
 		if (cat != NULL)	{
 			SpatCategories scat = GetCategories(cat, bandname);
-
-			s.cats[i] = scat;
-			s.hasCategories[i] = true;
+			s.setCat(i, scat);
 		}
 
 		SpatCategories crat;
 		//bool found_rat = false;
 
-		if (!s.hasCategories[i]) {
+		if (!s.hasCat(i)) {
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if (rat != NULL) {
 				if (GetRAT(rat, crat, gdrv)) {
-					s.cats[i] = crat;
-					s.hasCategories[i] = true;
+					s.setCat(i, crat);
 //				} else {
 //					found_rat = false;
 				}
@@ -1436,27 +1432,26 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		//		s.cats[i].d.cbind(crat.d); // needs more checking.
 		//	} else {
 
-		if (!s.hasCategories[i]) {
+		if (!s.hasCat(i)) {
 			if (GetVAT(fname, crat)) {
-				s.cats[i] = crat;
-				s.hasCategories[i] = true;
+				s.setCat(i, crat);
 				//found_rat = true;
 			}
 		}
 
-		if ((!s.hasColors[i]) && s.hasCategories[i]) {
+		if ((!s.hasCol(i)) && s.hasCat(i)) {
 			SpatDataFrame ratcols;
 			if (colsFromRat(crat.d, ratcols)) {
-				s.hasColors[i] = true;
-				s.cols[i] = ratcols;
+				s.setCol(i, ratcols);
 			}
 		}
 
 		std::string nm = "";
-		if (s.hasCategories[i]) {
-			if ((s.cats[i].index >= 0) && (s.cats[i].index < (int)s.cats[i].d.ncol())) {
-				std::vector<std::string> nms = s.cats[i].d.get_names();
-				nm = nms[s.cats[i].index];
+		if (s.hasCat(i)) {
+			SpatCategories icat = s.getCat(i);
+			if ((icat.index >= 0) && (icat.index < (int)icat.d.ncol())) {
+				std::vector<std::string> nms = icat.d.get_names();
+				nm = nms[icat.index];
 			}
 		}
 

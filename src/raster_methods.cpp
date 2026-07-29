@@ -964,9 +964,9 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	if (fun == "modal") {
 		if (nlyr() == out.nlyr()) {
 			out.source[0].hasColors = hasColors();
-			out.source[0].cols = getColors();
+			out.source[0].setCols(getColors());
 			out.source[0].hasCategories = hasCategories();
-			out.source[0].cats = getCategories();
+			out.source[0].setCats(getCategories());
 		}
 	}
 
@@ -3604,7 +3604,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 				SpatCategories sc = getLayerCategories(i);
 				SpatCategories xsc = x.getLayerCategories(i);
 				if (sc.combine(xsc)) {
-					out.source[0].cats[i] = sc;
+					out.source[0].setCat(i, sc);
 				} else {
 					std::string warn = "cannot merge categories of layer " + std::to_string(i+1);
 					out.addWarning(warn);
@@ -4930,28 +4930,23 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 	if (min) {
 		out = geometry(1);
 		if (keepcats) {
-			out.source[0].hasCategories[0] = source[0].hasCategories[0];
-			out.source[0].cats[0] = source[0].cats[0];
-			out.source[0].hasColors = source[0].hasColors;
-			out.source[0].cols = source[0].cols;
-
+			if (source[0].hasCat(0)) out.source[0].setCat(0, source[0].getCat(0));
+			if (source[0].hasCol(0)) out.source[0].setCol(0, source[0].getCol(0));
 		}
 	} else {
 		if (nl == 0) {
 			out = geometry(nlyr());
 			out.source[0].hasCategories = hasCategories();
-			out.source[0].cats = getCategories();
+			out.source[0].setCats(getCategories());
 			out.source[0].hasColors = hasColors();
-			out.source[0].cols = getColors();
+			out.source[0].setCols(getColors());
 
 		} else {
 			out = geometry(nl);
 			if (keepcats) {
 				for (long i=0; i<nl; i++) {
-					out.source[0].hasCategories[i] = source[0].hasCategories[0];
-					out.source[0].cats[i] = source[0].cats[0];
-					out.source[0].hasColors[i] = source[0].hasColors[0];
-					out.source[0].cols[i] = source[0].cols[0];
+					if (source[0].hasCat(0)) out.source[0].setCat(i, source[0].getCat(0));
+					if (source[0].hasCol(0)) out.source[0].setCol(i, source[0].getCol(0));
 				}
 			}
 		}
@@ -5405,7 +5400,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 	SpatRaster out = geometry(nlyr(), false);
 	if (keepcats) {
 		out.source[0].hasCategories = hasCategories();
-		out.source[0].cats = getCategories();
+		out.source[0].setCats(getCategories());
 	}
 	size_t nc = rcl.size();
 	size_t nr = rcl[0].size();
@@ -6374,8 +6369,7 @@ SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 			opt.names = {sc.d.names[sc.index]};
 			std::vector<size_t> cr = {0,1};
 			sc.d = sc.d.subset_cols(cr);
-			x.source[0].cats[0] = sc;
-			x.source[0].hasCategories[0] = true;
+			x.source[0].setCat(0, sc);
 
 			x = x.replaceValues(from, to, -2, false, NAN, true, opt);
 			return x;

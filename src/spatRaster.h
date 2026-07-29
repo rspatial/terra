@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <numeric>
+#include <map>
 #include "spatVector.h"
 
 #ifdef useGDAL
@@ -135,15 +136,60 @@ class SpatRasterSource {
 //		std::vector<SpatDataFrame> atts;
 //		std::vector<int> attsIndex;
 		std::vector<bool> hasCategories;
-		std::vector<SpatCategories> cats;
+		// categories are stored sparsely (keyed by layer)
+		std::map<size_t, SpatCategories> cats;
 		std::vector<unsigned char> valueType;
 		// 0:double; 1:int; 3:bool
 
 		//std::vector<std::string> dataType;
 
 		std::vector<bool> hasColors;
-		std::vector<SpatDataFrame> cols;
+		// color tables are stored sparsely (keyed by layer), see "cats" above
+		std::map<size_t, SpatDataFrame> cols;
 		SpatDataFrame legend;
+
+		// sparse per-layer categories / color tables accessors
+		bool hasCat(size_t i) const { return (i < hasCategories.size()) && hasCategories[i]; }
+		SpatCategories getCat(size_t i) const {
+			auto it = cats.find(i);
+			return (it == cats.end()) ? SpatCategories() : it->second;
+		}
+		SpatCategories& catRef(size_t i) { return cats[i]; }
+		void setCat(size_t i, const SpatCategories &c) {
+			cats[i] = c;
+			if (i < hasCategories.size()) hasCategories[i] = true;
+		}
+		void unsetCat(size_t i) {
+			cats.erase(i);
+			if (i < hasCategories.size()) hasCategories[i] = false;
+		}
+		// bulk set from a length-nlyr vector, honoring the (already set) hasCategories
+		void setCats(const std::vector<SpatCategories> &c) {
+			cats.clear();
+			for (size_t i=0; (i<c.size()) && (i<hasCategories.size()); i++) {
+				if (hasCategories[i]) cats[i] = c[i];
+			}
+		}
+		bool hasCol(size_t i) const { return (i < hasColors.size()) && hasColors[i]; }
+		SpatDataFrame getCol(size_t i) const {
+			auto it = cols.find(i);
+			return (it == cols.end()) ? SpatDataFrame() : it->second;
+		}
+		SpatDataFrame& colRef(size_t i) { return cols[i]; }
+		void setCol(size_t i, const SpatDataFrame &c) {
+			cols[i] = c;
+			if (i < hasColors.size()) hasColors[i] = (c.nrow() > 0);
+		}
+		void unsetCol(size_t i) {
+			cols.erase(i);
+			if (i < hasColors.size()) hasColors[i] = false;
+		}
+		void setCols(const std::vector<SpatDataFrame> &c) {
+			cols.clear();
+			for (size_t i=0; (i<c.size()) && (i<hasColors.size()); i++) {
+				if (hasColors[i]) cols[i] = c[i];
+			}
+		}
 
 		bool memory=true;
 		bool hasValues=false;
