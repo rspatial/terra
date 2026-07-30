@@ -1058,7 +1058,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
 
 // returns false if the maximum number of iterations was exceeded
 bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
-		double *atdc, double *atdd, double *atdplus,double *atdplus0, double *pflow,int *has_upstream,int *kupdate,
+		double *atdc, double *atdd, double *atdplus,double *atdplus0, double *pflow,int *has_upstream,int *kupdate,int *flowaccm,
 		double *nidps, double lambda,  std::vector<double> ddp1, std::vector<double> ddp2, std::vector<double> sigma,
 		int nncell, int conv_type, int use_lad, int max_iters) {   
 
@@ -1074,9 +1074,25 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   double atdplus_temp=0;
   double e0,e1,e2;
   double pflow_estimate=ddp1[0];
+  
+  /// ORDER E ; 
+  ///
+  ///
+  ///
+  ///
+  ///
+  std::vector<int> ide(nx*ny,0);
+  std::iota(ide.begin(), ide.end(), 0); 
+  std::sort(ide.begin(), ide.end(),[&](int a, int b){ return e[a] > e[b]; });
+  
 
+  
   for (int i = 0; i < nx*ny; i++) {
+    
     *(has_upstream+i)=0;
+    *(flowaccm+i)=1;
+    //Rprintf("i=%d, ide=%d e=%f  \n",i,ide[i],*(e+ide[i])); 
+    //Rprintf("i=%d, ,, e=%f  \n",i,*(e+i)); 
   } 
 
   for (int i = 0; i < nx*ny; i++) { 
@@ -1107,7 +1123,7 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
    } else if ((e0<=e2) & (e0>e1)) {
      *(pflow+i)=ddp1[facet]; // initialization of pflow estimate .
      *(atdplus+i)= *(atdc+i);
-   } else if ((abs(*(atdc+i))<abs(*(atdd+i))) || ((abs(*(atdc+i))<=abs(*(atdd+i))) & (use_lad==1))){
+   } else if ((abs(*(atdc+i))<=abs(*(atdd+i))) || ((abs(*(atdc+i))<=abs(*(atdd+i))) & (use_lad==1))){
      *(pflow+i)=ddp1[facet]; // initialization of pflow estimate .
      *(atdplus+i)= *(atdc+i);  
    } else if (abs(*(atdc+i))>=abs(*(atdd+i))) {
@@ -1116,11 +1132,13 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
 
    }
    *(atdplus0+i)=*(atdplus+i);
+  
    pflow_estimate=*(pflow+i);
    nextp=nextcell_point_conv1(nx,ny,x,y,pflow_estimate,conv_type);
    if (nextp!=i) {
 
      *(has_upstream+nextp)=1+*(has_upstream+nextp);
+   ////  *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i)
    }
    *(kupdate+i)=0;
   } // intialization of atdplus+i)
@@ -1130,6 +1148,7 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
  if (lambda>0) do { 
   for (int i = 0; i < nx*ny; i++) {
      *(has_upstream+i)=0;
+     *(flowaccm+i)=1;
   }
   for (int i = 0; i < nx*ny; i++) {
      x = getCol(nx, ny, i);   // ATTENTION: base 0 or 1?
@@ -1141,11 +1160,13 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
      }
   }
 
-  for (int j = 0; j < nx*ny; j++) {
+  for (int jjk = 0; jjk < nx*ny; jjk++) {
+  int j=ide[jjk];  
   int i=j; 
-
+  int flowacci=*(flowaccm+i);
   if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) cnt++; // ???
   if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) do {
+   
     *(atdplus+j)=*(atdplus0+j); // ?????
    /// *(has_upstream+j)=-2;
     exit_cond=0;
@@ -1158,14 +1179,16 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
    // e0=*(e+i); // not j ec 20260430
 
     nextp=nextcell_point_conv1(nx,ny,x,y,*(pflow+i),conv_type);
-
+   
+    
+    
     // analyse nextp cell 
     int xp = getCol(nx, ny, nextp);   // ATTENTION: base 0 or 1
     int yp = getRow(nx, ny, nextp);
 
     facet=*(sfacet+nextp); //*(sfacet+i);
     e0=*(e+nextp);
-
+ 
   //  int pflow_estimate0=*(pflow+nextp);
   //  int nextp0=nextcell_point_conv1(nx,ny,xp,yp,pflow_estimate0,conv_type);
     int nextpc=nextcell_point_conv1(nx,ny,xp,yp,ddp1[facet],conv_type);
@@ -1189,7 +1212,7 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       nextq=nextpc;// ERRORE!!!
       pflow_estimate=ddp1[facet];
       atdplus_temp=atdplus_nextpc;
-    } else if ((abs(atdplus_nextpc)<abs(atdplus_nextpd)) || ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) & (use_lad==1))){
+    } else if ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) || ((abs(atdplus_nextpc)<=abs(atdplus_nextpd)) & (use_lad==1))){ // Orlandini et al, eq 3-4 
 
       pflow_estimate=ddp1[facet];
       nextq=nextpc; // cardinal
@@ -1217,13 +1240,28 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
       }
     }
     // work here 20260122
-    // condizione sopre ok se non cambia direzione ??? se e uguale e cambia dierezione???
-    if ((abs(atdplus_temp)>=abs(*(atdplus+nextp)))) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119
+    
+    
+    if ((*(flowaccm+i)+1)>*(flowaccm+nextp)) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119
+  ////  if ((abs(atdplus_temp)>=abs(*(atdplus+nextp)))) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119
+   ///// if ((abs(atdplus_temp)>=abs(*(atdplus+nextp)))) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119  
         // ADD A CONTROL (kupdate+nextp )
       *(atdplus+nextp)=atdplus_temp; // corrected on 20260429
       *(pflow+nextp)=pflow_estimate;
       *(kupdate+nextp)=cnt;
+      *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
+      
+    } else if (*(kupdate+nextp)==0) {
+      *(atdplus+nextp)=atdplus_temp; // corrected on 20260429
+      *(pflow+nextp)=pflow_estimate;
+      *(kupdate+nextp)=cnt;
+      *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
+      
     } else {
+  //    *(pflow+nextp)=pflow_estimate;
+   //   *(kupdate+nextp)=cnt;
+  //    *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
+      
     }
     if (nextp!=i) { // 20260429      
       i=nextp;
@@ -1270,7 +1308,7 @@ bool d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_la
   std::vector<double> atdplus0(nx*ny,0);
   std::vector<double> sr(nx*ny,0);
   std::vector<double> sm(nx*ny,0);
-
+  std::vector<int> flowaccm(nx*ny,0);
 
   std::vector<int> kupdate(nx*ny,0);
   std::vector<double> npids(nx*ny,0);  // npid number 
@@ -1302,7 +1340,7 @@ bool d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_la
                   &tdc[0],&tdd[0],L,ddp1,ddp2,sigma,nncell,conv_type,use_lad);
   bool ok = transverse_deviation(&e[0],&tdc[0],&tdd[0],&sr[0],&sm[0],&sfacet[0],nx,ny,L,
 
-                       &atdc[0], &atdd[0],&atdplus[0],&atdplus0[0], &pflow[0],&has_upstream[0],&kupdate[0],&npids[0],lambda,ddp1,ddp2,sigma,nncell,conv_type,use_lad,max_iters);  
+                       &atdc[0], &atdd[0],&atdplus[0],&atdplus0[0], &pflow[0],&has_upstream[0],&kupdate[0],&flowaccm[0],   &npids[0],lambda,ddp1,ddp2,sigma,nncell,conv_type,use_lad,max_iters);  
   return ok;
 }
 
@@ -1524,5 +1562,4 @@ SpatRaster  SpatRaster::pitfillerm(SpatRaster pits,SpatRaster flowdirs,int niter
 }
 
 
-//// END PITFILLER 
 
