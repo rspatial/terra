@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       which:
-        description: Should be 'strong' or 'most'.
+        description: Should be 'strong', 'most', 'Depends', 'Imports', 'Suggests'.
         type: string
         default: strong
         required: false
@@ -72,8 +72,26 @@ jobs:
           fi
 
       - name: download dependencies
-        run: rechecktools::install_recheck_deps('${{env.PKG_SOURCE_DIR}}', '${{inputs.which}}')
         shell: Rscript {0}
+        run: |
+          # determine the reverse dependencies to check (optionally subset with "pattern"
+          # separate step because it is needed twice 
+          pattern <- "${{ inputs.pattern }}"
+          desc <- as.data.frame(read.dcf(file.path('${{env.PKG_SOURCE_DIR}}', 'DESCRIPTION')))
+          pkg <- desc$Package
+          db <- utils::available.packages(repos = c(CRAN = 'https://cloud.r-project.org'))
+          revdeps <- as.character(tools::package_dependencies(pkg, db = db, which = '${{inputs.which}}', reverse = TRUE)[[pkg]])
+          if (pattern != "") {
+            revdeps <- revdeps[grepl(paste0("^[", pattern, "]"), revdeps, ignore.case = TRUE)]
+            cat("pattern [", pattern, "]: ")
+          }
+          cat("installing dependencies for", length(revdeps), "reverse dependencies\n")
+          writeLines(revdeps, "revdeps.txt")
+          owndeps <- c(desc$Depends, desc$Imports, desc$LinkingTo, desc$Suggests, desc$Enhances)
+          owndeps <- unique(trimws(sub("\\(.*\\)", "", unlist(strsplit(as.character(owndeps), ',')))))
+          base <- c("R", rownames(installed.packages(priority = "base")))
+          packages <- setdiff(unique(c(pkg, owndeps, revdeps)), base)
+          utils::install.packages(packages, dependencies = TRUE)
 
       - name: build source package
         run: |
@@ -102,6 +120,7 @@ jobs:
             pkglib
             newpkg
             oldpkg
+            revdeps.txt
           key: ${{ runner.os }}-${{ github.run_id }}-${{github.run_attempt}}
 
   checks:
@@ -128,6 +147,7 @@ jobs:
             pkglib
             newpkg
             oldpkg
+            revdeps.txt
           key: ${{ runner.os }}-${{ github.run_id }}-${{github.run_attempt}}
 
       - name: Run checks
@@ -136,19 +156,8 @@ jobs:
           checkdir <- "${{matrix.check}}"
           options(repos = c(CRAN = 'https://cloud.r-project.org'))
           Sys.setenv(R_PROFILE="nothing") # do not set binary p3m mirror in child proc
-          pattern <- "${{ inputs.pattern }}"
-          if (pattern != "") {
-            # compute reverse dependencies to check. 
-            pkg <- sub("_.*", "", list.files(checkdir, pattern = "\\.tar\\.gz$"))
-            db <- utils::available.packages(type = "source")
-            revdeps <- tools::package_dependencies(pkg, db, which = "${{ inputs.which }}", reverse = TRUE)
-            revdeps <- sort(unique(unlist(revdeps, use.names = FALSE)))
-            reverse <- grep(paste0("^[", pattern, "]"), revdeps, ignore.case = TRUE, value=TRUE)
-            cat("checking", length(reverse), "reverse dependencies matching [", pattern, "]\n")
-          } else {
-            reverse <- list(repos = 'https://cloud.r-project.org', which = "${{ inputs.which }}")
-            cat("checking", length(reverse), "reverse dependencies\n")
-          }
+          reverse <- readLines("revdeps.txt")
+          cat("checking", length(reverse), "reverse dependencies\n")
           tools::check_packages_in_dir(checkdir, reverse = reverse, Ncpus = parallel::detectCores())
           details <- tools::check_packages_in_dir_details(checkdir)
           write.csv(details, file.path(checkdir, 'check-details.csv'))

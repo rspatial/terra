@@ -5,11 +5,11 @@ on:
         type: choice
         description: Which dependents to check
         options:
+        - strong
+        - most
         - Depends
         - Imports
         - Suggests
-        - strong
-        - most
       pattern:
         type: string
         description: 'case insensitive pattern to subset packages'
