@@ -87,10 +87,7 @@ jobs:
           }
           cat("installing dependencies for", length(revdeps), "reverse dependencies\n")
           writeLines(revdeps, "revdeps.txt")
-          owndeps <- c(desc$Depends, desc$Imports, desc$LinkingTo, desc$Suggests, desc$Enhances)
-          owndeps <- unique(trimws(sub("\\(.*\\)", "", unlist(strsplit(as.character(owndeps), ',')))))
-          base <- c("R", rownames(installed.packages(priority = "base")))
-          packages <- setdiff(unique(c(pkg, owndeps, revdeps)), base)
+          packages <- setdiff(unique(c(rechecktools:::desc_deps(desc), revdeps)), rechecktools:::basepkgs())
           utils::install.packages(packages, dependencies = TRUE)
 
       - name: build source package
