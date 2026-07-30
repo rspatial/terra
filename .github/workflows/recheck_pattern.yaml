@@ -135,16 +135,21 @@ jobs:
         run: |
           checkdir <- "${{matrix.check}}"
           options(repos = c(CRAN = 'https://cloud.r-project.org'))
-          reverse <- list(repos = 'https://cloud.r-project.org', which = "${{ inputs.which }}")
           Sys.setenv(R_PROFILE="nothing") # do not set binary p3m mirror in child proc
           pattern <- "${{ inputs.pattern }}"
           if (pattern != "") {
-            pat <- tolower(paste0("[", pattern, "]"))
-            pat <- Sys.glob(paste0(c(pat, toupper(pat)), "*.tar.gz"))
-            tools::check_packages_in_dir(checkdir, pfiles = pat, reverse = reverse, Ncpus = parallel::detectCores())
+            # compute reverse dependencies to check. 
+            pkg <- sub("_.*", "", list.files(checkdir, pattern = "\\.tar\\.gz$"))
+            db <- utils::available.packages(type = "source")
+            revdeps <- tools::package_dependencies(pkg, db, which = "${{ inputs.which }}", reverse = TRUE)
+            revdeps <- sort(unique(unlist(revdeps, use.names = FALSE)))
+            reverse <- grep(paste0("^[", pattern, "]"), revdeps, ignore.case = TRUE, value=TRUE)
+            cat("checking", length(reverse), "reverse dependencies matching [", pattern, "]\n")
           } else {
-            tools::check_packages_in_dir(checkdir, reverse = reverse, Ncpus = parallel::detectCores())          
+            reverse <- list(repos = 'https://cloud.r-project.org', which = "${{ inputs.which }}")
+            cat("checking", length(reverse), "reverse dependencies\n")
           }
+          tools::check_packages_in_dir(checkdir, reverse = reverse, Ncpus = parallel::detectCores())
           details <- tools::check_packages_in_dir_details(checkdir)
           write.csv(details, file.path(checkdir, 'check-details.csv'))
           writeLines(paste(format(details), collapse = "\n\n"), file.path(checkdir, 'check-details.txt'))
