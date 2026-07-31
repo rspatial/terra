@@ -229,6 +229,16 @@ window(rw) <- ext(5.8, 6.0, 49.5, 49.8)
 expect_true(window(rw))
 expect_error(tile_apply(rw, function(x) x, tiles=50))
 
+# multi-source SpatRaster (window() returns a length > 1 logical) (#2150)
+r2 <- c(r, r)
+expect_equal(length(window(r2)), 2)
+out_ml <- tile_apply(r2, function(x) x * 2, tiles=50)
+expect_equal(nlyr(out_ml), 2)
+v_ml <- values(out_ml)
+ok <- !is.na(v_ml[,1]) & !is.na(v_in)
+expect_equal(v_ml[ok, 1], 2 * v_in[ok])
+expect_equal(v_ml[ok, 2], 2 * v_in[ok])
+
 
 # parallel run ─
 # Wrapped in tryCatch so a worker that cannot start does not break the suite.

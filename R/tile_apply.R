@@ -196,7 +196,7 @@ tile_apply <- function(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 	if (!inherits(x, "SpatRaster")) {
 		error("tile_apply", "'x' must be a SpatRaster")
 	}
-	if (window(x)) {
+	if (any(window(x))) {
 		error("tile_apply", "'x' already has a window set; remove it first with 'window(x) <- NULL'")
 	}
 	fun <- match.fun(fun)
