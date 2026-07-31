@@ -1076,16 +1076,9 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   double pflow_estimate=ddp1[0];
   
   /// ORDER E ; 
-  ///
-  ///
-  ///
-  ///
-  ///
   std::vector<int> ide(nx*ny,0);
   std::iota(ide.begin(), ide.end(), 0); 
   std::sort(ide.begin(), ide.end(),[&](int a, int b){ return e[a] > e[b]; });
-  
-
   
   for (int i = 0; i < nx*ny; i++) {
     
@@ -1105,10 +1098,6 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
    int nextd=nextcell_point_conv1(nx,ny,x,y,ddp2[facet],conv_type);
    e1=*(e+nextc);
    e2=*(e+nextd); 
-
-   ////
-
-
 
    *(atdc+i)=*(tdc+i)*sigma[facet];
    *(atdplus+i)=0;
@@ -1136,7 +1125,6 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
    pflow_estimate=*(pflow+i);
    nextp=nextcell_point_conv1(nx,ny,x,y,pflow_estimate,conv_type);
    if (nextp!=i) {
-
      *(has_upstream+nextp)=1+*(has_upstream+nextp);
    ////  *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i)
    }
@@ -1161,11 +1149,11 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   }
 
   for (int jjk = 0; jjk < nx*ny; jjk++) {
-  int j=ide[jjk];  
-  int i=j; 
-  int flowacci=*(flowaccm+i);
-  if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) cnt++; // ???
-  if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) do {
+    int j=ide[jjk];  
+    int i=j; 
+  //int flowacci=*(flowaccm+i);
+    if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) cnt++; // ???
+    if ((*(kupdate+j)==0) & ((*(has_upstream+j)==0) & (cnt1>=0))) do {
    
     *(atdplus+j)=*(atdplus0+j); // ?????
    /// *(has_upstream+j)=-2;
@@ -1177,11 +1165,7 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   //  pflow_estimate=*(pflow+j);
    // pflow_estimate0=*(pflow+i);
    // e0=*(e+i); // not j ec 20260430
-
-    nextp=nextcell_point_conv1(nx,ny,x,y,*(pflow+i),conv_type);
-   
-    
-    
+    nextp=nextcell_point_conv1(nx,ny,x,y,*(pflow+i),conv_type);    
     // analyse nextp cell 
     int xp = getCol(nx, ny, nextp);   // ATTENTION: base 0 or 1
     int yp = getRow(nx, ny, nextp);
@@ -1241,7 +1225,6 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
     }
     // work here 20260122
     
-    
     if ((*(flowaccm+i)+1)>*(flowaccm+nextp)) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119
   ////  if ((abs(atdplus_temp)>=abs(*(atdplus+nextp)))) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119
    ///// if ((abs(atdplus_temp)>=abs(*(atdplus+nextp)))) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119  
@@ -1282,7 +1265,6 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   if (cnt1>max_iters) {
     ok = false;
     exit_cond1=2;       
-
   }  
  } while  (exit_cond1==0);
   // NOVALUE
