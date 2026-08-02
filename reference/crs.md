@@ -82,7 +82,7 @@ character or modified SpatRaster/Vector
 
 ## See also
 
-[`set.crs`](https://rspatial.github.io/terra/reference/inplace.md),
+[`same.crs`](https://rspatial.github.io/terra/reference/same.crs.md),
 [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md)
 
 ## Examples
