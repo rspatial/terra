@@ -62,6 +62,9 @@ You can also set the crs to "local" to get an informal coordinate system on an a
 character or modified SpatRaster/Vector
 }
 
+\seealso{
+\code{\link{set.crs}}, {\code{\link{is.lonlat}}}
+}
 
 \examples{ 
 r <- rast()
