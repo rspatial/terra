@@ -47,6 +47,10 @@
 <li>
 <code>rasterize</code> with points could crash R (or silently corrupt memory) when the output raster was processed in chunks and the last point fell before the last chunk <a href="https://github.com/rspatial/terra/issues/2142" class="external-link">#2142</a> by Agustín Lobo</li>
 <li>output of <code>cartogram(x, type="nc")</code> was invisible <a href="https://github.com/rspatial/terra/issues/2134" class="external-link">#2134</a> by Márcia Barbosa</li>
+<li>
+<code>rast(, md=TRUE)</code> did not read the coordinates for HDF4/MODIS files <a href="https://github.com/rspatial/terra/issues/2148" class="external-link">#2148</a> by Kodi Arfer</li>
+<li>
+<code>tile_apply</code> failed on SpatRasters with more than one source <a href="https://github.com/rspatial/terra/issues/2150" class="external-link">#2150</a> by ebkurtz</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-9-41">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-41"></a></h3>

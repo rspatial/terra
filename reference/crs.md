@@ -80,6 +80,11 @@ on an arbitrary Euclidean (Cartesian) plane with units in meter.
 
 character or modified SpatRaster/Vector
 
+## See also
+
+[`set.crs`](https://rspatial.github.io/terra/reference/inplace.md),
+[`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md)
+
 ## Examples
 
 ``` r

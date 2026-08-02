@@ -30,6 +30,10 @@
 - output of `cartogram(x, type="nc")` was invisible
   [\#2134](https://github.com/rspatial/terra/issues/2134) by Márcia
   Barbosa
+- `rast(, md=TRUE)` did not read the coordinates for HDF4/MODIS files
+  [\#2148](https://github.com/rspatial/terra/issues/2148) by Kodi Arfer
+- `tile_apply` failed on SpatRasters with more than one source
+  [\#2150](https://github.com/rspatial/terra/issues/2150) by ebkurtz
 
 ### enhancements
 
