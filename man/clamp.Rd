@@ -17,7 +17,7 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or numeric vector}
   \item{lower}{numeric with the lowest acceptable value (you can specify a different value for each layer). Or a SpatRaster that has a single layer or the same number of layers as \code{x}}
   \item{upper}{numeric with the highest acceptable value (you can specify a different value for each layer). Or a SpatRaster that has a single layer or the same number of layers as \code{x}}
   \item{values}{logical. If \code{FALSE} values outside the clamping range become \code{NA}, if \code{TRUE}, they get the extreme values}
