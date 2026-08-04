@@ -48,7 +48,7 @@ clamp(x, lower=-Inf, upper=Inf, values=TRUE, ...)
 
 ## Value
 
-same as `x`
+object of the same class as `x`
 
 ## See also
 
