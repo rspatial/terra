@@ -91,6 +91,25 @@ character or modified SpatRaster/Vector
 r <- rast()
 crs(r)
 #> [1] "GEOGCRS[\"WGS 84 (CRS84)\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"World\"],\n        BBOX[-90,-180,90,180]],\n    ID[\"OGC\",\"CRS84\"]]"
+cat( crs(r) )
+#> GEOGCRS["WGS 84 (CRS84)",
+#>     DATUM["World Geodetic System 1984",
+#>         ELLIPSOID["WGS 84",6378137,298.257223563,
+#>             LENGTHUNIT["metre",1]]],
+#>     PRIMEM["Greenwich",0,
+#>         ANGLEUNIT["degree",0.0174532925199433]],
+#>     CS[ellipsoidal,2],
+#>         AXIS["geodetic longitude (Lon)",east,
+#>             ORDER[1],
+#>             ANGLEUNIT["degree",0.0174532925199433]],
+#>         AXIS["geodetic latitude (Lat)",north,
+#>             ORDER[2],
+#>             ANGLEUNIT["degree",0.0174532925199433]],
+#>     USAGE[
+#>         SCOPE["unknown"],
+#>         AREA["World"],
+#>         BBOX[-90,-180,90,180]],
+#>     ID["OGC","CRS84"]]
 crs(r, describe=TRUE, proj=TRUE)
 #>             name authority  code  area             extent
 #> 1 WGS 84 (CRS84)       OGC CRS84 World -180, 180, -90, 90
@@ -98,8 +117,46 @@ crs(r, describe=TRUE, proj=TRUE)
 #> 1 +proj=longlat +datum=WGS84 +no_defs
 
 crs(r) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
-crs(r)
-#> [1] "PROJCRS[\"unknown\",\n    BASEGEOGCRS[\"unknown\",\n        DATUM[\"Unknown based on WGS 84 ellipsoid\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1],\n                ID[\"EPSG\",7030]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8901]]],\n    CONVERSION[\"unknown\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",-100,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",48,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",33,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]]]"
+cat(crs(r))
+#> PROJCRS["unknown",
+#>     BASEGEOGCRS["unknown",
+#>         DATUM["Unknown based on WGS 84 ellipsoid",
+#>             ELLIPSOID["WGS 84",6378137,298.257223563,
+#>                 LENGTHUNIT["metre",1],
+#>                 ID["EPSG",7030]]],
+#>         PRIMEM["Greenwich",0,
+#>             ANGLEUNIT["degree",0.0174532925199433],
+#>             ID["EPSG",8901]]],
+#>     CONVERSION["unknown",
+#>         METHOD["Lambert Conic Conformal (2SP)",
+#>             ID["EPSG",9802]],
+#>         PARAMETER["Latitude of false origin",0,
+#>             ANGLEUNIT["degree",0.0174532925199433],
+#>             ID["EPSG",8821]],
+#>         PARAMETER["Longitude of false origin",-100,
+#>             ANGLEUNIT["degree",0.0174532925199433],
+#>             ID["EPSG",8822]],
+#>         PARAMETER["Latitude of 1st standard parallel",48,
+#>             ANGLEUNIT["degree",0.0174532925199433],
+#>             ID["EPSG",8823]],
+#>         PARAMETER["Latitude of 2nd standard parallel",33,
+#>             ANGLEUNIT["degree",0.0174532925199433],
+#>             ID["EPSG",8824]],
+#>         PARAMETER["Easting at false origin",0,
+#>             LENGTHUNIT["metre",1],
+#>             ID["EPSG",8826]],
+#>         PARAMETER["Northing at false origin",0,
+#>             LENGTHUNIT["metre",1],
+#>             ID["EPSG",8827]]],
+#>     CS[Cartesian,2],
+#>         AXIS["(E)",east,
+#>             ORDER[1],
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]],
+#>         AXIS["(N)",north,
+#>             ORDER[2],
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]]]
 
 # You can use epsg codes
 crs(r)  <- "epsg:25831"

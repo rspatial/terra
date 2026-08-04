@@ -48,12 +48,26 @@ clamp(x, lower=-Inf, upper=Inf, values=TRUE, ...)
 
 ## Value
 
-SpatRaster A SpatRaster when `x` is a SpatRaster. A numeric vector when
-`x` is numeric.
+same as `x`
+
+## See also
 
 [`classify`](https://rspatial.github.io/terra/reference/classify.md)`, `[`subst`](https://rspatial.github.io/terra/reference/subst.md)
 
-r \<- rast(ncols=10, nrows=10) values(r) \<- 1:ncell(r) rc \<- clamp(r,
-25, 75) rc
+## Examples
 
-spatial
+``` r
+r <- rast(ncols=10, nrows=10)
+values(r) <- 1:ncell(r)
+rc <- clamp(r, 25, 75) 
+rc
+#> class       : SpatRaster
+#> size        : 10, 10, 1  (nrow, ncol, nlyr)
+#> resolution  : 36, 18  (x, y)
+#> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
+#> source(s)   : memory
+#> name        : lyr.1
+#> min value   :    25
+#> max value   :    75
+```
