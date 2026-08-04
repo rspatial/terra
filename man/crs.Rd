@@ -68,11 +68,11 @@ character or modified SpatRaster/Vector
 
 \examples{ 
 r <- rast()
-crs(r)
+cat( crs(r) )
 crs(r, describe=TRUE, proj=TRUE)
 
 crs(r) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
-crs(r)
+cat(crs(r))
 
 # You can use epsg codes
 crs(r)  <- "epsg:25831"
