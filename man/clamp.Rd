@@ -26,7 +26,7 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
 }
 
 \value{
-same as \code{x}
+object of the same class as \code{x}
 }
 
 \seealso{
