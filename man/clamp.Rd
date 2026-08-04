@@ -26,10 +26,7 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
 }
 
 \value{
-SpatRaster
-\value{
-A SpatRaster when \code{x} is a SpatRaster.
-A numeric vector when \code{x} is numeric.
+same as \code{x}
 }
 
 \seealso{
