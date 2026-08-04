@@ -68,6 +68,7 @@ character or modified SpatRaster/Vector
 
 \examples{ 
 r <- rast()
+crs(r)
 cat( crs(r) )
 crs(r, describe=TRUE, proj=TRUE)
 
