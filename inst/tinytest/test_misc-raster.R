@@ -69,3 +69,12 @@ expect_equal(as.numeric(wx[1, "value"]), 9)
 fd <- terrain(r, v = "flowdir")
 nid <- NIDP(fd)
 expect_true(all(nid[] >= 0 & nid[] <= 9, na.rm = TRUE))
+
+## as.polygons uses the correct layer (#2156)
+r_m <- rast(nrows = 10, ncols = 10, nlyrs = 2, vals=c(rep(NA, 50), rep(1:5, 30)))
+r_disk <- writeRaster(r_m,  tempfile(fileext = ".tif"), overwrite = TRUE)
+p_mem <- as.polygons(r_m[[2]])
+p_disk <- as.polygons(r_disk[[2]])
+expect_equal(sort(unique(values(p_disk)[, 1])), sort(unique(values(p_mem)[, 1])))
+expect_false(0 %in% values(p_disk)[, 1])
+

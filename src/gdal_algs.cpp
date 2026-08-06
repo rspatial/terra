@@ -1707,8 +1707,9 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	SpatOptions topt(opt);
 
 	SpatRaster tmp;
+	std::string warn = "";
 	if (nlyr() > 1) {
-		out.addWarning("only the first layer is polygonized when 'dissolve=TRUE'");
+		warn = "only the first layer is polygonized when 'dissolve=TRUE'";
 		tmp = subset({0}, topt);
 	} else {
 		tmp = *this;
@@ -1806,7 +1807,7 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	}
 
 	GDALRasterBand  *poBand;
-	poBand = srcDS->GetRasterBand(1);
+	poBand = srcDS->GetRasterBand(tmp.source[0].layers[0] + 1);
 
 	//int hasNA=1;
 	//double naflag = poBand->GetNoDataValue(&hasNA);
@@ -1845,6 +1846,9 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 
 	if (!values) {
 		out.df = SpatDataFrame();
+	}
+	if (warn != "") {
+		out.addWarning(warn);
 	}
 
 	return out;
