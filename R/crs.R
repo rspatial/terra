@@ -164,7 +164,7 @@ setMethod("crs", signature("SpatRasterDataset"),
 	if (inherits(x, "SpatVector") | inherits(x, "SpatRaster")) {
 		x <- crs(x)
 	}
-	if (is.null(x) || is.na(x)) {
+	if (isTRUE(is.null(x) || is.na(x))) {
 		x <- ""
 	} else if (inherits(x, "CRS")) {
 		if (warn) warn("crs", "expected a character string, not a CRS object")
@@ -175,12 +175,16 @@ setMethod("crs", signature("SpatRasterDataset"),
 		}
 		x <- y
 	} else if (is.character(x)) {
-		x <- x[1]
-		lowx <- tolower(x)
-		if (lowx == "local") {
-			x = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
-		} else if (lowx == "lonlat") {
-			x <- "+proj=longlat"
+		if (length(x) == 0) {
+			x <- ""
+ 		} else {
+			x <- x[1]
+			lowx <- tolower(x)
+			if (lowx == "local") {
+				x = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+			} else if (lowx == "lonlat") {
+				x <- "+proj=longlat"
+			}
 		}
 	} else {
 		error("crs", "I do not know what to do with this argument (expected a character string)")
