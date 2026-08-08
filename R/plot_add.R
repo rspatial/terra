@@ -194,31 +194,36 @@ add_abline <- function(h=NULL, v=NULL, ...) {
 }
 
 	
-add_mtext <- function(text, side=3, line=0, ...) {
+add_mtext <- function(text, side=3, line=0, adj=0.5, ...) {
 
 	stopifnot(side %in% 1:4)
 
 	p <- unlist(get.clip())
 	h <- graphics::strheight(text, units = "user", ...)	
+	adj <- c(adj[1], 0.5)
 	
 	srt <- 0
-	if (side==1) {
-		x <- mean(p[1:2])
+	if (side == 1) {
+		x <- p[1] + adj[1] * (p[2] - p[1])
 		y <- p[3] - h - line * h
-	} else 	if (side==2) {
-		x <- p[1] -1.25 * h - line * h
-		y <- mean(p[3:4])
+		a <- adj
+	} else 	if (side == 2) {
+		x <- p[1] - 1.25 * h - line * h
+		y <- p[3] + adj[1] * (p[4] - p[3])
 		srt <- 90
-	} else 	if (side==3) {
-		x <- mean(p[1:2])
+		a <- adj
+	} else 	if (side == 3) {
+		x <- p[1] + adj[1] * (p[2] - p[1])
 		y <- p[4] + h + line * h
+		a <- adj
 	} else {
 		x <- p[2] + 1.25 * h + line * h
-		y <- mean(p[3:4])
+		y <- p[3] + adj[1] * (p[4] - p[3])
 		srt <- 270
+		a <- c(1 - adj[1], adj[2])
 	} 
 	
-	text(x=x, y=y, labels=text, xpd=TRUE, srt=srt, ...)
+	text(x=x, y=y, labels=text, xpd=TRUE, srt=srt, adj=a, ...)
 }
 
 
