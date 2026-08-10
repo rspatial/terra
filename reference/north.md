@@ -20,8 +20,7 @@ north(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...)
 
   integer between 1 and 12, or a character (unicode) representation of a
   right pointing arrow such as `"\u27A9"`. You may need to install the
-  fonts for this. See the discussion on
-  [stackoverflow](https://stackoverflow.com/a/79747858/635245)
+  fonts for this. See here: https://stackoverflow.com/a/79747858/635245
 
 - label:
 

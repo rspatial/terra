@@ -63,6 +63,9 @@
 - the “threads” option now defaults to 16 (instead of no limit) to avoid
   run-away thread counts on machines with very many cores. The “threads”
   argument of `project` and `resample` can now also be a number
+- argument `adj` in `add_mtext` now better aligns text along the margins
+  [\#2158](https://github.com/rspatial/terra/pull/2158) by Mehmet Göktuğ
+  Öztürk
 
 ### new
 
