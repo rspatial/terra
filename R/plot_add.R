@@ -199,30 +199,28 @@ add_mtext <- function(text, side=3, line=0, adj=0.5, ...) {
 	stopifnot(side %in% 1:4)
 
 	p <- unlist(get.clip())
-	h <- graphics::strheight(text, units = "user", ...)	
+	h <- graphics::strheight(text, units="user", ...)
 	adj <- c(adj[1], 0.5)
-	
+
 	srt <- 0
 	if (side == 1) {
 		x <- p[1] + adj[1] * (p[2] - p[1])
 		y <- p[3] - h - line * h
-		a <- adj
-	} else 	if (side == 2) {
+	} else if (side == 2) {
 		x <- p[1] - 1.25 * h - line * h
 		y <- p[3] + adj[1] * (p[4] - p[3])
 		srt <- 90
-		a <- adj
-	} else 	if (side == 3) {
+	} else if (side == 3) {
 		x <- p[1] + adj[1] * (p[2] - p[1])
 		y <- p[4] + h + line * h
-		a <- adj
 	} else {
 		x <- p[2] + 1.25 * h + line * h
 		y <- p[3] + adj[1] * (p[4] - p[3])
 		srt <- 270
-		a <- c(1 - adj[1], adj[2])
-	} 
-	
+	}
+
+	# flip adj because for rotated side4
+	a <- if (side == 4) c(1 - adj[1], adj[2]) else adj
 	text(x=x, y=y, labels=text, xpd=TRUE, srt=srt, adj=a, ...)
 }
 

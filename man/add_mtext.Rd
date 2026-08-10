@@ -36,10 +36,11 @@ plot(r, axes=FALSE, legend=FALSE)
 add_box()
 for (i in 1:4) {
 	add_mtext("start", i, adj=0, col="blue")
+	add_mtext("middle", i, adj=0.5, cex=1.5)
 	add_mtext("end", i, adj=1, col="red")
 }
+
 }
 
 \keyword{methods}
 \keyword{spatial}
-
