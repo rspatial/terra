@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-41
+## version 1.9-42
 
 ### bug fixes
 
@@ -34,6 +34,10 @@
   [\#2148](https://github.com/rspatial/terra/issues/2148) by Kodi Arfer
 - `tile_apply` failed on SpatRasters with more than one source
   [\#2150](https://github.com/rspatial/terra/issues/2150) by ebkurtz
+- `as.polygons` on a file-backed multi-layer SpatRaster always used the
+  first layer, not the selected layer
+  [\#2156](https://github.com/rspatial/terra/issues/2156) by Mehmet
+  Göktuğ Öztürk
 
 ### enhancements
 

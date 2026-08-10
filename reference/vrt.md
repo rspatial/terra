@@ -81,10 +81,10 @@ x <- rast(ncols=2, nrows=2)
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/RtmpTZLz8Y/file222f11e73da4_1.tif"
-#> [2] "/tmp/RtmpTZLz8Y/file222f11e73da4_2.tif"
-#> [3] "/tmp/RtmpTZLz8Y/file222f11e73da4_3.tif"
-#> [4] "/tmp/RtmpTZLz8Y/file222f11e73da4_4.tif"
+#> [1] "/tmp/RtmpMIr5sd/file22a7491220f_1.tif"
+#> [2] "/tmp/RtmpMIr5sd/file22a7491220f_2.tif"
+#> [3] "/tmp/RtmpMIr5sd/file22a7491220f_3.tif"
+#> [4] "/tmp/RtmpMIr5sd/file22a7491220f_4.tif"
 
 #vrtfile <- paste0(tempfile(), ".vrt")
 #v <- vrt(ff, vrtfile)
