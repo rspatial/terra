@@ -42,7 +42,9 @@ expect_true(all(c("d2m", "sp", "ssrd", "t2m", "tp", "u10", "v10") %in%
                 unique(varnames(rall))))
 
 va <- values(rall)
-expect_equivalent(va[1, 1], 295.4049, tolerance = 1e-3)
+# Variable order follows the driver (not alphabetical); check a known scaled value by name
+i_d2m <- grep("^d2m", names(rall))[1]
+expect_equivalent(va[1, i_d2m], 295.4049, tolerance = 1e-3)
 
 ea <- extract(rall, xy)
 expect_equal(ncol(ea), 336)
