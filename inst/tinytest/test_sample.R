@@ -65,6 +65,15 @@ expect_equal(as.vector(tb1), c(3L, 3L, 3L))
 st2 <- spatSample(rr, 9, method = "stratified", cells = TRUE, values = TRUE, each = FALSE)
 expect_equal(nrow(st2), 9)
 
+## method = "stratified" on categorical raster — return category names (#2159)
+rrf <- rr
+levels(rrf) <- data.frame(id = 1:3, labels = c("a", "b", "c"))
+stf <- spatSample(rrf, 2, method = "stratified", as.points = TRUE)
+expect_true(is.factor(stf$labels))
+expect_equal(sort(unique(as.character(stf$labels))), c("a", "b", "c"))
+stf2 <- spatSample(rrf, 2, method = "stratified", cells = TRUE)
+expect_true(is.factor(stf2$labels))
+
 ## method = "weights" — draws follow cell index raster (positive weights)
 rw <- init(r, "cell") / nc
 sw <- spatSample(rw, 24, method = "weights", cells = TRUE)

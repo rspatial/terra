@@ -332,6 +332,11 @@ sampleStratified_old <- function(x, size, replace=FALSE, as.df=TRUE, as.points=F
 	}
 	if (!values) {
 		res <- res[,1:(1 + 2*(xy|as.points)), drop=FALSE]
+	} else if (is.factor(x)[1] && as.df) {
+		# last column is the stratum value from the first layer
+		j <- ncol(res)
+		res <- data.frame(res)
+		res[[j]] <- set_factors(res[, j, drop=FALSE], TRUE, levels(x)[1], TRUE)[[1]]
 	}
 
 	if (as.points) {
@@ -774,6 +779,7 @@ sampleStratified2 <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALS
 
 
 	ff <- is.factor(x)
+	lv <- levels(x)
 	size <- size[1]
 	vc <- .sampleCellsStratified(x, size, each, replace, ext)
 	
@@ -787,15 +793,22 @@ sampleStratified2 <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALS
 		warn("spatSample", paste("not all classes had sufficient cells"))
 	}
 
-	cvals <- NULL
+	# stratified sampling category labels
+	strat_vals <- function() {
+		vals <- vc[, 2, drop=FALSE]
+		if (isTRUE(ff[1]) && as.df) {
+			vals <- set_factors(vals, TRUE, lv[1], TRUE)
+		}
+		vals
+	}
+
 	if (cells || xy || as.points) {
 		out <- add_cxyp(x, vc[,1], cells, xy, as.points, values=FALSE, na.rm=FALSE)
-		if (values) out <- cbind(out, vc[,2,drop=FALSE])
+		if (values) out <- cbind(out, strat_vals())
 		return(out)
 	} else if (values) {
-		if (any(ff) && as.df) {
-			lv <- levels(x)
-			vc[,2] <- set_factors(vc[,2], ff, lv, as.df)
+		if (isTRUE(ff[1]) && as.df) {
+			return(data.frame(cell=vc[,1], strat_vals(), check.names=FALSE))
 		}
 	} else {
 		vc <- vc[,1,drop=FALSE]
