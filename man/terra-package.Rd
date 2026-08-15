@@ -14,7 +14,7 @@
 
 The package implements two main classes (data types): \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
-Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of \code{SpatRaster} or \code{SpatVector} objects. There is also a \code{SpatGraticule} class to assist in adding longitude/latitude lines and labels to a map with another coordinate reference system.
+Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of \code{SpatRaster} or \code{SpatVector} objects. There is also a \code{SpatGraticule} class to assist in adding longitude/latitude lines and labels to a map with another coordinate reference system; and a \code{SpatNetwork} class for spatial graphs of nodes and edges (for example road or stream networks).
 
 These classes hold a C++ pointer to the data "reference class". You should not write scripts that directly access this pointer, as its user-interface is not stable. These pointers make the code run fast, but they cannot be "serialized". That is they cannot be recovered from a saved R session, or passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}} and \code{\link{saveRDS}}. See these \href{https://rspatial.org/pkg/10-parallel.html}{guidelines} for parallelization with terra objects.
 
@@ -598,12 +598,30 @@ A SpatVectorCollection is a vector of SpatVector objects.
   }
 }
 
+\section{XXIX. SpatNetwork}{
+
+A SpatNetwork represents a spatial graph of nodes and edges (for example a road or stream network).
+
+\tabular{ll}{
+  \code{\link{netw}} \tab Create a SpatNetwork from lines, an igraph, a file, or from scratch\cr
+  \code{\link{net_nodes}} \tab Get the nodes as a SpatVector of points\cr
+  \code{\link{net_edges}} \tab Get the edges as a SpatVector of lines\cr
+  \code{\link{net_nnodes}} / \code{\link{net_nedges}} \tab Number of nodes or edges\cr
+  \code{\link{net_directed}} \tab Is the network directed?\cr
+  \code{\link{net_weights}} / \code{\link{net_weights<-}} \tab Get or set edge weights\cr
+  \code{\link{shortestPath}} \tab Shortest paths between nodes (Dijkstra)\cr
+  \code{\link{writeNetwork}} \tab Write a SpatNetwork to disk (GNM format)\cr
+  \code{\link{crs}} / \code{\link{ext}} \tab Coordinate reference system and extent\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}
+}
+
 
 \section{\bold{General methods}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XXIX. Conversion between spatial data objects from different packages}{
+\section{XXX. Conversion between spatial data objects from different packages}{
 
 You can coerce SpatRasters to Raster* objects, after loading the \code{raster} package, with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
  
@@ -622,7 +640,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
   }
 }
 
-\section{XXX. Plotting}{
+\section{XXXI. Plotting}{
 
 \subsection{Maps}{
   \tabular{ll}{
@@ -686,7 +704,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 
 
 
-\section{XXXI. Longitude/latitude data}{
+\section{XXXII. Longitude/latitude data}{
 
 Most methods that involve distance, area, direction, or sampling account for the Earth's shape when the coordinate reference system is longitude/latitude. Distances and lengths are then expressed in meters (unless noted otherwise), typically computed on the WGS84 ellipsoid with Karney's algorithm (GeographicLib). Areas are computed on the ellipsoid as well. For these quantities it is generally better to use lon/lat data than a planar (projected) CRS, because map projections distort distance, area and/or direction. These methods include \code{\link{distance}}, \code{\link{direction}}, \code{\link{gridDist}}, \code{\link{costDist}}, \code{\link{nearby}}, \code{\link{nearest}}, \code{\link{buffer}}, \code{\link{expanse}}, \code{\link{cellSize}}, \code{\link{perim}}, \code{\link{terrain}}, \code{\link{densify}}, \code{\link{elongate}}, \code{\link{agitate}}, \code{\link{spatSample}}, \code{\link{netw}}, \code{\link{shortestPath}}, and \code{\link{tessellate}}.
 
@@ -718,7 +736,7 @@ Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\li
 }
 
 
-\section{XXXII. New method names}{
+\section{XXXIII. New method names}{
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
 
@@ -765,7 +783,7 @@ Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\li
 }
 }
 
-\section{XXXIII. Changed behavior}{
+\section{XXXIV. Changed behavior}{
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). In other cases it simply seemed better. Here are some examples:
 
