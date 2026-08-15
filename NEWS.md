@@ -1,4 +1,4 @@
-# version 1.9-43
+# version 1.9-44
 
 ## bug fixes
 
@@ -12,7 +12,8 @@
 - `rast(, md=TRUE)` did not read the coordinates for HDF4/MODIS files [#2148](https://github.com/rspatial/terra/issues/2148) by Kodi Arfer
 - `tile_apply` failed on SpatRasters with more than one source [#2150](https://github.com/rspatial/terra/issues/2150) by ebkurtz
 - `as.polygons` on a file-backed multi-layer SpatRaster always used the first layer, not the selected layer [#2156](https://github.com/rspatial/terra/issues/2156) by Mehmet Göktuğ Öztürk
- 
+- improved multidim handling of GRIB files [#2160](https://github.com/rspatial/terra/issues/2160) by Kodi Arfer.
+
 
 ## enhancements
 
@@ -24,6 +25,7 @@
 - `focal` with "min" or "max" and an unweighted window is now faster, especially with large windows
 - the "threads" option now defaults to 16 (instead of no limit) to avoid run-away thread counts on machines with very many cores. The "threads" argument of `project` and `resample` can now also be a number
 - argument `adj` in `add_mtext` now better aligns text along the margins [#2158](https://github.com/rspatial/terra/pull/2158) by Mehmet Göktuğ Öztürk
+- `spatSample(method="startified")` now returns categorical values, not their integer representation [#2159](https://github.com/rspatial/terra/issues/2159) by Krzysztof Dyba
 
 
 ## new 
