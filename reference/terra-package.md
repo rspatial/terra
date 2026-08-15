@@ -733,7 +733,65 @@ differences in methods names with the `raster` package
 | `stackApply` | [`tapp`](https://rspatial.github.io/terra/reference/tapp.md) |
 | `stackSelect` | [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md) |
 
-## XXXII. Changed behavior
+## XXXII. Longitude/latitude data
+
+Most methods that involve distance, area, direction, or sampling account
+for the Earth's shape when the coordinate reference system is
+longitude/latitude. Distances and lengths are then expressed in meters
+(unless noted otherwise), typically computed on the WGS84 ellipsoid with
+Karney's algorithm (GeographicLib). Areas are computed on the ellipsoid
+as well. For these quantities it is generally better to use lon/lat data
+than a planar (projected) CRS, because map projections distort distance,
+area and/or direction. These methods include
+[`distance`](https://rspatial.github.io/terra/reference/distance.md),
+[`direction`](https://rspatial.github.io/terra/reference/direction.md),
+[`gridDist`](https://rspatial.github.io/terra/reference/gridDist.md),
+[`costDist`](https://rspatial.github.io/terra/reference/costDist.md),
+[`nearby`](https://rspatial.github.io/terra/reference/nearby.md),
+[`nearest`](https://rspatial.github.io/terra/reference/nearby.md),
+[`buffer`](https://rspatial.github.io/terra/reference/buffer.md),
+[`expanse`](https://rspatial.github.io/terra/reference/expanse.md),
+[`cellSize`](https://rspatial.github.io/terra/reference/cellSize.md),
+[`perim`](https://rspatial.github.io/terra/reference/perim.md),
+[`terrain`](https://rspatial.github.io/terra/reference/terrain.md),
+[`densify`](https://rspatial.github.io/terra/reference/densify.md),
+[`elongate`](https://rspatial.github.io/terra/reference/elongate.md),
+[`agitate`](https://rspatial.github.io/terra/reference/agitate.md),
+[`spatSample`](https://rspatial.github.io/terra/reference/sample.md),
+[`netw`](https://rspatial.github.io/terra/reference/netw.md),
+[`shortestPath`](https://rspatial.github.io/terra/reference/shortestPath.md),
+and
+[`tessellate`](https://rspatial.github.io/terra/reference/tessellate.md).
+
+Some methods do **not** use geodesic algorithms, require a planar CRS,
+or interpret parameters in the units of the CRS (degrees for lon/lat).
+
+Geometric "vector overlay" operations such as
+[`intersect`](https://rspatial.github.io/terra/reference/intersect.md),
+[`union`](https://rspatial.github.io/terra/reference/union.md),
+[`erase`](https://rspatial.github.io/terra/reference/erase.md),
+[`symdif`](https://rspatial.github.io/terra/reference/symdif.md), ,
+[`crop`](https://rspatial.github.io/terra/reference/crop.md) do not
+adjust for lon/lat intersections (use
+[`densify`](https://rspatial.github.io/terra/reference/densify.md) to
+approximate it better if needed)
+
+[`voronoi`](https://rspatial.github.io/terra/reference/voronoi.md),
+[`hull`](https://rspatial.github.io/terra/reference/convhull.md)) treat
+longitude/latitude coordinates as if they were planar.
+
+|  |  |
+|----|----|
+| [`viewshed`](https://rspatial.github.io/terra/reference/viewshed.md) | Requires a planar CRS (not lon/lat) |
+| [`surfArea`](https://rspatial.github.io/terra/reference/surfArea.md) | Requires a planar CRS with elevation in the same units |
+| [`simplifyGeom`](https://rspatial.github.io/terra/reference/simplify.md), [`snap`](https://rspatial.github.io/terra/reference/topology.md) | `tolerance` is in CRS units (degrees for lon/lat) |
+| [`voronoi`](https://rspatial.github.io/terra/reference/voronoi.md) | Snapping `tolerance` is in CRS units; the diagram is planar |
+| [`rasterizeWin`](https://rspatial.github.io/terra/reference/rasterizeWin.md) | Window size is in CRS units (no degree-to-meter conversion) |
+| [`focalMat`](https://rspatial.github.io/terra/reference/focalMat.md) | Filter size is in CRS units |
+| [`extract`](https://rspatial.github.io/terra/reference/extract.md) | `search_radius` for lon/lat uses mean latitude (approximate) |
+| ————————— | —————————————————————————————— |
+
+## XXXIII. Changed behavior
 
 Also note that even if function names are the same in `terra` and
 `raster`, their output can be different. In most cases this was done to

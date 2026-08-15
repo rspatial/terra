@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-42
+## version 1.9-44
 
 ### bug fixes
 
@@ -38,6 +38,8 @@
   first layer, not the selected layer
   [\#2156](https://github.com/rspatial/terra/issues/2156) by Mehmet
   Göktuğ Öztürk
+- improved multidim handling of GRIB files
+  [\#2160](https://github.com/rspatial/terra/issues/2160) by Kodi Arfer.
 
 ### enhancements
 
@@ -66,6 +68,10 @@
 - argument `adj` in `add_mtext` now better aligns text along the margins
   [\#2158](https://github.com/rspatial/terra/pull/2158) by Mehmet Göktuğ
   Öztürk
+- `spatSample(method="startified")` now returns categorical values, not
+  their integer representation
+  [\#2159](https://github.com/rspatial/terra/issues/2159) by Krzysztof
+  Dyba
 
 ### new
 
