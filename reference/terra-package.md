@@ -269,6 +269,8 @@ that).
 | [`NAflag`](https://rspatial.github.io/terra/reference/NAflag.md) | Set the `NA` value (for reading from a file with insufficient metadata) |
 | [`units`](https://rspatial.github.io/terra/reference/units.md) / `units<-` | Layer measurement units |
 | [`is.rotated`](https://rspatial.github.io/terra/reference/is.rotated.md) | Whether a SpatRaster is rotated |
+| [`has.geoloc`](https://rspatial.github.io/terra/reference/has.geoloc.md) | Whether a SpatRaster has GDAL geolocation arrays / GCPs |
+| [`geoloc`](https://rspatial.github.io/terra/reference/has.geoloc.md) | Geolocation / GCP metadata for a SpatRaster |
 | [`is.flipped`](https://rspatial.github.io/terra/reference/is.flipped.md) | Whether a SpatRaster is flipped |
 | [`datatype`](https://rspatial.github.io/terra/reference/datatype.md) | Storage datatype of layers |
 | [`scoff`](https://rspatial.github.io/terra/reference/scoff.md) / `scoff<-` | Scale-offset values |

@@ -507,6 +507,10 @@
 - [`halo()`](https://rspatial.github.io/terra/reference/halo.md) : Add
   halo-ed text to a plot
 
+- [`has.geoloc(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/has.geoloc.md)
+  [`geoloc(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/has.geoloc.md)
+  : Geolocation arrays and GCPs
+
 - [`head()`](https://rspatial.github.io/terra/reference/headtail.md)
   [`tail()`](https://rspatial.github.io/terra/reference/headtail.md) :
   head and tail of a SpatRaster or SpatVector

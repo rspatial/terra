@@ -24,7 +24,7 @@ logical. One value for each raster data \*source\*
 
 ## See also
 
-[`flip`](https://rspatial.github.io/terra/reference/flip.md)`, `[`is.rotated`](https://rspatial.github.io/terra/reference/is.rotated.md)
+[`flip`](https://rspatial.github.io/terra/reference/flip.md)`, `[`is.rotated`](https://rspatial.github.io/terra/reference/is.rotated.md)`, `[`has.geoloc`](https://rspatial.github.io/terra/reference/has.geoloc.md)
 
 ## Examples
 
