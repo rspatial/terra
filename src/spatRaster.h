@@ -82,6 +82,13 @@ class SpatRasterSource {
 		bool hasWindow=false;
 		SpatWindow window;
 
+		// GDAL GEOLOCATION domain (swath / curvilinear) and/or GCPs
+		bool has_geolocation=false;
+		bool has_gcps=false;
+		std::string geoloc_srs;   // SRS from GEOLOCATION or GCP projection
+		std::string geoloc_x;     // X_DATASET from GEOLOCATION
+		std::string geoloc_y;     // Y_DATASET from GEOLOCATION
+
 		bool is_multidim = false;
 		std::string m_arrayname;
 		size_t m_ndims;
@@ -398,6 +405,11 @@ class SpatRaster {
 		double size() { return (double)ncol() * (double)nrow() * (double)nlyr() ; }
 
 		std::vector<bool> is_rotated();
+		std::vector<bool> has_geoloc();
+		std::vector<bool> has_gcps();
+		std::vector<std::string> geoloc_srs();
+		std::vector<std::string> geoloc_x();
+		std::vector<std::string> geoloc_y();
 
 		double xres();
 		double yres();

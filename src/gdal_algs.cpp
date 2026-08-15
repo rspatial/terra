@@ -33,6 +33,20 @@
 #include <sstream>
 
 
+namespace {
+// Prefer dataset CRS; if unset, fall back to GEOLOCATION / GCP SRS from open (#1175)
+std::string warp_source_crs(SpatRaster &r) {
+	std::string srccrs = r.getSRS("wkt");
+	if (!srccrs.empty()) return srccrs;
+	std::vector<std::string> gs = r.geoloc_srs();
+	for (size_t i=0; i<gs.size(); i++) {
+		if (!gs[i].empty()) return gs[i];
+	}
+	return srccrs;
+}
+}
+
+
 /*
 GDAL 3.10
 
@@ -561,7 +575,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out.setError("not a valid warp method");
 		return out;
 	}
-	std::string srccrs = getSRS("wkt");
+	std::string srccrs = warp_source_crs(*this);
 	if (resample) {
 		out.setSRS(srccrs);
 	}
@@ -604,7 +618,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	if (!resample) {
 		if (srccrs.empty()) {
-			out.setError("input raster CRS not set");
+			out.setError("input raster CRS not set (and no GEOLOCATION/GCP SRS found)");
 			return out;
 		}
 	}
@@ -831,7 +845,7 @@ SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string meth
 		out.setError("not a valid warp method");
 		return out;
 	}
-	std::string srccrs = getSRS("wkt");
+	std::string srccrs = warp_source_crs(*this);
 	if (resample) {
 		out.setSRS(srccrs);
 	}
@@ -874,7 +888,7 @@ SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string meth
 
 	if (!resample) {
 		if (srccrs.empty()) {
-			out.setError("input raster CRS not set");
+			out.setError("input raster CRS not set (and no GEOLOCATION/GCP SRS found)");
 			return out;
 		}
 	}
@@ -1077,7 +1091,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 		out.setError("not a valid warp method");
 		return out;
 	}
-	std::string srccrs = getSRS("wkt");
+	std::string srccrs = warp_source_crs(*this);
 	if (resample) {
 		out.setSRS(srccrs);
 	}
@@ -1116,7 +1130,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 
 	if (!resample) {
 		if (srccrs.empty()) {
-			out.setError("input raster CRS not set");
+			out.setError("input raster CRS not set (and no GEOLOCATION/GCP SRS found)");
 			return out;
 		}
 	}
@@ -1354,7 +1368,7 @@ std::vector<double> SpatRaster::warp_scale(SpatRaster x, size_t n) {
 
 	std::vector<double> result(10, NAN);
 
-	std::string src_crs = getSRS("wkt");
+	std::string src_crs = warp_source_crs(*this);
 	std::string dst_crs = x.getSRS("wkt");
 	if (src_crs.empty()) {
 		setError("source raster CRS not set");
@@ -1627,7 +1641,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 
 	// use bounds suggested by GDALWarp.
 #if GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2)
-	std::string srccrs = getSRS("wkt");
+	std::string srccrs = warp_source_crs(*this);
 	if (!get_output_bounds((GDALDatasetH) poDataset, srccrs, srccrs, out)) {
 		GDALClose( (GDALDatasetH) poDataset );
 		if (!out.hasError()) {

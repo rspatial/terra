@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <stdint.h>
 #include <cmath>
+#include <cstring>
 #include <vector>
 //#include <regex>
 
@@ -995,6 +996,58 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 }
 
 
+// Read GEOLOCATION metadata and/or GCPs for swath / curvilinear files to have a CRS 
+// for project()/warp without requiring set.crs() (#1175).
+static void fill_geolocation(GDALDataset *poDataset, SpatRasterSource &s) {
+	s.has_geolocation = false;
+	s.has_gcps = false;
+	s.geoloc_srs.clear();
+	s.geoloc_x.clear();
+	s.geoloc_y.clear();
+
+	CSLConstList md = GDALGetMetadata((GDALDatasetH)poDataset, "GEOLOCATION");
+	if (md == NULL || CSLCount(md) == 0) {
+		GDALRasterBandH b = GDALGetRasterBand((GDALDatasetH)poDataset, 1);
+		if (b != NULL) {
+			md = GDALGetMetadata(b, "GEOLOCATION");
+		}
+	}
+	if (md != NULL && CSLCount(md) > 0) {
+		s.has_geolocation = true;
+		const char *srs = CSLFetchNameValue(md, "SRS");
+		if (srs != NULL && strlen(srs) > 0) {
+			s.geoloc_srs = srs;
+		}
+		const char *xd = CSLFetchNameValue(md, "X_DATASET");
+		if (xd != NULL) s.geoloc_x = xd;
+		const char *yd = CSLFetchNameValue(md, "Y_DATASET");
+		if (yd != NULL) s.geoloc_y = yd;
+	}
+
+	if (poDataset->GetGCPCount() > 0) {
+		s.has_gcps = true;
+		if (s.geoloc_srs.empty()) {
+			const char *gcp_wkt = poDataset->GetGCPProjection();
+			if (gcp_wkt != NULL && strlen(gcp_wkt) > 0) {
+				s.geoloc_srs = gcp_wkt;
+			}
+#if GDAL_VERSION_MAJOR >= 3
+			else {
+				const OGRSpatialReference *gcp_srs = poDataset->GetGCPSpatialRef();
+				if (gcp_srs != NULL) {
+					char *cp = NULL;
+					const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+					if (gcp_srs->exportToWkt(&cp, options) == OGRERR_NONE && cp != NULL) {
+						s.geoloc_srs = cp;
+					}
+					CPLFree(cp);
+				}
+			}
+#endif
+		}
+	}
+}
+
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multi) {
 
@@ -1190,6 +1243,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	s.flipped = false;
 	s.rotated = false;
+	fill_geolocation(poDataset, s);
 	double adfGeoTransform[6];
 
 	bool hasExtent = true;
@@ -1240,13 +1294,19 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		SpatExtent e(0, s.ncol, 0, s.nrow);
 		s.extent = e;
 
-		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
+		if (s.has_geolocation) {
+			addWarning("no geotransform; using GDAL geolocation arrays (project/rectify to georeference)");
+			warn = false;
+		} else if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 			#ifndef standalone
 			setMessage("ncdf extent");
+			warn = false;
 			#else
 			addWarning("unknown extent. Cells not equally spaced?");
+			warn = false;
 			#endif
-		} else if (warn) {
+		}
+		if (warn) {
 			addWarning("unknown extent");
 		}
 
@@ -1275,7 +1335,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 */
 	std::string crs = getDsWKT(poDataset);
 
-	if (crs.empty()) {
+	if (crs.empty() && !s.geoloc_srs.empty()) {
+		// Prefer SRS from GEOLOCATION domain or GCP projection (#1175)
+		crs = s.geoloc_srs;
+		s.parameters_changed = true;
+	} else if (crs.empty()) {
 		if (guessCRS && hasExtent && s.extent.xmin >= -180.1 && s.extent.xmax <= 360.1 && s.extent.ymin >= -90.1 && s.extent.ymax <= 90.1) {
 			crs = "OGC:CRS84";
 			s.parameters_changed = true;

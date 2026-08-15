@@ -28,7 +28,7 @@ logical. One value for each raster data *source*
 
 
 \seealso{
- \code{\link{flip}, \link{is.rotated}}
+ \code{\link{flip}, \link{is.rotated}, \link{has.geoloc}}
 }
 
 \examples{

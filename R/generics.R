@@ -34,6 +34,27 @@ setMethod("is.flipped", signature(x="SpatRaster"),
 )
 
 
+setMethod("has.geoloc", signature(x="SpatRaster"),
+	function(x) {
+		x@pntr$has_geoloc()
+	}
+)
+
+
+setMethod("geoloc", signature(x="SpatRaster"),
+	function(x) {
+		data.frame(
+			geolocation = x@pntr$has_geoloc(),
+			gcps = x@pntr$has_gcps(),
+			srs = x@pntr$geoloc_srs(),
+			x = x@pntr$geoloc_x(),
+			y = x@pntr$geoloc_y(),
+			stringsAsFactors = FALSE
+		)
+	}
+)
+
+
 setMethod("rangeFill", signature(x="SpatRaster"),
 	function(x, limit, circular=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)

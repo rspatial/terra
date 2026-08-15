@@ -163,6 +163,8 @@ if (!isGeneric("not.na")) {setGeneric("not.na", function(x, ...) standardGeneric
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("gaps")) {setGeneric("gaps", function(x, ...) standardGeneric("gaps"))}
 if (!isGeneric("is.rotated")) {setGeneric("is.rotated", function(x, ...) standardGeneric("is.rotated"))}
+if (!isGeneric("has.geoloc")) {setGeneric("has.geoloc", function(x, ...) standardGeneric("has.geoloc"))}
+if (!isGeneric("geoloc")) {setGeneric("geoloc", function(x, ...) standardGeneric("geoloc"))}
 if (!isGeneric("is.flipped")) {setGeneric("is.flipped", function(x, ...) standardGeneric("is.flipped"))}
 
 if (!isGeneric("is.num")) {setGeneric("is.num", function(x) standardGeneric("is.num"))}

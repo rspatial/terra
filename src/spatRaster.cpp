@@ -1027,6 +1027,51 @@ std::vector<bool> SpatRaster::is_rotated() {
 }
 
 
+std::vector<bool> SpatRaster::has_geoloc() {
+	std::vector<bool> b(source.size(), false);
+	for (size_t i=0; i<source.size(); i++) {
+		b[i] = source[i].has_geolocation;
+	}
+	return b;
+}
+
+
+std::vector<bool> SpatRaster::has_gcps() {
+	std::vector<bool> b(source.size(), false);
+	for (size_t i=0; i<source.size(); i++) {
+		b[i] = source[i].has_gcps;
+	}
+	return b;
+}
+
+
+std::vector<std::string> SpatRaster::geoloc_srs() {
+	std::vector<std::string> out(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		out[i] = source[i].geoloc_srs;
+	}
+	return out;
+}
+
+
+std::vector<std::string> SpatRaster::geoloc_x() {
+	std::vector<std::string> out(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		out[i] = source[i].geoloc_x;
+	}
+	return out;
+}
+
+
+std::vector<std::string> SpatRaster::geoloc_y() {
+	std::vector<std::string> out(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		out[i] = source[i].geoloc_y;
+	}
+	return out;
+}
+
+
 bool SpatRaster::valid_sources(bool files, bool rotated) {
 	std::vector<std::string> ff;
 	for (size_t i=0; i<source.size(); i++) {

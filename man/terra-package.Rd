@@ -253,6 +253,8 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{NAflag}} \tab Set the \code{NA} value (for reading from a file with insufficient metadata) \cr
     \code{\link{units}} / \code{\link{units<-}} \tab Layer measurement units \cr
     \code{\link{is.rotated}} \tab Whether a SpatRaster is rotated \cr
+    \code{\link{has.geoloc}} \tab Whether a SpatRaster has GDAL geolocation arrays / GCPs \cr
+    \code{\link{geoloc}} \tab Geolocation / GCP metadata for a SpatRaster \cr
     \code{\link{is.flipped}} \tab Whether a SpatRaster is flipped \cr
     \code{\link{datatype}} \tab Storage datatype of layers \cr
     \code{\link{scoff}} / \code{\link{scoff<-}} \tab Scale-offset values \cr	

@@ -773,6 +773,11 @@ RCPP_MODULE(spat){
 
 		.method("is_rotated", &SpatRaster::is_rotated)
 		.method("is_flipped", &SpatRaster::is_flipped)
+		.method("has_geoloc", &SpatRaster::has_geoloc)
+		.method("has_gcps", &SpatRaster::has_gcps)
+		.method("geoloc_srs", &SpatRaster::geoloc_srs)
+		.method("geoloc_x", &SpatRaster::geoloc_x)
+		.method("geoloc_y", &SpatRaster::geoloc_y)
 
 		.method("setWindow", &SpatRaster::setWindow, "")
 		.method("removeWindow", &SpatRaster::removeWindow, "")
