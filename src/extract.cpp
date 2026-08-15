@@ -1633,6 +1633,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			if (hasError()) return out;
 		}
 	}
+	flushMultidimCache();
 	return out;
 }
 

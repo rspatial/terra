@@ -229,6 +229,28 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 	std::string step;
 
 	lowercase(origin);
+	// GDAL GRIB multidim driver uses units like "sec/seconds/day UTC" for "<unit> since 1970-01-01 UTC".
+	// normalize to a CF-compliant "<unit> since 1970-01-01 00:00:00" before parsing
+	{
+		bool utc_epoch = (origin.find("utc") != std::string::npos || origin.find("gmt") != std::string::npos) &&
+						 origin.find("since") == std::string::npos &&  origin.find("from") == std::string::npos;
+		if (utc_epoch) {
+			std::string norm;
+			if (origin.find("sec") != std::string::npos) {
+				norm = "seconds";
+			} else if (origin.find("min") != std::string::npos) {
+				norm = "minutes";
+			} else if (origin.find("hour") != std::string::npos) {
+				norm = "hours";
+			} else if (origin.find("day") != std::string::npos) {
+				norm = "days";
+			}
+			if (!norm.empty()) {
+				origin = norm + " since 1970-01-01 00:00:00";
+			}
+		}
+	}
+
 	if ((origin.find("seconds")) != std::string::npos) {
 		seconds = true;
 	} else if ((origin.find("minutes")) != std::string::npos) {
@@ -444,10 +466,11 @@ std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x, bool filter
 
 // Arrays usable as SpatRaster md sources: at least 2 dimensions.
 // Sorted so the most likely "main" data variable comes first:
-// first higher dimension count, then larger total cell count, then alphabetical
+// first higher dimension count, then larger total cell count. Arrays that tie
+// on those keys keep their driver-provided (time) order.
 static std::vector<std::string> md_arrays_usable_for_raster(
-		std::shared_ptr<GDALGroup> poRootGroup,
-		const std::vector<std::string> &candidates) {
+		std::shared_ptr<GDALGroup> poRootGroup, 	const std::vector<std::string> &candidates) {
+
 	struct NameDim {
 		std::string name;
 		size_t ndim;
@@ -479,8 +502,7 @@ static std::vector<std::string> md_arrays_usable_for_raster(
 	}
 	std::stable_sort(tmp.begin(), tmp.end(), [](const NameDim &a, const NameDim &b) {
 		if (a.ndim != b.ndim) return a.ndim > b.ndim;
-		if (a.ncell != b.ncell) return a.ncell > b.ncell;
-		return a.name < b.name;
+		return a.ncell > b.ncell;
 	});
 	std::vector<std::string> out;
 	out.reserve(tmp.size());
@@ -1077,28 +1099,51 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 bool SpatRaster::readStartMulti(size_t src) {
 
-	char ** drvs = NULL;
+	// Build a cache key from filename+drivers to only reopen the multidim
+	// dataset when the file (or driver set) actually changes. This is critical
+	// if the multidim driver splits a single file into many arrays (seen with GRIB)
+	std::string key = source[src].filename;
+	key.push_back('\x1f');
 	for (size_t i=0; i<source[src].open_drivers.size(); i++) {
-		drvs = CSLAddString(drvs, source[src].open_drivers[i].c_str());
+		key += source[src].open_drivers[i];
+		key.push_back('\x1f');
 	}
 
-    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER, drvs));
-    if( !poDataset ) {
-		setError("not a good dataset");
-        return false;
-    }
+	std::shared_ptr<GDALGroup> poRootGroup;
+	if (m_mdCacheRoot && (m_mdCacheKey == key)) {
+		poRootGroup = m_mdCacheRoot;
+	} else {
+		m_mdCacheRoot.reset();
+		m_mdCacheDataset.reset();
+		m_mdCacheKey.clear();
 
-
-	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
-    if( !poRootGroup ) {
-		setError("no roots");
-		return false;
-    }
+		char ** drvs = NULL;
+		for (size_t i=0; i<source[src].open_drivers.size(); i++) {
+			drvs = CSLAddString(drvs, source[src].open_drivers[i].c_str());
+		}
+		GDALDataset *rawDs = GDALDataset::Open(source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER, drvs);
+		CSLDestroy(drvs);
+		if (!rawDs) {
+			setError("not a good dataset");
+			return false;
+		}
+		// Use GDALClose (not delete) so GDAL's Reference()/Dereference() ref
+		// counting stays consistent when other shared_ptrs (e.g. the root
+		// group) hold references to this dataset.
+		std::shared_ptr<GDALDataset> poDataset(rawDs, [](GDALDataset *p){ if (p) GDALClose(p); });
+		poRootGroup = poDataset->GetRootGroup();
+		if (!poRootGroup) {
+			setError("no roots");
+			return false;
+		}
+		m_mdCacheDataset = std::move(poDataset);
+		m_mdCacheRoot = poRootGroup;
+		m_mdCacheKey = key;
+	}
 
 	std::string startgroup="";
 	auto poVar = poRootGroup->ResolveMDArray(source[src].m_arrayname.c_str(), startgroup, nullptr);
 
-//    auto poVar = poRootGroup->OpenMDArray(source[src].m_arrayname.c_str());
     if( !poVar )   {
 		setError("cannot find: " + source[src].m_arrayname);
 		return false;
@@ -1115,10 +1160,16 @@ bool SpatRaster::readStartMulti(size_t src) {
 }
 
 
+void SpatRaster::flushMultidimCache() {
+	m_mdCacheRoot.reset();
+	m_mdCacheDataset.reset();
+	m_mdCacheKey.clear();
+}
+
+
 bool SpatRaster::readStopMulti(size_t src) {
-//	Rcpp::Rcout << "readStopMulti\n";
 	source[src].open_read = false;
-	source[0].m_array.reset();
+	source[src].m_array.reset();
 	return true;
 }
 
@@ -1573,6 +1624,9 @@ bool SpatRaster::readStartMulti(size_t src) {
 
 bool SpatRaster::readStopMulti(size_t src) {
 	return false;
+}
+
+void SpatRaster::flushMultidimCache() {
 }
 
 bool SpatRaster::open_gdal_multidim(GDALDatasetH &hDS, size_t src) {

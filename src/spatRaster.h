@@ -295,6 +295,16 @@ class SpatRaster {
 		bool gdal_stats = false;
 		bool gdal_approx = true;
 		bool gdal_minmax = true;
+#ifdef useGDAL
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
+		// Shared cache for the currently open multidim dataset. Reused across
+		// sources that share the same filename+drivers so that we do not have
+		// to re-open (and re-scan) the file for every source.
+		std::shared_ptr<GDALDataset> m_mdCacheDataset;
+		std::shared_ptr<GDALGroup> m_mdCacheRoot;
+		std::string m_mdCacheKey;
+#endif
+#endif
 	protected:
 		SpatExtent window;
 
@@ -649,6 +659,7 @@ class SpatRaster {
 
 		bool readStartMulti(size_t src);
 		bool readStopMulti(size_t src);
+		void flushMultidimCache();
 		bool open_gdal_multidim(GDALDatasetH &hDS, size_t src);
 		bool readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 		std::vector<double> readValuesMulti(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr);

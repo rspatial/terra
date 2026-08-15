@@ -73,6 +73,7 @@ bool SpatRaster::readStop() {
 			}
 		}
 	}
+	flushMultidimCache();
 	return true;
 }
 
