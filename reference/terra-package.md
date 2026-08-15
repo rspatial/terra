@@ -25,7 +25,8 @@ different weather variables; and `SpatRasterCollection` and
 `SpatVectorCollection` that are equivalent to lists of `SpatRaster` or
 `SpatVector` objects. There is also a `SpatGraticule` class to assist in
 adding longitude/latitude lines and labels to a map with another
-coordinate reference system.
+coordinate reference system; and a `SpatNetwork` class for spatial
+graphs of nodes and edges (for example road or stream networks).
 
 These classes hold a C++ pointer to the data "reference class". You
 should not write scripts that directly access this pointer, as its
@@ -592,11 +593,29 @@ A SpatVectorCollection is a vector of SpatVector objects.
 | [`plot<SpatGraticule>`](https://rspatial.github.io/terra/reference/plot_graticule.md) | plot a graticule |
 | ————————— | —————————————————————————————— |
 
+## XXIX. SpatNetwork
+
+A SpatNetwork represents a spatial graph of nodes and edges (for example
+a road or stream network).
+
+|  |  |
+|----|----|
+| [`netw`](https://rspatial.github.io/terra/reference/netw.md) | Create a SpatNetwork from lines, an igraph, a file, or from scratch |
+| [`net_nodes`](https://rspatial.github.io/terra/reference/netw.md) | Get the nodes as a SpatVector of points |
+| [`net_edges`](https://rspatial.github.io/terra/reference/netw.md) | Get the edges as a SpatVector of lines |
+| [`net_nnodes`](https://rspatial.github.io/terra/reference/netw.md) / [`net_nedges`](https://rspatial.github.io/terra/reference/netw.md) | Number of nodes or edges |
+| [`net_directed`](https://rspatial.github.io/terra/reference/netw.md) | Is the network directed? |
+| [`net_weights`](https://rspatial.github.io/terra/reference/netw.md) / `net_weights<-` | Get or set edge weights |
+| [`shortestPath`](https://rspatial.github.io/terra/reference/shortestPath.md) | Shortest paths between nodes (Dijkstra) |
+| [`writeNetwork`](https://rspatial.github.io/terra/reference/writeNetwork.md) | Write a SpatNetwork to disk (GNM format) |
+| [`crs`](https://rspatial.github.io/terra/reference/crs.md) / [`ext`](https://rspatial.github.io/terra/reference/ext.md) | Coordinate reference system and extent |
+| ————————— | —————————————————————————————— |
+
 ## **General methods**
 
 ———————————————————————————————————————
 
-## XXIX. Conversion between spatial data objects from different packages
+## XXX. Conversion between spatial data objects from different packages
 
 You can coerce SpatRasters to Raster\* objects, after loading the
 `raster` package, with `as(object, "Raster")`, or `raster(object)` or
@@ -616,7 +635,7 @@ You can coerce SpatRasters to Raster\* objects, after loading the
 | [`as.contour`](https://rspatial.github.io/terra/reference/contour.md) | Contour lines from a SpatRaster |
 | ————————— | —————————————————————————————— |
 
-## XXX. Plotting
+## XXXI. Plotting
 
 ### Maps
 
@@ -676,63 +695,6 @@ You can coerce SpatRasters to Raster\* objects, after loading the
 | [`boxplot`](https://rspatial.github.io/terra/reference/boxplot.md) | Box plot of the values of a SpatRaster |
 | ————————— | —————————————————————————————— |
 
-## **Comparison with the raster package**
-
-——————————————————————————————————————— "terra" was written to replace
-the "raster" package. "terra" has a very similar, but simpler,
-interface; it is faster, and it can do much more. This section
-highlights some of the differences between the two packages.
-
-## XXXI. New method names
-
-`terra` has a single class `SpatRaster` for which `raster` has three
-(`RasterLayer, RasterStack, RasterBrick`). Likewise there is a single
-class for vector data `SpatVector` that replaces six `Spatial*` classes.
-Most method names are the same, but note the following important
-differences in methods names with the `raster` package
-
-|  |  |
-|----|----|
-| **raster package** | **terra package** |
-| `raster, brick, stack` | [`rast`](https://rspatial.github.io/terra/reference/rast.md) |
-| `rasterFromXYZ` | [`rast`](https://rspatial.github.io/terra/reference/rast.md)`( , type="xyz")` |
-| `stack, addLayer` | [`c`](https://rspatial.github.io/terra/reference/c.md) |
-| `addLayer` | `add<-` |
-| `area` | [`cellSize`](https://rspatial.github.io/terra/reference/cellSize.md) or [`expanse`](https://rspatial.github.io/terra/reference/expanse.md) |
-| `approxNA` | [`approximate`](https://rspatial.github.io/terra/reference/approximate.md) |
-| `calc` | [`app`](https://rspatial.github.io/terra/reference/app.md) |
-| `cellFromLine, cellFromPolygon,` | [`cells`](https://rspatial.github.io/terra/reference/cells.md) |
-| `cellsFromExtent` | [`cells`](https://rspatial.github.io/terra/reference/cells.md) |
-| `cellStats` | [`global`](https://rspatial.github.io/terra/reference/global.md) |
-| `clump` | [`patches`](https://rspatial.github.io/terra/reference/patches.md) |
-| `compareRaster` | [`compareGeom`](https://rspatial.github.io/terra/reference/compareGeom.md) |
-| `corLocal` | [`focalPairs`](https://rspatial.github.io/terra/reference/focalPairs.md) |
-| `coordinates` | [`crds`](https://rspatial.github.io/terra/reference/crds.md) |
-| `couldBeLonLat` | [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md) |
-| `disaggregate` | [`disagg`](https://rspatial.github.io/terra/reference/disaggregate.md) |
-| `distanceFromPoints` | [`distance`](https://rspatial.github.io/terra/reference/distance.md) |
-| `drawExtent, drawPoly, drawLine` | [`draw`](https://rspatial.github.io/terra/reference/draw.md) |
-| `dropLayer` | [`subset`](https://rspatial.github.io/terra/reference/subset.md) |
-| `extent` | [`ext`](https://rspatial.github.io/terra/reference/ext.md) |
-| `getValues` | [`values`](https://rspatial.github.io/terra/reference/values.md) |
-| `isLonLat, isGlobalLonLat` | [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md) |
-| `layerize` | [`segregate`](https://rspatial.github.io/terra/reference/segregate.md) |
-| `layerStats` | [`layerCor`](https://rspatial.github.io/terra/reference/layerCor.md) |
-| `movingFun` | [`roll`](https://rspatial.github.io/terra/reference/roll.md) |
-| `NAvalue` | [`NAflag`](https://rspatial.github.io/terra/reference/NAflag.md) |
-| `nlayers` | [`nlyr`](https://rspatial.github.io/terra/reference/dimensions.md) |
-| `overlay` | [`lapp`](https://rspatial.github.io/terra/reference/lapp.md) |
-| `unstack` | [`as.list`](https://rspatial.github.io/terra/reference/as.list.md) |
-| `projectRaster` | [`project`](https://rspatial.github.io/terra/reference/project.md) |
-| `rasterToPoints` | [`as.points`](https://rspatial.github.io/terra/reference/as.points.md) |
-| `rasterToPolygons` | [`as.polygons`](https://rspatial.github.io/terra/reference/as.polygons.md) |
-| `readAll` | [`toMemory`](https://rspatial.github.io/terra/reference/toMemory.md) |
-| `reclassify, subs, cut` | [`classify`](https://rspatial.github.io/terra/reference/classify.md) |
-| `sampleRandom, sampleRegular` | [`spatSample`](https://rspatial.github.io/terra/reference/sample.md) |
-| `shapefile` | [`vect`](https://rspatial.github.io/terra/reference/vect.md) |
-| `stackApply` | [`tapp`](https://rspatial.github.io/terra/reference/tapp.md) |
-| `stackSelect` | [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md) |
-
 ## XXXII. Longitude/latitude data
 
 Most methods that involve distance, area, direction, or sampling account
@@ -791,7 +753,64 @@ longitude/latitude coordinates as if they were planar.
 | [`extract`](https://rspatial.github.io/terra/reference/extract.md) | `search_radius` for lon/lat uses mean latitude (approximate) |
 | ————————— | —————————————————————————————— |
 
-## XXXIII. Changed behavior
+## **Comparison with the raster package**
+
+——————————————————————————————————————— "terra" was written to replace
+the "raster" package. "terra" has a very similar, but simpler,
+interface; it is faster, and it can do much more. This section
+highlights some of the differences between the two packages.
+
+## XXXIII. New method names
+
+`terra` has a single class `SpatRaster` for which `raster` has three
+(`RasterLayer, RasterStack, RasterBrick`). Likewise there is a single
+class for vector data `SpatVector` that replaces six `Spatial*` classes.
+Most method names are the same, but note the following important
+differences in methods names with the `raster` package
+
+|  |  |
+|----|----|
+| **raster package** | **terra package** |
+| `raster, brick, stack` | [`rast`](https://rspatial.github.io/terra/reference/rast.md) |
+| `rasterFromXYZ` | [`rast`](https://rspatial.github.io/terra/reference/rast.md)`( , type="xyz")` |
+| `stack, addLayer` | [`c`](https://rspatial.github.io/terra/reference/c.md) |
+| `addLayer` | `add<-` |
+| `area` | [`cellSize`](https://rspatial.github.io/terra/reference/cellSize.md) or [`expanse`](https://rspatial.github.io/terra/reference/expanse.md) |
+| `approxNA` | [`approximate`](https://rspatial.github.io/terra/reference/approximate.md) |
+| `calc` | [`app`](https://rspatial.github.io/terra/reference/app.md) |
+| `cellFromLine, cellFromPolygon,` | [`cells`](https://rspatial.github.io/terra/reference/cells.md) |
+| `cellsFromExtent` | [`cells`](https://rspatial.github.io/terra/reference/cells.md) |
+| `cellStats` | [`global`](https://rspatial.github.io/terra/reference/global.md) |
+| `clump` | [`patches`](https://rspatial.github.io/terra/reference/patches.md) |
+| `compareRaster` | [`compareGeom`](https://rspatial.github.io/terra/reference/compareGeom.md) |
+| `corLocal` | [`focalPairs`](https://rspatial.github.io/terra/reference/focalPairs.md) |
+| `coordinates` | [`crds`](https://rspatial.github.io/terra/reference/crds.md) |
+| `couldBeLonLat` | [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md) |
+| `disaggregate` | [`disagg`](https://rspatial.github.io/terra/reference/disaggregate.md) |
+| `distanceFromPoints` | [`distance`](https://rspatial.github.io/terra/reference/distance.md) |
+| `drawExtent, drawPoly, drawLine` | [`draw`](https://rspatial.github.io/terra/reference/draw.md) |
+| `dropLayer` | [`subset`](https://rspatial.github.io/terra/reference/subset.md) |
+| `extent` | [`ext`](https://rspatial.github.io/terra/reference/ext.md) |
+| `getValues` | [`values`](https://rspatial.github.io/terra/reference/values.md) |
+| `isLonLat, isGlobalLonLat` | [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md) |
+| `layerize` | [`segregate`](https://rspatial.github.io/terra/reference/segregate.md) |
+| `layerStats` | [`layerCor`](https://rspatial.github.io/terra/reference/layerCor.md) |
+| `movingFun` | [`roll`](https://rspatial.github.io/terra/reference/roll.md) |
+| `NAvalue` | [`NAflag`](https://rspatial.github.io/terra/reference/NAflag.md) |
+| `nlayers` | [`nlyr`](https://rspatial.github.io/terra/reference/dimensions.md) |
+| `overlay` | [`lapp`](https://rspatial.github.io/terra/reference/lapp.md) |
+| `unstack` | [`as.list`](https://rspatial.github.io/terra/reference/as.list.md) |
+| `projectRaster` | [`project`](https://rspatial.github.io/terra/reference/project.md) |
+| `rasterToPoints` | [`as.points`](https://rspatial.github.io/terra/reference/as.points.md) |
+| `rasterToPolygons` | [`as.polygons`](https://rspatial.github.io/terra/reference/as.polygons.md) |
+| `readAll` | [`toMemory`](https://rspatial.github.io/terra/reference/toMemory.md) |
+| `reclassify, subs, cut` | [`classify`](https://rspatial.github.io/terra/reference/classify.md) |
+| `sampleRandom, sampleRegular` | [`spatSample`](https://rspatial.github.io/terra/reference/sample.md) |
+| `shapefile` | [`vect`](https://rspatial.github.io/terra/reference/vect.md) |
+| `stackApply` | [`tapp`](https://rspatial.github.io/terra/reference/tapp.md) |
+| `stackSelect` | [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md) |
+
+## XXXIV. Changed behavior
 
 Also note that even if function names are the same in `terra` and
 `raster`, their output can be different. In most cases this was done to
