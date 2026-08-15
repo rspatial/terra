@@ -684,6 +684,32 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 }
 }
 
+
+
+\section{XXXI. Longitude/latitude data}{
+
+Most methods that involve distance, area, direction, or sampling account for the Earth's shape when the coordinate reference system is longitude/latitude. Distances and lengths are then expressed in meters (unless noted otherwise), typically computed on the WGS84 ellipsoid with Karney's algorithm (GeographicLib). Areas are computed on the ellipsoid as well. For these quantities it is generally better to use lon/lat data than a planar (projected) CRS, because map projections distort distance, area and/or direction. These methods include \code{\link{distance}}, \code{\link{direction}}, \code{\link{gridDist}}, \code{\link{costDist}}, \code{\link{nearby}}, \code{\link{nearest}}, \code{\link{buffer}}, \code{\link{expanse}}, \code{\link{cellSize}}, \code{\link{perim}}, \code{\link{terrain}}, \code{\link{densify}}, \code{\link{elongate}}, \code{\link{agitate}}, \code{\link{spatSample}}, \code{\link{netw}}, \code{\link{shortestPath}}, and \code{\link{tessellate}}.
+
+Some methods do \bold{not} use geodesic algorithms, require a planar CRS, or interpret parameters in the units of the CRS (degrees for lon/lat). 
+
+Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\link{union}}, \code{\link{erase}}, \code{\link{symdif}}, , \code{\link{crop}} do not adjust for lon/lat intersections (use \code{\link{densify}} to approximate it better if needed) 
+
+\code{\link{voronoi}}, \code{\link{hull}}) treat longitude/latitude coordinates as if they were planar.
+
+\tabular{ll}{
+\code{\link{viewshed}} \tab Requires a planar CRS (not lon/lat)\cr
+\code{\link{surfArea}} \tab Requires a planar CRS with elevation in the same units\cr
+\code{\link{simplifyGeom}}, \code{\link{snap}} \tab \code{tolerance} is in CRS units (degrees for lon/lat)\cr
+\code{\link{voronoi}} \tab Snapping \code{tolerance} is in CRS units; the diagram is planar\cr
+\code{\link{rasterizeWin}} \tab Window size is in CRS units (no degree-to-meter conversion)\cr
+\code{\link{focalMat}} \tab Filter size is in CRS units\cr
+\code{\link{extract}} \tab \code{search_radius} for lon/lat uses mean latitude (approximate)\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}
+}
+
+
+
 \section{\bold{Comparison with the raster package}}{
 
 ---------------------------------------------------------------------------------------------------------------------
@@ -692,7 +718,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 }
 
 
-\section{XXXI. New method names}{
+\section{XXXII. New method names}{
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
 
@@ -736,28 +762,6 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 \code{shapefile}\tab\code{\link{vect}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
-}
-}
-
-\section{XXXII. Longitude/latitude data}{
-
-Most methods that involve distance, area, direction, or sampling account for the Earth's shape when the coordinate reference system is longitude/latitude. Distances and lengths are then expressed in meters (unless noted otherwise), typically computed on the WGS84 ellipsoid with Karney's algorithm (GeographicLib). Areas are computed on the ellipsoid as well. For these quantities it is generally better to use lon/lat data than a planar (projected) CRS, because map projections distort distance, area and/or direction. These methods include \code{\link{distance}}, \code{\link{direction}}, \code{\link{gridDist}}, \code{\link{costDist}}, \code{\link{nearby}}, \code{\link{nearest}}, \code{\link{buffer}}, \code{\link{expanse}}, \code{\link{cellSize}}, \code{\link{perim}}, \code{\link{terrain}}, \code{\link{densify}}, \code{\link{elongate}}, \code{\link{agitate}}, \code{\link{spatSample}}, \code{\link{netw}}, \code{\link{shortestPath}}, and \code{\link{tessellate}}.
-
-Some methods do \bold{not} use geodesic algorithms, require a planar CRS, or interpret parameters in the units of the CRS (degrees for lon/lat). 
-
-Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\link{union}}, \code{\link{erase}}, \code{\link{symdif}}, , \code{\link{crop}} do not adjust for lon/lat intersections (use \code{\link{densify}} to approximate it better if needed) 
-
-\code{\link{voronoi}}, \code{\link{hull}}) treat longitude/latitude coordinates as if they were planar.
-
-\tabular{ll}{
-\code{\link{viewshed}} \tab Requires a planar CRS (not lon/lat)\cr
-\code{\link{surfArea}} \tab Requires a planar CRS with elevation in the same units\cr
-\code{\link{simplifyGeom}}, \code{\link{snap}} \tab \code{tolerance} is in CRS units (degrees for lon/lat)\cr
-\code{\link{voronoi}} \tab Snapping \code{tolerance} is in CRS units; the diagram is planar\cr
-\code{\link{rasterizeWin}} \tab Window size is in CRS units (no degree-to-meter conversion)\cr
-\code{\link{focalMat}} \tab Filter size is in CRS units\cr
-\code{\link{extract}} \tab \code{search_radius} for lon/lat uses mean latitude (approximate)\cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
