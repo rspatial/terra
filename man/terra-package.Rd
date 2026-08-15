@@ -739,7 +739,29 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 }
 }
 
-\section{XXXII. Changed behavior}{
+\section{XXXII. Longitude/latitude data}{
+
+Most methods that involve distance, area, direction, or sampling account for the Earth's shape when the coordinate reference system is longitude/latitude. Distances and lengths are then expressed in meters (unless noted otherwise), typically computed on the WGS84 ellipsoid with Karney's algorithm (GeographicLib). Areas are computed on the ellipsoid as well. For these quantities it is generally better to use lon/lat data than a planar (projected) CRS, because map projections distort distance, area and/or direction. These methods include \code{\link{distance}}, \code{\link{direction}}, \code{\link{gridDist}}, \code{\link{costDist}}, \code{\link{nearby}}, \code{\link{nearest}}, \code{\link{buffer}}, \code{\link{expanse}}, \code{\link{cellSize}}, \code{\link{perim}}, \code{\link{terrain}}, \code{\link{densify}}, \code{\link{elongate}}, \code{\link{agitate}}, \code{\link{spatSample}}, \code{\link{netw}}, \code{\link{shortestPath}}, and \code{\link{tessellate}}.
+
+Some methods do \bold{not} use geodesic algorithms, require a planar CRS, or interpret parameters in the units of the CRS (degrees for lon/lat). 
+
+Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\link{union}}, \code{\link{erase}}, \code{\link{symdif}}, , \code{\link{crop}} do not adjust for lon/lat intersections (use \code{\link{densify}} to approximate it better if needed) 
+
+\code{\link{voronoi}}, \code{\link{hull}}) treat longitude/latitude coordinates as if they were planar.
+
+\tabular{ll}{
+\code{\link{viewshed}} \tab Requires a planar CRS (not lon/lat)\cr
+\code{\link{surfArea}} \tab Requires a planar CRS with elevation in the same units\cr
+\code{\link{simplifyGeom}}, \code{\link{snap}} \tab \code{tolerance} is in CRS units (degrees for lon/lat)\cr
+\code{\link{voronoi}} \tab Snapping \code{tolerance} is in CRS units; the diagram is planar\cr
+\code{\link{rasterizeWin}} \tab Window size is in CRS units (no degree-to-meter conversion)\cr
+\code{\link{focalMat}} \tab Filter size is in CRS units\cr
+\code{\link{extract}} \tab \code{search_radius} for lon/lat uses mean latitude (approximate)\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}
+}
+
+\section{XXXIII. Changed behavior}{
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). In other cases it simply seemed better. Here are some examples:
 
