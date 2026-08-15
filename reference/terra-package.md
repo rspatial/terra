@@ -461,6 +461,7 @@ not need to match each other.
 | [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md) | Test if an object has (or may have) a longitude/latitude coordinate reference system |
 | [`geomtype`](https://rspatial.github.io/terra/reference/geomtype.md) | Geometry type string |
 | [`is.lines`](https://rspatial.github.io/terra/reference/geomtype.md) / [`is.points`](https://rspatial.github.io/terra/reference/geomtype.md) | Geometry type tests |
+| [`has.z`](https://rspatial.github.io/terra/reference/has.z.md) | Whether geometries store Z coordinates |
 | [`is.polygons`](https://rspatial.github.io/terra/reference/geomtype.md) |  |
 | ————————— | —————————————————————————————— |
 

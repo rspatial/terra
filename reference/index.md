@@ -511,6 +511,9 @@
   [`geoloc(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/has.geoloc.md)
   : Geolocation arrays and GCPs
 
+- [`has.z(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/has.z.md)
+  : Does a SpatVector have Z coordinates?
+
 - [`head()`](https://rspatial.github.io/terra/reference/headtail.md)
   [`tail()`](https://rspatial.github.io/terra/reference/headtail.md) :
   head and tail of a SpatRaster or SpatVector

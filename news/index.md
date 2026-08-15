@@ -75,6 +75,10 @@
 
 ### new
 
+- `rast` better support for file that have geolocation/GCPs and new
+  functions `has.geoloc` and `geoloc`
+  [\#1175](https://github.com/rspatial/terra/issues/1175) by Michael
+  Sumner
 - `furdist` method to get the furthest distance from a point to any
   location on another geometry
 - `snapTo` method to move points to the nearest location on lines or
