@@ -1005,6 +1005,8 @@ static void fill_geolocation(GDALDataset *poDataset, SpatRasterSource &s) {
 	s.geoloc_x.clear();
 	s.geoloc_y.clear();
 
+	if (poDataset == NULL) return;
+
 	CSLConstList md = GDALGetMetadata((GDALDatasetH)poDataset, "GEOLOCATION");
 	if (md == NULL || CSLCount(md) == 0) {
 		GDALRasterBandH b = GDALGetRasterBand((GDALDatasetH)poDataset, 1);
@@ -1046,6 +1048,95 @@ static void fill_geolocation(GDALDataset *poDataset, SpatRasterSource &s) {
 #endif
 		}
 	}
+}
+
+
+// Copy GEOLOCATION / GCP fields onto multidim sources and, if CRS is still
+// empty, apply geoloc_srs. The multidim API does not expose GDAL's classic
+// GEOLOCATION domain, so we read it from a classic 2D dataset handle (#1175).
+static void apply_geolocation_to_sources(SpatRaster &r, SpatRasterSource &geo, bool warn_no_gt) {
+	if (!geo.has_geolocation && !geo.has_gcps) return;
+	bool any_crs = false;
+	for (size_t i=0; i<r.source.size(); i++) {
+		r.source[i].has_geolocation = geo.has_geolocation;
+		r.source[i].has_gcps = geo.has_gcps;
+		r.source[i].geoloc_srs = geo.geoloc_srs;
+		r.source[i].geoloc_x = geo.geoloc_x;
+		r.source[i].geoloc_y = geo.geoloc_y;
+		if (r.source[i].srs.is_empty() && !geo.geoloc_srs.empty()) {
+			std::string msg;
+			if (r.source[i].srs.set(geo.geoloc_srs, msg)) {
+				r.source[i].parameters_changed = true;
+				any_crs = true;
+			} else if (!msg.empty()) {
+				r.addWarning(msg);
+			}
+		}
+	}
+	if (warn_no_gt && (geo.has_geolocation || any_crs)) {
+		r.addWarning("no geotransform; using GDAL geolocation arrays (project/rectify to georeference)");
+	}
+}
+
+
+static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDataset,
+		const std::string &md_fname, const std::vector<std::string> &drivers,
+		const std::vector<std::string> &options, bool has_2d_gt) {
+	SpatRasterSource geo;
+	if (poDataset != NULL && poDataset->GetRasterCount() > 0) {
+		fill_geolocation(poDataset, geo);
+	}
+	// Parent NetCDF open has no bands; probe the classic subdataset for each source.
+	// Skip sources that already have CF-detected geolocation (avoids noisy failures
+	// for /vsicurl/ on Windows where classic netCDF cannot open).
+	if (!geo.has_geolocation && !geo.has_gcps && !r.source.empty()) {
+		bool need_probe = false;
+		for (size_t i=0; i<r.source.size(); i++) {
+			if (!r.source[i].has_geolocation && !r.source[i].has_gcps) {
+				need_probe = true;
+				break;
+			}
+		}
+		if (!need_probe) return;
+
+		gdal_capture_messages_begin();
+		for (size_t i=0; i<r.source.size(); i++) {
+			if (r.source[i].has_geolocation || r.source[i].has_gcps) continue;
+			std::string an = r.source[i].m_arrayname;
+			if (an.empty()) continue;
+			if (an[0] != '/') an = "/" + an;
+			std::string dsn = "NETCDF:\"" + md_fname + "\":" + an;
+			GDALDataset *sub = openGDAL(dsn, GDAL_OF_RASTER | GDAL_OF_READONLY, drivers, options);
+			if (sub == NULL) continue;
+			SpatRasterSource g;
+			fill_geolocation(sub, g);
+			GDALClose((GDALDatasetH) sub);
+			if (g.has_geolocation || g.has_gcps) {
+				r.source[i].has_geolocation = g.has_geolocation;
+				r.source[i].has_gcps = g.has_gcps;
+				r.source[i].geoloc_srs = g.geoloc_srs;
+				r.source[i].geoloc_x = g.geoloc_x;
+				r.source[i].geoloc_y = g.geoloc_y;
+				if (r.source[i].srs.is_empty() && !g.geoloc_srs.empty()) {
+					std::string msg;
+					if (r.source[i].srs.set(g.geoloc_srs, msg)) {
+						r.source[i].parameters_changed = true;
+					} else if (!msg.empty()) {
+						r.addWarning(msg);
+					}
+				}
+				if (!has_2d_gt && g.has_geolocation) {
+					geo.has_geolocation = true; // for a single warning below
+				}
+			}
+		}
+		gdal_capture_messages_end(false);
+		if (geo.has_geolocation && !has_2d_gt) {
+			r.addWarning("no geotransform; using GDAL geolocation arrays (project/rectify to georeference)");
+		}
+		return;
+	}
+	apply_geolocation_to_sources(r, geo, !has_2d_gt);
 }
 
 
@@ -1096,6 +1187,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 			msg.clearError();
 			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains)) {
+				// Classic open failed (e.g. netCDF+/vsicurl/ on Windows); still try
+				// to upgrade CF-detected geolocation from a classic subdataset when possible.
+				fill_geolocation_after_multidim(*this, NULL, md_fname, drivers, clean_ops, false);
 				return true;
 			}
 			msg.clearError();
@@ -1164,6 +1258,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (gdrv == "netCDF") {
 			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
 				override_extent_from_2d_gt();
+				fill_geolocation_after_multidim(*this, poDataset, md_fname, drivers, clean_ops, has_2d_gt);
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			}
@@ -1173,6 +1268,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
 			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
 				override_extent_from_2d_gt();
+				fill_geolocation_after_multidim(*this, poDataset, md_fname, drivers, clean_ops, has_2d_gt);
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			} else {
@@ -1283,14 +1379,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	} else {
 		bool warn=true;
 		hasExtent = false;
-		if (adfGeoTransform[5] > 0) {
-			if (noflip) {
-				warn = false;
-				s.extset = true;
-			} else {
-				s.flipped = true;
-			}
-		}
+		// GetGeoTransform failed: GDAL still fills adfGeoTransform with the
+		// default (0,1,0,0,0,1) where gt[5]==1. Do not treat that as a
+		// flipped south-up raster (it broke project() for GEOLOCATION swaths).
 		SpatExtent e(0, s.ncol, 0, s.nrow);
 		s.extent = e;
 
@@ -1309,11 +1400,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (warn) {
 			addWarning("unknown extent");
 		}
-
-		// seems to cause more harm then benefit #1627
-		//try {
-		//	s.flipped = adfGeoTransform[5] > 0;
-		//} catch(...) {}
 	}
 
 	s.memory = false;

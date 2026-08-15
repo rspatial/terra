@@ -44,6 +44,18 @@ std::string warp_source_crs(SpatRaster &r) {
 	}
 	return srccrs;
 }
+
+bool dataset_has_geolocation(GDALDatasetH hDS) {
+	if (hDS == NULL) return false;
+	CSLConstList md = GDALGetMetadata(hDS, "GEOLOCATION");
+	if (md != NULL && CSLCount(md) > 0) return true;
+	GDALRasterBandH b = GDALGetRasterBand(hDS, 1);
+	if (b != NULL) {
+		md = GDALGetMetadata(b, "GEOLOCATION");
+		if (md != NULL && CSLCount(md) > 0) return true;
+	}
+	return false;
+}
 }
 
 
@@ -220,7 +232,8 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 #else
 
 
-bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std::string dstcrs, SpatRaster &r) {
+bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std::string dstcrs, SpatRaster &r,
+		bool force_geoloc=false, const std::string &geoloc_x="", const std::string &geoloc_y="") {
 
 	if ( hSrcDS == NULL ) {
 		r.setError("data source is NULL");
@@ -252,7 +265,51 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 #endif
  	delete oSRS;
 
-	void *hTransformArg = GDALCreateGenImgProjTransformer( hSrcDS, pszSrcWKT, NULL, pszDstWKT, FALSE, 0, 1 );
+	// Ensure GEOLOCATION is visible on the dataset used for SuggestedWarpOutput.
+	if (force_geoloc && !geoloc_x.empty() && !geoloc_y.empty() && !dataset_has_geolocation(hSrcDS)) {
+		GDALSetMetadataItem(hSrcDS, "SRS", pszSrcWKT, "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "X_DATASET", geoloc_x.c_str(), "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "Y_DATASET", geoloc_y.c_str(), "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "X_BAND", "1", "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "Y_BAND", "1", "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "PIXEL_OFFSET", "0", "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "PIXEL_STEP", "1", "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "LINE_OFFSET", "0", "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "LINE_STEP", "1", "GEOLOCATION");
+		GDALSetMetadataItem(hSrcDS, "GEOREFERENCING_CONVENTION", "PIXEL_CENTER", "GEOLOCATION");
+	}
+
+	// Swath / geolocation arrays: force GEOLOC_ARRAY so GDAL does not treat
+	// pixel indices as map coordinates when suggesting the output grid (#1175).
+	char **papszTO = nullptr;
+	papszTO = CSLSetNameValue(papszTO, "SRC_SRS", pszSrcWKT);
+	papszTO = CSLSetNameValue(papszTO, "DST_SRS", pszDstWKT);
+	const bool use_geoloc = force_geoloc || dataset_has_geolocation(hSrcDS);
+	if (use_geoloc) {
+		const char *xd = GDALGetMetadataItem(hSrcDS, "X_DATASET", "GEOLOCATION");
+		const char *yd = GDALGetMetadataItem(hSrcDS, "Y_DATASET", "GEOLOCATION");
+		std::string xds = xd ? xd : geoloc_x;
+		std::string yds = yd ? yd : geoloc_y;
+		if (!xds.empty() && !yds.empty()) {
+			gdal_capture_messages_begin();
+			GDALDatasetH hx = GDALOpen(xds.c_str(), GA_ReadOnly);
+			GDALDatasetH hy = (hx != NULL) ? GDALOpen(yds.c_str(), GA_ReadOnly) : NULL;
+			gdal_capture_messages_end(false);
+			if (hx == NULL || hy == NULL) {
+				if (hx) GDALClose(hx);
+				if (hy) GDALClose(hy);
+				CSLDestroy(papszTO);
+				CPLFree(pszDstWKT);
+				r.setError("cannot open GEOLOCATION arrays (on Windows, netCDF+/vsicurl/ needs a local file for project/warp)");
+				return false;
+			}
+			GDALClose(hx);
+			GDALClose(hy);
+		}
+		papszTO = CSLSetNameValue(papszTO, "SRC_METHOD", "GEOLOC_ARRAY");
+	}
+	void *hTransformArg = GDALCreateGenImgProjTransformer2(hSrcDS, NULL, papszTO);
+	CSLDestroy(papszTO);
 	if (hTransformArg == NULL ) {
 		r.setError("cannot create TranformArg");
 		CPLFree(pszDstWKT);
@@ -487,6 +544,9 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 	}
 #endif
 #endif
+	if (dataset_has_geolocation(hSrcDS)) {
+		papszTO = CSLSetNameValue(papszTO, "SRC_METHOD", "GEOLOC_ARRAY");
+	}
 	if (papszTO != nullptr) {
 		if (pipeline.empty()) {
 			papszTO = CSLSetNameValue(papszTO, "SRC_SRS", srccrs.c_str());
@@ -529,6 +589,9 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	size_t ns = nsrc();
 	bool fixext = false;
 	for (size_t j=0; j<ns; j++) {
+		// GEOLOCATION swaths must keep their file handle: materializing to
+		// memory/temp drops the GEOLOCATION domain and breaks project().
+		if (source[j].has_geolocation) continue;
 		if ((source[j].extset || source[j].flipped) && (!source[j].memory) && (!source[j].rotated)) {
 			fixext = true;
 			break;
@@ -540,6 +603,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		SpatOptions xopt(opt);
 		xopt.ncopies = std::max((size_t) 10, xopt.ncopies*2);
 		for (size_t j=0; j<ns; j++) {
+			if (source[j].has_geolocation) continue;
 			if ((source[j].extset || source[j].flipped) && (!r.source[j].memory) && (!source[j].rotated)) {
 				SpatRaster tmp(source[j]);	
 				if (tmp.canProcessInMemory(xopt)) {
@@ -632,9 +696,14 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return out;
 		}
 		out.setSRS(crs);
-		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
+		const bool force_geoloc = (!source.empty() && source[0].has_geolocation);
+		const std::string gx = force_geoloc ? source[0].geoloc_x : "";
+		const std::string gy = force_geoloc ? source[0].geoloc_y : "";
+		if (!get_output_bounds(hSrcDS, srccrs, crs, out, force_geoloc, gx, gy)) {
 			GDALClose( hSrcDS );
-			out.setError("cannot get output boundaries for the target crs");
+			if (!out.hasError()) {
+				out.setError("cannot get output boundaries for the target crs");
+			}
 			return out;
 		}
 		GDALClose( hSrcDS );
@@ -903,9 +972,14 @@ SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string meth
 			return out;
 		}
 		out.setSRS(crs);
-		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
+		const bool force_geoloc = (!source.empty() && source[0].has_geolocation);
+		const std::string gx = force_geoloc ? source[0].geoloc_x : "";
+		const std::string gy = force_geoloc ? source[0].geoloc_y : "";
+		if (!get_output_bounds(hSrcDS, srccrs, crs, out, force_geoloc, gx, gy)) {
 			GDALClose( hSrcDS );
-			out.setError("cannot get output boundaries");
+			if (!out.hasError()) {
+				out.setError("cannot get output boundaries");
+			}
 			return out;
 		}
 		GDALClose( hSrcDS );
@@ -1144,9 +1218,14 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 			return out;
 		}
 		out.setSRS(crs);
-		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
+		const bool force_geoloc = (!source.empty() && source[0].has_geolocation);
+		const std::string gx = force_geoloc ? source[0].geoloc_x : "";
+		const std::string gy = force_geoloc ? source[0].geoloc_y : "";
+		if (!get_output_bounds(hSrcDS, srccrs, crs, out, force_geoloc, gx, gy)) {
 			GDALClose( hSrcDS );
-			out.setError("cannot get output boundaries for the target crs");
+			if (!out.hasError()) {
+				out.setError("cannot get output boundaries for the target crs");
+			}
 			return out;
 		}
 		GDALClose( hSrcDS );
@@ -1563,15 +1642,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 // Other rotated rasters (e.g. JPEG) usually have no GEOLOCATION — no pad or trim.
 
 static bool has_geolocation(GDALDatasetH hDS) {
-	if (hDS == NULL) return false;
-	CSLConstList md = GDALGetMetadata(hDS, "GEOLOCATION");
-	if (md != NULL && CSLCount(md) > 0) return true;
-	GDALRasterBandH b = GDALGetRasterBand(hDS, 1);
-	if (b != NULL) {
-		md = GDALGetMetadata(b, "GEOLOCATION");
-		if (md != NULL && CSLCount(md) > 0) return true;
-	}
-	return false;
+	return dataset_has_geolocation(hDS);
 }
 
 static SpatExtent expand_extent(SpatExtent e) {

@@ -28,6 +28,7 @@
 #include "spatTime.h"
 #include "recycle.h"
 #include <stddef.h>
+#include <sstream>
 #include <cmath>
 #include <algorithm>
 #include <cstdint>
@@ -864,7 +865,64 @@ static bool md_fill_source_from_marray(
 	std::string msg = "";
 	if (!s.srs.set({wkt}, msg)) {
 		parent.addWarning(msg);
-	}	
+	}
+
+	// Swath / curvilinear: CF "coordinates" (or sibling lon/lat arrays) → GEOLOCATION
+	// so has.geoloc / project work when the classic netCDF driver is unavailable
+	// (e.g. /vsicurl/ on Windows) (#1175).
+	{
+		std::string lon_tok, lat_tok;
+		auto ac = poVar->GetAttribute("coordinates");
+		if (ac) {
+			std::istringstream iss(ac->ReadAsString());
+			std::string tok;
+			while (iss >> tok) {
+				size_t slash = tok.find_last_of('/');
+				std::string base = (slash == std::string::npos) ? tok : tok.substr(slash + 1);
+				if (md_is_lon_name(base)) lon_tok = tok;
+				if (md_is_lat_name(base)) lat_tok = tok;
+			}
+		}
+		if (lon_tok.empty()) lon_tok = "longitude";
+		if (lat_tok.empty()) lat_tok = "latitude";
+
+		std::string group;
+		{
+			std::string full = poVar->GetFullName();
+			size_t slash = full.find_last_of('/');
+			if (slash != std::string::npos) group = full.substr(0, slash);
+		}
+		auto resolve_coord = [&](const std::string &nm) -> std::shared_ptr<GDALMDArray> {
+			std::string start;
+			auto a = poRootGroup->ResolveMDArray(nm.c_str(), start, nullptr);
+			if (a) return a;
+			if (!nm.empty() && nm[0] != '/' && !group.empty()) {
+				std::string p = group + "/" + nm;
+				a = poRootGroup->ResolveMDArray(p.c_str(), start, nullptr);
+			}
+			return a;
+		};
+		auto lon = resolve_coord(lon_tok);
+		auto lat = resolve_coord(lat_tok);
+		if (lon && lat && lon->GetDimensions().size() >= 2 && lat->GetDimensions().size() >= 2) {
+			s.has_geolocation = true;
+			if (s.geoloc_srs.empty()) {
+				s.geoloc_srs = "EPSG:4326";
+			}
+			std::string lx = lon->GetFullName();
+			std::string ly = lat->GetFullName();
+			s.geoloc_x = std::string("NETCDF:\"") + fname + "\":" + lx;
+			s.geoloc_y = std::string("NETCDF:\"") + fname + "\":" + ly;
+			if (s.srs.is_empty()) {
+				std::string emsg;
+				if (s.srs.set(s.geoloc_srs, emsg)) {
+					s.parameters_changed = true;
+				} else if (!emsg.empty()) {
+					parent.addWarning(emsg);
+				}
+			}
+		}
+	}
 
 	bool app_so = true;
 	size_t opsz = options.size();
@@ -1207,6 +1265,21 @@ bool SpatRaster::open_gdal_multidim(GDALDatasetH &hDS, size_t src) {
 	GDALDataset *cds = arr->AsClassicDataset(source[src].m_dims[0], source[src].m_dims[1]);
 #endif
 	if (cds == NULL) return false;
+
+	// Attach classic GEOLOCATION so warp/project can use lon/lat arrays (#1175).
+	if (source[src].has_geolocation && !source[src].geoloc_x.empty() && !source[src].geoloc_y.empty()) {
+		const char *srs = source[src].geoloc_srs.empty() ? "EPSG:4326" : source[src].geoloc_srs.c_str();
+		GDALSetMetadataItem(cds, "SRS", srs, "GEOLOCATION");
+		GDALSetMetadataItem(cds, "X_DATASET", source[src].geoloc_x.c_str(), "GEOLOCATION");
+		GDALSetMetadataItem(cds, "Y_DATASET", source[src].geoloc_y.c_str(), "GEOLOCATION");
+		GDALSetMetadataItem(cds, "X_BAND", "1", "GEOLOCATION");
+		GDALSetMetadataItem(cds, "Y_BAND", "1", "GEOLOCATION");
+		GDALSetMetadataItem(cds, "PIXEL_OFFSET", "0", "GEOLOCATION");
+		GDALSetMetadataItem(cds, "PIXEL_STEP", "1", "GEOLOCATION");
+		GDALSetMetadataItem(cds, "LINE_OFFSET", "0", "GEOLOCATION");
+		GDALSetMetadataItem(cds, "LINE_STEP", "1", "GEOLOCATION");
+		GDALSetMetadataItem(cds, "GEOREFERENCING_CONVENTION", "PIXEL_CENTER", "GEOLOCATION");
+	}
 
 	hDS = (GDALDatasetH) cds;
 	return true;

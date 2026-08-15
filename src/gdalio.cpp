@@ -671,6 +671,20 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, bool update, SpatOptions 
     // Expose multidim API as classic
 	// only safe when the layer<->band mapping is trivial; otherwise use memory
 	if (fromfile && (!update) && source[isrc].is_multidim) {
+		// Prefer classic NETCDF/HDF subdataset when GEOLOCATION is known so
+		// GDAL warp sees native GEOLOCATION (AsClassicDataset does not) (#1175).
+		if (source[isrc].has_geolocation) {
+			std::string an = source[isrc].m_arrayname;
+			if (!an.empty()) {
+				if (an[0] != '/') an = "/" + an;
+				std::string dsn = "NETCDF:\"" + source[isrc].filename + "\":" + an;
+				gdal_capture_messages_begin();
+				hDS = openGDAL(dsn, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_SHARED,
+					source[isrc].open_drivers, source[isrc].open_ops);
+				gdal_capture_messages_end(hDS != NULL);
+				if (hDS != NULL) return true;
+			}
+		}
 		bool simple = (source[isrc].m_dims.size() == 2) || (source[isrc].m_dims.size() == 3);
 		if (simple && open_gdal_multidim(hDS, isrc)) {
 			return true;

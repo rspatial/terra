@@ -817,6 +817,8 @@ setMethod("project", signature(x="SpatRaster"),
 		} else {
 			if (!is.character(y)) {
 				y <- as.character(crs(y))
+			} else {
+				y <- character_crs(y, "project")
 			}
 			if (!is.null(res) || !is.null(origin)) {
 				tmp <- project(rast(x), y)
@@ -891,6 +893,8 @@ setMethod("project", signature(x="SpatVector"),
 		}
 		if (!is.character(y)) {
 			y <- as.character(crs(y))
+		} else {
+			y <- character_crs(y, "project")
 		}
 
 		if (is.null(AOI)) {
