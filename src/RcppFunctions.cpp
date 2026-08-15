@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <list>
 #include <functional>
+#include <cstring>
 #include <string>
 #include <thread>
 #include <atomic>
@@ -417,6 +418,12 @@ static bool handle_proj_noise(const char *msg, int err_no) {
 	return false;
 }
 
+// cosmetic noise from broken file metadata #2161
+static bool is_multidim_convert_noise(const char *msg) {
+	if (msg == NULL) return false;
+	return std::strstr(msg, "Array data type is not convertible to buffer data type") != NULL;
+}
+
 // Replay any messages that were queued from GDAL worker threads. Must only be
 // called on the main thread (from the error handlers below).
 static void drain_offthread_messages() {
@@ -439,12 +446,12 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             break;
         case 1:
         case 2:
-            if (!handle_proj_noise(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no) && !is_multidim_convert_noise(msg)) {
                 warningNoCall("%s (GDAL %d)", msg, err_no);
             }
             break;
         case 3:
-            if (!handle_proj_noise(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no) && !is_multidim_convert_noise(msg)) {
                 warningNoCall("%s (GDAL error %d)", msg, err_no);
             }
             break;
@@ -452,7 +459,7 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            if (!handle_proj_noise(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no) && !is_multidim_convert_noise(msg)) {
                 warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
             }
             break;
@@ -469,7 +476,7 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 2:
             break;
         case 3:
-            if (!handle_proj_noise(msg, err_no)) {
+            if (!handle_proj_noise(msg, err_no) && !is_multidim_convert_noise(msg)) {
                 warningNoCall("%s (GDAL error %d)", msg, err_no);
             }
             break;

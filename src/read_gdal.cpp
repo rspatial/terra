@@ -1103,6 +1103,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		};
 
+		// multi == 1: user explicitly asked for the multidim API (md = TRUE)
+		//   -> on failure, warn and fall back to the classic driver.
+		// multi >= 2: default / auto (md = NULL)
+		//   -> on failure, silently fall back to the classic driver.
+		const bool md_explicit = (multi == 1);
 		if (gdrv == "netCDF") {
 			if (constructFromFileMulti(md_fname, subds, md_subname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
 				override_extent_from_2d_gt();
@@ -1118,9 +1123,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			} else {
-				addWarning("cannot open this file with the multidim API: " + fname);
+				if (md_explicit) {
+					addWarning("cannot open this file with the multidim API: " + fname);
+				}
 				msg.clearError();
 			}
+		} else if (md_explicit) {
+			addWarning("this driver (" + gdrv + ") does not support the multidim API: " + fname);
 		}
 	}
 #endif
