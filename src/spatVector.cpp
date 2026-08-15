@@ -38,10 +38,27 @@ SpatHole::SpatHole(std::vector<double> X, std::vector<double> Y) {
 	extent.ymax = *std::max_element(Y.begin(), Y.end());
 }
 
+SpatHole::SpatHole(std::vector<double> X, std::vector<double> Y, std::vector<double> Z) {
+	x = X; y = Y;
+	if (!Z.empty() && (Z.size() == X.size())) {
+		z = Z;
+	}
+	extent.xmin = *std::min_element(X.begin(), X.end());
+	extent.xmax = *std::max_element(X.begin(), X.end());
+	extent.ymin = *std::min_element(Y.begin(), Y.end());
+	extent.ymax = *std::max_element(Y.begin(), Y.end());
+}
+
 bool SpatPart::addHole(std::vector<double> X, std::vector<double> Y) {
 	SpatHole h(X, Y);
 	holes.push_back(h);
 	// check if inside pol?
+	return true;
+}
+
+bool SpatPart::addHole(std::vector<double> X, std::vector<double> Y, std::vector<double> Z) {
+	SpatHole h(X, Y, Z);
+	holes.push_back(h);
 	return true;
 }
 
@@ -64,8 +81,31 @@ SpatPart::SpatPart(double X, double Y) {
 	extent.ymax = Y;
 }
 
+SpatPart::SpatPart(double X, double Y, double Z) {
+	x.push_back(X);
+	y.push_back(Y);
+	z.push_back(Z);
+	extent.xmin = X;
+	extent.xmax = X;
+	extent.ymin = Y;
+	extent.ymax = Y;
+}
+
 SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) {
 	x = X; y = Y;
+	if ((x.size() > 0) && (y.size() > 0)) {
+		extent.xmin = *std::min_element(X.begin(), X.end());
+		extent.xmax = *std::max_element(X.begin(), X.end());
+		extent.ymin = *std::min_element(Y.begin(), Y.end());
+		extent.ymax = *std::max_element(Y.begin(), Y.end());
+	}
+}
+
+SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y, std::vector<double> Z) {
+	x = X; y = Y;
+	if (!Z.empty() && (Z.size() == X.size())) {
+		z = Z;
+	}
 	if ((x.size() > 0) && (y.size() > 0)) {
 		extent.xmin = *std::min_element(X.begin(), X.end());
 		extent.xmax = *std::max_element(X.begin(), X.end());
@@ -562,21 +602,37 @@ size_t SpatVector::nnodes(bool holes) {
 
 
 std::vector<std::vector<double>> SpatVector::coordinates() {
-	std::vector<std::vector<double>> out(2);
+	bool usez = has_z();
+	std::vector<std::vector<double>> out(usez ? 3 : 2);
 	size_t ncrds = ncoords();
 	out[0].reserve(ncrds);
 	out[1].reserve(ncrds);
+	if (usez) out[2].reserve(ncrds);
 	size_t ng = size();
 	for (size_t i=0; i<ng; i++) {
 		size_t np = geoms[i].size();
 		for (size_t j=0; j<np; j++) {
 			out[0].insert(out[0].end(), geoms[i].parts[j].x.begin(), geoms[i].parts[j].x.end());
 			out[1].insert(out[1].end(), geoms[i].parts[j].y.begin(), geoms[i].parts[j].y.end());
+			if (usez) {
+				if (geoms[i].parts[j].hasZ() && (geoms[i].parts[j].z.size() == geoms[i].parts[j].x.size())) {
+					out[2].insert(out[2].end(), geoms[i].parts[j].z.begin(), geoms[i].parts[j].z.end());
+				} else {
+					out[2].insert(out[2].end(), geoms[i].parts[j].x.size(), NAN);
+				}
+			}
 			if (geoms[i].parts[j].hasHoles()) {
 				size_t nh = geoms[i].parts[j].nHoles();
 				for (size_t k=0; k < nh; k++) {
 					out[0].insert(out[0].end(), geoms[i].parts[j].holes[k].x.begin(), geoms[i].parts[j].holes[k].x.end());
 					out[1].insert(out[1].end(), geoms[i].parts[j].holes[k].y.begin(), geoms[i].parts[j].holes[k].y.end());
+					if (usez) {
+						if (geoms[i].parts[j].holes[k].hasZ() && (geoms[i].parts[j].holes[k].z.size() == geoms[i].parts[j].holes[k].x.size())) {
+							out[2].insert(out[2].end(), geoms[i].parts[j].holes[k].z.begin(), geoms[i].parts[j].holes[k].z.end());
+						} else {
+							out[2].insert(out[2].end(), geoms[i].parts[j].holes[k].x.size(), NAN);
+						}
+					}
 				}
 			}
 		}
@@ -587,12 +643,16 @@ std::vector<std::vector<double>> SpatVector::coordinates() {
 
 SpatDataFrame SpatVector::getGeometryDF() {
 
+	bool usez = has_z();
 	SpatDataFrame out;
 	out.add_column(1, "geom");
 	out.add_column(1, "part");
 	out.add_column(0, "x");
 	out.add_column(0, "y");
 	out.add_column(1, "hole");
+	if (usez) {
+		out.add_column(0, "z");
+	}
 
 	size_t n = nxy();
 	out.resize_rows(n);
@@ -606,28 +666,33 @@ SpatDataFrame SpatVector::getGeometryDF() {
 			out.dv[0][idx] = NAN;
 			out.dv[1][idx] = NAN;
 			out.iv[2][idx] = 0;
+			if (usez) out.dv[2][idx] = NAN;
 			idx++;
 		}
 
 		for (size_t j=0; j < g.size(); j++) {
 			SpatPart p = g.getPart(j);
+			bool pz = usez && p.hasZ() && (p.z.size() == p.x.size());
 			for (size_t q=0; q < p.x.size(); q++) {
 				out.iv[0][idx] = i+1;
 				out.iv[1][idx] = j+1;
 				out.dv[0][idx] = p.x[q];
 				out.dv[1][idx] = p.y[q];
 				out.iv[2][idx] = 0;
+				if (usez) out.dv[2][idx] = pz ? p.z[q] : NAN;
 				idx++;
 			}
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
 					SpatHole h = p.getHole(k);
+					bool hz = usez && h.hasZ() && (h.z.size() == h.x.size());
 					for (size_t q=0; q < h.x.size(); q++) {
 						out.iv[0][idx] = i+1;
 						out.iv[1][idx] = j+1;
 						out.dv[0][idx] = h.x[q];
 						out.dv[1][idx] = h.y[q];
 						out.iv[2][idx] = k+1;
+						if (usez) out.dv[2][idx] = hz ? h.z[q] : NAN;
 						idx++;
 					}
 				}
@@ -641,9 +706,10 @@ SpatDataFrame SpatVector::getGeometryDF() {
 
 std::vector<std::vector<double>> SpatVector::getGeometry() {
 
+	bool usez = has_z();
 	size_t n = nxy();
-	std::vector<std::vector<double>> out(5);
-	for (size_t i=0; i>out.size(); i++) {
+	std::vector<std::vector<double>> out(usez ? 6 : 5);
+	for (size_t i=0; i<out.size(); i++) {
 		out[i].reserve(n);
 	}
 	for (size_t i=0; i < size(); i++) {
@@ -654,27 +720,32 @@ std::vector<std::vector<double>> SpatVector::getGeometry() {
 			out[2].push_back(NAN);
 			out[3].push_back(NAN);
 			out[4].push_back(0);
+			if (usez) out[5].push_back(NAN);
 			continue;
 		}
 
 		for (size_t j=0; j < g.size(); j++) {
 			SpatPart p = g.getPart(j);
+			bool pz = usez && p.hasZ() && (p.z.size() == p.x.size());
 			for (size_t q=0; q < p.x.size(); q++) {
 				out[0].push_back(i+1);
 				out[1].push_back(j+1);
 				out[2].push_back(p.x[q]);
 				out[3].push_back(p.y[q]);
 				out[4].push_back(0);
+				if (usez) out[5].push_back(pz ? p.z[q] : NAN);
 			}
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
 					SpatHole h = p.getHole(k);
+					bool hz = usez && h.hasZ() && (h.z.size() == h.x.size());
 					for (size_t q=0; q < h.x.size(); q++) {
 						out[0].push_back(i+1);
 						out[1].push_back(j+1);
 						out[2].push_back(h.x[q]);
 						out[3].push_back(h.y[q]);
 						out[4].push_back(k+1);
+						if (usez) out[5].push_back(hz ? h.z[q] : NAN);
 					}
 				}
 			}
@@ -775,7 +846,7 @@ SpatGeomType SpatVector::getGType(std::string &type) {
 }
 
 
-void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vector<size_t> part, std::vector<double> x, std::vector<double> y, std::vector<size_t> hole) {
+void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vector<size_t> part, std::vector<double> x, std::vector<double> y, std::vector<size_t> hole, std::vector<double> z) {
 
 // it is assumed that values are sorted by gid, part, hole
 	size_t lastgeom = gid[0];
@@ -783,8 +854,9 @@ void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vec
 	size_t lasthole = hole[0];
 	bool isHole = lasthole > 0;
 	bool isPoly = type == "polygons";
+	bool usez = !z.empty() && (z.size() == x.size());
 
-	std::vector<double> X, Y;
+	std::vector<double> X, Y, Z;
 	SpatGeom g;
 	g.gtype = getGType(type);
 
@@ -798,17 +870,33 @@ void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vec
 					if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
 						X.push_back(X[0]);
 						Y.push_back(Y[0]);
+						if (usez) Z.push_back(Z[0]);
 					}
 					if (isHole) {
-						SpatHole h(X, Y);
-						g.addHole(h);
+						if (usez) {
+							SpatHole h(X, Y, Z);
+							g.addHole(h);
+						} else {
+							SpatHole h(X, Y);
+							g.addHole(h);
+						}
+					} else {
+						if (usez) {
+							SpatPart p(X, Y, Z);
+							g.addPart(p);
+						} else {
+							SpatPart p(X, Y);
+							g.addPart(p);
+						}
+					}
+				} else {
+					if (usez) {
+						SpatPart p(X, Y, Z);
+						g.addPart(p);
 					} else {
 						SpatPart p(X, Y);
 						g.addPart(p);
 					}
-				} else {
-					SpatPart p(X, Y);
-					g.addPart(p);
 				}
 			}
 			lastpart = part[i];
@@ -816,6 +904,7 @@ void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vec
             isHole = lasthole > 0;
 			X.resize(0);
 			Y.resize(0);
+			Z.resize(0);
 			if (lastgeom != gid[i]) {
 				addGeom(g);
 				g.parts.resize(0);
@@ -825,6 +914,7 @@ void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vec
         if (!(std::isnan(x[i]) || std::isnan(y[i]))) {
 			X.push_back(x[i]);
 			Y.push_back(y[i]);
+			if (usez) Z.push_back(z[i]);
 		}
 	}
 
@@ -836,17 +926,33 @@ void SpatVector::setGeometry(std::string type, std::vector<size_t> gid, std::vec
 			if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
 				X.push_back(X[0]);
 				Y.push_back(Y[0]);
+				if (usez) Z.push_back(Z[0]);
 			}
 			if (isHole) {
-				SpatHole h(X, Y);
-				g.addHole(h);
+				if (usez) {
+					SpatHole h(X, Y, Z);
+					g.addHole(h);
+				} else {
+					SpatHole h(X, Y);
+					g.addHole(h);
+				}
+			} else {
+				if (usez) {
+					SpatPart p(X, Y, Z);
+					g.addPart(p);
+				} else {
+					SpatPart p(X, Y);
+					g.addPart(p);
+				}
+			}
+        } else {
+			if (usez) {
+				SpatPart p(X, Y, Z);
+				g.addPart(p);
 			} else {
 				SpatPart p(X, Y);
 				g.addPart(p);
 			}
-        } else {
-			SpatPart p(X, Y);
-			g.addPart(p);
 		}
 	}
 	addGeom(g);
@@ -898,6 +1004,47 @@ void SpatVector::setPointsGeometry(std::vector<double> &x, std::vector<double> &
 	extent.xmax = vmax(x, true);
 	extent.ymin = vmin(y, true);
 	extent.ymax = vmax(y, true);
+}
+
+
+void SpatVector::setPointsGeometry(std::vector<double> &x, std::vector<double> &y, std::vector<double> &z) {
+	size_t n = x.size();
+	if (n == 0) return;
+	if (z.empty() || (z.size() != n)) {
+		setPointsGeometry(x, y);
+		return;
+	}
+	SpatGeom g;
+	g.gtype = points;
+	SpatPart p(x[0], y[0], z[0]);
+	g.addPart(p);
+	geoms.resize(n, g);
+	for (size_t i=1; i<n; i++) {
+		geoms[i].parts[0].x[0] = x[i];
+		geoms[i].parts[0].y[0] = y[i];
+		geoms[i].parts[0].z[0] = z[i];
+		geoms[i].extent.xmin = x[i];
+		geoms[i].extent.xmax = x[i];
+		geoms[i].extent.ymin = y[i];
+		geoms[i].extent.ymax = y[i];
+	}
+	extent.xmin = vmin(x, true);
+	extent.xmax = vmax(x, true);
+	extent.ymin = vmin(y, true);
+	extent.ymax = vmax(y, true);
+}
+
+
+bool SpatVector::has_z() {
+	for (size_t i=0; i<geoms.size(); i++) {
+		for (size_t j=0; j<geoms[i].parts.size(); j++) {
+			if (geoms[i].parts[j].hasZ()) return true;
+			for (size_t k=0; k<geoms[i].parts[j].holes.size(); k++) {
+				if (geoms[i].parts[j].holes[k].hasZ()) return true;
+			}
+		}
+	}
+	return false;
 }
 
 
@@ -1131,8 +1278,13 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 				SpatPart p = geoms[i].parts[j];
 				if (!p.empty()) {
 					size_t n = p.size();
+					bool pz = p.hasZ() && (p.z.size() == n);
 					for (size_t k=0; k<n; k++) {
-						g.addPart(SpatPart(p.x[k], p.y[k]));
+						if (pz) {
+							g.addPart(SpatPart(p.x[k], p.y[k], p.z[k]));
+						} else {
+							g.addPart(SpatPart(p.x[k], p.y[k]));
+						}
 					}
 				}
 			}
@@ -1147,15 +1299,25 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 				SpatPart p = geoms[i].parts[j];
 				if (!p.empty()) {
 					size_t n = p.size() - skip;
+					bool pz = p.hasZ() && (p.z.size() == p.size());
 					for (size_t k=0; k<n; k++) {
-						g.addPart(SpatPart(p.x[k], p.y[k]));
+						if (pz) {
+							g.addPart(SpatPart(p.x[k], p.y[k], p.z[k]));
+						} else {
+							g.addPart(SpatPart(p.x[k], p.y[k]));
+						}
 					}
 					if (p.hasHoles()) {
 						size_t nh = p.nHoles();
 						for (size_t h=0; h<nh; h++) {
-							size_t n = p.holes[h].size()-skip;
-							for (size_t k=0; k<n; k++) {
-								g.addPart(SpatPart(p.holes[h].x[k], p.holes[h].y[k]));
+							size_t hn = p.holes[h].size()-skip;
+							bool hz = p.holes[h].hasZ() && (p.holes[h].z.size() == p.holes[h].size());
+							for (size_t k=0; k<hn; k++) {
+								if (hz) {
+									g.addPart(SpatPart(p.holes[h].x[k], p.holes[h].y[k], p.holes[h].z[k]));
+								} else {
+									g.addPart(SpatPart(p.holes[h].x[k], p.holes[h].y[k]));
+								}
 							}
 						}
 					}

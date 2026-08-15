@@ -240,8 +240,13 @@ SpatGeom getPointGeom(OGRGeometry *poGeometry) {
 	#endif
 	double x = poPoint->getX();
 	double y = poPoint->getY();
-	SpatPart p(x, y);
-	g.addPart(p);
+	if (poPoint->Is3D()) {
+		SpatPart p(x, y, poPoint->getZ());
+		g.addPart(p);
+	} else {
+		SpatPart p(x, y);
+		g.addPart(p);
+	}
 	return g;
 }
 
@@ -252,8 +257,6 @@ SpatGeom getMultiPointGeom(OGRGeometry *poGeometry) {
 	}
 	OGRMultiPoint *poMultipoint = ( OGRMultiPoint * )poGeometry;
 	unsigned ng = poMultipoint->getNumGeometries();
-	std::vector<double> X(ng);
-	std::vector<double> Y(ng);
 	for (size_t i=0; i<ng; i++) {
 	   	OGRGeometry *poMpGeometry = poMultipoint->getGeometryRef(i);
 		#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
@@ -263,8 +266,13 @@ SpatGeom getMultiPointGeom(OGRGeometry *poGeometry) {
 		#endif
 		double x = poPoint->getX();
 		double y = poPoint->getY();
-		SpatPart p(x, y);
-		g.addPart(p);
+		if (poPoint->Is3D()) {
+			SpatPart p(x, y, poPoint->getZ());
+			g.addPart(p);
+		} else {
+			SpatPart p(x, y);
+			g.addPart(p);
+		}
 	}
 	return g;
 }
@@ -280,14 +288,23 @@ SpatGeom getLinesGeom(OGRGeometry *poGeometry) {
 	unsigned np = poGeom->getNumPoints();
 	std::vector<double> X(np);
 	std::vector<double> Y(np);
+	std::vector<double> Z;
+	bool usez = poGeom->Is3D();
+	if (usez) Z.resize(np);
 	OGRPoint ogrPt;
 	for (size_t i=0; i<np; i++) {
 		poGeom->getPoint(i, &ogrPt);
 		X[i] = ogrPt.getX();
 		Y[i] = ogrPt.getY();
+		if (usez) Z[i] = ogrPt.getZ();
 	}
-	SpatPart p(X, Y);
-	g.addPart(p);
+	if (usez) {
+		SpatPart p(X, Y, Z);
+		g.addPart(p);
+	} else {
+		SpatPart p(X, Y);
+		g.addPart(p);
+	}
 	return g;
 }
 
@@ -305,13 +322,22 @@ SpatGeom getMultiLinesGeom(OGRGeometry *poGeometry) {
 		unsigned np = poLine->getNumPoints();
 		std::vector<double> X(np);
 		std::vector<double> Y(np);
+		std::vector<double> Z;
+		bool usez = poLine->Is3D();
+		if (usez) Z.resize(np);
 		for (size_t j=0; j<np; j++ ) {
 			poLine->getPoint(j, &ogrPt);
 			X[j] = ogrPt.getX();
 			Y[j] = ogrPt.getY();
+			if (usez) Z[j] = ogrPt.getZ();
 		}
-		SpatPart p(X, Y);
-		g.addPart(p);
+		if (usez) {
+			SpatPart p(X, Y, Z);
+			g.addPart(p);
+		} else {
+			SpatPart p(X, Y);
+			g.addPart(p);
+		}
 	}
 	return g;
 }
@@ -330,24 +356,36 @@ SpatGeom getPolygonsGeom(OGRGeometry *poGeometry) {
 		unsigned np = poRing->getNumPoints();
 		std::vector<double> X(np);
 		std::vector<double> Y(np);
+		std::vector<double> Z;
+		bool usez = poRing->Is3D();
+		if (usez) Z.resize(np);
 		for (size_t i=0; i<np; i++) {
 			poRing->getPoint(i, &ogrPt);
 			X[i] = ogrPt.getX();
 			Y[i] = ogrPt.getY();
+			if (usez) Z[i] = ogrPt.getZ();
 		}
-		SpatPart p(X, Y);
+		SpatPart p = usez ? SpatPart(X, Y, Z) : SpatPart(X, Y);
 		unsigned nh = poGeom->getNumInteriorRings();
 		for (size_t i=0; i<nh; i++) {
 			OGRLinearRing *poHole = poGeom->getInteriorRing(i);
 			unsigned np = poHole->getNumPoints();
 			std::vector<double> X(np);
 			std::vector<double> Y(np);
+			std::vector<double> Z;
+			bool hz = poHole->Is3D();
+			if (hz) Z.resize(np);
 			for (size_t j=0; j<np; j++) {
 				poHole->getPoint(j, &ogrPt);
 				X[j] = ogrPt.getX();
 				Y[j] = ogrPt.getY();
+				if (hz) Z[j] = ogrPt.getZ();
 			}
-			p.addHole(X, Y);
+			if (hz) {
+				p.addHole(X, Y, Z);
+			} else {
+				p.addHole(X, Y);
+			}
 		}
 		g.addPart(p);
 //	}
@@ -370,24 +408,36 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 		unsigned np = poRing->getNumPoints();
 		std::vector<double> X(np);
 		std::vector<double> Y(np);
+		std::vector<double> Z;
+		bool usez = poRing->Is3D();
+		if (usez) Z.resize(np);
 		for (size_t j=0; j<np; j++ ) {
 			poRing->getPoint(j, &ogrPt);
 			X[j] = ogrPt.getX();
 			Y[j] = ogrPt.getY();
+			if (usez) Z[j] = ogrPt.getZ();
 		}
-		SpatPart p(X, Y);
+		SpatPart p = usez ? SpatPart(X, Y, Z) : SpatPart(X, Y);
 		unsigned nh = poPolygon->getNumInteriorRings();
 		for (size_t j=0; j<nh; j++) {
 			OGRLinearRing *poHole = poPolygon->getInteriorRing(j);
 			np = poHole->getNumPoints();
 			std::vector<double> X(np);
 			std::vector<double> Y(np);
+			std::vector<double> Z;
+			bool hz = poHole->Is3D();
+			if (hz) Z.resize(np);
 			for (size_t k = 0; k < np; k++ ) {
 				poHole->getPoint(k, &ogrPt);
 				X[k] = ogrPt.getX();
 				Y[k] = ogrPt.getY();
+				if (hz) Z[k] = ogrPt.getZ();
 			}
-			p.addHole(X, Y);
+			if (hz) {
+				p.addHole(X, Y, Z);
+			} else {
+				p.addHole(X, Y);
+			}
 		}
 		g.addPart(p);
 	}
@@ -713,9 +763,6 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 	if (poFeature != NULL) {
 		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
 		if (poGeometry != NULL) {
-			if (poGeometry->Is3D()) {
-				addWarning("Z coordinates ignored");
-			}
 			if (poGeometry->IsMeasured()) {
 				addWarning("M coordinates ignored");
 			}
@@ -1040,9 +1087,6 @@ bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::
 	if (poFeature != NULL) {
 		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
 		if (poGeometry != NULL) {
-			if (poGeometry->Is3D()) {
-				addWarning("Z coordinates ignored");
-			}
 			if (poGeometry->IsMeasured()) {
 				addWarning("M coordinates ignored");
 			}

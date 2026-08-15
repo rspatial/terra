@@ -458,6 +458,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
   \code{\link{geomtype}} \tab Geometry type string \cr
   \code{\link{is.lines}} / \code{\link{is.points}} \tab Geometry type tests \cr
+  \code{\link{has.z}} \tab Whether geometries store Z coordinates \cr
   \code{\link{is.polygons}} \tab  \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}

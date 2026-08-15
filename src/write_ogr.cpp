@@ -133,14 +133,19 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
     }
 
 	OGRwkbGeometryType wkb;
+	bool usez = has_z();
 	if (nrow() > 0) {
 		SpatGeomType geomtype = geoms[0].gtype;
 		if (geomtype == points) {
-			wkb = is_multipoint() ? wkbMultiPoint : wkbPoint;
+			if (is_multipoint()) {
+				wkb = usez ? wkbMultiPoint25D : wkbMultiPoint;
+			} else {
+				wkb = usez ? wkbPoint25D : wkbPoint;
+			}
 		} else if (geomtype == lines) {
-			wkb = wkbMultiLineString;
+			wkb = usez ? wkbMultiLineString25D : wkbMultiLineString;
 		} else if (geomtype == polygons) {
-			wkb = wkbMultiPolygon;
+			wkb = usez ? wkbMultiPolygon25D : wkbMultiPolygon;
 		} else {
 			setError("this geometry type is not supported: " + type());
 			return poDS;
@@ -193,9 +198,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	if (lower_case(driver) == "gpx") {
 		std::vector<std::string> gpx_lyr = {"waypoints", "routes", "tracks", "route_points", "track_points"};
 		if (!is_in_vector(lyrname, gpx_lyr)) {
-			if (wkb == wkbPoint || wkb == wkbMultiPoint) {
+			OGRwkbGeometryType wkbflat = wkbFlatten(wkb);
+			if (wkbflat == wkbPoint || wkbflat == wkbMultiPoint) {
 				lyrname = "waypoints";
-			} else if (wkb == wkbMultiLineString) {
+			} else if (wkbflat == wkbMultiLineString) {
 				lyrname = "tracks";
 			} else {
 				lyrname = "waypoints";
@@ -352,22 +358,29 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 // points -- also need to do multi-points
 		OGRPoint pt;
-		if (wkb == wkbPoint) {
+		OGRwkbGeometryType wkbflat = wkbFlatten(wkb);
+		if (wkbflat == wkbPoint) {
 			if (geoms[i].parts.size() > 0) {
 				if (!std::isnan(geoms[i].parts[0].x[0])) {
 					pt.setX( geoms[i].parts[0].x[0] );
 					pt.setY( geoms[i].parts[0].y[0] );
+					if (usez && geoms[i].parts[0].hasZ()) {
+						pt.setZ( geoms[i].parts[0].z[0] );
+					}
 				}
 			}
 			poFeature->SetGeometry( &pt );
 
-		} else if (wkb == wkbMultiPoint) {
+		} else if (wkbflat == wkbMultiPoint) {
 
 			OGRMultiPoint poGeom;
 			for (size_t j=0; j<geoms[i].size(); j++) {
 				if (!std::isnan(geoms[i].parts[j].x[0])) {
 					pt.setX( geoms[i].parts[j].x[0] );
 					pt.setY( geoms[i].parts[j].y[0] );
+					if (usez && geoms[i].parts[j].hasZ()) {
+						pt.setZ( geoms[i].parts[j].z[0] );
+					}
 					poGeom.addGeometry(&pt);
 				}
 			}
@@ -378,14 +391,16 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			}
 
 // lines
-		} else if (wkb == wkbMultiLineString) {
+		} else if (wkbflat == wkbMultiLineString) {
 			OGRMultiLineString poGeom;
 			for (size_t j=0; j<geoms[i].size(); j++) {
 				OGRLineString poLine = OGRLineString();
+				bool pz = usez && geoms[i].parts[j].hasZ() && (geoms[i].parts[j].z.size() == geoms[i].parts[j].size());
 				for (size_t k=0; k<geoms[i].parts[j].size(); k++) {
 					if (!std::isnan(geoms[i].parts[j].x[k])) {
 						pt.setX(geoms[i].parts[j].x[k]);
 						pt.setY(geoms[i].parts[j].y[k]);
+						if (pz) pt.setZ(geoms[i].parts[j].z[k]);
 						poLine.setPoint(k, &pt);
 					}
 				}
@@ -400,16 +415,18 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			}
 
 // polygons
-		} else if (wkb == wkbMultiPolygon) {
+		} else if (wkbflat == wkbMultiPolygon) {
 			SpatGeom g = getGeom(i);
 			OGRMultiPolygon poGeom;
 			for (size_t j=0; j<g.size(); j++) {
 				OGRLinearRing poRing;
 				SpatPart p = g.getPart(j);
+				bool pz = usez && p.hasZ() && (p.z.size() == p.size());
 				for (size_t k=0; k<p.size(); k++) {
 					if (!std::isnan(p.x[k])) {
 						pt.setX(p.x[k]);
 						pt.setY(p.y[k]);
+						if (pz) pt.setZ(p.z[k]);
 						poRing.setPoint(k, &pt);
 					}
 				}
@@ -422,10 +439,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				if (p.hasHoles()) {
 					for (size_t h=0; h < p.nHoles(); h++) {
 						SpatHole hole = p.getHole(h);
+						bool hz = usez && hole.hasZ() && (hole.z.size() == hole.size());
 						OGRLinearRing poHole;
 						for (size_t k=0; k<hole.size(); k++) {
 							pt.setX(hole.x[k]);
 							pt.setY(hole.y[k]);
+							if (hz) pt.setZ(hole.z[k]);
 							poHole.setPoint(k, &pt);
 						}
 						if (polyGeom.addRing(&poHole) != OGRERR_NONE ) {

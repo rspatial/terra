@@ -65,7 +65,11 @@ setMethod("wrap", signature(x="SpatVector"),
 		vd@crs <- as.character(crs(x))
 		#stopifnot(vd@type %in% c("points", "lines", "polygons"))
 		g <- geom(x)
-		vd@coordinates <- g[, c("x", "y"), drop=FALSE]
+		if ("z" %in% colnames(g)) {
+			vd@coordinates <- g[, c("x", "y", "z"), drop=FALSE]
+		} else {
+			vd@coordinates <- g[, c("x", "y"), drop=FALSE]
+		}
 		j <- c(1, 2, grep("hole", colnames(g)))
 		g <- g[ , j, drop=FALSE]
 		i <- which(!duplicated(g))
@@ -90,10 +94,11 @@ setMethod("unwrap", signature(x="PackedSpatVector"),
 		n <- ncol(x@index)
 		reps <- diff(c(x@index[,n], nrow(x@coordinates)+1))
 		i <- rep(1:nrow(x@index), reps)
+		z <- if (ncol(x@coordinates) > 2) as.double(x@coordinates[,3]) else double(0)
 		if (n == 2) {
-			p@pntr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nrow(x@coordinates)))
+			p@pntr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nrow(x@coordinates)), z)
 		} else {
-			p@pntr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], x@index[i,3])
+			p@pntr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], x@index[i,3], z)
 		}
 		if (nrow(x@attributes) > 0) {
 			values(p) <- x@attributes

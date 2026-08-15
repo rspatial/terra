@@ -326,8 +326,13 @@ SpatVector SpatVector::get_holes() {
 			SpatPart p = geoms[i].parts[j];
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
-					SpatPart h(p.holes[k].x, p.holes[k].y);
-					g.addPart(h);
+					if (p.holes[k].hasZ()) {
+						SpatPart h(p.holes[k].x, p.holes[k].y, p.holes[k].z);
+						g.addPart(h);
+					} else {
+						SpatPart h(p.holes[k].x, p.holes[k].y);
+						g.addPart(h);
+					}
 				}
 				found = true;
 			}
@@ -365,7 +370,11 @@ SpatVector SpatVector::set_holes(SpatVector x, size_t i) {
 	SpatPart p  = out.geoms[i].parts[0];
 	SpatGeom g =   x.geoms[0];
 	for (size_t i=0; i<g.size(); i++) {
-		p.addHole(g.parts[i].x, g.parts[i].y);
+		if (g.parts[i].hasZ()) {
+			p.addHole(g.parts[i].x, g.parts[i].y, g.parts[i].z);
+		} else {
+			p.addHole(g.parts[i].x, g.parts[i].y);
+		}
 	}
 	out = *this;
 	out.geoms[i].parts[0] = p;

@@ -316,7 +316,7 @@ setMethod("as.lines", signature(x="matrix"),
 		p <- vect()
 		if (ncol(x) == 2) {
 			nr <- nrow(x)
-			p@pntr$setGeometry("lines", rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
+			p@pntr$setGeometry("lines", rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr), double(0))
 			crs(p) <- crs
 		} else if (ncol(x) == 4) {
 			p@pntr$setLinesStartEnd(x, crs(crs))

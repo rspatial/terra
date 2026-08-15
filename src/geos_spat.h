@@ -246,45 +246,59 @@ struct GEOSContextScope {
 
 
 
-inline GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
+inline GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &z, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
+	bool usez = !z.empty() && (z.size() == n);
+	unsigned int dim = usez ? 3 : 2;
 	if (n < 2) {
-		pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 0, 2);
+		pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 0, dim);
 		GEOSGeometry* g = GEOSGeom_createLineString_r(hGEOSCtxt, pseq);
 		return g;	
 	}
-	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
+	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, dim);
 	for (size_t i = 0; i < n; i++) {
 		GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, i, x[i]);
 		GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, i, y[i]);
+		if (usez) GEOSCoordSeq_setZ_r(hGEOSCtxt, pseq, i, z[i]);
 	}
 	GEOSGeometry* g = GEOSGeom_createLineString_r(hGEOSCtxt, pseq);
 	return g;
 }
 
+inline GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
+	return geos_line(x, y, std::vector<double>(), hGEOSCtxt);
+}
 
 
-inline GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
+
+inline GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &z, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
+	bool usez = !z.empty() && (z.size() == n);
+	unsigned int dim = usez ? 3 : 2;
 	if (n < 3) {
-		pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 0, 2);
+		pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 0, dim);
 		GEOSGeometry* g = GEOSGeom_createLinearRing_r(hGEOSCtxt, pseq);
 		return g;	
 	}
-	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
+	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, dim);
 	for (size_t i = 0; i < n; i++) {
 		GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, i, x[i]);
 		GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, i, y[i]);
+		if (usez) GEOSCoordSeq_setZ_r(hGEOSCtxt, pseq, i, z[i]);
 	}
 	GEOSGeometry* g = GEOSGeom_createLinearRing_r(hGEOSCtxt, pseq);
 	return g;
 }
 
+inline GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
+	return geos_linearRing(x, y, std::vector<double>(), hGEOSCtxt);
+}
+
 
 inline GEOSGeometry* geos_polygon(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
-	GEOSGeometry* shell = geos_linearRing(g.x, g.y, hGEOSCtxt);
+	GEOSGeometry* shell = g.hasZ() ? geos_linearRing(g.x, g.y, g.z, hGEOSCtxt) : geos_linearRing(g.x, g.y, hGEOSCtxt);
 
 	if (g.hasHoles()) {
 		size_t nh=0;
@@ -292,7 +306,7 @@ inline GEOSGeometry* geos_polygon(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
 		holes.reserve(g.nHoles());
 		for (size_t k=0; k < g.nHoles(); k++) {
 			SpatHole h = g.getHole(k);
-			GEOSGeometry* glr = geos_linearRing(h.x, h.y, hGEOSCtxt);
+			GEOSGeometry* glr = h.hasZ() ? geos_linearRing(h.x, h.y, h.z, hGEOSCtxt) : geos_linearRing(h.x, h.y, hGEOSCtxt);
 			if (glr != NULL) {
 				holes.push_back(glr);
 				nh++;
@@ -321,9 +335,11 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 			geoms.reserve(np);
 			for (size_t j = 0; j < np; j++) {
 				//SpatPart svp = svg.getPart(j);
-				pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 1, 2);
+				bool usez = svg.parts[j].hasZ();
+				pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 1, usez ? 3 : 2);
 				GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, 0, svg.parts[j].x[0]);
 				GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, 0, svg.parts[j].y[0]);
+				if (usez) GEOSCoordSeq_setZ_r(hGEOSCtxt, pseq, 0, svg.parts[j].z[0]);
 				GEOSGeometry* pt = GEOSGeom_createPoint_r(hGEOSCtxt, pseq);
 				if (pt != NULL) {
 					geoms.push_back(pt);
@@ -351,7 +367,9 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 			for (size_t j=0; j < np; j++) {
 				//SpatPart svp = svg.getPart(j);
 //				if (svg.parts[j].x.size() < 3) continue;
-				GEOSGeometry* gp = geos_line(svg.parts[j].x, svg.parts[j].y, hGEOSCtxt); 
+				GEOSGeometry* gp = svg.parts[j].hasZ() ?
+					geos_line(svg.parts[j].x, svg.parts[j].y, svg.parts[j].z, hGEOSCtxt) :
+					geos_line(svg.parts[j].x, svg.parts[j].y, hGEOSCtxt); 
 				if (gp != NULL) {
 					geoms.push_back(gp);
 				}
@@ -396,8 +414,9 @@ inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle
 
 	size_t ng = geoms.size();
 	std::vector<size_t> gid, gp, hole;
-	std::vector<double> x, y;
+	std::vector<double> x, y, z;
 	bool xok, yok;
+	bool saw_z = false;
 
 	if ((vt == "points") || (vt == "lines")) {	
 		for(size_t i = 0; i < ng; i++) {
@@ -407,23 +426,29 @@ inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
 				const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, part); 		
 				int npts = -1;
-//				if (vt == "points") {	
 				npts = GEOSGetNumCoordinates_r(hGEOSCtxt, part);
-//				} else if (vt == "lines") {
-//					npts = GEOSGeomGetNumPoints_r(hGEOSCtxt, part); // for lines
-//				}		
 				if (npts < 0) {
 					out.setError("GEOS exception 9");
 					return out;
 				}
+				unsigned int dims = 2;
+				GEOSCoordSeq_getDimensions_r(hGEOSCtxt, crds, &dims);
 				double xvalue = 0;
 				double yvalue = 0;
+				double zvalue = NAN;
 				for (int p=0; p < npts; p++) {
 					xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);				
 					yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);				
 					if (xok & yok) {
 						x.push_back(xvalue);
 						y.push_back(yvalue);
+						if (dims >= 3) {
+							GEOSCoordSeq_getZ_r(hGEOSCtxt, crds, p, &zvalue);
+							saw_z = true;
+							z.push_back(zvalue);
+						} else {
+							z.push_back(NAN);
+						}
 						gid.push_back(i);			
 						gp.push_back(j);			
 						hole.push_back(0);
@@ -449,14 +474,24 @@ inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle
 #endif
 					continue;
 				}
+				unsigned int dims = 2;
+				GEOSCoordSeq_getDimensions_r(hGEOSCtxt, crds, &dims);
 				double xvalue = 0;
 				double yvalue = 0;
+				double zvalue = NAN;
 				for (int p=0; p < npts; p++) {
 					xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);
 					yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);
 					if (xok & yok) {
 						x.push_back(xvalue);
 						y.push_back(yvalue);
+						if (dims >= 3) {
+							GEOSCoordSeq_getZ_r(hGEOSCtxt, crds, p, &zvalue);
+							saw_z = true;
+							z.push_back(zvalue);
+						} else {
+							z.push_back(NAN);
+						}
 						gid.push_back(i);
 						gp.push_back(j);
 						hole.push_back(0);
@@ -476,14 +511,24 @@ inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle
 #endif
 						continue;
 					}
+					unsigned int hdims = 2;
+					GEOSCoordSeq_getDimensions_r(hGEOSCtxt, crds, &hdims);
 					double xvalue = 0;
 					double yvalue = 0;
+					double zvalue = NAN;
 					for (int p=0; p < npts; p++) {
 						xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);			
 						yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);				
 						if (xok & yok) {
 							x.push_back(xvalue);
 							y.push_back(yvalue);
+							if (hdims >= 3) {
+								GEOSCoordSeq_getZ_r(hGEOSCtxt, crds, p, &zvalue);
+								saw_z = true;
+								z.push_back(zvalue);
+							} else {
+								z.push_back(NAN);
+							}
 							gid.push_back(i);
 							gp.push_back(j);
 							hole.push_back(h+1);
@@ -493,15 +538,16 @@ inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle
 			}
 		}	
 	}	
-	v.setGeometry(vt, gid, gp, x, y, hole);
+	if (!saw_z) z.clear();
+	v.setGeometry(vt, gid, gp, x, y, hole, z);
 	return v;
 }
 
 
 
 inline bool pointsFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
-const size_t i, const size_t j, std::vector<double> &x, std::vector<double> &y, 
-std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, std::string &msg) {
+const size_t i, const size_t j, std::vector<double> &x, std::vector<double> &y, std::vector<double> &z,
+std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, bool &saw_z, std::string &msg) {
 
 	const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, part); 		
 	int npts = -1;
@@ -513,20 +559,31 @@ std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, st
 	if (npts == 0) { // for #813
 		x.push_back(NAN);
 		y.push_back(NAN);
+		z.push_back(NAN);
 		gid.push_back(i);			
 		gp.push_back(j);			
 		hole.push_back(0);
 		return true;
 	}	
 
+	unsigned int dims = 2;
+	GEOSCoordSeq_getDimensions_r(hGEOSCtxt, crds, &dims);
 	double xvalue = 0;
 	double yvalue = 0;
+	double zvalue = NAN;
 	for (int p=0; p < npts; p++) {
 		bool xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);
 		bool yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);	
 		if (xok & yok) {
 			x.push_back(xvalue);
 			y.push_back(yvalue);
+			if (dims >= 3) {
+				GEOSCoordSeq_getZ_r(hGEOSCtxt, crds, p, &zvalue);
+				saw_z = true;
+				z.push_back(zvalue);
+			} else {
+				z.push_back(NAN);
+			}
 			gid.push_back(i);			
 			gp.push_back(j);			
 			hole.push_back(0);
@@ -538,8 +595,8 @@ std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, st
 
 
 inline bool polysFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
-const size_t i, const size_t j, std::vector<double> &x, std::vector<double> &y, 
-std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, std::string &msg) {
+const size_t i, const size_t j, std::vector<double> &x, std::vector<double> &y, std::vector<double> &z,
+std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, bool &saw_z, std::string &msg) {
 	const GEOSGeometry* ring = GEOSGetExteriorRing_r(hGEOSCtxt, part);
 	const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, ring); 		
 	int npts = -1;
@@ -552,20 +609,31 @@ std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, st
 	if (npts == 0) { // for #813
 		x.push_back(NAN);
 		y.push_back(NAN);
+		z.push_back(NAN);
 		gid.push_back(i);			
 		gp.push_back(j);			
 		hole.push_back(0);
 		return true;
 	}	
 
+	unsigned int dims = 2;
+	GEOSCoordSeq_getDimensions_r(hGEOSCtxt, crds, &dims);
 	double xvalue = 0;
 	double yvalue = 0;
+	double zvalue = NAN;
 	for (int p=0; p < npts; p++) {
 		bool xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);
 		bool yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);
 		if (xok & yok) {
 			x.push_back(xvalue);
 			y.push_back(yvalue);
+			if (dims >= 3) {
+				GEOSCoordSeq_getZ_r(hGEOSCtxt, crds, p, &zvalue);
+				saw_z = true;
+				z.push_back(zvalue);
+			} else {
+				z.push_back(NAN);
+			}
 			gid.push_back(i);			
 			gp.push_back(j);			
 			hole.push_back(0);
@@ -581,14 +649,24 @@ std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, st
 			msg  = "exception 123";
 			return false;
 		}
+		unsigned int hdims = 2;
+		GEOSCoordSeq_getDimensions_r(hGEOSCtxt, crds, &hdims);
 		double xvalue = 0;
 		double yvalue = 0;
+		double zvalue = NAN;
 		for (int p=0; p < npts; p++) {
 			bool xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);	
 			bool yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);	
 			if (xok & yok) {
 				x.push_back(xvalue);
 				y.push_back(yvalue);
+				if (hdims >= 3) {
+					GEOSCoordSeq_getZ_r(hGEOSCtxt, crds, p, &zvalue);
+					saw_z = true;
+					z.push_back(zvalue);
+				} else {
+					z.push_back(NAN);
+				}
 				gid.push_back(i);			
 				gp.push_back(j);			
 				hole.push_back(h+1);
@@ -599,10 +677,11 @@ std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, st
 }
 
 
-inline void emptyGeom(const size_t i, std::vector<double> &x, std::vector<double> &y, 
+inline void emptyGeom(const size_t i, std::vector<double> &x, std::vector<double> &y, std::vector<double> &z,
 std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole) {
 	x.push_back(NAN);
 	y.push_back(NAN);
+	z.push_back(NAN);
 	gid.push_back(i);			
 	gp.push_back(0);
 	hole.push_back(0);
@@ -616,8 +695,9 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 	std::vector<size_t> pt_gid, pt_gp, pt_hole;
 	std::vector<size_t> ln_gid, ln_gp, ln_hole;
 	std::vector<size_t> pl_gid, pl_gp, pl_hole;
-	std::vector<double> pt_x, pt_y, ln_x, ln_y, pl_x, pl_y;
+	std::vector<double> pt_x, pt_y, pt_z, ln_x, ln_y, ln_z, pl_x, pl_y, pl_z;
 	std::vector<long> pts_ids, lin_ids, pol_ids;
+	bool pt_saw_z = false, ln_saw_z = false, pl_saw_z = false;
 
 	bool track_ids = !ids.empty(); 	
 	if (track_ids) {
@@ -636,11 +716,11 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 
 		if (gt == "Point" || gt == "MultiPoint") {
 			if (np == 0 && keepnull) {
-				emptyGeom(f, pt_x, pt_y, pt_gid, pt_gp, pt_hole);
+				emptyGeom(f, pt_x, pt_y, pt_z, pt_gid, pt_gp, pt_hole);
 			}
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-				if (!pointsFromGeom(hGEOSCtxt, part, f, j, pt_x, pt_y, pt_gid, pt_gp, pt_hole, msg)) {
+				if (!pointsFromGeom(hGEOSCtxt, part, f, j, pt_x, pt_y, pt_z, pt_gid, pt_gp, pt_hole, pt_saw_z, msg)) {
 					out.setError(msg);
 					return out;
 				}
@@ -649,11 +729,11 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 			f++;
 		} else if (gt == "LineString" || gt == "MultiLineString") {
 			if (np == 0 && keepnull) {
-				emptyGeom(f, ln_x, ln_y, ln_gid, ln_gp, ln_hole);
+				emptyGeom(f, ln_x, ln_y, ln_z, ln_gid, ln_gp, ln_hole);
 			}
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-				if (!pointsFromGeom(hGEOSCtxt, part, f, j, ln_x, ln_y, ln_gid, ln_gp, ln_hole, msg)) {
+				if (!pointsFromGeom(hGEOSCtxt, part, f, j, ln_x, ln_y, ln_z, ln_gid, ln_gp, ln_hole, ln_saw_z, msg)) {
 					out.setError(msg);
 					return out;
 				}
@@ -662,11 +742,11 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 			f++;
 		} else if (gt == "Polygon" || gt == "MultiPolygon") {
 			if (np == 0 && keepnull) {
-				emptyGeom(f, pl_x, pl_y, pl_gid, pl_gp, pl_hole);
+				emptyGeom(f, pl_x, pl_y, pl_z, pl_gid, pl_gp, pl_hole);
 			}
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-				if (!polysFromGeom(hGEOSCtxt, part, f, j, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
+				if (!polysFromGeom(hGEOSCtxt, part, f, j, pl_x, pl_y, pl_z, pl_gid, pl_gp, pl_hole, pl_saw_z, msg)) {
 					out.setError(msg);
 					return out;
 				}
@@ -691,13 +771,13 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 
 				if (npp == 0 && keepnull) {
 					if (ggt == "Polygon" || ggt == "MultiPolygon") {
-						emptyGeom(f, pl_x, pl_y, pl_gid, pl_gp, pl_hole);
+						emptyGeom(f, pl_x, pl_y, pl_z, pl_gid, pl_gp, pl_hole);
 						if (track_ids) pol_ids.push_back(ids[i]);
 					} else if (ggt == "Point" || ggt == "MultiPoint") {
-						emptyGeom(f, pt_x, pt_y, pt_gid, pt_gp, pt_hole);
+						emptyGeom(f, pt_x, pt_y, pt_z, pt_gid, pt_gp, pt_hole);
 						if (track_ids) pts_ids.push_back(ids[i]);
 					} else if (ggt == "LineString" || ggt == "MultiLineString") {
-						emptyGeom(f, ln_x, ln_y, ln_gid, ln_gp, ln_hole);
+						emptyGeom(f, ln_x, ln_y, ln_z, ln_gid, ln_gp, ln_hole);
 						if (track_ids) lin_ids.push_back(ids[i]);
 					}
 					if (increment) f++;
@@ -708,7 +788,7 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 					const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, gg, k);
 
 					if (ggt == "Polygon" || ggt == "MultiPolygon") {
-						if (!polysFromGeom(hGEOSCtxt, part, f, kk, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
+						if (!polysFromGeom(hGEOSCtxt, part, f, kk, pl_x, pl_y, pl_z, pl_gid, pl_gp, pl_hole, pl_saw_z, msg)) {
 							out.setError(msg);
 							return out;
 						}
@@ -717,7 +797,7 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 							firstpol=false;
 						}
 					} else if (ggt == "Point" || ggt == "MultiPoint") {
-						if (!pointsFromGeom(hGEOSCtxt, part, f, k, pt_x, pt_y, pt_gid, pt_gp, pt_hole, msg)) {
+						if (!pointsFromGeom(hGEOSCtxt, part, f, k, pt_x, pt_y, pt_z, pt_gid, pt_gp, pt_hole, pt_saw_z, msg)) {
 							out.setError(msg);
 							return out;
 						}
@@ -727,7 +807,7 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 						}
 
 					} else if (ggt == "LineString" || ggt == "MultiLineString") {
-						if (!pointsFromGeom(hGEOSCtxt, part, f, k, ln_x, ln_y, ln_gid, ln_gp, ln_hole, msg)) {
+						if (!pointsFromGeom(hGEOSCtxt, part, f, k, ln_x, ln_y, ln_z, ln_gid, ln_gp, ln_hole, ln_saw_z, msg)) {
 							out.setError(msg);
 							return out;
 						}
@@ -751,14 +831,16 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 
 	if (!pl_x.empty()) {
 		SpatVector v;
-		v.setGeometry("polygons", pl_gid, pl_gp, pl_x, pl_y, pl_hole);
+		if (!pl_saw_z) pl_z.clear();
+		v.setGeometry("polygons", pl_gid, pl_gp, pl_x, pl_y, pl_hole, pl_z);
 		if (track_ids) v.df.add_column(pol_ids, "ids");
 		out.push_back(v);
 		//Rcpp::Rcout << "pls" << std::endl;
 	}
 	if (!ln_x.empty()) {
 		SpatVector v;
-		v.setGeometry("lines", ln_gid, ln_gp, ln_x, ln_y, ln_hole);
+		if (!ln_saw_z) ln_z.clear();
+		v.setGeometry("lines", ln_gid, ln_gp, ln_x, ln_y, ln_hole, ln_z);
 		if (track_ids) v.df.add_column(lin_ids, "ids");
 		out.push_back(v);
 		//Rcpp::Rcout << "lns" << std::endl;
@@ -766,13 +848,12 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 
 	if (!pt_x.empty()) {
 		SpatVector v;
-		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole);
-
+		if (!pt_saw_z) pt_z.clear();
+		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole, pt_z);
 		if (track_ids) v.df.add_column(pts_ids, "ids");
 		out.push_back(v);
-		//Rcpp::Rcout << "pts" << std::endl;
 	}
+
 	return out;
 }
-
 

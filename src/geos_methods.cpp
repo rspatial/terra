@@ -91,6 +91,10 @@ std::vector<std::string> SpatVector::wkb() {
 	std::vector<std::string> out;
 	out.reserve(g.size());
 	GEOSWKBWriter* writer = GEOSWKBWriter_create_r(hGEOSCtxt);
+	GEOSWKBWriter_setFlavor_r(hGEOSCtxt, writer, GEOS_WKB_ISO);
+	if (has_z()) {
+		GEOSWKBWriter_setOutputDimension_r(hGEOSCtxt, writer, 3);
+	}
 	size_t len=0;
 	for (size_t i=0; i<g.size(); i++) {
 		unsigned char *wkb = GEOSWKBWriter_write_r(hGEOSCtxt, writer, g[i].get(), &len);
@@ -105,15 +109,20 @@ std::vector<std::string> SpatVector::wkb() {
 std::vector<std::vector<unsigned char>> SpatVector::wkb_raw() {
 	GEOSContextScope hGEOSCtxt;
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
-	std::vector<std::vector<unsigned char>> out; 
+	std::vector<std::vector<unsigned char>> out;
+	out.reserve(g.size());
+	GEOSWKBWriter* writer = GEOSWKBWriter_create_r(hGEOSCtxt);
+	GEOSWKBWriter_setFlavor_r(hGEOSCtxt, writer, GEOS_WKB_ISO);
+	if (has_z()) {
+		GEOSWKBWriter_setOutputDimension_r(hGEOSCtxt, writer, 3);
+	}
 	size_t len = 0;
 	for (size_t i = 0; i < g.size(); i++) {
-		unsigned char *hex = GEOSGeomToWKB_buf_r(hGEOSCtxt, g[i].get(), &len);
-		std::vector<unsigned char> raw; 
-		raw = std::vector<unsigned char>(hex, hex+len);
-		out.push_back(raw);
-		free(hex);
+		unsigned char *rawbuf = GEOSWKBWriter_write_r(hGEOSCtxt, writer, g[i].get(), &len);
+		out.push_back(std::vector<unsigned char>(rawbuf, rawbuf+len));
+		GEOSFree_r(hGEOSCtxt, rawbuf);
 	}
+	GEOSWKBWriter_destroy_r(hGEOSCtxt, writer);
 	return out;
 }	
 
@@ -122,13 +131,19 @@ std::vector<std::string> SpatVector::hex() {
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<std::string> out;
 	out.reserve(g.size());
+	GEOSWKBWriter* writer = GEOSWKBWriter_create_r(hGEOSCtxt);
+	GEOSWKBWriter_setFlavor_r(hGEOSCtxt, writer, GEOS_WKB_ISO);
+	if (has_z()) {
+		GEOSWKBWriter_setOutputDimension_r(hGEOSCtxt, writer, 3);
+	}
 	size_t len = 0;
 	for (size_t i = 0; i < g.size(); i++) {
-		unsigned char *hex = GEOSGeomToHEX_buf_r(hGEOSCtxt, g[i].get(), &len);
+		unsigned char *hex = GEOSWKBWriter_writeHEX_r(hGEOSCtxt, writer, g[i].get(), &len);
 		std::string s( reinterpret_cast<char const*>(hex), len) ;
 		out.push_back(s);
-		free(hex);
+		GEOSFree_r(hGEOSCtxt, hex);
 	}
+	GEOSWKBWriter_destroy_r(hGEOSCtxt, writer);
 	return out;
 }
 

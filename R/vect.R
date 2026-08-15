@@ -205,7 +205,7 @@ setMethod("vect", signature(x="matrix"),
 		type <- tolower(type)
 		type <- match.arg(tolower(type), c("points", "lines", "polygons"))
 		stopifnot(NCOL(x) > 1)
-		stopifnot(NCOL(x) < 6)
+		stopifnot(NCOL(x) < 7)
 
 		crs <- character_crs(crs, "vect")
 		p <- methods::new("SpatVector")
@@ -217,20 +217,24 @@ setMethod("vect", signature(x="matrix"),
 			return(p)
 		}
 		nc <- ncol(x)
+		z0 <- double(0)
 		if (nc == 2) {
 			lonlat <- .checkXYnames(colnames(x))
 			if (type == "points") {
 				p@pntr$setPointsXY(as.double(x[,1]), as.double(x[,2]))
 			} else {
-				p@pntr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
+				p@pntr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr), z0)
 			}
 			if (lonlat && isTRUE(crs=="")) crs <- "+proj=longlat"
 		} else if (nc == 3) {
-			p@pntr$setGeometry(type, x[,1], rep(1, nr), x[,2], x[,3], rep(FALSE, nr))
+			p@pntr$setGeometry(type, x[,1], rep(1, nr), x[,2], x[,3], rep(FALSE, nr), z0)
 		} else if (nc == 4) {
-			p@pntr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], rep(FALSE, nr))
+			p@pntr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], rep(FALSE, nr), z0)
 		} else if (nc == 5) {
-			p@pntr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], x[,5])
+			p@pntr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], x[,5], z0)
+		} else if (nc == 6) {
+			# geom, part, x, y, hole, z (from geom() when has.z)
+			p@pntr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], x[,5], as.double(x[,6]))
 		} else {
 			error("vect", "not an appropriate matrix (too many columns)")
 		}

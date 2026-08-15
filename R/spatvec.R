@@ -38,6 +38,13 @@ setMethod("is.points", signature(x="SpatVector"),
 )
 
 
+setMethod("has.z", signature(x="SpatVector"),
+	function(x) {
+		x@pntr$has_z()
+	}
+)
+
+
 setMethod("geomtype", signature(x="Spatial"),
 	function(x){
 		type <- sub("spatial", "", as.vector(tolower(class(x)[1])))
@@ -60,7 +67,7 @@ setMethod("geom", signature(x="SpatVector"),
 		}	else {
 			g <- x@pntr$get_geometry()
 			g <- do.call(cbind, g)
-			colnames(g) <- c("geom", "part", "x", "y", "hole")[1:ncol(g)]
+			colnames(g) <- c("geom", "part", "x", "y", "hole", "z")[1:ncol(g)]
 			if (df) {
 				data.frame(g)
 			} else {
@@ -84,7 +91,7 @@ setMethod("crds", signature(x="SpatVector"),
 		} else {
 			g <- x@pntr$coordinates()
 			g <- do.call(cbind, g)
-			colnames(g) <- c("x", "y")
+			colnames(g) <- c("x", "y", "z")[1:ncol(g)]
 			if (df) {
 				data.frame(g)
 			} else {

@@ -192,7 +192,7 @@ SpatRaster aggregate(std::vector<std::string> args) {
     std::vector<double> y = { -20,55,0,-60};
     std::vector<unsigned> hole = { 0, 0, 0, 0, 0};
 
-    sv.setGeometry("polygons", object, part, x, y, hole);
+    sv.setGeometry("polygons", object, part, x, y, hole, {});
     show(sv);
 
     SpatDataFrame v = sv.getGeometryDF();
@@ -363,7 +363,7 @@ SpatRaster aggregate(std::vector<std::string> args) {
     std::vector<double> x = {1,2,3,1};
     std::vector<double> y = {3,1,2,3};
     std::vector<bool> hole = {0,0,0,0};
-	vec.setGeometry("point", id, part, x, y, hole);
+	vec.setGeometry("point", id, part, x, y, hole, {});
     unsigned n = vec.size();
 
     SpatDataFrame g = vec.getGeometryDF();

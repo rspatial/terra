@@ -152,13 +152,25 @@ Rcpp::List getRasterAttributes(SpatRaster* x) {
 Rcpp::DataFrame get_geometryDF(SpatVector* v) {
 	SpatDataFrame df = v->getGeometryDF();
 
-	Rcpp::DataFrame out = Rcpp::DataFrame::create(
+	Rcpp::DataFrame out;
+	if (v->has_z()) {
+		out = Rcpp::DataFrame::create(
+			Rcpp::Named("id") = df.iv[0],
+			Rcpp::Named("part") = df.iv[1],
+			Rcpp::Named("x") = df.dv[0],
+			Rcpp::Named("y") = df.dv[1],
+			Rcpp::Named("hole") = df.iv[2],
+			Rcpp::Named("z") = df.dv[2]
+		);
+	} else {
+		out = Rcpp::DataFrame::create(
 			Rcpp::Named("id") = df.iv[0],
 			Rcpp::Named("part") = df.iv[1],
 			Rcpp::Named("x") = df.dv[0],
 			Rcpp::Named("y") = df.dv[1],
 			Rcpp::Named("hole") = df.iv[2]
-	);
+		);
+	}
 	return out;
 }
 
@@ -591,9 +603,11 @@ RCPP_MODULE(spat){
 		.method("project_xy", &SpatVector::project_xy)
 		.method("read", &SpatVector::read)
 		.method("setGeometry", &SpatVector::setGeometry)
-		.method("setPointsXY", &SpatVector::setPointsGeometry)
+		.method("setPointsXY", (void (SpatVector::*)(std::vector<double>&, std::vector<double>&))(&SpatVector::setPointsGeometry))
+		.method("setPointsXYZ", (void (SpatVector::*)(std::vector<double>&, std::vector<double>&, std::vector<double>&))(&SpatVector::setPointsGeometry))
 		.method("setPointsDF", &SpatVector::setPointsDF)
 		.method("setLinesStartEnd", &SpatVector::setLinesStartEnd)
+		.method("has_z", &SpatVector::has_z)
 		.method("size", &SpatVector::size)
 		.method("subset_cols", ( SpatVector (SpatVector::*)(std::vector<long>))( &SpatVector::subset_cols ))
 		.method("subset_rows", ( SpatVector (SpatVector::*)(std::vector<long>))( &SpatVector::subset_rows ))
