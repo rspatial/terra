@@ -9,9 +9,8 @@ When a file has no conventional geotransform but does have a
 [`rast`](https://rspatial.github.io/terra/reference/rast.md) stores that
 information on the source and, if the dataset itself has no CRS, applies
 the geolocation/GCP CRS automatically so that
-[`project`](https://rspatial.github.io/terra/reference/project.md) /
-warping can use the arrays without a manual
-[`set.crs`](https://rspatial.github.io/terra/reference/inplace.md) call.
+[`project`](https://rspatial.github.io/terra/reference/project.md) can
+use the arrays.
 
 ## Usage
 

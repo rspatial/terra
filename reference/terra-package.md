@@ -735,7 +735,7 @@ Geometric "vector overlay" operations such as
 [`intersect`](https://rspatial.github.io/terra/reference/intersect.md),
 [`union`](https://rspatial.github.io/terra/reference/union.md),
 [`erase`](https://rspatial.github.io/terra/reference/erase.md),
-[`symdif`](https://rspatial.github.io/terra/reference/symdif.md), ,
+[`symdif`](https://rspatial.github.io/terra/reference/symdif.md),
 [`crop`](https://rspatial.github.io/terra/reference/crop.md) do not
 adjust for lon/lat intersections (use
 [`densify`](https://rspatial.github.io/terra/reference/densify.md) to
@@ -846,16 +846,16 @@ Except where indicated otherwise, the methods and functions in this
 package were written by Robert Hijmans. Andrew Gene Brown and Márcia
 Barbosa contributed many improvements to the code and documentation.
 Krzysztof Dyba contributed to documentation and github management and
-issues. The configuration scripts were written by Roger Bivand. Some of
-code using the GEOS library was adapted from code by Edzer Pebesma for
-`sf`. Emanuele Cordano contributed functionality for catchment related
-computations. Michael Chirico, Barry Rowlingson, and Michael D. Sumner
-also made important contributions.
+issues. Emanuele Cordano contributed functions for catchment related
+computations. The configuration scripts were written by Roger Bivand.
+Some of the code for using the GEOS library was adapted from code by
+Edzer Pebesma for `sf`. Michael Chirico, Barry Rowlingson, and Michael
+D. Sumner also made important contributions.
 
 This package is an attempt to climb on the shoulders of giants (GDAL,
 PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed
 by asking questions or [raising
 issues](https://github.com/rspatial/terra). Feedback and suggestions by
-Kendon Bell, Jean-Luc Dupouey, Sarah Endicott, Derek Friend, Alex Ilich,
-Agustin Lobo, Gerald Nelson, Jakub Nowosad, and Monika Tomaszewska have
-been especially helpful.
+Kodi Arfer, Kendon Bell, Jean-Luc Dupouey, Sarah Endicott, Derek Friend,
+Alex Ilich, Agustin Lobo, Gerald Nelson, Jakub Nowosad, and Monika
+Tomaszewska have been especially helpful.
