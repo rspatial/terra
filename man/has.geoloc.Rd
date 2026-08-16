@@ -13,7 +13,7 @@
 \description{
 Detect whether a SpatRaster source has GDAL geolocation arrays (e.g. satellite swath / curvilinear NetCDF) and/or Ground Control Points (GCPs), and report the associated spatial reference and array paths.
 
-When a file has no conventional geotransform but does have a \code{GEOLOCATION} metadata domain (or GCPs), \code{\link{rast}} stores that information on the source and, if the dataset itself has no CRS, applies the geolocation/GCP CRS automatically so that \code{\link{project}} / warping can use the arrays without a manual \code{\link{set.crs}} call.
+When a file has no conventional geotransform but does have a \code{GEOLOCATION} metadata domain (or GCPs), \code{\link{rast}} stores that information on the source and, if the dataset itself has no CRS, applies the geolocation/GCP CRS automatically so that \code{\link{project}} can use the arrays.
 }
 
 \usage{

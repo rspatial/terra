@@ -713,7 +713,7 @@ Most methods that involve distance, area, direction, or sampling account for the
 
 Some methods do \bold{not} use geodesic algorithms, require a planar CRS, or interpret parameters in the units of the CRS (degrees for lon/lat). 
 
-Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\link{union}}, \code{\link{erase}}, \code{\link{symdif}}, , \code{\link{crop}} do not adjust for lon/lat intersections (use \code{\link{densify}} to approximate it better if needed) 
+Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\link{union}}, \code{\link{erase}}, \code{\link{symdif}}, \code{\link{crop}} do not adjust for lon/lat intersections (use \code{\link{densify}} to approximate it better if needed) 
 
 \code{\link{voronoi}}, \code{\link{hull}}) treat longitude/latitude coordinates as if they were planar.
 
@@ -811,10 +811,10 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 }
 
 \section{Contributors}{
-Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. Andrew Gene Brown and Márcia Barbosa contributed many improvements to the code and documentation. Krzysztof Dyba contributed to documentation and github management and issues. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Emanuele Cordano contributed functionality for catchment related computations. Michael Chirico, Barry Rowlingson, and Michael D. Sumner also made important contributions.
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. Andrew Gene Brown and Márcia Barbosa contributed many improvements to the code and documentation. Krzysztof Dyba contributed to documentation and github management and issues. Emanuele Cordano contributed functions for catchment related computations. The configuration scripts were written by Roger Bivand. Some of the code for using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Michael Chirico, Barry Rowlingson, and Michael D. Sumner also made important contributions.
 
 
-This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Sarah Endicott, Derek Friend, Alex Ilich, Agustin Lobo, Gerald Nelson, Jakub Nowosad, and Monika Tomaszewska have been especially helpful.
+This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Kodi Arfer, Kendon Bell, Jean-Luc Dupouey, Sarah Endicott, Derek Friend, Alex Ilich, Agustin Lobo, Gerald Nelson, Jakub Nowosad, and Monika Tomaszewska have been especially helpful.
 }
 
 
