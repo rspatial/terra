@@ -56,6 +56,29 @@ bool dataset_has_geolocation(GDALDatasetH hDS) {
 	}
 	return false;
 }
+
+// netCDF GEOLOCATION lon/lat over /vsicurl/ often opens for metadata but warp
+// fills the destination with NA (esp. Windows). /vsis3/ can work when the
+// bucket is reachable (see #1175 CDSE example); do not refuse it here.
+bool geoloc_uses_vsicurl(const SpatRasterSource &s) {
+	auto has_vsicurl = [](const std::string &p) {
+		return p.find("/vsicurl/") != std::string::npos;
+	};
+	return has_vsicurl(s.filename) || has_vsicurl(s.geoloc_x) || has_vsicurl(s.geoloc_y);
+}
+
+const char *geoloc_vsi_msg =
+	"project/warp with GEOLOCATION arrays via /vsicurl/ is not supported for netCDF; download the file, or for S3 data try /vsis3/ with appropriate credentials";
+
+bool refuse_geoloc_vsi(SpatRaster &out, const std::vector<SpatRasterSource> &sources) {
+	for (size_t j=0; j<sources.size(); j++) {
+		if (sources[j].has_geolocation && geoloc_uses_vsicurl(sources[j])) {
+			out.setError(geoloc_vsi_msg);
+			return true;
+		}
+	}
+	return false;
+}
 }
 
 
@@ -300,7 +323,7 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 				if (hy) GDALClose(hy);
 				CSLDestroy(papszTO);
 				CPLFree(pszDstWKT);
-				r.setError("cannot open GEOLOCATION arrays (on Windows, netCDF+/vsicurl/ needs a local file for project/warp)");
+				r.setError(geoloc_vsi_msg);
 				return false;
 			}
 			GDALClose(hx);
@@ -643,6 +666,9 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	if (resample) {
 		out.setSRS(srccrs);
 	}
+	if (refuse_geoloc_vsi(out, source)) {
+		return out;
+	}
 
 	out.setNames(getNames());
 	if ((method == "near") || (method == "mode")) {
@@ -918,6 +944,9 @@ SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string meth
 	if (resample) {
 		out.setSRS(srccrs);
 	}
+	if (refuse_geoloc_vsi(out, source)) {
+		return out;
+	}
 
 	out.setNames(getNames());
 	if (method == "near") {
@@ -1168,6 +1197,9 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	std::string srccrs = warp_source_crs(*this);
 	if (resample) {
 		out.setSRS(srccrs);
+	}
+	if (refuse_geoloc_vsi(out, source)) {
+		return out;
 	}
 
 	out.setNames(getNames());
