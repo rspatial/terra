@@ -715,7 +715,7 @@ std::string SpatRaster::show(bool one_based) {
 
 	// time
 	if (hasTime()) {
-		std::string tims = source[0].timestep;
+		std::string tims = getTimeStep();
 		std::string label = "time        ";
 		if (tims == "yearmonths")      label = "time (ymnts)";
 		else if (tims == "months")     label = "time (mnts) ";
@@ -724,11 +724,15 @@ std::string SpatRaster::show(bool one_based) {
 		else if (tims == "raw")        label = "time (raw)  ";
 
 		std::vector<std::string> ts = getTimeStr(false, " ");
-		if (!ts.empty()) {
-			std::string first_t = ts.front();
-			std::string last_t  = ts.back();
-			// unique count
-			std::vector<std::string> ut = ts;
+		std::vector<std::string> present;
+		present.reserve(ts.size());
+		for (const auto &t : ts) {
+			if (!t.empty()) present.push_back(t);
+		}
+		if (!present.empty()) {
+			std::string first_t = present.front();
+			std::string last_t  = present.back();
+			std::vector<std::string> ut = present;
 			std::sort(ut.begin(), ut.end());
 			ut.erase(std::unique(ut.begin(), ut.end()), ut.end());
 

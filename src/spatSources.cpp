@@ -16,7 +16,9 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
+#include <algorithm>
 #include "spatRaster.h"
+#include "spatTime.h"
 
 /*
 #include "string_utils.h"
@@ -108,29 +110,29 @@ void SpatRaster::combine(SpatRaster &x) {
 
 
 void SpatRaster::checkTime(SpatRaster &x) {
-	if (!hasTime()) {
+	if (!hasTime() || !x.hasTime()) {
+		return;
+	}
+	std::string step = unify_time_step(getTimeStep(), x.getTimeStep());
+	if (step.empty()) {
+		addWarning("time not combined: incompatible time step");
 		std::vector<int64_t> time;
+		setTime(time, "remove", "");
 		x.setTime(time, "remove", "");
 		return;
 	}
-	if (!x.hasTime()) {
-		std::vector<int64_t> time;
-		setTime(time, "remove", "");
-		return;
-	}
-	std::string s = source[0].timestep;
-	std::string xs = x.source[0].timestep;
-	if (s == xs) return;
-	if ((s == "days") && (xs == "seconds")) {
-		x.source[0].timestep = "days";
-	} else if ((s == "seconds") && (xs == "days")) {
-		for (size_t i=0; i<source.size(); i++) {
-			source[i].timestep = "days";
+	std::string zone = unify_time_zone(getTimeZone(), x.getTimeZone());
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].hasTime) {
+			source[i].timestep = step;
+			source[i].timezone = zone;
 		}
-	} else {
-		std::vector<int64_t> time;
-		setTime(time, "remove", "");
-		x.setTime(time, "remove", "");
+	}
+	for (size_t i=0; i<x.source.size(); i++) {
+		if (x.source[i].hasTime) {
+			x.source[i].timestep = step;
+			x.source[i].timezone = zone;
+		}
 	}
 }
 
@@ -579,8 +581,28 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	}
 	nlyr += x.nlyr;
 	names.insert(names.end(), x.names.begin(), x.names.end());
-	time.insert(time.end(), x.time.begin(), x.time.end());
-	if (!(hasTime & x.hasTime)) {
+	if (hasTime && x.hasTime) {
+		std::string st = unify_time_step(timestep, x.timestep);
+		if (st.empty()) {
+			hasTime = false;
+			time.insert(time.end(), x.nlyr, NA_TIME);
+		} else {
+			timestep = st;
+			timezone = unify_time_zone(timezone, x.timezone);
+			time.insert(time.end(), x.time.begin(), x.time.end());
+			hasTime = true;
+		}
+	} else if (hasTime && !x.hasTime) {
+		time.insert(time.end(), x.nlyr, NA_TIME);
+		hasTime = true;
+	} else if (!hasTime && x.hasTime) {
+		std::fill(time.begin(), time.end(), NA_TIME);
+		time.insert(time.end(), x.time.begin(), x.time.end());
+		timestep = x.timestep;
+		timezone = x.timezone;
+		hasTime = true;
+	} else {
+		time.insert(time.end(), x.time.begin(), x.time.end());
 		hasTime = false;
 	}
 	unit.insert(unit.end(), x.unit.begin(), x.unit.end());
@@ -632,8 +654,28 @@ bool SpatRasterSource::combine(SpatRasterSource &x) {
 	}
 	nlyr += x.nlyr;
 	names.insert(names.end(), x.names.begin(), x.names.end());
-	time.insert(time.end(), x.time.begin(), x.time.end());
-	if (!(hasTime & x.hasTime)) {
+	if (hasTime && x.hasTime) {
+		std::string st = unify_time_step(timestep, x.timestep);
+		if (st.empty()) {
+			hasTime = false;
+			time.insert(time.end(), x.nlyr, NA_TIME);
+		} else {
+			timestep = st;
+			timezone = unify_time_zone(timezone, x.timezone);
+			time.insert(time.end(), x.time.begin(), x.time.end());
+			hasTime = true;
+		}
+	} else if (hasTime && !x.hasTime) {
+		time.insert(time.end(), x.nlyr, NA_TIME);
+		hasTime = true;
+	} else if (!hasTime && x.hasTime) {
+		std::fill(time.begin(), time.end(), NA_TIME);
+		time.insert(time.end(), x.time.begin(), x.time.end());
+		timestep = x.timestep;
+		timezone = x.timezone;
+		hasTime = true;
+	} else {
+		time.insert(time.end(), x.time.begin(), x.time.end());
 		hasTime = false;
 	}
 	unit.insert(unit.end(), x.unit.begin(), x.unit.end());

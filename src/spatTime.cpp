@@ -411,3 +411,40 @@ SpatTime_t parse_time(std::string x) {
 	return get_time_str(time);
 }
 
+
+std::string normalize_time_zone(const std::string &z) {
+	if (z.empty() || z == "GMT" || z == "gmt" || z == "utc") return "UTC";
+	return z;
+}
+
+std::string unify_time_step(const std::string &a, const std::string &b) {
+	if (a == b) return a;
+	// Calendar steps stored as unix instants. Combine at the coarsest
+	// (lowest common) step: seconds ⊂ days ⊂ yearmonths ⊂ years.
+	// "months" (1–12) and "raw" are not on that ladder.
+	auto rank = [](const std::string &s) -> int {
+		if (s == "seconds" || s.empty()) return 0;
+		if (s == "days") return 1;
+		if (s == "yearmonths") return 2;
+		if (s == "years") return 3;
+		return -1;
+	};
+	int ra = rank(a);
+	int rb = rank(b);
+	if (ra < 0 || rb < 0) return "";
+	int r = (ra > rb) ? ra : rb;
+	if (r == 0) return "seconds";
+	if (r == 1) return "days";
+	if (r == 2) return "yearmonths";
+	return "years";
+}
+
+std::string unify_time_zone(const std::string &a, const std::string &b) {
+	std::string na = normalize_time_zone(a);
+	std::string nb = normalize_time_zone(b);
+	if (na == nb) return na;
+	if (na == "UTC") return nb;
+	if (nb == "UTC") return na;
+	return "UTC";
+}
+

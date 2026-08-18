@@ -16,6 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
+#include "spatTime.h"
 #include "string_utils.h"
 #include "file_utils.h"
 #include "spatTime.h"
@@ -727,11 +728,24 @@ std::vector<double> SpatRaster::getNAflag() {
 
 
 bool SpatRaster::hasTime() {
-	bool test = source[0].hasTime;
-	for (size_t i=1; i<source.size(); i++) {
-		test = test && source[i].hasTime;
+	std::string step, zone;
+	bool found = false;
+	for (size_t i=0; i<source.size(); i++) {
+		if (!source[i].hasTime) continue;
+		if (!found) {
+			step = source[i].timestep;
+			zone = source[i].timezone;
+			found = true;
+			continue;
+		}
+		std::string st = unify_time_step(step, source[i].timestep);
+		if (st.empty()) {
+			return false;
+		}
+		step = st;
+		zone = unify_time_zone(zone, source[i].timezone);
 	}
-	return test;
+	return found;
 }
 
 
@@ -755,28 +769,33 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timese
 	std::vector<std::string> out;
 	std::vector<int64_t> time = getTime();
 	out.reserve(time.size()+addstep);
-	if (addstep) out.push_back(source[0].timestep);
-	if (source[0].timestep == "seconds") {
+	if (addstep) out.push_back(getTimeStep());
+	std::string tstep = getTimeStep();
+	if (tstep == "seconds") {
 		std::string tz = getTimeZone();
 		for (size_t i=0; i < time.size(); i++) {
+			if (is_na_time(time[i])) {
+				out.push_back("");
+				continue;
+			}
 			std::vector<int> x = get_date(time[i]);
-//			if (x.size() > 2) {
-				std::string s = make_string(x[0], 4) + "-"
-						  + make_string(x[1]) + "-"
-						  + make_string(x[2]) + timesep
-						  + make_string(x[3]) + ":"
-						  + make_string(x[4]) + ":"
-						  + make_string(x[5]);
-				if (tz != "") {
-					s = s + "z" + tz;
-				}
-				out.push_back(s);
-//			} else {
-//				out.push_back("");
-//			}
+			std::string s = make_string(x[0], 4) + "-"
+					  + make_string(x[1]) + "-"
+					  + make_string(x[2]) + timesep
+					  + make_string(x[3]) + ":"
+					  + make_string(x[4]) + ":"
+					  + make_string(x[5]);
+			if (tz != "") {
+				s = s + "z" + tz;
+			}
+			out.push_back(s);
 		}
-	} else if (source[0].timestep == "days") {
+	} else if (tstep == "days") {
 		for (size_t i=0; i < time.size(); i++) {
+			if (is_na_time(time[i])) {
+				out.push_back("");
+				continue;
+			}
 			std::vector<int> x = get_date(time[i]);
 			if (x.size() > 2) {
 				out.push_back( make_string(x[0], 4) + "-"
@@ -787,23 +806,39 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timese
 				out.push_back("");
 			}
 		}
-	} else if (source[0].timestep == "years") {
+	} else if (tstep == "years") {
 		for (size_t i=0; i < time.size(); i++) {
+			if (is_na_time(time[i])) {
+				out.push_back("");
+				continue;
+			}
 			std::vector<int> x = get_date(time[i]);
 			out.push_back( make_string(x[0], 4) + "-00-00");
 		}
-	} else if (source[0].timestep == "yearmonths") {
+	} else if (tstep == "yearmonths") {
 		for (size_t i=0; i < time.size(); i++) {
+			if (is_na_time(time[i])) {
+				out.push_back("");
+				continue;
+			}
 			std::vector<int> x = get_date(time[i]);
 			out.push_back( make_string(x[0], 4) + "-" + make_string(x[1], 2) + "-00");
 		}
-	} else if (source[0].timestep == "months") {
+	} else if (tstep == "months") {
 		for (size_t i=0; i < time.size(); i++) {
+			if (is_na_time(time[i])) {
+				out.push_back("");
+				continue;
+			}
 			std::vector<int> x = get_date(time[i]);
 			out.push_back("0000-" + make_string(x[1], 2) + "-00");
 		}
 	} else {
 		for (size_t i=0; i < time.size(); i++) {
+			if (is_na_time(time[i])) {
+				out.push_back("");
+				continue;
+			}
 			out.push_back( std::to_string(time[i]));
 		}
 	}
@@ -813,10 +848,13 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timese
 
 std::vector<int64_t> SpatRaster::getTime() {
 	std::vector<int64_t> x;
+	if (!hasTime()) {
+		x.resize(nlyr(), NA_TIME);
+		return x;
+	}
 	for (size_t i=0; i<source.size(); i++) {
-		if (source[i].time.size() != source[i].nlyr) {
-			std::vector<double> nas(source[i].nlyr, 0);
-			x.insert(x.end(), nas.begin(), nas.end());
+		if (!source[i].hasTime || source[i].time.size() != source[i].nlyr) {
+			x.insert(x.end(), source[i].nlyr, NA_TIME);
 		} else {
 			x.insert(x.end(), source[i].time.begin(), source[i].time.end());
 		}
@@ -825,11 +863,34 @@ std::vector<int64_t> SpatRaster::getTime() {
 }
 
 std::string SpatRaster::getTimeStep() {
-	return source[0].timestep;
+	std::string step, zone;
+	bool found = false;
+	for (size_t i=0; i<source.size(); i++) {
+		if (!source[i].hasTime) continue;
+		if (!found) {
+			step = source[i].timestep;
+			found = true;
+			continue;
+		}
+		step = unify_time_step(step, source[i].timestep);
+		if (step.empty()) return "";
+	}
+	return step;
 }
 
 std::string SpatRaster::getTimeZone() {
-	return source[0].timezone;
+	std::string zone;
+	bool found = false;
+	for (size_t i=0; i<source.size(); i++) {
+		if (!source[i].hasTime) continue;
+		if (!found) {
+			zone = source[i].timezone;
+			found = true;
+			continue;
+		}
+		zone = unify_time_zone(zone, source[i].timezone);
+	}
+	return found ? zone : "";
 }
 
 bool SpatRaster::setTime(std::vector<int64_t> time, std::string step, std::string zone) {

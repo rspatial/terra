@@ -405,7 +405,7 @@ get_basename <- function(x, n=150) {
 	if (object@pntr$hasTime) {
 		label <- "time        "
 		tms <- time(object)
-		rtim <- range(tms)
+		rtim <- range(tms, na.rm=TRUE)
 		tims <- object@pntr$timestep
 		if (tims == "yearmonths") {
 			rtim <- format_ym(rtim)
@@ -433,7 +433,7 @@ get_basename <- function(x, n=150) {
 			ptim <- paste(ptim, tz)
 		}
 		if (add_steps) {
-			ptim <- paste0(ptim, " (", length(unique(tms)), " steps)")
+			ptim <- paste0(ptim, " (", length(unique(tms[!is.na(tms)])), " steps)")
 		}
 		cat(ptim, "\n")
 	}

@@ -18,9 +18,23 @@
 #ifndef SPATTIME_GUARD
 #define SPATTIME_GUARD
 
+#include <limits>
+#include <string>
 //#include <vector>
-//#include <string>
 typedef long long SpatTime_t;
+
+// Sentinel for a missing timestamp. Exactly representable as IEEE double
+// (-2^63), so R can detect it after Rcpp wraps int64_t as numeric.
+constexpr SpatTime_t NA_TIME = std::numeric_limits<SpatTime_t>::min();
+inline bool is_na_time(SpatTime_t t) {
+	return t == NA_TIME;
+}
+
+// "" / GMT → UTC. unify_time_step returns the coarsest shared calendar
+// step (seconds ⊂ days ⊂ yearmonths ⊂ years), or empty if not combinable.
+std::string normalize_time_zone(const std::string &z);
+std::string unify_time_step(const std::string &a, const std::string &b);
+std::string unify_time_zone(const std::string &a, const std::string &b);
 
 class SpatTime_v {
 	public:

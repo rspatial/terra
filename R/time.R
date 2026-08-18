@@ -110,6 +110,7 @@ setMethod("time", signature(x="SpatRaster"),
 			return(rep(NA, nlyr(x)))
 		}
 		d <- x@pntr$time
+		d[d == -2^63] <- NA
 		tstep <- x@pntr$timestep
 		
 		if (format != "") {
