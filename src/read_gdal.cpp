@@ -1089,6 +1089,19 @@ static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDatase
 	// Parent NetCDF open has no bands; probe the classic subdataset for each source.
 	// Skip sources that already have CF-detected geolocation (avoids noisy failures
 	// for /vsicurl/ on Windows where classic netCDF cannot open).
+	// Only NETCDF: subdataset names are valid here. HDF-EOS (and other
+	// multidim drivers) would fail that open once per array (#2162).
+	bool try_netcdf_subds = (poDataset == NULL);
+	if (poDataset != NULL) {
+		GDALDriver *drv = poDataset->GetDriver();
+		if (drv != NULL && EQUAL(drv->GetDescription(), "netCDF")) {
+			try_netcdf_subds = true;
+		}
+	}
+	if (!try_netcdf_subds) {
+		apply_geolocation_to_sources(r, geo, !has_2d_gt);
+		return;
+	}
 	if (!geo.has_geolocation && !geo.has_gcps && !r.source.empty()) {
 		bool need_probe = false;
 		for (size_t i=0; i<r.source.size(); i++) {

@@ -551,6 +551,22 @@ static std::shared_ptr<GDALMDArray> md_get_indexing_var(
 }
 
 
+// HDF-EOS (and similar) often leave MDArray::GetSpatialRef() empty; the CRS
+// is in the classic driver's StructMetadata. Probe once per file (#2068, #2162).
+static std::string md_classic_crs_wkt(const std::string &fname) {
+	std::string wkt;
+	gdal_capture_messages_begin();
+	try {
+		std::vector<std::string> ops;
+		std::vector<std::string> empty_dom;
+		SpatRasterStack rstack(fname, {0}, true, ops, true, true, empty_dom);
+		wkt = rstack.getSRS("wkt");
+	} catch(...) {}
+	gdal_capture_messages_end(false);
+	return wkt;
+}
+
+
 static bool md_fill_source_from_marray(
 	SpatRaster &parent,
 	const std::string &fname,
@@ -835,19 +851,6 @@ static bool md_fill_source_from_marray(
 		CPLFree(cp);
 	} 
 	if (wkt.empty()) {
-		// temporary work-around for https://github.com/rspatial/terra/issues/2068
-		std::vector<std::string> ops;
-		// classic-API probe for a CRS. discard messages 
-		gdal_capture_messages_begin();
-		try {
-			std::vector<std::string> empty_dom;
-			SpatRasterStack rstack(fname, {0}, true, ops, true, true, empty_dom);
-			wkt = rstack.getSRS("wkt");
-		} catch(...) {}
-		gdal_capture_messages_end(false);
-	} 
-
-	if (wkt.empty()) {
 		bool lonlat_extent = (s.extent.xmin >= -181 && s.extent.xmax <= 361 &&
 		                      s.extent.ymin >= -91 && s.extent.ymax <= 91);
 		bool geographic_xy =
@@ -885,8 +888,22 @@ static bool md_fill_source_from_marray(
 				if (md_is_lat_name(base)) lat_tok = tok;
 			}
 		}
-		if (lon_tok.empty()) lon_tok = "longitude";
-		if (lat_tok.empty()) lat_tok = "latitude";
+		// Default sibling names are a netCDF swath convention (#1175).
+		// Do not ResolveMDArray("longitude") on every HDF-EOS SDS (#2162).
+		if (lon_tok.empty() || lat_tok.empty()) {
+			std::string fl = fname;
+			for (char &c : fl) {
+				c = (char)tolower((unsigned char)c);
+			}
+			bool maybe_nc = (fl.find("netcdf:") != std::string::npos) ||
+				(fl.size() >= 3 && fl.compare(fl.size()-3, 3, ".nc") == 0) ||
+				(fl.size() >= 4 && (fl.compare(fl.size()-4, 4, ".nc4") == 0 ||
+				                     fl.compare(fl.size()-4, 4, ".cdf") == 0));
+			if (maybe_nc) {
+				if (lon_tok.empty()) lon_tok = "longitude";
+				if (lat_tok.empty()) lat_tok = "latitude";
+			}
+		}
 
 		std::string group;
 		{
@@ -904,23 +921,25 @@ static bool md_fill_source_from_marray(
 			}
 			return a;
 		};
-		auto lon = resolve_coord(lon_tok);
-		auto lat = resolve_coord(lat_tok);
-		if (lon && lat && lon->GetDimensions().size() >= 2 && lat->GetDimensions().size() >= 2) {
-			s.has_geolocation = true;
-			if (s.geoloc_srs.empty()) {
-				s.geoloc_srs = "EPSG:4326";
-			}
-			std::string lx = lon->GetFullName();
-			std::string ly = lat->GetFullName();
-			s.geoloc_x = std::string("NETCDF:\"") + fname + "\":" + lx;
-			s.geoloc_y = std::string("NETCDF:\"") + fname + "\":" + ly;
-			if (s.srs.is_empty()) {
-				std::string emsg;
-				if (s.srs.set(s.geoloc_srs, emsg)) {
-					s.parameters_changed = true;
-				} else if (!emsg.empty()) {
-					parent.addWarning(emsg);
+		if (!lon_tok.empty() && !lat_tok.empty()) {
+			auto lon = resolve_coord(lon_tok);
+			auto lat = resolve_coord(lat_tok);
+			if (lon && lat && lon->GetDimensions().size() >= 2 && lat->GetDimensions().size() >= 2) {
+				s.has_geolocation = true;
+				if (s.geoloc_srs.empty()) {
+					s.geoloc_srs = "EPSG:4326";
+				}
+				std::string lx = lon->GetFullName();
+				std::string ly = lat->GetFullName();
+				s.geoloc_x = std::string("NETCDF:\"") + fname + "\":" + lx;
+				s.geoloc_y = std::string("NETCDF:\"") + fname + "\":" + ly;
+				if (s.srs.is_empty()) {
+					std::string emsg;
+					if (s.srs.set(s.geoloc_srs, emsg)) {
+						s.parameters_changed = true;
+					} else if (!emsg.empty()) {
+						parent.addWarning(emsg);
+					}
 				}
 			}
 		}
@@ -1134,25 +1153,26 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		return false;
 	}
 
-/*
-		if (arrays_to_use.size() > 1 && max_nlyr_var > 1) {
-			std::string w = "combined " + std::to_string(nvar_ok) + " variables";
-			w += " (";
-			size_t nshow = std::min(source.size(), (size_t) 6);
-			for (size_t i = 0; i < nshow; i++) {
-				if (i > 0) {
-					w += ", ";
-				}
-				w += source[i].source_name.empty() ? source[i].m_arrayname : source[i].source_name;
-			}
-			if (source.size() > 5) {
-				w += ", ...)";
-			} else {
-				w += ")";
-			}
-			addWarning(w);		
+	bool need_crs = false;
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].srs.is_empty()) {
+			need_crs = true;
+			break;
+		}
 	}
-*/	
+	if (need_crs) {
+		std::string wkt = md_classic_crs_wkt(fname);
+		if (!wkt.empty()) {
+			for (size_t i=0; i<source.size(); i++) {
+				if (!source[i].srs.is_empty()) continue;
+				std::string msg;
+				if (!source[i].srs.set({wkt}, msg) && !msg.empty()) {
+					addWarning(msg);
+				}
+			}
+		}
+	}
+
 	return true;
 }
 
