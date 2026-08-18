@@ -657,7 +657,8 @@ static bool md_fill_source_from_marray(
 		}
 		if (extra.size() == 1) {
 			size_t e = extra[0];
-			if (md_is_time_dim_name(dimnames[e]) || !dimcalendar[e].empty()) {
+			std::string dtype = lower_case(dimData[e]->GetType());
+			if (md_is_time_dim_name(dimnames[e]) || !dimcalendar[e].empty() || dtype == "temporal") {
 				it = (int) e;
 			} else {
 				iz = (int) e;
@@ -674,7 +675,8 @@ static bool md_fill_source_from_marray(
 		} else {
 			dimmap_extras = extra;
 			for (size_t e : extra) {
-				if (it < 0 && (md_is_time_dim_name(dimnames[e]) || !dimcalendar[e].empty())) {
+				std::string dtype = lower_case(dimData[e]->GetType());
+				if (it < 0 && (md_is_time_dim_name(dimnames[e]) || !dimcalendar[e].empty() || dtype == "temporal")) {
 					it = (int) e;
 				}
 			}
