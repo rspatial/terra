@@ -551,6 +551,45 @@ static std::shared_ptr<GDALMDArray> md_get_indexing_var(
 }
 
 
+// GRIB md: 2D slices expose validity_time; 3D chunks expose a temporal dim.
+static int64_t md_array_start_time(
+		std::shared_ptr<GDALGroup> poRootGroup,
+		const std::string &array_name) {
+
+	std::string startgroup = "";
+	auto poVar = poRootGroup->ResolveMDArray(array_name.c_str(), startgroup, nullptr);
+	if (!poVar) {
+		return INT64_MAX;
+	}
+	auto vt = poVar->GetAttribute("validity_time");
+	if (vt) {
+		return static_cast<int64_t>(vt->ReadAsDouble());
+	}
+	for (const auto &poDim : poVar->GetDimensions()) {
+		std::string dtype = poDim->GetType();
+		if (dtype != "TEMPORAL" && !md_is_time_dim_name(poDim->GetName())) {
+			continue;
+		}
+		auto ind = md_get_indexing_var(poDim, poRootGroup);
+		if (!ind) {
+			continue;
+		}
+		double v = 0;
+		std::vector<GUInt64> st(1, 0);
+		std::vector<size_t> count = {1};
+		auto reader = ind->GetUnscaled();
+		if (!reader) {
+			reader = ind;
+		}
+		if (reader->Read(st.data(), count.data(), nullptr, nullptr,
+				GDALExtendedDataType::Create(GDT_Float64), &v)) {
+			return static_cast<int64_t>(v);
+		}
+	}
+	return INT64_MAX;
+}
+
+
 // HDF-EOS (and similar) often leave MDArray::GetSpatialRef() empty; the CRS
 // is in the classic driver's StructMetadata. Probe once per file (#2068, #2162).
 static std::string md_classic_crs_wkt(const std::string &fname) {
@@ -821,6 +860,18 @@ static bool md_fill_source_from_marray(
 			md_layer_to_indices(L, extra_sizes, idx);
 			s.setTime(L, time_coord[idx[pos_it]]);
 		}
+	} else if (it < 0 && s.nlyr > 0) {
+		// GRIB multidim: leftover 2D slices carry validity_time, not a TIME dim (#2160)
+		auto vt = poVar->GetAttribute("validity_time");
+		if (vt) {
+			int64_t t = static_cast<int64_t>(vt->ReadAsDouble());
+			if (s.time.size() != s.nlyr) {
+				s.time.assign(s.nlyr, NA_TIME);
+			}
+			s.setTime(0, t);
+			s.timestep = "seconds";
+			s.hasTime = true;
+		}
 	}
 	if (iz >= 0 && pos_iz != (size_t) -1) {
 		s.depthname = dimnames[iz];
@@ -1089,6 +1140,18 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	}
 
 	const bool single_var = (arrays_to_use.size() == 1);
+	if (!single_var && arrays_to_use.size() > 1) {
+		std::stable_sort(arrays_to_use.begin(), arrays_to_use.end(),
+			[&](const std::string &a, const std::string &b) {
+				int64_t ta = md_array_start_time(poRootGroup, a);
+				int64_t tb = md_array_start_time(poRootGroup, b);
+				if (ta == tb) {
+					return a < b;
+				}
+				return ta < tb;
+			});
+	}
+
 	SpatOptions opt;
 	size_t nvar_ok = 0;
 	size_t max_nlyr_var = 0;
