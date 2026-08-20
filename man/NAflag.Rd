@@ -9,7 +9,7 @@
 \title{Set the NA flag}
 
 \description{
-The main purpose of this method is to allow correct reading of a SpatRaster that is based on a file that has an incorrect or missing NA flag. The file is not changed, but the flagged value is set to NA when values are read from the file. In contrast, if the cell values are in memory the change is made immediately. 
+The main purpose of this method is to allow correct reading of a SpatRaster that is based on a file that has an incorrect or missing NA flag. The file is not changed, but the flagged value is set to NA when values are read from the file. In contrast, if the cell values are in memory the change is made immediately. \code{NAflag} does *not* return the "NoData Value" that is stored in the file (use \code{\link{describe}} to find that value.
 
 To change cell values, you can use \code{\link{classify}}
 }
