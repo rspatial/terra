@@ -1,4 +1,4 @@
-# version 1.9-44
+# version 1.9-45
 
 ## bug fixes
 
@@ -13,7 +13,10 @@
 - `tile_apply` failed on SpatRasters with more than one source [#2150](https://github.com/rspatial/terra/issues/2150) by ebkurtz
 - `as.polygons` on a file-backed multi-layer SpatRaster always used the first layer, not the selected layer [#2156](https://github.com/rspatial/terra/issues/2156) by Mehmet Göktuğ Öztürk
 - improved multidim handling of GRIB files [#2160](https://github.com/rspatial/terra/issues/2160) by Kodi Arfer.
-
+- improved mutlidim handling of HDF-EOS files [#2163](https://github.com/rspatial/terra/issues/2163) by Monika Anna Tomaszewska and 
+Kodi Arfer [#2162](https://github.com/rspatial/terra/issues/2162)
+- `spatSample` did not handle a combination of raster sources if some had a window and others not [#2164](
+https://github.com/rspatial/terra/issues/2164) by Krzysztof Dyba
 
 ## enhancements
 
