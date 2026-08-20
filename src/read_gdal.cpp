@@ -2023,8 +2023,8 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 
 	size_t row =0, col=0, nrows=nrow(), ncols=ncol();
 	if (source[src].hasWindow) {
-		row = row + source[0].window.off_row;
-		col = col + source[0].window.off_col;
+		row = row + source[src].window.off_row;
+		col = col + source[src].window.off_col;
 		srows = std::min(srows, nrows);
 		scols = std::min(scols, ncols);
 	}
