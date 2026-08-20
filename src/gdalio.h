@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <cstddef>
+#include "cpl_error.h"
 
 void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl, size_t data_offset = 0);
 
@@ -32,5 +33,19 @@ bool getNAvalue(GDALDataType gdt, double & naval);
 GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::string> allowed_drivers, std::vector<std::string> open_options);
 void gdal_capture_messages_begin();
 void gdal_capture_messages_end(bool emit);
+
+// terra installs a CPL error handler at package load; sf (and others) may
+// replace it afterward. Remember terra's handler and push it for the duration
+// of terra GDAL opens so terra's filters (e.g. #2161 convert noise) still apply.
+void gdal_set_terra_error_handler(CPLErrorHandler h);
+void gdal_push_terra_error_handler();
+void gdal_pop_terra_error_handler();
+
+struct TerraGDALErrorHandlerScope {
+	TerraGDALErrorHandlerScope() { gdal_push_terra_error_handler(); }
+	~TerraGDALErrorHandlerScope() { gdal_pop_terra_error_handler(); }
+	TerraGDALErrorHandlerScope(const TerraGDALErrorHandlerScope &) = delete;
+	TerraGDALErrorHandlerScope &operator=(const TerraGDALErrorHandlerScope &) = delete;
+};
 char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, bool parallel, unsigned threads, std::vector<std::string> gdal_options);
 std::vector<std::string> ncdf_filternames(std::vector<std::string> const &s);

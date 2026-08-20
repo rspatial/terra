@@ -1080,6 +1080,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 //	(void) dims;
 //	(void) domains;
 
+	TerraGDALErrorHandlerScope gdal_err_scope;
 
 	char ** drvs = NULL;
 	for (size_t i=0; i<drivers.size(); i++) {

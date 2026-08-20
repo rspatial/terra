@@ -1155,7 +1155,10 @@ static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDatase
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multi) {
 
-
+	// sf (and raster→terra load order) can replace CPL's error handler after
+	// terra::.gdalinit. Push terra's handler for this open so filters such as
+	// the #2161 "Array data type is not convertible" suppress still apply.
+	TerraGDALErrorHandlerScope gdal_err_scope;
 
 	if (fname == "WCS:") {
 		// for https://github.com/rspatial/terra/issues/1505

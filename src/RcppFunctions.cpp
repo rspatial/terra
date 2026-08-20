@@ -519,15 +519,18 @@ void set_gdal_warnings(int level) {
 	// Called from gdal_init() at package load, i.e. on R's main thread before
 	// any GDAL operation (and thus before any GDAL worker thread) can run.
 	terra_remember_main_thread();
+	CPLErrorHandler h;
 	if (level==4) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_none);
+		h = (CPLErrorHandler)__err_none;
 	} else if (level==1) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_warning);
+		h = (CPLErrorHandler)__err_warning;
 	} else if (level==2) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_error);
+		h = (CPLErrorHandler)__err_error;
 	} else {
-		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
+		h = (CPLErrorHandler)__err_fatal;
 	}
+	gdal_set_terra_error_handler(h);
+	CPLSetErrorHandler(h);
 }
 
 #include "common.h"

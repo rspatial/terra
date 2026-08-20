@@ -65,6 +65,10 @@ void gdal_capture_messages_begin() {
 	CPLPushErrorHandler((CPLErrorHandler) terra_capture_handler);
 }
 
+static bool is_multidim_convert_noise_msg(const std::string &msg) {
+	return msg.find("Array data type is not convertible to buffer data type") != std::string::npos;
+}
+
 void gdal_capture_messages_end(bool emit) {
 	CPLPopErrorHandler();
 	std::vector<CapturedGDALMsg> msgs;
@@ -74,10 +78,36 @@ void gdal_capture_messages_end(bool emit) {
 	}
 	if (emit) {
 		for (size_t i = 0; i < msgs.size(); i++) {
+			// Cosmetic HDF-EOS / multidim metadata noise (#2161); do not replay
+			// into whatever handler is underneath (often sf's).
+			if (is_multidim_convert_noise_msg(msgs[i].msg)) {
+				continue;
+			}
 			// CE_Fatal would not return; never replay it as fatal.
 			CPLErr cls = (msgs[i].eErrClass >= CE_Fatal) ? CE_Failure : msgs[i].eErrClass;
 			CPLError(cls, msgs[i].err_no, "%s", msgs[i].msg.c_str());
 		}
+	}
+}
+
+
+namespace {
+	CPLErrorHandler terra_cpl_error_handler = nullptr;
+}
+
+void gdal_set_terra_error_handler(CPLErrorHandler h) {
+	terra_cpl_error_handler = h;
+}
+
+void gdal_push_terra_error_handler() {
+	if (terra_cpl_error_handler != nullptr) {
+		CPLPushErrorHandler(terra_cpl_error_handler);
+	}
+}
+
+void gdal_pop_terra_error_handler() {
+	if (terra_cpl_error_handler != nullptr) {
+		CPLPopErrorHandler();
 	}
 }
 
