@@ -290,18 +290,27 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 					nr.push_back("0");
 					nc.push_back("0");
 				} else if (d.size() == 2) {
+					// GDAL SDS DESC: [nrow x ncol]
 					nl.push_back("1");
 					nr.push_back(d[0]);
 					nc.push_back(d[1]);
+				} else if (d.size() == 3) {
+					// GDAL SDS DESC: [nrow x ncol x nlyr] (HDF-EOS, GeoTIFF, …)
+					nr.push_back(d[0]);
+					nc.push_back(d[1]);
+					nl.push_back(d[2]);
 				} else {
+					// 4+ dims, e.g. netCDF [t x z x y x x]: last two are
+					// spatial; product of the leading dims is nlyr
 					size_t ds = d.size()-1;
-					size_t nls = 0;
+					size_t nls = 1;
 					try {
-						nls = std::stol(d[ds-2]);
-						for (size_t i=0; i<(ds-2); i++) {
+						for (size_t i=0; i<(ds-1); i++) {
 							nls *= std::stol(d[i]);
 						}
-					} catch(...) {}
+					} catch(...) {
+						nls = 0;
+					}
 					nl.push_back(std::to_string(nls));
 					nr.push_back(d[ds-1]);
 					nc.push_back(d[ds]);

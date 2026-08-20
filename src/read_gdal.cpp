@@ -2520,7 +2520,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 
 	std::vector<std::string> skipped, used;
 	srcnl.push_back(nlyr());
-	used.push_back(varname[0]);
+	used.push_back(varname[cnt]);
 	SpatRaster out;
 	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
