@@ -44,6 +44,8 @@ static bool md_is_col_dim_name(const std::string &nm) {
 	std::string n = lower_case(lrtrim_copy(nm));
 	if (n == "longitude" || n == "easting" || n == "eastings") return true;
 	if (n == "lon" || n == "long" || n == "x" || n == "proj_x") return true;
+	// HDF-EOS grid axes (MODIS MCD12C1, etc.)
+	if (n == "xdim" || n == "xaxis" || n == "x_dim") return true;
 	return false;
 }
 
@@ -51,7 +53,18 @@ static bool md_is_row_dim_name(const std::string &nm) {
 	std::string n = lower_case(lrtrim_copy(nm));
 	if (n == "latitude" || n == "northing" || n == "northings") return true;
 	if (n == "lat" || n == "y" || n == "proj_y") return true;
+	if (n == "ydim" || n == "yaxis" || n == "y_dim") return true;
 	return false;
+}
+
+static bool md_is_horizontal_x_type(const std::string &dtype) {
+	std::string t = lower_case(lrtrim_copy(dtype));
+	return t == "horizontal_x";
+}
+
+static bool md_is_horizontal_y_type(const std::string &dtype) {
+	std::string t = lower_case(lrtrim_copy(dtype));
+	return t == "horizontal_y";
 }
 
 static bool md_is_time_dim_name(const std::string &nm) {
@@ -92,16 +105,24 @@ static bool md_is_lat_name(const std::string &nm) {
 	return n == "latitude" || n == "lat";
 }
 
-static int md_find_col_dim(const std::vector<std::string> &dimnames) {
+static int md_find_col_dim(const std::vector<std::string> &dimnames,
+		const std::vector<std::shared_ptr<GDALDimension>> &dimData) {
 	for (size_t i = 0; i < dimnames.size(); i++) {
 		if (md_is_col_dim_name(dimnames[i])) return (int) i;
+	}
+	for (size_t i = 0; i < dimData.size(); i++) {
+		if (md_is_horizontal_x_type(dimData[i]->GetType())) return (int) i;
 	}
 	return -1;
 }
 
-static int md_find_row_dim(const std::vector<std::string> &dimnames) {
+static int md_find_row_dim(const std::vector<std::string> &dimnames,
+		const std::vector<std::shared_ptr<GDALDimension>> &dimData) {
 	for (size_t i = 0; i < dimnames.size(); i++) {
 		if (md_is_row_dim_name(dimnames[i])) return (int) i;
+	}
+	for (size_t i = 0; i < dimData.size(); i++) {
+		if (md_is_horizontal_y_type(dimData[i]->GetType())) return (int) i;
 	}
 	return -1;
 }
@@ -691,8 +712,8 @@ static bool md_fill_source_from_marray(
 		s.m_missing_value = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
 	}
 
-	int ix = md_find_col_dim(dimnames);
-	int iy = md_find_row_dim(dimnames);
+	int ix = md_find_col_dim(dimnames, dimData);
+	int iy = md_find_row_dim(dimnames, dimData);
 	if (ix < 0 || iy < 0 || ix == iy) {
 		ix = (int) ndim - 1;
 		iy = (int) ndim - 2;
@@ -715,7 +736,9 @@ static bool md_fill_source_from_marray(
 			std::string dtype = lower_case(dimData[e]->GetType());
 			if (md_is_time_dim_name(dimnames[e]) || !dimcalendar[e].empty() || dtype == "temporal") {
 				it = (int) e;
-			} else {
+			} else if (md_is_vertical_dim_name(dimnames[e])) {
+				// only treat as depth when the name is clearly vertical;
+				// HDF-EOS class / category axes stay as plain layers (MCD12C1)
 				iz = (int) e;
 			}
 			dimmap_extras.push_back(e);
@@ -1044,22 +1067,27 @@ static bool md_fill_source_from_marray(
 			md_layer_to_indices(L, extra_sizes, idx);
 			std::string nm = arname;
 			bool name_has_dim = false;
-			bool skipped_time_for_name = false;
+			bool skipped_for_name = false;
 			for (size_t j = 0; j < dimmap_extras.size(); j++) {
-				if (it >= 0 && (int) dimmap_extras[j] == it) {
-					skipped_time_for_name = true;
+				int d = (int) dimmap_extras[j];
+				if (d == it) {
+					// time lives in time(); omit from layer label
+					skipped_for_name = true;
 					continue;
 				}
-				name_has_dim = true;
-				nm += "_" + dimnames[dimmap_extras[j]] + "="
-					+ double_to_string(dimvals[dimmap_extras[j]][idx[j]]);
+				if (d == iz) {
+					name_has_dim = true;
+					nm += "_" + dimnames[dimmap_extras[j]] + "="
+						+ double_to_string(dimvals[dimmap_extras[j]][idx[j]]);
+					continue;
+				}
+				// Anonymous layer axis (e.g. Num_IGBP_Classes): number below
+				skipped_for_name = true;
 			}
 			if (!name_has_dim && (s.nlyr > 1)) {
-				// Only non-spatial dim is time (omitted from label): number layers
 				nm += "_" + std::to_string(L + 1);
-			} else if (skipped_time_for_name && (s.nlyr > 1)) {
-				// Time is in metadata, not in the label; add 1-based time step so
-				// names match rast(, md=FALSE), e.g. t2m_expver=1_1 .. _24
+			} else if (skipped_for_name && (s.nlyr > 1)) {
+				// Time / class index omitted from label; keep layers distinct
 				size_t tidx = (pos_it != (size_t) -1) ? (idx[pos_it] + 1) : (L + 1);
 				nm += "_" + std::to_string(tidx);
 			}
