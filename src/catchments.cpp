@@ -1085,8 +1085,12 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
   /// ORDER E ; 
   std::vector<int> ide(ncell,0);
   std::iota(ide.begin(), ide.end(), 0); 
-  std::sort(ide.begin(), ide.end(),[&](int a, int b){ return e[a] > e[b]; });
-  
+  std::sort(ide.begin(), ide.end(), [&](int a, int b) {
+	if (std::isnan(e[a])) return false;
+	if (std::isnan(e[b])) return true;
+	return e[a] > e[b];
+  });
+
   for (int i = 0; i < ncell; i++) {
     
     *(has_upstream+i)=0;
