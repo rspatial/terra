@@ -138,6 +138,10 @@ gdal <- function(warn=NA, drivers=FALSE, ...) {
 
 
 
+gdal_has_pam <- function() grepl("PAM_ENABLED=YES", .gdal_build_info())
+
+
+
 .describe_sds <- function(x, print=FALSE) {
 	x <- .sdinfo(x)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {

@@ -274,6 +274,14 @@ std::string gdal_version() {
 	return s;
 }
 
+// [[Rcpp::export(name = ".gdal_build_info")]]
+std::string gdal_build_info() {
+	const char* what = "BUILD_INFO";
+	const char* x = GDALVersionInfo(what);
+	std::string s = (std::string) x;
+	return s;
+}
+
 // [[Rcpp::export(name = ".geos_version")]]
 std::string geos_version(bool runtime = false, bool capi = false) {
 	if (runtime)

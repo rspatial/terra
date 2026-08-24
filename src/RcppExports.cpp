@@ -185,6 +185,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gdal_build_info
+std::string gdal_build_info();
+RcppExport SEXP _terra_gdal_build_info() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(gdal_build_info());
+    return rcpp_result_gen;
+END_RCPP
+}
 // geos_version
 std::string geos_version(bool runtime, bool capi);
 RcppExport SEXP _terra_geos_version(SEXP runtimeSEXP, SEXP capiSEXP) {
@@ -498,6 +508,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_gmdinfo", (DL_FUNC) &_terra_gmdinfo, 2},
     {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
+    {"_terra_gdal_build_info", (DL_FUNC) &_terra_gdal_build_info, 0},
     {"_terra_geos_version", (DL_FUNC) &_terra_geos_version, 2},
     {"_terra_metatdata", (DL_FUNC) &_terra_metatdata, 1},
     {"_terra_sdsmetatdata", (DL_FUNC) &_terra_sdsmetatdata, 1},

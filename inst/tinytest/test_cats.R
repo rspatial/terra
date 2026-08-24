@@ -18,20 +18,22 @@ r <- droplevels(r)
 expect_equal(levels(r)[[1]][,2], c("forest", "water", "urban"))
 lv <- lv[-4,]
 
-# reading/writing categories
-ftmp <- tempfile(fileext = ".tif")
-z <- writeRaster(r, ftmp, overwrite=TRUE)
-v <- cats(z)[[1]]
-expect_equal(v$value, 1:3)
-expect_equal(v$`land cover`, lv[,2])
+if (gdal_has_pam()) {
+  # reading/writing categories
+  ftmp <- tempfile(fileext = ".tif")
+  z <- writeRaster(r, ftmp, overwrite=TRUE)
+  v <- cats(z)[[1]]
+  expect_equal(v$value, 1:3)
+  expect_equal(v$`land cover`, lv[,2])
 
-# reading/writing subset of categories
-levels(r) = cats(r)[[1]][2:3,]
-zz = writeRaster(r, ftmp, overwrite=TRUE)
-v <- cats(zz)[[1]]
+  # reading/writing subset of categories
+  levels(r) = cats(r)[[1]][2:3,]
+  zz = writeRaster(r, ftmp, overwrite=TRUE)
+  v <- cats(zz)[[1]]
 
-expect_equal(v$value, 2:3)
-expect_equal(v$cover, lv[-1,2])
+  expect_equal(v$value, 2:3)
+  expect_equal(v$cover, lv[-1,2])
+}
 
 # categories in multiple layers
 r2 <- rast(list(a=r0, b=r0))
