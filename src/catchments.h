@@ -101,7 +101,7 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
 bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
 
                           double *atdc, double *atdd, double *atdplus, double *atdplus0,
-                          double *pflow,int *has_upstream,int *kupdate,int *flowaccm,double *npids,
+                          double *pflow,int *has_upstream,int *kupdate,int64_t *flowaccm,double *npids,
                           double lambda,
                           std::vector<double> ddp1,std::vector<double> ddp2,std::vector<double> sigma,int nncell,int conv_type,int use_lad,int max_iters);
 
