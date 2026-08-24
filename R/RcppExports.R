@@ -65,6 +65,10 @@ rgb2hex <- function(x) {
     .Call(`_terra_gdal_version`)
 }
 
+.gdal_build_info <- function() {
+    .Call(`_terra_gdal_build_info`)
+}
+
 .geos_version <- function(runtime = FALSE, capi = FALSE) {
     .Call(`_terra_geos_version`, runtime, capi)
 }
