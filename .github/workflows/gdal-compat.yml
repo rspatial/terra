@@ -29,6 +29,11 @@ jobs:
     env:
       DEBIAN_FRONTEND: noninteractive
 
+    # Container /bin/sh is often dash (no pipefail); force bash.
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - uses: actions/checkout@v4
 
