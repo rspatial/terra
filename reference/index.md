@@ -474,6 +474,7 @@
   [`gdalCache()`](https://rspatial.github.io/terra/reference/gdal.md)
   [`setGDALconfig()`](https://rspatial.github.io/terra/reference/gdal.md)
   [`getGDALconfig()`](https://rspatial.github.io/terra/reference/gdal.md)
+  [`gdal_has_pam()`](https://rspatial.github.io/terra/reference/gdal.md)
   [`clearVSIcache()`](https://rspatial.github.io/terra/reference/gdal.md)
   [`libVersion()`](https://rspatial.github.io/terra/reference/gdal.md)
   [`unloadGDALdrivers()`](https://rspatial.github.io/terra/reference/gdal.md)

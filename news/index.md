@@ -1,6 +1,18 @@
 # Changelog
 
-## version 1.9-44
+## version 1.9-47
+
+### bug fixes
+
+### enhancements
+
+### new
+
+## version 1.9-46
+
+CRAN release: 2026-08-22
+
+Released 2026-08-21
 
 ### bug fixes
 
@@ -40,6 +52,14 @@
   Göktuğ Öztürk
 - improved multidim handling of GRIB files
   [\#2160](https://github.com/rspatial/terra/issues/2160) by Kodi Arfer.
+- improved mutlidim handling of HDF-EOS files
+  [\#2163](https://github.com/rspatial/terra/issues/2163) by Monika Anna
+  Tomaszewska and Kodi Arfer
+  [\#2162](https://github.com/rspatial/terra/issues/2162)
+- `spatSample` did not handle a combination of raster sources if some
+  had a window and others not
+  [\#2164](https://github.com/rspatial/terra/issues/2164) by Krzysztof
+  Dyba
 
 ### enhancements
 

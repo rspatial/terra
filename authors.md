@@ -36,13 +36,13 @@ Source:
 [`DESCRIPTION`](https://github.com/rspatial/terra/blob/master/DESCRIPTION)
 
 Hijmans R, Brown A, Barbosa AM, Cordano E, Dyba K (2026). *terra:
-Spatial Data Analysis*. R package version 1.9-44,
+Spatial Data Analysis*. R package version 1.9-47,
 <https://rspatial.org/>.
 
     @Manual{,
       title = {terra: Spatial Data Analysis},
       author = {Robert J. Hijmans and Andrew Brown and A. Márcia Barbosa and Emanuele Cordano and Krzysztof Dyba},
       year = {2026},
-      note = {R package version 1.9-44},
+      note = {R package version 1.9-47},
       url = {https://rspatial.org/},
     }
