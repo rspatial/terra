@@ -3879,6 +3879,7 @@ fi
   if test "${proj4ok}" = no; then
      as_fn_error $? "libproj not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   fi
+  if test "${proj_config_ok}" != yes; then
 cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <stdlib.h>
@@ -3889,6 +3890,7 @@ int main(void) {
     exit(0);
 }
 _EOCONF
+  fi
 else
 cat > proj_conf_test.cpp <<_EOCONF
 #include <stdio.h>
@@ -3908,15 +3910,18 @@ printf %s "checking PROJ: checking whether PROJ and sqlite3 are available for li
     proj6ok=no
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
+    cat errors.txt
   else
     proj6ok=yes
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
   fi
+  rm -f proj_conf_test proj_conf_test.cpp errors.txt
   if test "${proj6ok}" = no; then
      as_fn_error $? "libproj or sqlite3 not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   fi
 
+  if test "${proj_config_ok}" != yes; then
 cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <stdlib.h>
@@ -3927,13 +3932,30 @@ int main(void) {
     exit(0);
 }
 _EOCONF
+  fi
 fi
 
 #AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
-
-proj_version=`./proj_conf_test`
+# Version already known from pkg-config when available; only compile a probe otherwise.
+# Pass PROJ_CPPFLAGS (includes/-D) but not full CPPFLAGS: R CPPFLAGS may contain
+# C++-only flags (see r-spatial/sf#2571).
+if test "${proj_config_ok}" != yes; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking PROJ: version" >&5
+printf %s "checking PROJ: version... " >&6; }
+  ${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+  if test `echo $?` -ne 0 ; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+    cat errors.txt
+    rm -f proj_conf_test.c proj_conf_test errors.txt
+    as_fn_error $? "could not compile PROJ version test. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+  fi
+  proj_version=`./proj_conf_test`
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ${proj_version}" >&5
+printf "%s\n" "${proj_version}" >&6; }
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+fi
 
 
 # Check whether --with-proj-share was given.
@@ -3975,7 +3997,13 @@ int main(void) {
 }
 _EOCONF
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+  cat errors.txt
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+  as_fn_error $? "could not compile PROJ epsg test. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+fi
+rm -f errors.txt
 if test  -n "$proj_share_path"  ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -4026,7 +4054,13 @@ int main(void) {
 }
 _EOCONF
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+  cat errors.txt
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+  as_fn_error $? "could not compile PROJ proj.db test. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+fi
+rm -f errors.txt
 if test  -n "$proj_share_path"  ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -4082,7 +4116,13 @@ int main(void) {
 }
 _EOCONF
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+  cat errors.txt
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+  as_fn_error $? "could not compile PROJ conus test. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+fi
+rm -f errors.txt
 if test  -n "$proj_share_path"  ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`

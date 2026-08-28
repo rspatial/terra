@@ -410,6 +410,7 @@ if test "${PROJH}" = no; then
   if test "${proj4ok}" = no; then
      AC_MSG_ERROR([libproj not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}])
   fi
+  if test "${proj_config_ok}" != yes; then
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <stdlib.h>
@@ -420,6 +421,7 @@ int main(void) {
     exit(0);
 }
 _EOCONF]
+  fi
 else
 [cat > proj_conf_test.cpp <<_EOCONF
 #include <stdio.h>
@@ -437,14 +439,17 @@ _EOCONF]
   if test `echo $?` -ne 0 ; then
     proj6ok=no
     AC_MSG_RESULT(no)
+    cat errors.txt
   else
     proj6ok=yes
     AC_MSG_RESULT(yes)
   fi
+  rm -f proj_conf_test proj_conf_test.cpp errors.txt
   if test "${proj6ok}" = no; then
      AC_MSG_ERROR([libproj or sqlite3 not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}])
   fi
 
+  if test "${proj_config_ok}" != yes; then
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <stdlib.h>
@@ -455,13 +460,27 @@ int main(void) {
     exit(0);
 }
 _EOCONF]
+  fi
 fi
 
 #AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
-
-proj_version=`./proj_conf_test`
+# Version already known from pkg-config when available; only compile a probe otherwise.
+# Pass PROJ_CPPFLAGS (includes/-D) but not full CPPFLAGS: R CPPFLAGS may contain
+# C++-only flags (see r-spatial/sf#2571).
+if test "${proj_config_ok}" != yes; then
+  AC_MSG_CHECKING(PROJ: version)
+  ${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+  if test `echo $?` -ne 0 ; then
+    AC_MSG_RESULT(no)
+    cat errors.txt
+    rm -f proj_conf_test.c proj_conf_test errors.txt
+    AC_MSG_ERROR([could not compile PROJ version test. ${GENERIC_INSTALL_MESSAGE}])
+  fi
+  proj_version=`./proj_conf_test`
+  AC_MSG_RESULT([${proj_version}])
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+fi
 
 AC_ARG_WITH([proj-share],
     AS_HELP_STRING([--with-proj-share=SHARE_PATH],[the location of proj metadata files]),
@@ -498,7 +517,13 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+  cat errors.txt
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+  AC_MSG_ERROR([could not compile PROJ epsg test. ${GENERIC_INSTALL_MESSAGE}])
+fi
+rm -f errors.txt
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -546,7 +571,13 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+  cat errors.txt
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+  AC_MSG_ERROR([could not compile PROJ proj.db test. ${GENERIC_INSTALL_MESSAGE}])
+fi
+rm -f errors.txt
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -599,7 +630,13 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} ${PROJ_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+  cat errors.txt
+  rm -f proj_conf_test.c proj_conf_test errors.txt
+  AC_MSG_ERROR([could not compile PROJ conus test. ${GENERIC_INSTALL_MESSAGE}])
+fi
+rm -f errors.txt
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
