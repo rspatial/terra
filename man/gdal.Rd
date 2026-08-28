@@ -6,6 +6,7 @@
 \alias{clearVSIcache}
 \alias{getGDALconfig}
 \alias{setGDALconfig}
+\alias{gdal_has_pam}
 \alias{unloadGDALdrivers}
 \alias{proj_ok}
 \alias{projNetwork}
@@ -21,6 +22,8 @@ Set the \code{GDAL} warning level or get a \code{data.frame} with the available 
 
 The current \code{GDAL} configuration options are obtained with \code{getGDALconfig} and changed with \code{setGDALconfig}. 
 
+\code{gdal_has_pam} reports whether the linked GDAL was built with PAM support.
+
 \code{proj_ok} checks if the PROJ database with CRS definitions can be found.
 
 \code{projNetwork} controls whether PROJ can access network resources for coordinate transformations. By default, network access is enabled to provide high-accuracy grid-based datum transformations where available. When disabled, PROJ falls back to \href{https://proj.org/en/stable/glossary.html#term-Ballpark-transformation}{"ballpark transformations"} (of unknown accuracy) which could lead to errors of hundreds of meters in some cases. When enabled, PROJ downloads transformation grids from \code{https://cdn.proj.org}, requiring network connectivity and valid SSL certificates. After a successful run, the files are cached locally.
@@ -33,6 +36,7 @@ gdal(warn=NA, drivers=FALSE, ...)
 gdalCache(size=NA)
 setGDALconfig(option, value="")
 getGDALconfig(option)
+gdal_has_pam()
 clearVSIcache()
 libVersion(lib="all", parse=FALSE)
 unloadGDALdrivers(x)
