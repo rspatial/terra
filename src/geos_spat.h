@@ -50,7 +50,7 @@
 #  define GEOS361
 #  define GEOS370
 #  define GEOS380
-#  define GEOS310
+#  define GEOS3100
 #  define GEOS3110
 #  define GEOS3120
 # endif

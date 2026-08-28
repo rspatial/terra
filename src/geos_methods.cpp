@@ -91,7 +91,9 @@ std::vector<std::string> SpatVector::wkb() {
 	std::vector<std::string> out;
 	out.reserve(g.size());
 	GEOSWKBWriter* writer = GEOSWKBWriter_create_r(hGEOSCtxt);
+#ifdef GEOS3100
 	GEOSWKBWriter_setFlavor_r(hGEOSCtxt, writer, GEOS_WKB_ISO);
+#endif
 	if (has_z()) {
 		GEOSWKBWriter_setOutputDimension_r(hGEOSCtxt, writer, 3);
 	}
@@ -112,7 +114,9 @@ std::vector<std::vector<unsigned char>> SpatVector::wkb_raw() {
 	std::vector<std::vector<unsigned char>> out;
 	out.reserve(g.size());
 	GEOSWKBWriter* writer = GEOSWKBWriter_create_r(hGEOSCtxt);
+#ifdef GEOS3100
 	GEOSWKBWriter_setFlavor_r(hGEOSCtxt, writer, GEOS_WKB_ISO);
+#endif
 	if (has_z()) {
 		GEOSWKBWriter_setOutputDimension_r(hGEOSCtxt, writer, 3);
 	}
@@ -132,7 +136,9 @@ std::vector<std::string> SpatVector::hex() {
 	std::vector<std::string> out;
 	out.reserve(g.size());
 	GEOSWKBWriter* writer = GEOSWKBWriter_create_r(hGEOSCtxt);
+#ifdef GEOS3100
 	GEOSWKBWriter_setFlavor_r(hGEOSCtxt, writer, GEOS_WKB_ISO);
+#endif
 	if (has_z()) {
 		GEOSWKBWriter_setOutputDimension_r(hGEOSCtxt, writer, 3);
 	}
