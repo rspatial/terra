@@ -105,6 +105,7 @@ static bool md_is_lat_name(const std::string &nm) {
 	return n == "latitude" || n == "lat";
 }
 
+#if (GDAL_VERSION_MAJOR > 3) || (GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR >= 4)
 static int md_find_col_dim(const std::vector<std::string> &dimnames,
 		const std::vector<std::shared_ptr<GDALDimension>> &dimData) {
 	for (size_t i = 0; i < dimnames.size(); i++) {
@@ -126,6 +127,7 @@ static int md_find_row_dim(const std::vector<std::string> &dimnames,
 	}
 	return -1;
 }
+#endif
 
 static void md_classify_two_extra_dims(int &iz, int &it, size_t e0, size_t e1,
 		const std::vector<std::string> &dimnames, const std::vector<std::string> &dimcalendar) {

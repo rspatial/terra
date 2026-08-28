@@ -1,0 +1,76 @@
+# Manual pre-release test of installing terra with different OS/GDAL versions.
+#
+
+name: GDAL compat
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # EL8 system stack ≈ GDAL 3.0.4 (issue #2174)
+          - { name: alma8-gdal3.0, image: almalinux:8 }
+          # Jammy ≈ GDAL 3.4.x (multidim API boundary)
+          - { name: ubuntu-22.04, image: ubuntu:22.04 }
+          # Noble ≈ GDAL 3.8.x
+          - { name: ubuntu-24.04, image: ubuntu:24.04 }
+
+    env:
+      DEBIAN_FRONTEND: noninteractive
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies (AlmaLinux 8)
+        if: startsWith(matrix.image, 'almalinux:')
+        run: |
+          set -euo pipefail
+          dnf -y install epel-release dnf-plugins-core
+          dnf config-manager --set-enabled powertools || dnf config-manager --set-enabled PowerTools || true
+          dnf -y install \
+            R R-devel \
+            gcc-c++ make git which \
+            gdal-devel proj-devel geos-devel \
+            sqlite-devel libtiff-devel netcdf-devel \
+            tbb-devel libcurl-devel openssl-devel \
+            libxml2-devel libpng-devel
+          gdal-config --version
+          geos-config --version
+          pkg-config --modversion proj || true
+
+      - name: Install system dependencies (Ubuntu)
+        if: startsWith(matrix.image, 'ubuntu:')
+        run: |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            r-base-dev \
+            g++ make git pkg-config \
+            libgdal-dev libproj-dev libgeos-dev \
+            libsqlite3-dev libtiff-dev libnetcdf-dev \
+            libtbb-dev libcurl4-openssl-dev libssl-dev \
+            libxml2-dev libpng-dev
+          gdal-config --version
+          geos-config --version
+          pkg-config --modversion proj
+
+      - name: Install Rcpp
+        run: |
+          Rscript -e 'install.packages("Rcpp", repos = "https://cloud.r-project.org")'
+
+      - name: Install terra from source
+        run: |
+          set -euo pipefail
+          R CMD INSTALL --no-multiarch .
+          Rscript -e 'library(terra); cat("terra", as.character(packageVersion("terra")), "\n"); print(terra::gdal(lib = "all")); print(terra::libVersion())'
