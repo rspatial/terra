@@ -104,6 +104,7 @@ SpatRaster
 [`intersect`](https://rspatial.github.io/terra/reference/intersect.md),
 [`subset`](https://rspatial.github.io/terra/reference/subset.md),
 [`extend`](https://rspatial.github.io/terra/reference/extend.md),
+[`trim`](https://rspatial.github.io/terra/reference/trim.md),
 [`window`](https://rspatial.github.io/terra/reference/window.md) for a
 virtual and sometimes more efficient way to crop a raster.
 
