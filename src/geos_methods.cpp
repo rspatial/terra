@@ -2638,11 +2638,12 @@ SpatVector SpatVector::symdif(SpatVector v) {
 		out.setError("expected two polygon geometries");
 		return out;
 	}
-	SpatVector out = erase(v);
+	// Use erase_agg, not pairwise erase (#2175).
+	SpatVector out = erase_agg(v);
 	if (out.hasError()) {
 		return out;
 	}
-	SpatVector ve = v.erase(*this);
+	SpatVector ve = v.erase_agg(*this);
 	if (ve.hasError()) {
 		return ve;
 	}
@@ -2712,12 +2713,12 @@ SpatVector SpatVector::cover(SpatVector v, bool identity, bool expand) {
 	if (v.srs.is_empty()) {
 		v.srs = srs;
 	}
-	SpatVector out = erase(v);
+	SpatVector out = erase_agg(v);
 	if (identity) {
 		SpatVector insect = intersect(v, true);
 		out = out.append(insect, true);
 		if (expand) {
-			v = v.erase(insect);
+			v = v.erase_agg(insect);
 			out = out.append(v, true);
 		}
 	} else {
