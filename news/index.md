@@ -10,7 +10,7 @@
 - terra did not compile with GDAL \< 3.4
   [\#2174](https://github.com/rspatial/terra/issues/2174) by Wes
   Cummings
-- terra did not compule with GEOS \< 3.10.0
+- terra did not compile with GEOS \< 3.10.0
   [\#2172](https://github.com/rspatial/terra/issues/2172) by Shane
   Sturrock
 - UBSAN error in flowDir (reported by CRAN)
@@ -154,7 +154,7 @@ Released 2026-06-20
   Howard
 - With the new default “md=TRUE”, `rast` reported a “file does not
   exist” error with a GDAL DSN string (e.g. `NETCDF:".../file.nc":VAR`).
-  , `rast` now splits a `DRIVER:"path":VAR` DSN so the multidim API can
+  `rast` now splits a `DRIVER:"path":VAR` DSN so the multidim API can
   find the file. It reuses the classic 2D driver’s geotransform so the
   extent is reported in CRS units instead of raw coordinate-variable
   values [\#2093](https://github.com/rspatial/terra/issues/2093) by

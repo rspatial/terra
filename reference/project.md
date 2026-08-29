@@ -125,7 +125,7 @@ project(x, from, to)
 
 - by_util:
 
-  logical. If `TRUE` and `gdal=TRUE`, the GDAL warp utility is used
+  logical. If `TRUE` and `use_gdal=TRUE`, the GDAL warp utility is used
 
 - pipeline:
 

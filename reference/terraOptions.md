@@ -39,7 +39,7 @@ this option. `terraOptions` only shows the value of `memmax` if it is
 set.
 
 **tempdir** - directory where temporary files are written. The default
-what is returned by [`tempdir()`](https://rdrr.io/r/base/tempfile.html).
+is path returned by [`tempdir()`](https://rdrr.io/r/base/tempfile.html).
 
 **datatype** - default data type. See
 [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md).
@@ -60,8 +60,8 @@ alignment of rasters.
 
 **parallel** - logical. If `TRUE` multiple threads are used (using the
 TBB library) where that was implemented (including distance calculations
-on `SpatVector` and some `focal` computations. Use `libVersion` to check
-whether TBB support is available.
+on `SpatVector` and some `focal` computations). Use `libVersion` to
+check whether TBB support is available.
 
 **threads** - non-negative integer. Cap on the number of threads used by
 parallel computation (when `parallel=TRUE`), by GDAL warp (in `project`
@@ -72,7 +72,7 @@ computations are limited by memory bandwidth. No more threads than the
 number of available CPUs are used on machines with fewer CPUs. Set it to
 `0` to remove the cap ("use all CPUs"). Lower values are useful to leave
 room for other processes, or when running multiple R processes at the
-same time).
+same time.
 
 ## Note
 
@@ -99,7 +99,7 @@ terraOptions()
 #> memmax    : 16
 #> todisk    : FALSE
 #> threads   : 16
-#> tempdir   : /tmp/Rtmpyneaz8
+#> tempdir   : /tmp/RtmpPWQWCs
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 3
@@ -115,7 +115,7 @@ terraOptions()
 #> memmax    : 16
 #> todisk    : FALSE
 #> threads   : 4
-#> tempdir   : /tmp/Rtmpyneaz8
+#> tempdir   : /tmp/RtmpPWQWCs
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 10

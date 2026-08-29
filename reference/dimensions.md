@@ -1,8 +1,9 @@
 # Dimensions of a SpatRaster or SpatVector and related objects
 
 Get the number of rows (`nrow`), columns (`ncol`), cells (`ncell`),
-layers (`nlyr`), sources (`nsrc`), the size `size` (`nlyr(x)*ncell(x)`),
-or spatial resolution of a SpatRaster.
+layers (`nlyr`), sources (`nsrc`), the size
+(`size = nlyr(x) * ncell(x)`), or spatial resolution of a SpatRaster
+(`res`).
 
 `length` returns the number of sub-datasets in a SpatRasterDataset or
 SpatVectorCollection.

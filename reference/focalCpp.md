@@ -51,7 +51,7 @@ focalCpp(x, w=3, fun, ..., fillvalue=NA,
 
 - silent:
 
-  logical. If `TRUE` error messages are printed that may occur when
+  logical. If `FALSE` error messages are printed that may occur when
   trying `fun` to determine the length of the returned value. This can
   be useful in debugging a `fun` that does not work
 

@@ -1,6 +1,6 @@
 # replace cell values
 
-Substitute(replace) cell values of a SpatRaster with a new value. See
+Substitute (replace) cell values of a SpatRaster with a new value. See
 [`classify`](https://rspatial.github.io/terra/reference/classify.md) for
 more complex/flexible replacement.
 

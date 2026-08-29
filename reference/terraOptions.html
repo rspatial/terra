@@ -59,14 +59,14 @@
 <p><b>memfrac</b> - value between 0 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.</p>
 <p><b>memmin</b> - if memory required is below this threshold (in GB), the memory is assumed to be available. Otherwise, terra checks if it is available.</p>
 <p><b>memmax</b> - the maximum amount of RAM (in GB) that terra is allowed to use when processing a raster dataset. Should be less than what is detected (see <code><a href="mem.html">mem_info</a></code>), and higher values are ignored. Set it to a negative number or NA to not set this option. <code>terraOptions</code> only shows the value of <code>memmax</code> if it is set.</p>
-<p><b>tempdir</b> - directory where temporary files are written. The default what is returned by <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code>.</p>
+<p><b>tempdir</b> - directory where temporary files are written. The default is path returned by <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code>.</p>
 <p><b>datatype</b> - default data type. See <code><a href="writeRaster.html">writeRaster</a></code>.</p>
 <p><b>todisk</b> - logical. If <code>TRUE</code> write all raster data to disk (temp file if no file name is specified). For debugging.</p>
 <p><b>progress</b> - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero.</p>
 <p><b>verbose</b> - logical. If <code>TRUE</code> debugging info is printed for some functions.</p>
 <p><b>tolerance</b> - numeric. Difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alignment of rasters.</p>
-<p><b>parallel</b> - logical. If <code>TRUE</code> multiple threads are used (using the TBB library) where that was implemented (including distance calculations on <code>SpatVector</code> and some <code>focal</code> computations. Use <code>libVersion</code> to check whether TBB support is available.</p>
-<p><b>threads</b> - non-negative integer. Cap on the number of threads used by parallel computation (when <code>parallel=TRUE</code>), by GDAL warp (in <code>project</code> and <code>resample</code> when <code>threads=TRUE</code>), and for compressed GeoTIFF writing. The default is <code>16</code>. This cap avoids run-away thread counts on machines with very many cores; more threads rarely help as most parallel computations are limited by memory bandwidth. No more threads than the number of available CPUs are used on machines with fewer CPUs. Set it to <code>0</code> to remove the cap ("use all CPUs"). Lower values are useful to leave room for other processes, or when running multiple R processes at the same time).</p>
+<p><b>parallel</b> - logical. If <code>TRUE</code> multiple threads are used (using the TBB library) where that was implemented (including distance calculations on <code>SpatVector</code> and some <code>focal</code> computations). Use <code>libVersion</code> to check whether TBB support is available.</p>
+<p><b>threads</b> - non-negative integer. Cap on the number of threads used by parallel computation (when <code>parallel=TRUE</code>), by GDAL warp (in <code>project</code> and <code>resample</code> when <code>threads=TRUE</code>), and for compressed GeoTIFF writing. The default is <code>16</code>. This cap avoids run-away thread counts on machines with very many cores; more threads rarely help as most parallel computations are limited by memory bandwidth. No more threads than the number of available CPUs are used on machines with fewer CPUs. Set it to <code>0</code> to remove the cap ("use all CPUs"). Lower values are useful to leave room for other processes, or when running multiple R processes at the same time.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
@@ -89,7 +89,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmax    : 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> threads   : 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/Rtmpyneaz8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpPWQWCs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 3</span>
@@ -105,7 +105,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmax    : 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> threads   : 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/Rtmpyneaz8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpPWQWCs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 10</span>

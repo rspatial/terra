@@ -14,9 +14,9 @@ at [rspatial.org](https://rspatial.org/index.html). See the main
 [documentation
 page](https://rspatial.github.io/terra/reference/terra-package.html) or
 the cheatsheet
-[webpage](https://rspatial.org/_static/terra_cheatsheet.html) or
-[pdf](https://rspatial.org/_static/terra_cheatsheet.pdf) for an overview
-of available functions.
+([webpage](https://rspatial.org/_static/terra_cheatsheet.html) or
+[pdf](https://rspatial.org/_static/terra_cheatsheet.pdf)) for an
+overview of available functions.
 
 [Stack Overflow](https://stackoverflow.com/questions/tagged/terra) is a
 good place to ask questions if you get stuck. Make sure to include a

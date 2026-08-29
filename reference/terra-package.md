@@ -769,7 +769,7 @@ highlights some of the differences between the two packages.
 (`RasterLayer, RasterStack, RasterBrick`). Likewise there is a single
 class for vector data `SpatVector` that replaces six `Spatial*` classes.
 Most method names are the same, but note the following important
-differences in methods names with the `raster` package
+differences in method names with the `raster` package
 
 |  |  |
 |----|----|
@@ -830,7 +830,7 @@ better. Here are some examples:
 |  | `raster` returns a list (for lines or polygons) or a matrix (for points, but without the ID |
 |  | column). You can use `list=TRUE` to get the results as a list |
 | [`values`](https://rspatial.github.io/terra/reference/values.md) | `terra` always returns a matrix. `raster` returns a vector for a `RasterLayer` |
-| [`Summary-methods`](https://rspatial.github.io/terra/reference/summarize-generics.md) | With `raster`, `mean(x, y)` and `mean(stack(x, y)` return the same result, a single |
+| [`Summary-methods`](https://rspatial.github.io/terra/reference/summarize-generics.md) | With `raster`, `mean(x, y)` and `mean(stack(x, y))` return the same result, a single |
 |  | layer with the mean of all cell values. This is also what `terra` returns with |
 |  | `mean(c(x, y))`, but with `mean(x, y)` the parallel mean is returned – that is, the |
 |  | computation is done layer-wise, and the number of layers in the output is the same as |

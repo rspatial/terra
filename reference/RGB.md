@@ -5,8 +5,7 @@ Blue when plotting a SpatRaster. Currently, a benefit of this is that
 [`plot`](https://rspatial.github.io/terra/reference/plot.md) will send
 the object to
 [`plotRGB`](https://rspatial.github.io/terra/reference/plotRGB.md). You
-can also associated the layers with another color space (HSV, HSI or
-HSL)
+can also associate the layers with another color space (HSV, HSI or HSL)
 
 With `colorize` you can convert a three-layer RGB SpatRaster into other
 color spaces. You can also convert it into a single-layer SpatRaster

@@ -53,7 +53,7 @@ f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 x <- centroids(v)
 y <- centroids(v, TRUE)
-z <- centroids(v, correct=TRUE) ## same as z in this case
+z <- centroids(v, correct=TRUE) ## same as 'x' in this case
 
 
 f <- system.file("ex/elev.tif", package="terra")

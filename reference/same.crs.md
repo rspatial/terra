@@ -14,7 +14,7 @@ same.crs(x, y)
 - x:
 
   character, SpatRaster, SpatVector, CRS, or other object that returns
-  something intelligible with`crs(x)`
+  something intelligible with `crs(x)`
 
 - y:
 

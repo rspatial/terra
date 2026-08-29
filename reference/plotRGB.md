@@ -21,7 +21,7 @@ create a single layer SpatRaster with a color-table and then use
 # S4 method for class 'SpatRaster'
 plotRGB(x, r=1, g=2, b=3, a=NULL, scale=NULL, mar=0, 
     stretch=NULL, smooth=TRUE, colNA="white", alpha=NULL, bgalpha=NULL, 
-    zlim=NULL, zcol=FALSE, axes=FALSE ,...)
+    zlim=NULL, zcol=FALSE, axes=FALSE, ...)
 ```
 
 ## Arguments
