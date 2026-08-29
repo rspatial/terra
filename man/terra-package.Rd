@@ -741,7 +741,7 @@ Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\li
 
 \section{XXXIII. New method names}{
 
-\code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
+\code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in method names with the \code{raster} package
 
 \tabular{ll}{
 \bold{raster package} \tab \bold{terra package}\cr
@@ -798,7 +798,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 \tab \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID\cr
 \tab column). You can use \code{list=TRUE} to get the results as a list\cr
 \code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
-\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single\cr
+\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y))} return the same result, a single\cr
 \tab layer with the mean of all cell values. This is also what \code{terra} returns with \cr
 \tab \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the\cr
 \tab computation is done layer-wise, and the number of layers in the output is the same as\cr

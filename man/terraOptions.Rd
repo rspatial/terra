@@ -26,7 +26,7 @@ The following options are available.
 
 \bold{memmax} - the maximum amount of RAM (in GB) that terra is allowed to use when processing a raster dataset. Should be less than what is detected (see \code{\link{mem_info}}), and higher values are ignored. Set it to a negative number or NA to not set this option. \code{terraOptions} only shows the value of \code{memmax} if it is set.
 
-\bold{tempdir} - directory where temporary files are written. The default what is returned by \code{tempdir()}.
+\bold{tempdir} - directory where temporary files are written. The default is path returned by \code{tempdir()}.
 
 \bold{datatype} - default data type. See \code{\link{writeRaster}}.
 
@@ -38,9 +38,9 @@ The following options are available.
 
 \bold{tolerance} - numeric. Difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alignment of rasters.
 
-\bold{parallel} - logical. If \code{TRUE} multiple threads are used (using the TBB library) where that was implemented (including distance calculations on \code{SpatVector} and some \code{focal} computations. Use \code{libVersion} to check whether TBB support is available.
+\bold{parallel} - logical. If \code{TRUE} multiple threads are used (using the TBB library) where that was implemented (including distance calculations on \code{SpatVector} and some \code{focal} computations). Use \code{libVersion} to check whether TBB support is available.
 
-\bold{threads} - non-negative integer. Cap on the number of threads used by parallel computation (when \code{parallel=TRUE}), by GDAL warp (in \code{project} and \code{resample} when \code{threads=TRUE}), and for compressed GeoTIFF writing. The default is \code{16}. This cap avoids run-away thread counts on machines with very many cores; more threads rarely help as most parallel computations are limited by memory bandwidth. No more threads than the number of available CPUs are used on machines with fewer CPUs. Set it to \code{0} to remove the cap ("use all CPUs"). Lower values are useful to leave room for other processes, or when running multiple R processes at the same time).
+\bold{threads} - non-negative integer. Cap on the number of threads used by parallel computation (when \code{parallel=TRUE}), by GDAL warp (in \code{project} and \code{resample} when \code{threads=TRUE}), and for compressed GeoTIFF writing. The default is \code{16}. This cap avoids run-away thread counts on machines with very many cores; more threads rarely help as most parallel computations are limited by memory bandwidth. No more threads than the number of available CPUs are used on machines with fewer CPUs. Set it to \code{0} to remove the cap ("use all CPUs"). Lower values are useful to leave room for other processes, or when running multiple R processes at the same time.
 }
 
 \note{

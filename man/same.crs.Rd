@@ -14,7 +14,7 @@ same.crs(x, y)
 }
 
 \arguments{
-\item{x}{character, SpatRaster, SpatVector, CRS, or other object that returns something intelligible with\code{crs(x)}}
+\item{x}{character, SpatRaster, SpatVector, CRS, or other object that returns something intelligible with \code{crs(x)}}
 \item{y}{same types as for \code{x}}
 }
 
