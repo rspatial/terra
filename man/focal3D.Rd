@@ -35,7 +35,7 @@ Calculate focal ("moving window") values for the three-dimensional neighborhood 
 
 \item{expand}{logical. Add virtual layers before the first or after the last layer that are the same as the first or last layers. If \code{TRUE}, arguments \code{pad} and \code{padvalue} are ignored}
 
-\item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a function passed to \code{fun} that does not work}
+\item{silent}{logical. If \code{FALSE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a function passed to \code{fun} that does not work}
 
 \item{filename}{character. Output filename}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

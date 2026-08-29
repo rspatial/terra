@@ -15,7 +15,7 @@
 \title{Layers representing colors}
 
 \description{
-With \code{RGB} you can get or set the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, a benefit of this is that \code{\link[terra]{plot}} will send the object to \code{\link{plotRGB}}. You can also associated the layers with another color space (HSV, HSI or HSL)
+With \code{RGB} you can get or set the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, a benefit of this is that \code{\link[terra]{plot}} will send the object to \code{\link{plotRGB}}. You can also associate the layers with another color space (HSV, HSI or HSL)
 
 With \code{colorize} you can convert a three-layer RGB SpatRaster into other color spaces. You can also convert it into a single-layer SpatRaster with a color-table.
 }

@@ -71,7 +71,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
   \item{use_gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise, a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
 
-  \item{by_util}{logical. If \code{TRUE} and \code{gdal=TRUE}, the GDAL warp utility is used}
+  \item{by_util}{logical. If \code{TRUE} and \code{use_gdal=TRUE}, the GDAL warp utility is used}
 
   \item{pipeline}{character. A PROJ pipeline string to use for the coordinate transformation instead of letting GDAL select one automatically. You can use \code{\link{proj_pipelines}} to find available pipelines. When a pipeline is set, \code{y} is still used to set the output CRS}
 

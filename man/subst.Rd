@@ -8,7 +8,7 @@
 \title{replace cell values}
 
 \description{
-Substitute(replace) cell values of a SpatRaster with a new value. See \code{\link{classify}} for more complex/flexible replacement. 
+Substitute (replace) cell values of a SpatRaster with a new value. See \code{\link{classify}} for more complex/flexible replacement. 
 }
 
 \usage{
