@@ -9,12 +9,13 @@
 \alias{union,SpatVector,missing-method}
 
 \title{ 
-Union SpatVector or SpatExtent objects
+Geometric union SpatVector or SpatExtent objects
 }
 
 \description{
+Combine SpatVector or SpatExtent objects. If you want to simply append polygon SpatVectors use \code{rbind} instead. \code{union} also intersect overlapping polygons between, but not within, objects. 
 
-If you want to append polygon SpatVectors use \code{rbind} instead of \code{union}. \code{union} will also intersect overlapping polygons between, not within, objects. Union for lines and points simply combines the two data sets; without any geometric intersections. This is equivalent to \code{\link{rbind}}. Attributes are joined. 
+Union for lines and points simply combines the two data sets; without any geometric intersections. This is equivalent to \code{\link{rbind}}. Attributes are joined. 
 
 If \code{x} and \code{y} have a different geometry type, a SpatVectorCollection is returned.
 

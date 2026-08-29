@@ -2,9 +2,19 @@
 
 ## bug fixes
 
+- `union` could in some cases return an intersection instead [#2175](https://github.com/rspatial/terra/issues/2175) by Alex Chubaty
+- terra did not compile with GDAL < 3.4 [#2174](https://github.com/rspatial/terra/issues/2174) by Wes Cummings
+- terra did not compule with GEOS < 3.10.0 [#2172](https://github.com/rspatial/terra/issues/2172) by Shane Sturrock
+- UBSAN error in flowDir (reported by CRAN)
+- `pitfiller` did not properly handle missing values [#2168](https://github.com/rspatial/terra/issues/2168) by Michael Chirico
+
+
 ## enhancements
 
+
 ## new 
+
+`gdal_has_pam` to allow skipping tests if GDAL PAM is not enabled  [#2170](https://github.com/rspatial/terra/issues/2170) by Michael Chirico
 
 
 # version 1.9-46
