@@ -4,7 +4,7 @@
 
 - `union` could in some cases return an intersection instead [#2175](https://github.com/rspatial/terra/issues/2175) by Alex Chubaty
 - terra did not compile with GDAL < 3.4 [#2174](https://github.com/rspatial/terra/issues/2174) by Wes Cummings
-- terra did not compule with GEOS < 3.10.0 [#2172](https://github.com/rspatial/terra/issues/2172) by Shane Sturrock
+- terra did not compile with GEOS < 3.10.0 [#2172](https://github.com/rspatial/terra/issues/2172) by Shane Sturrock
 - UBSAN error in flowDir (reported by CRAN)
 - `pitfiller` did not properly handle missing values [#2168](https://github.com/rspatial/terra/issues/2168) by Michael Chirico
 
@@ -73,7 +73,7 @@ Released 2026-06-20
 - recurring `Cannot take exclusive lock on cache.db` PROJ warnings during `project` are now collapsed into a single, actionable message [#2088](https://github.com/rspatial/terra/issues/2088)
 - retro labels generated with `plot(x, pax=list(retro=TRUE))` were incorrect in the W and S hemispheres [#2090](https://github.com/rspatial/terra/issues/2090) by Lucas Salinas Morales
 - `trim` failed with "invalid extent" if the trimmed bounding box was within `padding` cells of the raster edge [#2092](https://github.com/rspatial/terra/issues/2092) by James Howard
-- With the new default "md=TRUE", `rast` reported a "file does not exist" error with a GDAL DSN string (e.g. `NETCDF:".../file.nc":VAR`). , `rast` now splits a `DRIVER:"path":VAR` DSN so the multidim API can find the file. It reuses the classic 2D driver's geotransform so the extent is reported in CRS units instead of raw coordinate-variable values [#2093](https://github.com/rspatial/terra/issues/2093) by Michael Sumner
+- With the new default "md=TRUE", `rast` reported a "file does not exist" error with a GDAL DSN string (e.g. `NETCDF:".../file.nc":VAR`). `rast` now splits a `DRIVER:"path":VAR` DSN so the multidim API can find the file. It reuses the classic 2D driver's geotransform so the extent is reported in CRS units instead of raw coordinate-variable values [#2093](https://github.com/rspatial/terra/issues/2093) by Michael Sumner
 - `writeRaster(x, filename, filetype="COG")` segfaulted with GDAL 3.13.0 because the COG driver now has `Create()` that crashes with `RasterIO` crashes; terra now always writes COGs via the original `CreateCopy()` path [#2095](https://github.com/rspatial/terra/issues/2095) by Andrew Brown
 
 
