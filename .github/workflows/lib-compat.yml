@@ -1,0 +1,148 @@
+# Manual pre-release test: install terra against different GDAL/GEOS versions
+
+name: libs compat
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # EL8 ≈ GDAL 3.0.4, GEOS 3.7, PROJ 6 (#2174 #2172 #2111 #2080 #1961 #1853)
+          - { name: alma8-gdal3.0, image: almalinux:8, mode: distro }
+          # Jammy ≈ GDAL 3.4 (#2109 AsClassicDataset; covers Bookworm 3.6 band)
+          - { name: ubuntu-22.04, image: ubuntu:22.04, mode: distro }
+          # Noble ≈ GDAL 3.8+ / GEOS 3.12 (modern API path)
+          - { name: ubuntu-24.04, image: ubuntu:24.04, mode: distro }
+          # DESCRIPTION SystemRequirements floors, built from source
+          - { name: min-gdal-2.2.3-geos-3.4.0, image: ubuntu:22.04, mode: min-src }
+
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      # DESCRIPTION minima
+      MIN_PROJ_VERSION: "4.9.3"
+      MIN_GEOS_VERSION: "3.4.0"
+      MIN_GDAL_VERSION: "2.2.3"
+
+    # Container /bin/sh is often dash (no pipefail); force bash.
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies (AlmaLinux 8)
+        if: matrix.mode == 'distro' && startsWith(matrix.image, 'almalinux:')
+        run: |
+          set -euo pipefail
+          dnf -y install epel-release dnf-plugins-core
+          dnf config-manager --set-enabled powertools || dnf config-manager --set-enabled PowerTools || true
+          dnf -y install \
+            R R-devel \
+            gcc-c++ make git which \
+            gdal-devel proj-devel geos-devel \
+            sqlite-devel libtiff-devel netcdf-devel \
+            tbb-devel libcurl-devel openssl-devel \
+            libxml2-devel libpng-devel
+          gdal-config --version
+          geos-config --version
+          pkg-config --modversion proj || true
+
+      - name: Install system dependencies (Ubuntu distro libs)
+        if: matrix.mode == 'distro' && startsWith(matrix.image, 'ubuntu:')
+        run: |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            r-base-dev \
+            g++ make git pkg-config \
+            libgdal-dev libproj-dev libgeos-dev \
+            libsqlite3-dev libtiff-dev libnetcdf-dev \
+            libtbb-dev libcurl4-openssl-dev libssl-dev \
+            libxml2-dev libpng-dev
+          gdal-config --version
+          geos-config --version
+          pkg-config --modversion proj
+
+      - name: Install build dependencies (Ubuntu, for source minima)
+        if: matrix.mode == 'min-src'
+        run: |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            r-base-dev \
+            g++ make git pkg-config wget ca-certificates \
+            libsqlite3-dev libtiff-dev libcurl4-openssl-dev \
+            libssl-dev libxml2-dev libpng-dev libjpeg-dev \
+            zlib1g-dev libexpat1-dev
+
+      - name: Build PROJ ${{ env.MIN_PROJ_VERSION }}, GEOS ${{ env.MIN_GEOS_VERSION }}, GDAL ${{ env.MIN_GDAL_VERSION }}
+        if: matrix.mode == 'min-src'
+        run: |
+          set -euo pipefail
+          PREFIX=/usr/local
+          NPROC="$(nproc)"
+          cd /tmp
+
+          echo "==> PROJ ${MIN_PROJ_VERSION}"
+          wget -q "https://download.osgeo.org/proj/proj-${MIN_PROJ_VERSION}.tar.gz"
+          tar xzf "proj-${MIN_PROJ_VERSION}.tar.gz"
+          ( cd "proj-${MIN_PROJ_VERSION}" && ./configure --prefix="${PREFIX}" && make -j"${NPROC}" && make install )
+
+          echo "==> GEOS ${MIN_GEOS_VERSION}"
+          wget -q "https://download.osgeo.org/geos/geos-${MIN_GEOS_VERSION}.tar.bz2"
+          tar xjf "geos-${MIN_GEOS_VERSION}.tar.bz2"
+          ( cd "geos-${MIN_GEOS_VERSION}" && ./configure --prefix="${PREFIX}" && make -j"${NPROC}" && make install )
+
+          echo "==> GDAL ${MIN_GDAL_VERSION}"
+          wget -q "https://download.osgeo.org/gdal/${MIN_GDAL_VERSION}/gdal-${MIN_GDAL_VERSION}.tar.gz"
+          tar xzf "gdal-${MIN_GDAL_VERSION}.tar.gz"
+          (
+            cd "gdal-${MIN_GDAL_VERSION}"
+            ./configure --prefix="${PREFIX}" \
+              --with-geos="${PREFIX}/bin/geos-config" \
+              --with-static-proj4="${PREFIX}" \
+              --without-libtool
+            make -j"${NPROC}"
+            make install
+          )
+
+          ldconfig
+          export PATH="${PREFIX}/bin:${PATH}"
+          export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH:-}"
+          export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+          gdal-config --version
+          geos-config --version
+          # PROJ 4 has no pkg-config module on all builds; show nadgrids dir instead
+          ls "${PREFIX}/share/proj" | head || true
+          echo "gdal=$(gdal-config --version) geos=$(geos-config --version)"
+
+      - name: Install Rcpp
+        run: |
+          Rscript -e 'install.packages("Rcpp", repos = "https://cloud.r-project.org")'
+
+      - name: Install terra from source
+        run: |
+          set -euo pipefail
+          if [[ "${{ matrix.mode }}" == "min-src" ]]; then
+            export PATH="/usr/local/bin:${PATH}"
+            export LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH:-}"
+            export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+            R CMD INSTALL --no-multiarch \
+              --configure-args="--with-gdal-config=/usr/local/bin/gdal-config --with-geos-config=/usr/local/bin/geos-config --with-proj-include=/usr/local/include --with-proj-lib=/usr/local/lib" \
+              .
+          else
+            R CMD INSTALL --no-multiarch .
+          fi
+          Rscript -e 'library(terra); cat("terra", as.character(packageVersion("terra")), "\n"); print(terra::gdal(lib = "all")); print(terra::libVersion())'
