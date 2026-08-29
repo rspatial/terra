@@ -1,9 +1,11 @@
-# Union SpatVector or SpatExtent objects
+# Geometric union SpatVector or SpatExtent objects
 
-If you want to append polygon SpatVectors use `rbind` instead of
-`union`. `union` will also intersect overlapping polygons between, not
-within, objects. Union for lines and points simply combines the two data
-sets; without any geometric intersections. This is equivalent to
+Combine SpatVector or SpatExtent objects. If you want to simply append
+polygon SpatVectors use `rbind` instead. `union` also intersect
+overlapping polygons between, but not within, objects.
+
+Union for lines and points simply combines the two data sets; without
+any geometric intersections. This is equivalent to
 [`rbind`](https://rspatial.github.io/terra/reference/c.md). Attributes
 are joined.
 

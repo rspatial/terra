@@ -1153,7 +1153,7 @@
 - [`union(`*`<SpatVector>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/union.md)
   [`union(`*`<SpatVector>`*`,`*`<missing>`*`)`](https://rspatial.github.io/terra/reference/union.md)
   [`union(`*`<SpatExtent>`*`,`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/union.md)
-  : Union SpatVector or SpatExtent objects
+  : Geometric union SpatVector or SpatExtent objects
 
 - [`unique(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/unique.md)
   [`unique(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/unique.md)
