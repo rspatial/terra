@@ -434,6 +434,7 @@ SpatRasterSource SpatRasterSource::subset(std::vector<size_t> lyrs) {
 		out.extent = extent;
 		out.rotated = rotated;
 		out.flipped = flipped;
+		out.m_x_wrap = m_x_wrap;
 		out.has_geolocation = has_geolocation;
 		out.has_gcps = has_gcps;
 		out.geoloc_srs = geoloc_srs;

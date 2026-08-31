@@ -1256,13 +1256,36 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			if (xmin > xmax) std::swap(xmin, xmax);
 			double ymax = adfGT[3];
 			double ymin = ymax + adfGT[5] * source[0].nrow;
+			bool flipped = false;
 			if (adfGT[5] > 0) {
-				source[0].flipped = true;
+				flipped = true;
 				std::swap(ymin, ymax);
 			}
-			source[0].extent = SpatExtent(xmin, xmax, ymin, ymax);
-			if (adfGT[2] != 0 || adfGT[4] != 0) {
-				source[0].rotated = true;
+			bool rotated = (adfGT[2] != 0 || adfGT[4] != 0);
+			for (size_t si = 0; si < source.size(); si++) {
+				// GRIB classic: 0-360 to -180-180 with pixel rewrap. MD keeps 0-360
+				// pixel order (#2178); shift columns when adopting classic extent.
+				if (gdrv == "GRIB") {
+					double md_xmin = source[si].extent.xmin;
+					double md_xmax = source[si].extent.xmax;
+					if (md_xmin > -1.0 && md_xmin < 2.0 && md_xmax > 350.0 && xmin < -170.0) {
+						double xres = (md_xmax - md_xmin) / (double) source[si].ncol;
+						if (xres > 0) {
+							size_t wrap = (size_t) ((md_xmin - xmin) / xres + 1e-9);
+							if (source[si].ncol > 0) {
+								wrap %= source[si].ncol;
+							}
+							source[si].m_x_wrap = wrap;
+						}
+					}
+				}
+				source[si].extent = SpatExtent(xmin, xmax, ymin, ymax);
+				if (flipped) {
+					source[si].flipped = true;
+				}
+				if (rotated) {
+					source[si].rotated = true;
+				}
 			}
 		};
 

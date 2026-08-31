@@ -79,6 +79,8 @@ class SpatRasterSource {
 		bool extset=false;
 		bool rotated=false;
 		bool flipped=false;
+		// Circular column offset for MD reads (GRIB 0-360 data under a -180-180 extent).
+		size_t m_x_wrap = 0;
 		bool hasWindow=false;
 		SpatWindow window;
 

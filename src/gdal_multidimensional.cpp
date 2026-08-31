@@ -1117,9 +1117,21 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		drvs = CSLAddString(drvs, drivers[i].c_str());
 	}
 
+	// Classic GRIB remaps 0-360 to -180-180 and rewraps pixels (GRIB_ADJUST_LONGITUDE_RANGE).
+	// The multidim path remaps X coordinates only, leaving data in 0-360 order (#2178).
+	// Disable adjust so MD lon coords match the pixel layout; then applly the
+	// classic extent and column wrap in override_extent_from_2d_gt when needed.
+	const char *prev_grib_adj = CPLGetConfigOption("GRIB_ADJUST_LONGITUDE_RANGE", nullptr);
+	std::string prev_grib_adj_str = prev_grib_adj ? prev_grib_adj : "";
+	CPLSetThreadLocalConfigOption("GRIB_ADJUST_LONGITUDE_RANGE", "NO");
+
     auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER, drvs));
 	CSLDestroy(drvs);
 	drvs = NULL;
+
+	CPLSetThreadLocalConfigOption("GRIB_ADJUST_LONGITUDE_RANGE",
+		prev_grib_adj ? prev_grib_adj_str.c_str() : nullptr);
+
     if( !poDataset ) {
 		if (looks_like_gdal_dsn(fname)) {
 			if (drivers.size() > 0) {
@@ -1406,29 +1418,22 @@ bool SpatRaster::open_gdal_multidim(GDALDatasetH &hDS, size_t src) {
 bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
-	std::vector<size_t> dims = source[src].m_dims;
 
-/*
-	std::vector<size_t> sizes = source[src].m_size;
-	Rcpp::Rcout << "dims: ";
-	for (size_t i=0; i<dims.size(); i++) {Rcpp::Rcout << dims[i] << " ";}
-	Rcpp::Rcout << "\nsize: ";
-	for (size_t i=0; i<sizes.size(); i++) {Rcpp::Rcout << sizes[i] << " ";}
-	Rcpp::Rcout << "\nrc: ";
-	Rcpp::Rcout << col << " " << ncols << " " << row << " " << nrows << "\n";
-*/
+	const size_t coldim = source[src].m_dims[0];
+	const size_t rowdim = source[src].m_dims[1];
+	const size_t wrap = source[src].m_x_wrap;
+	const size_t N = ncol();
 
-	offset[source[src].m_dims[0]] = col;
-	offset[source[src].m_dims[1]] = row;
+	offset[coldim] = col;
+	offset[rowdim] = row;
 	size_t ndim = source[src].m_dims.size();
 	std::vector<size_t> count(source[src].m_ndims, 1);
-	count[source[src].m_dims[0]] = ncols;
-	count[source[src].m_dims[1]] = nrows;
+	count[coldim] = ncols;
+	count[rowdim] = nrows;
 
 	// Flip a south-up array to terra's north-up layout by reading the block with
 	// a positive stride at the mirrored row offset and reversing rows in memory.
 	// (A negative stride passed to Read is correct but extremely slow)
-	const size_t rowdim = source[src].m_dims[1];
 	const bool need_flip = !source[src].flipped;
 	if (need_flip) {
 		offset[rowdim] = nrow() - row - nrows;
@@ -1442,22 +1447,79 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	const bool md_lat_fast =
 		source[src].m_dims.size() >= 2 && source[src].m_dims[1] > source[src].m_dims[0];
 
-	// Two-dimensional variable (lon x lat only): one Read matches terra layout.
-	if (ndim == 2) {
-		size_t n = vprod(count, false);
-		data.resize(insize + n);
-		source[src].m_array->Read(&offset[0], &count[0], stride_arg, NULL, dt, &data[insize], NULL, 0);
+	// Map terra columns to MD columns when GRIB data is still 0-360 ordered (#2178).
+	auto md_col0 = [&](size_t terra_col) -> size_t {
+		return wrap == 0 ? terra_col : (terra_col + wrap) % N;
+	};
+
+	auto post_spatial = [&](size_t dest_off, size_t nr, size_t nc) {
 		if (md_lat_fast) {
-			md_reorder_spatial_gdal_to_terra(data, insize, nrows, ncols);
+			md_reorder_spatial_gdal_to_terra(data, dest_off, nr, nc);
 		}
 		if (need_flip) {
-			md_flip_rows(data, insize, nrows, ncols);
+			md_flip_rows(data, dest_off, nr, nc);
 		}
+	};
+
+	// Read ncols columns starting at terra column `col` into dest (row-major).
+	auto read_cols = [&](double *dest, size_t terra_col, size_t ncols_read) -> bool {
+		size_t md0 = md_col0(terra_col);
+		if (wrap == 0 || md0 + ncols_read <= N) {
+			offset[coldim] = md0;
+			count[coldim] = ncols_read;
+			if (!source[src].m_array->Read(&offset[0], &count[0], stride_arg, NULL, dt, dest, NULL, 0)) {
+				return false;
+			}
+			return true;
+		}
+		// Window crosses the MD wrap seam: two reads.
+		size_t n1 = N - md0;
+		size_t n2 = ncols_read - n1;
+		std::vector<double> buf1(n1 * nrows), buf2(n2 * nrows);
+		offset[coldim] = md0;
+		count[coldim] = n1;
+		if (!source[src].m_array->Read(&offset[0], &count[0], stride_arg, NULL, dt, buf1.data(), NULL, 0)) {
+			return false;
+		}
+		offset[coldim] = 0;
+		count[coldim] = n2;
+		if (!source[src].m_array->Read(&offset[0], &count[0], stride_arg, NULL, dt, buf2.data(), NULL, 0)) {
+			return false;
+		}
+		// Stitch into dest as row-major nrows x ncols_read (lon-fast if !md_lat_fast).
+		// GDAL buffer layout before post_spatial: if lon-fast (ix > iy), row-major
+		// nrows x n; if lat-fast, needs same layout as a single Read would produce.
+		if (!md_lat_fast) {
+			for (size_t r = 0; r < nrows; r++) {
+				std::copy(buf1.begin() + r * n1, buf1.begin() + (r + 1) * n1, dest + r * ncols_read);
+				std::copy(buf2.begin() + r * n2, buf2.begin() + (r + 1) * n2, dest + r * ncols_read + n1);
+			}
+		} else {
+			// lat-fast: buf layout is [c * nrows + r]
+			for (size_t c = 0; c < n1; c++) {
+				for (size_t r = 0; r < nrows; r++) {
+					dest[c * nrows + r] = buf1[c * nrows + r];
+				}
+			}
+			for (size_t c = 0; c < n2; c++) {
+				for (size_t r = 0; r < nrows; r++) {
+					dest[(n1 + c) * nrows + r] = buf2[c * nrows + r];
+				}
+			}
+		}
+		return true;
+	};
+
+	// Two-dimensional variable (lon x lat only): one Read matches terra layout.
+	if (ndim == 2) {
+		size_t n = nrows * ncols;
+		data.resize(insize + n);
+		if (!read_cols(&data[insize], col, ncols)) {
+			return false;
+		}
+		post_spatial(insize, nrows, ncols);
 	} else {
-		// ndim >= 3: always read one terra-layer at a time. A single Read over all
-		// extra dimensions fills the buffer in GDAL's native dimension order; terra
-		// stores values layer-major (ncell contiguous per layer), same as
-		// readChunkGDAL / RasterIO.
+		// ndim >= 3: always read one terra-layer at a time.
 		std::vector<size_t> extra_sizes;
 		for (size_t j = 2; j < ndim; j++) {
 			size_t gd = source[src].m_dims[j];
@@ -1473,22 +1535,17 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 				offset[source[src].m_dims[2 + j]] = idx[j];
 			}
 			double *dest = &data[insize + i * block];
-			source[src].m_array->Read(&offset[0], &count[0], stride_arg, NULL, dt, dest, NULL, 0);
-			if (md_lat_fast) {
-				md_reorder_spatial_gdal_to_terra(data, insize + i * block, nrows, ncols);
+			if (!read_cols(dest, col, ncols)) {
+				return false;
 			}
-			if (need_flip) {
-				md_flip_rows(data, insize + i * block, nrows, ncols);
-			}
+			post_spatial(insize + i * block, nrows, ncols);
 		}
 	}
 
 	if (source[src].m_hasNA) {
-//		Rcpp::Rcout << source[src].m_missing_value << std::endl;
 		std::replace (data.begin()+insize, data.end(), source[src].m_missing_value, (double)NAN);
 	}
 
-//	data.insert(data.end(), out.begin(), out.end());
 	return true;
 }
 
@@ -1547,7 +1604,9 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 			continue;
 		}
 		frow[p] = source[src].flipped ? (size_t) rows[p] : (size_t) (nr1 - rows[p]);
-		fcol[p] = (size_t) cols[p];
+		size_t wrap = source[src].m_x_wrap;
+		size_t c = (size_t) cols[p];
+		fcol[p] = (wrap == 0) ? c : (c + wrap) % (size_t) (nc1 + 1);
 		pts.push_back(p);
 	}
 
