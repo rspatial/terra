@@ -44,6 +44,7 @@
 <li>UBSAN error in flowDir (reported by CRAN)</li>
 <li>
 <code>pitfiller</code> did not properly handle missing values <a href="https://github.com/rspatial/terra/issues/2168" class="external-link">#2168</a> by Michael Chirico</li>
+<li>GRIB files with 0 to 360 longitude are by default remapped to -180 to 180 by the classic GDAL GRIB driver. The multdimensional driver does not do that. This created a mismatched longitude extent (taken from the classic driver) when opening such a file with the multidim interface <a href="https://github.com/rspatial/terra/issues/2178" class="external-link">#2178</a> by Yadong Liu</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-9-47">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-47"></a></h3>

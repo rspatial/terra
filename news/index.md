@@ -17,6 +17,12 @@
 - `pitfiller` did not properly handle missing values
   [\#2168](https://github.com/rspatial/terra/issues/2168) by Michael
   Chirico
+- GRIB files with 0 to 360 longitude are by default remapped to -180 to
+  180 by the classic GDAL GRIB driver. The multdimensional driver does
+  not do that. This created a mismatched longitude extent (taken from
+  the classic driver) when opening such a file with the multidim
+  interface [\#2178](https://github.com/rspatial/terra/issues/2178) by
+  Yadong Liu
 
 ### enhancements
 

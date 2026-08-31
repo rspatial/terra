@@ -334,6 +334,7 @@
   [`nrow(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/dimensions.md)
   [`nlyr(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/dimensions.md)
   [`ncell(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/dimensions.md)
+  [`size(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/dimensions.md)
   [`nsrc(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/dimensions.md)
   [`` `ncol<-`( ``*`<SpatRaster>`*`,`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/dimensions.md)
   [`` `nrow<-`( ``*`<SpatRaster>`*`,`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/dimensions.md)

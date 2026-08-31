@@ -29,6 +29,9 @@ nlyr(x)
 ncell(x)
 
 # S4 method for class 'SpatRaster'
+size(x)
+
+# S4 method for class 'SpatRaster'
 nsrc(x)
 
 # S4 method for class 'SpatRaster,numeric'
