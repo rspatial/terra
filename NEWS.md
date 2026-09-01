@@ -3,6 +3,7 @@
 ## bug fixes
 
 - `union` could in some cases return an intersection instead [#2175](https://github.com/rspatial/terra/issues/2175) by Alex Chubaty
+- `erase` could return more attribute rows than geometries when a polygon difference became a non-polygon (e.g. a line from a zero-area ring) [#2179](https://github.com/rspatial/terra/issues/2179) by Alex Chubaty
 - terra did not compile with GDAL < 3.4 [#2174](https://github.com/rspatial/terra/issues/2174) by Wes Cummings
 - terra did not compile with GEOS < 3.10.0 [#2172](https://github.com/rspatial/terra/issues/2172) by Shane Sturrock
 - UBSAN error in flowDir (reported by CRAN)

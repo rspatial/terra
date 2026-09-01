@@ -2778,11 +2778,12 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 		}
 	}
 	if (!result.empty()) {
-		std::vector<long> ids;
+		// Pass source-row ids (#2179).
+		std::vector<long> ids(rids.begin(), rids.end());
 		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids, true, false);
 		out = coll.get(0);
 		out.srs = srs;
-		out.df = df.subset_rows(rids);
+		out.df = df.subset_rows(out.df.iv[0]);
 	} else {
 		std::vector<long> none(1, -1);
 		out = subset_rows(none);
@@ -2843,13 +2844,15 @@ SpatVector SpatVector::erase(SpatVector v) {
 		std::vector<long> none(1, -1);
 		out = subset_rows(none);
 	} else {
-		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
+		std::vector<GeomPtr> kept;
+		kept.reserve(rids.size());
+		for (size_t k = 0; k < rids.size(); k++) {
+			kept.push_back(std::move(x[rids[k]]));
+		}
+		SpatVectorCollection coll = coll_from_geos(kept, hGEOSCtxt, rids, true, false);
 		out = coll.get(0);
 		out.srs = srs;
-		out.df = df;
-		if (rids.size() != out.nrow()) {
-			out = out.subset_rows(rids);
-		}
+		out.df = df.subset_rows(out.df.iv[0]);
 	}
 	if (!srs.is_same(v.srs, true)) {
 		out.addWarning("different crs");
