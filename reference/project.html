@@ -43,7 +43,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align_only<span class="op">=</span><span class="cn">FALSE</span>, res<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  origin<span class="op">=</span><span class="cn">NULL</span>, threads<span class="op">=</span><span class="cn">FALSE</span>, use_gdal<span class="op">=</span><span class="cn">TRUE</span>, by_util<span class="op">=</span><span class="cn">FALSE</span>, pipeline<span class="op">=</span><span class="st">""</span>, </span>
-<span>  AOI<span class="op">=</span><span class="cn">NULL</span>, desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, allow_approx<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  AOI<span class="op">=</span><span class="cn">NULL</span>, desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, allow_approx<span class="op">=</span><span class="cn">TRUE</span>, warpOpts<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
 <span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, partial<span class="op">=</span><span class="cn">FALSE</span>, pipeline<span class="op">=</span><span class="st">""</span>, AOI<span class="op">=</span><span class="cn">NULL</span>,</span>
@@ -128,6 +128,10 @@
 
   <dt id="arg-allow-approx">allow_approx<a class="anchor" aria-label="anchor" href="#arg-allow-approx"></a></dt>
 <dd><p>logical. If <code>FALSE</code>, only use transformations with known accuracy (no "ballpark" transformations). Requires GDAL &gt;= 3.3</p></dd>
+
+
+  <dt id="arg-warpopts">warpOpts<a class="anchor" aria-label="anchor" href="#arg-warpopts"></a></dt>
+<dd><p>character. GDAL warp options (<code>-wo</code>), as <code>"KEY=VALUE"</code> strings. Examples: <code>c("SAMPLE_GRID=YES", "SAMPLE_STEPS=100", "SOURCE_EXTRA=8")</code>. See the GDALWarpOptions documentation at https://gdal.org/en/stable/api/gdalwarp_cpp.html. Ignored when <code>use_gdal=FALSE</code></p></dd>
 
 
   <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
