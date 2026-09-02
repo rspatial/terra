@@ -2,7 +2,10 @@
 
 setMethod("animate", signature(x="SpatRaster"),
 function(x, pause=0.25, main, range=NULL, maxcell=50000, n=1, ...) {
-	
+    old.par <- graphics::par(no.readonly=TRUE)
+    on.exit(graphics::par(old.par))
+    graphics::par(mfrow=c(1, 1))
+
 	if (missing(main)) {
 		main <- names(x)
 	}
@@ -30,6 +33,9 @@ function(x, pause=0.25, main, range=NULL, maxcell=50000, n=1, ...) {
 
 setMethod("animate", signature(x="SpatVector"),
 function(x, pause=0.25, main, n=1, vars=NULL, range=NULL, add=NULL, ...) {
+    old.par <- graphics::par(no.readonly=TRUE)
+    on.exit(graphics::par(old.par))
+    graphics::par(mfrow=c(1, 1))
 
 	n <- max(1, round(n))
 		
@@ -92,6 +98,9 @@ function(x, pause=0.25, main, n=1, vars=NULL, range=NULL, add=NULL, ...) {
 
 setMethod("animate", signature(x="SpatVectorCollection"),
           function(x, pause=0.25, n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...) {
+            old.par <- graphics::par(no.readonly=TRUE)
+            on.exit(graphics::par(old.par))
+            graphics::par(mfrow=c(1, 1))
 
             n <- max(1, round(n))
             if (is.null(ext)) ext <- ext(x)
