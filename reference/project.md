@@ -9,7 +9,8 @@ SpatRaster or a matrix with coordinates.
 # S4 method for class 'SpatRaster'
 project(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
   origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", 
-  AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, warpOpts=NULL, filename="", ...)
+  AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, warpOpts=NULL, 
+  transOpts=NULL, filename="", ...)
 
 # S4 method for class 'SpatVector'
 project(x, y, partial=FALSE, pipeline="", AOI=NULL,
@@ -161,6 +162,15 @@ project(x, from, to)
   GDALWarpOptions documentation at
   https://gdal.org/en/stable/api/gdalwarp_cpp.html. Ignored when
   `use_gdal=FALSE`
+
+- transOpts:
+
+  character. GDAL transformer options (`-to`), as `"KEY=VALUE"` strings.
+  Examples: `c("ONLY_BEST=YES", "ALLOW_BALLPARK=NO")`. See
+  GDALCreateGenImgProjTransformer2 at
+  https://gdal.org/en/stable/api/gdal_alg.html. Some of these are also
+  available as dedicated arguments (`pipeline`, `AOI`,
+  `desired_accuracy`, `allow_approx`). Ignored when `use_gdal=FALSE`
 
 - filename:
 
