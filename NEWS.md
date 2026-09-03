@@ -12,6 +12,7 @@
 
 ## enhancements
 
+- `project` gains arguments `warpOpts` (GDAL `-wo`) and `transOpts` (GDAL `-to`) as `"KEY=VALUE"` strings [#2182](https://github.com/rspatial/terra/issues/2182) by Michael Sumner
 
 ## new 
 
