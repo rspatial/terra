@@ -58,8 +58,11 @@ crop(x, y)
 
 - snap:
 
-  character. One of "near", "in", or "out". Used to align `y` to the
-  geometry of `x`
+  character. One of "near", "in", or "out". Used to align SpatExtent `y`
+  to the geometry (cells) of `x`. You can snap the extent to the nearest
+  cell boundaries; to the nearest cell boundaries that are inside the
+  extent; or to the nearest cell boundaries that are outside the extent.
+  This works independently of arguments `mask` and `touches`)
 
 - mask:
 

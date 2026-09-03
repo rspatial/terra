@@ -75,7 +75,7 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 <dd><p>SpatRaster, SpatVector, SpatExtent, or any other object that has a SpatExtent (<code><a href="ext.html">ext</a></code> returns a <code>SpatExtent</code>)</p></dd>
 
   <dt id="arg-snap">snap<a class="anchor" aria-label="anchor" href="#arg-snap"></a></dt>
-<dd><p>character. One of "near", "in", or "out". Used to align <code>y</code> to the geometry of <code>x</code></p></dd>
+<dd><p>character. One of "near", "in", or "out". Used to align SpatExtent <code>y</code> to the geometry (cells) of <code>x</code>. You can snap the extent to the nearest cell boundaries; to the nearest cell boundaries that are inside the extent; or to the nearest cell boundaries that are outside the extent. This works independently of arguments <code>mask</code> and <code>touches</code>)</p></dd>
 
   <dt id="arg-mask">mask<a class="anchor" aria-label="anchor" href="#arg-mask"></a></dt>
 <dd><p>logical. Should <code>y</code> be used to mask? Only used if <code>y</code> is a SpatVector, SpatRaster or sf</p></dd>
