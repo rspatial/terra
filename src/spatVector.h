@@ -22,6 +22,7 @@
 
 #ifdef useGDAL
 #include "gdal_priv.h"
+#include "gdal_compat.h"
 #endif
 
 enum SpatGeomType { points, lines, polygons, null};

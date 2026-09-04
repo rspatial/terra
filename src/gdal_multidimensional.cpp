@@ -16,10 +16,10 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRasterMultiple.h"
-#include "proj.h"
 #include "ogr_spatialref.h"
 #include "gdal_priv.h"
 #include "gdal.h"
+#include "gdal_compat.h"
 #include "gdalio.h"
 #include "crs.h"
 #include "string_utils.h"

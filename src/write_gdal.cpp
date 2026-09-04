@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "gdal_priv.h"
+#include "gdal_compat.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
