@@ -43,12 +43,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align_only<span class="op">=</span><span class="cn">FALSE</span>, res<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  origin<span class="op">=</span><span class="cn">NULL</span>, threads<span class="op">=</span><span class="cn">FALSE</span>, use_gdal<span class="op">=</span><span class="cn">TRUE</span>, by_util<span class="op">=</span><span class="cn">FALSE</span>, pipeline<span class="op">=</span><span class="st">""</span>, </span>
-<span>  AOI<span class="op">=</span><span class="cn">NULL</span>, desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, allow_approx<span class="op">=</span><span class="cn">TRUE</span>, warpOpts<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>  transOpts<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  warpOpts<span class="op">=</span><span class="cn">NULL</span>, transOpts<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, partial<span class="op">=</span><span class="cn">FALSE</span>, pipeline<span class="op">=</span><span class="st">""</span>, AOI<span class="op">=</span><span class="cn">NULL</span>,</span>
-<span>    desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, allow_approx<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, partial<span class="op">=</span><span class="cn">FALSE</span>, pipeline<span class="op">=</span><span class="st">""</span>, transOpts<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatExtent'</span></span>
 <span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">from</span>, <span class="va">to</span><span class="op">)</span></span>
@@ -119,24 +117,12 @@
 <dd><p>character. A PROJ pipeline string to use for the coordinate transformation instead of letting GDAL select one automatically. You can use <code><a href="proj_pipelines.html">proj_pipelines</a></code> to find available pipelines. When a pipeline is set, <code>y</code> is still used to set the output CRS</p></dd>
 
 
-  <dt id="arg-aoi">AOI<a class="anchor" aria-label="anchor" href="#arg-aoi"></a></dt>
-<dd><p>SpatExtent or object that has a SpatExtent to set the area of interest for the transformation. This is used to select the most appropriate transformation pipeline</p></dd>
-
-
-  <dt id="arg-desired-accuracy">desired_accuracy<a class="anchor" aria-label="anchor" href="#arg-desired-accuracy"></a></dt>
-<dd><p>numeric. Only use transformations with at least this accuracy (in metres). Use <code>-1</code> (the default) for no constraint. Requires GDAL &gt;= 3.3</p></dd>
-
-
-  <dt id="arg-allow-approx">allow_approx<a class="anchor" aria-label="anchor" href="#arg-allow-approx"></a></dt>
-<dd><p>logical. If <code>FALSE</code>, only use transformations with known accuracy (no "ballpark" transformations). Requires GDAL &gt;= 3.3</p></dd>
-
-
   <dt id="arg-warpopts">warpOpts<a class="anchor" aria-label="anchor" href="#arg-warpopts"></a></dt>
-<dd><p>character. GDAL warp options (<code>-wo</code>), as <code>"KEY=VALUE"</code> strings. Examples: <code>c("SAMPLE_GRID=YES", "SAMPLE_STEPS=100", "SOURCE_EXTRA=8")</code>. See the GDALWarpOptions documentation at https://gdal.org/en/stable/api/gdalwarp_cpp.html. Ignored when <code>use_gdal=FALSE</code></p></dd>
+<dd><p>character. GDAL warp options as <code>"KEY=VALUE"</code> strings (SpatRaster only). Examples: <code>c("SAMPLE_GRID=YES", "SAMPLE_STEPS=100", "SOURCE_EXTRA=8")</code>. See the GDALWarpOptions documentation at https://gdal.org/en/stable/api/gdalwarp_cpp.html. Ignored when <code>use_gdal=FALSE</code></p></dd>
 
 
   <dt id="arg-transopts">transOpts<a class="anchor" aria-label="anchor" href="#arg-transopts"></a></dt>
-<dd><p>character. GDAL transformer options (<code>-to</code>), as <code>"KEY=VALUE"</code> strings. Examples: <code>c("ONLY_BEST=YES", "ALLOW_BALLPARK=NO")</code>. See GDALCreateGenImgProjTransformer2 at https://gdal.org/en/stable/api/gdal_alg.html. Some of these are also available as dedicated arguments (<code>pipeline</code>, <code>AOI</code>, <code>desired_accuracy</code>, <code>allow_approx</code>). Ignored when <code>use_gdal=FALSE</code></p></dd>
+<dd><p>character. Transformer options as <code>"KEY=VALUE"</code> strings. For SpatRaster these are GDAL <code>-to</code> options (see GDALCreateGenImgProjTransformer2). For SpatVector they are mapped onto <code>OGRCoordinateTransformationOptions</code>. Examples: <code>c("ALLOW_BALLPARK=NO", "DESIRED_ACCURACY=1", "AREA_OF_INTEREST=-100,30,-90,40")</code>. If <code>x</code> is a SpatRaster, <code>y</code> is a SpatRaster, and <code>AREA_OF_INTEREST</code> is not already in <code>transOpts</code>, the lon/lat extent of <code>y</code> is appended automatically. Ignored for SpatRaster when <code>use_gdal=FALSE</code></p></dd>
 
 
   <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>

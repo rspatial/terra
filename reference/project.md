@@ -9,12 +9,10 @@ SpatRaster or a matrix with coordinates.
 # S4 method for class 'SpatRaster'
 project(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
   origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", 
-  AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, warpOpts=NULL, 
-  transOpts=NULL, filename="", ...)
+  warpOpts=NULL, transOpts=NULL, filename="", ...)
 
 # S4 method for class 'SpatVector'
-project(x, y, partial=FALSE, pipeline="", AOI=NULL,
-    desired_accuracy=-1.0, allow_approx=TRUE)
+project(x, y, partial=FALSE, pipeline="", transOpts=NULL)
 
 # S4 method for class 'SpatExtent'
 project(x, from, to)
@@ -137,27 +135,10 @@ project(x, from, to)
   to find available pipelines. When a pipeline is set, `y` is still used
   to set the output CRS
 
-- AOI:
-
-  SpatExtent or object that has a SpatExtent to set the area of interest
-  for the transformation. This is used to select the most appropriate
-  transformation pipeline
-
-- desired_accuracy:
-
-  numeric. Only use transformations with at least this accuracy (in
-  metres). Use `-1` (the default) for no constraint. Requires GDAL \>=
-  3.3
-
-- allow_approx:
-
-  logical. If `FALSE`, only use transformations with known accuracy (no
-  "ballpark" transformations). Requires GDAL \>= 3.3
-
 - warpOpts:
 
-  character. GDAL warp options (`-wo`), as `"KEY=VALUE"` strings.
-  Examples:
+  character. GDAL warp options as `"KEY=VALUE"` strings (SpatRaster
+  only). Examples:
   `c("SAMPLE_GRID=YES", "SAMPLE_STEPS=100", "SOURCE_EXTRA=8")`. See the
   GDALWarpOptions documentation at
   https://gdal.org/en/stable/api/gdalwarp_cpp.html. Ignored when
@@ -165,12 +146,14 @@ project(x, from, to)
 
 - transOpts:
 
-  character. GDAL transformer options (`-to`), as `"KEY=VALUE"` strings.
-  Examples: `c("ONLY_BEST=YES", "ALLOW_BALLPARK=NO")`. See
-  GDALCreateGenImgProjTransformer2 at
-  https://gdal.org/en/stable/api/gdal_alg.html. Some of these are also
-  available as dedicated arguments (`pipeline`, `AOI`,
-  `desired_accuracy`, `allow_approx`). Ignored when `use_gdal=FALSE`
+  character. Transformer options as `"KEY=VALUE"` strings. For
+  SpatRaster these are GDAL `-to` options (see
+  GDALCreateGenImgProjTransformer2). For SpatVector they are mapped onto
+  `OGRCoordinateTransformationOptions`. Examples:
+  `c("ALLOW_BALLPARK=NO", "DESIRED_ACCURACY=1", "AREA_OF_INTEREST=-100,30,-90,40")`.
+  If `x` is a SpatRaster, `y` is a SpatRaster, and `AREA_OF_INTEREST` is
+  not already in `transOpts`, the lon/lat extent of `y` is appended
+  automatically. Ignored for SpatRaster when `use_gdal=FALSE`
 
 - filename:
 

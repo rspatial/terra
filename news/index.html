@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-47" id="version-19-47">version 1.9-47<a class="anchor" aria-label="anchor" href="#version-19-47"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-48" id="version-19-48">version 1.9-48<a class="anchor" aria-label="anchor" href="#version-19-48"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-47">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-47"></a></h3>
+<h3 id="bug-fixes-1-9-48">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-48"></a></h3>
 <ul><li>
 <code>union</code> could in some cases return an intersection instead <a href="https://github.com/rspatial/terra/issues/2175" class="external-link">#2175</a> by Alex Chubaty</li>
 <li>
@@ -49,12 +49,16 @@
 <li>GRIB files with 0 to 360 longitude are by default remapped to -180 to 180 by the classic GDAL GRIB driver. The multdimensional driver does not do that. This created a mismatched longitude extent (taken from the classic driver) when opening such a file with the multidim interface <a href="https://github.com/rspatial/terra/issues/2178" class="external-link">#2178</a> by Yadong Liu</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-47">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-47"></a></h3>
+<h3 id="enhancements-1-9-48">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-48"></a></h3>
 <ul><li>
-<code>project</code> gains arguments <code>warpOpts</code> (GDAL <code>-wo</code>) and <code>transOpts</code> (GDAL <code>-to</code>) as <code>"KEY=VALUE"</code> strings <a href="https://github.com/rspatial/terra/issues/2182" class="external-link">#2182</a> by Michael Sumner</li>
+<code>project</code> gains arguments <code>warpOpts</code> (GDAL <code>-wo</code>, SpatRaster only) and <code>transOpts</code> (transformer options for SpatRaster and SpatVector) <a href="https://github.com/rspatial/terra/issues/2182" class="external-link">#2182</a> by Michael Sumner.</li>
+<li>
+<code>project</code> arguments <code>AOI</code>, <code>desired_accuracy</code>, and <code>allow_approx</code> were removed in favor of <code>transOpts</code> (“AREA_OF_INTEREST=”, “DESIRED_ACCURACY=”, “ALLOW_BALLPARK=”).</li>
+<li>When projecting a SpatRaster to a SpatRaster template <code>y</code>, its lon/lat extent is passed as <code>AREA_OF_INTEREST</code> unless this was set in <code>transOpts</code>
+</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-9-47">new<a class="anchor" aria-label="anchor" href="#new-1-9-47"></a></h3>
+<h3 id="new-1-9-48">new<a class="anchor" aria-label="anchor" href="#new-1-9-48"></a></h3>
 <p><code>gdal_has_pam</code> to allow skipping tests if GDAL PAM is not enabled <a href="https://github.com/rspatial/terra/issues/2170" class="external-link">#2170</a> by Michael Chirico</p>
 </div>
 </div>
