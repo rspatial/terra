@@ -31,6 +31,9 @@
 #include "gdalio.h"
 #include "recycle.h"
 #include <sstream>
+#include <cctype>
+#include <cstdlib>
+#include <cstdio>
 
 
 namespace {
@@ -245,7 +248,7 @@ SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 2
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, std::vector<std::string> warp_opts, std::vector<std::string> trans_opts, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, double xscale, double yscale, std::vector<std::string> warp_opts, std::vector<std::string> trans_opts, SpatOptions &opt) {
 	(void)warp_opts;
 	(void)trans_opts;
 	SpatRaster out;
@@ -468,7 +471,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
-// Apply "KEY=VALUE" strings to GDALWarpOptions::papszWarpOptions (-wo).
+// Apply "KEY=VALUE" strings to a CSL list (GDAL -wo / -to).
 static void apply_user_keyval_opts(char **&papsz, const std::vector<std::string> &opts) {
 	for (size_t i = 0; i < opts.size(); i++) {
 		if (opts[i].empty()) continue;
@@ -480,7 +483,67 @@ static void apply_user_keyval_opts(char **&papsz, const std::vector<std::string>
 	}
 }
 
-bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<size_t> srcbands, std::vector<size_t> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, unsigned threads, std::string pipeline="", std::vector<double> AOI=std::vector<double>(), double desired_accuracy=-1.0, bool allow_ballpark=true, double xscale=0, double yscale=0, const std::vector<std::string> &warp_opts=std::vector<std::string>(), const std::vector<std::string> &trans_opts=std::vector<std::string>()) {
+// Map selected -to KEY=VALUE options onto OGRCoordinateTransformationOptions
+// for the early CT validity check (pipeline / AOI / accuracy / ballpark).
+#if GDAL_VERSION_NUM >= 3000000
+static bool ct_opts_from_trans(OGRCoordinateTransformationOptions &ct_opts,
+		const std::string &pipeline, const std::vector<std::string> &trans_opts,
+		bool &use_ct_opts, std::string &errmsg) {
+	use_ct_opts = false;
+	if (!pipeline.empty()) {
+		if (!ct_opts.SetCoordinateOperation(pipeline.c_str(), false)) {
+			errmsg = "pipeline not accepted";
+			return false;
+		}
+		use_ct_opts = true;
+	}
+	for (size_t i = 0; i < trans_opts.size(); i++) {
+		if (trans_opts[i].empty()) continue;
+		size_t eq = trans_opts[i].find('=');
+		if (eq == std::string::npos || eq == 0) continue;
+		std::string key = trans_opts[i].substr(0, eq);
+		std::string val = trans_opts[i].substr(eq + 1);
+		std::string keyu = key;
+		for (size_t j = 0; j < keyu.size(); j++) {
+			keyu[j] = (char) toupper((unsigned char) keyu[j]);
+		}
+		if (keyu == "AREA_OF_INTEREST") {
+			double w=0, s=0, e=0, n=0;
+			if (sscanf(val.c_str(), "%lf,%lf,%lf,%lf", &w, &s, &e, &n) != 4) {
+				errmsg = "AREA_OF_INTEREST must be west,south,east,north";
+				return false;
+			}
+			if (!ct_opts.SetAreaOfInterest(w, s, e, n)) {
+				errmsg = "area of interest not accepted";
+				return false;
+			}
+			use_ct_opts = true;
+		} else if (keyu == "COORDINATE_OPERATION" && pipeline.empty()) {
+			if (!ct_opts.SetCoordinateOperation(val.c_str(), false)) {
+				errmsg = "COORDINATE_OPERATION not accepted";
+				return false;
+			}
+			use_ct_opts = true;
+#if GDAL_VERSION_NUM >= 3030000
+		} else if (keyu == "DESIRED_ACCURACY") {
+			ct_opts.SetDesiredAccuracy(std::strtod(val.c_str(), nullptr));
+			use_ct_opts = true;
+		} else if (keyu == "ALLOW_BALLPARK") {
+			std::string valu = val;
+			for (size_t j = 0; j < valu.size(); j++) {
+				valu[j] = (char) toupper((unsigned char) valu[j]);
+			}
+			bool allow = !(valu == "NO" || valu == "FALSE" || valu == "0");
+			ct_opts.SetBallparkAllowed(allow);
+			use_ct_opts = true;
+#endif
+		}
+	}
+	return true;
+}
+#endif
+
+bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<size_t> srcbands, std::vector<size_t> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, unsigned threads, std::string pipeline="", double xscale=0, double yscale=0, const std::vector<std::string> &warp_opts=std::vector<std::string>(), const std::vector<std::string> &trans_opts=std::vector<std::string>()) {
 
 	if (srcbands.size() != dstbands.size()) {
 		msg = "number of source bands must match number of dest bands";
@@ -569,25 +632,11 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 	if (!pipeline.empty()) {
 		papszTO = CSLSetNameValue(papszTO, "COORDINATE_OPERATION", pipeline.c_str());
 	}
-	if (AOI.size() == 4) {
-		std::string aoi_str = std::to_string(AOI[0]) + "," +
-			std::to_string(AOI[1]) + "," +	std::to_string(AOI[2]) + "," + std::to_string(AOI[3]);
-		papszTO = CSLSetNameValue(papszTO, "AREA_OF_INTEREST", aoi_str.c_str());
-	}
-#if GDAL_VERSION_NUM >= 3030000
-	if (desired_accuracy >= 0) {
-		papszTO = CSLSetNameValue(papszTO, "DESIRED_ACCURACY",
-			std::to_string(desired_accuracy).c_str());
-	}
-	if (!allow_ballpark) {
-		papszTO = CSLSetNameValue(papszTO, "ALLOW_BALLPARK", "NO");
-	}
-#endif
 #endif
 	if (dataset_has_geolocation(hSrcDS)) {
 		papszTO = CSLSetNameValue(papszTO, "SRC_METHOD", "GEOLOC_ARRAY");
 	}
-	// User -to options (KEY=VALUE), after terra defaults so they can override (#2182)
+	// User -to options (KEY=VALUE), including AREA_OF_INTEREST / DESIRED_ACCURACY / ALLOW_BALLPARK (#2182)
 	apply_user_keyval_opts(papszTO, trans_opts);
 
 	if (papszTO != nullptr) {
@@ -627,7 +676,7 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
 
 
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, std::vector<std::string> warp_opts, std::vector<std::string> trans_opts, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, double xscale, double yscale, std::vector<std::string> warp_opts, std::vector<std::string> trans_opts, SpatOptions &opt) {
 
 	size_t ns = nsrc();
 	bool fixext = false;
@@ -657,7 +706,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 				r.source[j] = tmp.source[0]; 
 			}
 		}
-		return r.warper(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, warp_opts, trans_opts, opt);
+		return r.warper(x, crs, method, mask, align, resample, pipeline, xscale, yscale, warp_opts, trans_opts, opt);
 	}
 
 
@@ -673,7 +722,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	if (hasScaleOffset() && !any_rotated) {
 		SpatOptions opt2(opt);
 		SpatRaster app = apply_so(opt2);	
-		return app.warper(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, warp_opts, trans_opts, opt);
+		return app.warper(x, crs, method, mask, align, resample, pipeline, xscale, yscale, warp_opts, trans_opts, opt);
 	}
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
@@ -775,30 +824,11 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 #if GDAL_VERSION_NUM >= 3000000
 		OGRCoordinateTransformationOptions ct_opts;
 		bool use_ct_opts = false;
-		if (use_pipe) {
-			if (!ct_opts.SetCoordinateOperation(pipeline.c_str(), false)) {
-				out.setError("pipeline not accepted");
-				return out;
-			}
-			use_ct_opts = true;
+		std::string ct_errmsg;
+		if (!ct_opts_from_trans(ct_opts, pipeline, trans_opts, use_ct_opts, ct_errmsg)) {
+			out.setError(ct_errmsg);
+			return out;
 		}
-		if (AOI.size() == 4) {
-			if (!ct_opts.SetAreaOfInterest(AOI[0], AOI[1], AOI[2], AOI[3])) {
-				out.setError("area of interest not accepted");
-				return out;
-			}
-			use_ct_opts = true;
-		}
-#if GDAL_VERSION_NUM >= 3030000
-		if (desired_accuracy >= 0) {
-			ct_opts.SetDesiredAccuracy(desired_accuracy);
-			use_ct_opts = true;
-		}
-		if (!allow_ballpark) {
-			ct_opts.SetBallparkAllowed(false);
-			use_ct_opts = true;
-		}
-#endif
 		OGRSpatialReference *pTarget = use_pipe ? nullptr : &target_srs;
 		if (use_ct_opts) {
 			poCT = OGRCreateCoordinateTransformation(&source_srs, pTarget, ct_opts);
@@ -806,8 +836,8 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			poCT = OGRCreateCoordinateTransformation(&source_srs, &target_srs);
 		}
 #else
-		if (use_pipe || AOI.size() == 4) {
-			out.setError("pipeline and AOI require GDAL >= 3");
+		if (use_pipe || !trans_opts.empty()) {
+			out.setError("pipeline and transformer options require GDAL >= 3");
 			return out;
 		}
 		poCT = OGRCreateCoordinateTransformation(&source_srs, &target_srs);
@@ -874,7 +904,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			bandstart += dstbands.size();
 
 			GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
-			if (!set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, warp_opts, trans_opts)) {
+			if (!set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads, pipeline, xscale, yscale, warp_opts, trans_opts)) {
 				if (hSrcDS != NULL) GDALClose((GDALDatasetH) hSrcDS);
 				if (hDstDS != NULL) GDALClose((GDALDatasetH) hDstDS);
 				GDALDestroyWarpOptions(psWarpOptions);
@@ -1168,7 +1198,7 @@ SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string meth
 */
 
 
-SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, std::vector<std::string> warp_opts, std::vector<std::string> trans_opts, SpatOptions &opt) {
+SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, double xscale, double yscale, std::vector<std::string> warp_opts, std::vector<std::string> trans_opts, SpatOptions &opt) {
 
 	size_t ns = nsrc();
 	bool fixext = false;
@@ -1190,7 +1220,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 				r.source[j] = tmp.source[0]; 
 			}
 		}
-		return r.warper_by_util(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, warp_opts, trans_opts, opt);
+		return r.warper_by_util(x, crs, method, mask, align, resample, pipeline, xscale, yscale, warp_opts, trans_opts, opt);
 	}
 
 	// GDAL warp reads raw values; apply scale/offset first (like warper()), else
@@ -1205,7 +1235,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	if (hasScaleOffset() && !any_rotated) {
 		SpatOptions opt2(opt);
 		SpatRaster app = apply_so(opt2);
-		return app.warper_by_util(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, warp_opts, trans_opts, opt);
+		return app.warper_by_util(x, crs, method, mask, align, resample, pipeline, xscale, yscale, warp_opts, trans_opts, opt);
 	}
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
@@ -1303,30 +1333,11 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 #if GDAL_VERSION_NUM >= 3000000
 		OGRCoordinateTransformationOptions ct_opts;
 		bool use_ct_opts = false;
-		if (use_pipe) {
-			if (!ct_opts.SetCoordinateOperation(pipeline.c_str(), false)) {
-				out.setError("pipeline not accepted");
-				return out;
-			}
-			use_ct_opts = true;
+		std::string ct_errmsg;
+		if (!ct_opts_from_trans(ct_opts, pipeline, trans_opts, use_ct_opts, ct_errmsg)) {
+			out.setError(ct_errmsg);
+			return out;
 		}
-		if (AOI.size() == 4) {
-			if (!ct_opts.SetAreaOfInterest(AOI[0], AOI[1], AOI[2], AOI[3])) {
-				out.setError("area of interest not accepted");
-				return out;
-			}
-			use_ct_opts = true;
-		}
-#if GDAL_VERSION_NUM >= 3030000
-		if (desired_accuracy >= 0) {
-			ct_opts.SetDesiredAccuracy(desired_accuracy);
-			use_ct_opts = true;
-		}
-		if (!allow_ballpark) {
-			ct_opts.SetBallparkAllowed(false);
-			use_ct_opts = true;
-		}
-#endif
 		OGRSpatialReference *pTarget = use_pipe ? nullptr : &target_srs;
 		if (use_ct_opts) {
 			poCT = OGRCreateCoordinateTransformation(&source_srs, pTarget, ct_opts);
@@ -1334,8 +1345,8 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 			poCT = OGRCreateCoordinateTransformation(&source_srs, &target_srs);
 		}
 #else
-		if (use_pipe || AOI.size() == 4) {
-			out.setError("pipeline and AOI require GDAL >= 3");
+		if (use_pipe || !trans_opts.empty()) {
+			out.setError("pipeline and transformer options require GDAL >= 3");
 			return out;
 		}
 		poCT = OGRCreateCoordinateTransformation(&source_srs, &target_srs);

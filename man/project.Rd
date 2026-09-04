@@ -16,11 +16,9 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 \usage{
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
 	origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", 
-	AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, warpOpts=NULL, 
-	transOpts=NULL, filename="", ...)
+	warpOpts=NULL, transOpts=NULL, filename="", ...)
 
-\S4method{project}{SpatVector}(x, y, partial=FALSE, pipeline="", AOI=NULL,
-    desired_accuracy=-1.0, allow_approx=TRUE)
+\S4method{project}{SpatVector}(x, y, partial=FALSE, pipeline="", transOpts=NULL)
 
 \S4method{project}{SpatExtent}(x, from, to)
 
@@ -76,15 +74,9 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
   \item{pipeline}{character. A PROJ pipeline string to use for the coordinate transformation instead of letting GDAL select one automatically. You can use \code{\link{proj_pipelines}} to find available pipelines. When a pipeline is set, \code{y} is still used to set the output CRS}
 
-  \item{AOI}{SpatExtent or object that has a SpatExtent to set the area of interest for the transformation. This is used to select the most appropriate transformation pipeline}
+  \item{warpOpts}{character. GDAL warp options as \code{"KEY=VALUE"} strings (SpatRaster only). Examples: \code{c("SAMPLE_GRID=YES", "SAMPLE_STEPS=100", "SOURCE_EXTRA=8")}. See the GDALWarpOptions documentation at https://gdal.org/en/stable/api/gdalwarp_cpp.html. Ignored when \code{use_gdal=FALSE}}
 
-  \item{desired_accuracy}{numeric. Only use transformations with at least this accuracy (in metres). Use \code{-1} (the default) for no constraint. Requires GDAL >= 3.3}
-
-  \item{allow_approx}{logical. If \code{FALSE}, only use transformations with known accuracy (no "ballpark" transformations). Requires GDAL >= 3.3}
-
-  \item{warpOpts}{character. GDAL warp options (\code{-wo}), as \code{"KEY=VALUE"} strings. Examples: \code{c("SAMPLE_GRID=YES", "SAMPLE_STEPS=100", "SOURCE_EXTRA=8")}. See the GDALWarpOptions documentation at https://gdal.org/en/stable/api/gdalwarp_cpp.html. Ignored when \code{use_gdal=FALSE}}
-
-  \item{transOpts}{character. GDAL transformer options (\code{-to}), as \code{"KEY=VALUE"} strings. Examples: \code{c("ONLY_BEST=YES", "ALLOW_BALLPARK=NO")}. See GDALCreateGenImgProjTransformer2 at https://gdal.org/en/stable/api/gdal_alg.html. Some of these are also available as dedicated arguments (\code{pipeline}, \code{AOI}, \code{desired_accuracy}, \code{allow_approx}). Ignored when \code{use_gdal=FALSE}}
+  \item{transOpts}{character. Transformer options as \code{"KEY=VALUE"} strings. For SpatRaster these are GDAL \code{-to} options (see GDALCreateGenImgProjTransformer2). For SpatVector they are mapped onto \code{OGRCoordinateTransformationOptions}. Examples: \code{c("ALLOW_BALLPARK=NO", "DESIRED_ACCURACY=1", "AREA_OF_INTEREST=-100,30,-90,40")}. If \code{x} is a SpatRaster, \code{y} is a SpatRaster, and \code{AREA_OF_INTEREST} is not already in \code{transOpts}, the lon/lat extent of \code{y} is appended automatically. Ignored for SpatRaster when \code{use_gdal=FALSE}}
   
   \item{filename}{character. Output filename}
   

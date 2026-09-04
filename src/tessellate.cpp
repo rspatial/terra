@@ -353,8 +353,7 @@ SpatVector SpatVector::hexagons_lonlat(SpatExtent e, double size, bool flat_top)
 	}
 
 	// project to longitude/latitude
-	std::vector<double> empty_aoi;
-	out = hexd.project(lonlat_crs, false, "", empty_aoi, 0.0, true);
+	out = hexd.project(lonlat_crs, false);
 	if (out.hasError()) return out;
 
 	for (size_t i = 0; i < out.geoms.size(); i++) {

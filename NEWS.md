@@ -1,4 +1,4 @@
-# version 1.9-47
+# version 1.9-48
 
 ## bug fixes
 
@@ -12,7 +12,9 @@
 
 ## enhancements
 
-- `project` gains arguments `warpOpts` (GDAL `-wo`) and `transOpts` (GDAL `-to`) as `"KEY=VALUE"` strings [#2182](https://github.com/rspatial/terra/issues/2182) by Michael Sumner
+- `project` gains arguments `warpOpts` (GDAL `-wo`, SpatRaster only) and `transOpts` (transformer options for SpatRaster and SpatVector) [#2182](https://github.com/rspatial/terra/issues/2182) by Michael Sumner. 
+- `project` arguments `AOI`, `desired_accuracy`, and `allow_approx` were removed in favor of `transOpts` ("AREA_OF_INTEREST= ", "DESIRED_ACCURACY= ", "ALLOW_BALLPARK= "). 
+- When projecting a SpatRaster to a SpatRaster template `y`, its lon/lat extent is passed as `AREA_OF_INTEREST` unless this was set in `transOpts`
 
 ## new 
 

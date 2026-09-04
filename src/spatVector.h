@@ -190,8 +190,7 @@ class SpatVector {
 		std::vector<std::vector<double>> coordinates();
 
 		SpatVector project(std::string crs, bool partial, std::string pipeline="",
-			std::vector<double> AOI=std::vector<double>(), double desired_accuracy=-1.0,
-			bool allow_ballpark=true);
+			std::vector<std::string> trans_opts=std::vector<std::string>());
 		std::vector<double> project_xy(std::vector<double> x, std::vector<double> y, std::string fromCRS, std::string toCRS);
 
 		SpatVector subset_cols(long i);

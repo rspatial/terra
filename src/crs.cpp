@@ -18,6 +18,9 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <cctype>
+#include <cstdlib>
+#include <cstdio>
 #include "spatRaster.h"
 #include "string_utils.h"
 
@@ -436,7 +439,7 @@ void transform_coordinates_partial(std::vector<double> &x, std::vector<double> &
 
 
 SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeline,
-		std::vector<double> AOI, double desired_accuracy, bool allow_ballpark) {
+		std::vector<std::string> trans_opts) {
 
 	bool remove_empty = false;
 
@@ -480,23 +483,50 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 		}
 		use_opts = true;
 	}
-	if (AOI.size() == 4) {
-		if (!opts.SetAreaOfInterest(AOI[0], AOI[1], AOI[2], AOI[3])) {
-			s.setError("area of interest not accepted");
-			return s;
+	// KEY=VALUE transformer options (AREA_OF_INTEREST / DESIRED_ACCURACY / ALLOW_BALLPARK / ...)
+	for (size_t i = 0; i < trans_opts.size(); i++) {
+		if (trans_opts[i].empty()) continue;
+		size_t eq = trans_opts[i].find('=');
+		if (eq == std::string::npos || eq == 0) continue;
+		std::string key = trans_opts[i].substr(0, eq);
+		std::string val = trans_opts[i].substr(eq + 1);
+		std::string keyu = key;
+		for (size_t j = 0; j < keyu.size(); j++) {
+			keyu[j] = (char) toupper((unsigned char) keyu[j]);
 		}
-		use_opts = true;
-	}
+		if (keyu == "AREA_OF_INTEREST") {
+			double w=0, s_lat=0, e=0, n=0;
+			if (sscanf(val.c_str(), "%lf,%lf,%lf,%lf", &w, &s_lat, &e, &n) != 4) {
+				s.setError("AREA_OF_INTEREST must be west,south,east,north");
+				return s;
+			}
+			if (!opts.SetAreaOfInterest(w, s_lat, e, n)) {
+				s.setError("area of interest not accepted");
+				return s;
+			}
+			use_opts = true;
+		} else if (keyu == "COORDINATE_OPERATION" && !use_pipeline) {
+			if (!opts.SetCoordinateOperation(val.c_str(), false)) {
+				s.setError("COORDINATE_OPERATION not accepted");
+				return s;
+			}
+			use_pipeline = true;
+			use_opts = true;
 #if GDAL_VERSION_NUM >= 3030000
-	if (desired_accuracy >= 0) {
-		opts.SetDesiredAccuracy(desired_accuracy);
-		use_opts = true;
-	}
-	if (!allow_ballpark) {
-		opts.SetBallparkAllowed(false);
-		use_opts = true;
-	}
+		} else if (keyu == "DESIRED_ACCURACY") {
+			opts.SetDesiredAccuracy(std::strtod(val.c_str(), nullptr));
+			use_opts = true;
+		} else if (keyu == "ALLOW_BALLPARK") {
+			std::string valu = val;
+			for (size_t j = 0; j < valu.size(); j++) {
+				valu[j] = (char) toupper((unsigned char) valu[j]);
+			}
+			bool allow = !(valu == "NO" || valu == "FALSE" || valu == "0");
+			opts.SetBallparkAllowed(allow);
+			use_opts = true;
 #endif
+		}
+	}
 	OGRSpatialReference *pTarget = use_pipeline ? nullptr : &target;
 	if (use_opts) {
 		poCT = OGRCreateCoordinateTransformation(&source, pTarget, opts);
@@ -504,8 +534,8 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 		poCT = OGRCreateCoordinateTransformation(&source, &target);
 	}
 #else
-	if (use_pipeline || AOI.size() == 4) {
-		s.setError("pipeline and AOI require GDAL >= 3");
+	if (use_pipeline || !trans_opts.empty()) {
+		s.setError("pipeline and transOpts require GDAL >= 3");
 		return s;
 	}
 	poCT = OGRCreateCoordinateTransformation(&source, &target);

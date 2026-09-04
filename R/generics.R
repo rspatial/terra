@@ -734,7 +734,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, warpOpts=NULL, transOpts=NULL, filename="", ...)  {
+	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", warpOpts=NULL, transOpts=NULL, filename="", ...)  {
 
 		xscale=0
 		yscale=0
@@ -756,10 +756,10 @@ setMethod("project", signature(x="SpatRaster"),
 
 		opt <- spatOptions(filename, threads=threads, ...)
 
-		norm_opts <- function(x) {
-			if (is.null(x)) return(""[0])
-			x <- as.character(x)
-			x[nzchar(x)]
+		norm_opts <- function(v) {
+			if (is.null(v)) return(""[0])
+			v <- trimws(v)
+			v[nzchar(v)]
 		}
 		warpOpts <- norm_opts(warpOpts)
 		transOpts <- norm_opts(transOpts)
@@ -796,25 +796,26 @@ setMethod("project", signature(x="SpatRaster"),
 			error("project", "argument y cannot be a number. For EPSG codes use format 'epsg:1234'")			
 		}
 
-
-		if (is.null(AOI)) {
-			aoi <- numeric(0)
-		} else {
-			aoi <- try(ext(AOI), silent=TRUE)
-			if (inherits(AOI, "try-error")) {
-				error("project", "AOI must be or have a SpatExtent")
+		# AREA_OF_INTEREST from template y (lon/lat), unless already in transOpts
+		has_aoi <- any(grepl("^AREA_OF_INTEREST", transOpts, ignore.case=TRUE))
+		if (!has_aoi && inherits(y, "SpatRaster") && (crs(y) != "")) {
+			e <- ext(y)
+			if (!isTRUE(is.lonlat(y, perhaps=FALSE, warn=FALSE))) {
+				e <- try(project(e, from=crs(y), to="OGC:CRS84"), silent=TRUE)
 			}
-			aoi <- as.vector(aoi)[c(1,3,2,4)]
+			if (!inherits(e, "try-error")) {
+				v <- as.vector(e) # xmin, xmax, ymin, ymax
+				transOpts <- c(transOpts,
+					paste0("AREA_OF_INTEREST=", paste(c(v[1], v[3], v[2], v[4]), collapse=",")))
+			}
 		}
-
-		bp <- isTRUE(allow_approx)
 
 		if (inherits(y, "SpatRaster")) {
 			if (use_gdal) {
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, warpOpts, transOpts, opt)
+					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, xscale, yscale, warpOpts, transOpts, opt)
 				} else {
-					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, warpOpts, transOpts, opt)
+					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, xscale, yscale, warpOpts, transOpts, opt)
 				}
 			} else {
 				if (align_only) {
@@ -832,13 +833,13 @@ setMethod("project", signature(x="SpatRaster"),
 				tmp <- project(rast(x), y)
 				if (!is.null(res)) res(tmp) <- res
 				if (!is.null(origin)) origin(tmp) <- origin
-				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, pipeline=pipeline, AOI=AOI, desired_accuracy=desired_accuracy, allow_approx=allow_approx, warpOpts=warpOpts, transOpts=transOpts, ...))
+				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, pipeline=pipeline, warpOpts=warpOpts, transOpts=transOpts, ...))
 			}
 			if (use_gdal) {
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, warpOpts, transOpts, opt)
+					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, xscale, yscale, warpOpts, transOpts, opt)
 				} else {
-					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, warpOpts, transOpts, opt)
+					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, xscale, yscale, warpOpts, transOpts, opt)
 				}
 			} else {
 				y <- project(rast(x), y)
@@ -868,7 +869,7 @@ warp_scale <- function(x, y, n=21) {
 
 
 setMethod("project", signature(x="SpatVector"),
-	function(x, y, partial=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1, allow_approx=TRUE)  {
+	function(x, y, partial=FALSE, pipeline="", transOpts=NULL)  {
 
 		if (is.list(pipeline)) {
 			px <- attr(pipeline, "from")			
@@ -905,25 +906,21 @@ setMethod("project", signature(x="SpatVector"),
 			y <- character_crs(y, "project")
 		}
 
-		if (is.null(AOI)) {
-			aoi <- numeric(0)
+		if (is.null(transOpts)) {
+			transOpts <- ""[0]
 		} else {
-			aoi <- try(ext(AOI), silent=TRUE)
-			if (inherits(AOI, "try-error")) {
-				error("project", "AOI must be or have a SpatExtent")
-			}
-			aoi <- as.vector(aoi)[c(1,3,2,4)]
+			transOpts <- as.character(transOpts)
+			transOpts <- transOpts[nzchar(transOpts)]
 		}
-		x@pntr <- x@pntr$project(y, partial, pipeline, aoi, desired_accuracy, isTRUE(allow_approx))
+		x@pntr <- x@pntr$project(y, partial, pipeline, transOpts)
 		messages(x, "project")
 	}
 )
 
 
 setMethod("project", signature(x="SpatVectorCollection"),
-	function(x, y, partial=FALSE, pipeline=NULL, AOI=NULL, desired_accuracy=-1.0, allow_ballpark=TRUE)  {
-		x <- lapply(x, function(v) project(v, y, partial=partial, pipeline=pipeline, AOI=AOI,
-						desired_accuracy=desired_accuracy, allow_ballpark=allow_ballpark))
+	function(x, y, partial=FALSE, pipeline=NULL, transOpts=NULL)  {
+		x <- lapply(x, function(v) project(v, y, partial=partial, pipeline=pipeline, transOpts=transOpts))
 		svc(x)
 	}
 )
@@ -1068,9 +1065,9 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 		opt <- spatOptions(filename, threads=threads, ...)
 
 		if (by_util) {
-			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, "", numeric(0), -1.0, TRUE, 0, 0, ""[0], ""[0], opt)
+			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, "", 0, 0, ""[0], ""[0], opt)
 		} else {
-			x@pntr <- x@pntr$warp(y@pntr, "", method, FALSE, FALSE, TRUE, "", numeric(0), -1.0, TRUE, 0, 0, ""[0], ""[0], opt)
+			x@pntr <- x@pntr$warp(y@pntr, "", method, FALSE, FALSE, TRUE, "", 0, 0, ""[0], ""[0], opt)
 		}
 		messages(x, "resample")
 	}
