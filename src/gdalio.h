@@ -16,6 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
+#include <string>
 #include <cstddef>
 #include "cpl_error.h"
 
@@ -33,6 +34,7 @@ bool getNAvalue(GDALDataType gdt, double & naval);
 GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::string> allowed_drivers, std::vector<std::string> open_options);
 void gdal_capture_messages_begin();
 void gdal_capture_messages_end(bool emit);
+std::vector<std::string> gdal_capture_messages_end_take();
 
 // terra installs a CPL error handler at package load; sf (and others) may
 // replace it afterward. Remember terra's handler and push it for the duration

@@ -1181,13 +1181,21 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	const bool md_probe = (multi >= 1);
 	if (md_probe) gdal_capture_messages_begin();
 #endif
+	// Classic-open GDAL diagnostics kept when the open fails and md may retry.
+	std::vector<std::string> classic_gdal_msgs;
 
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
 #if GDAL_VERSION_NUM >= 3040000
-	// Keep the probe's messages only when the classic open succeeded; otherwise
-	// discard them (the multidim fallback below emits its own diagnostics).
-	if (md_probe) gdal_capture_messages_end(poDataset != NULL);
+	// Successful classic open: replay buffered messages. Failed open: hold them
+	// so they can be attached to the final error if the multidim retry also fails (#2185).
+	if (md_probe) {
+		if (poDataset != NULL) {
+			gdal_capture_messages_end(true);
+		} else {
+			classic_gdal_msgs = gdal_capture_messages_end_take();
+		}
+	}
 #endif
 
     if( poDataset == NULL )  {
@@ -1212,12 +1220,24 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			msg.clearError();
 		}
 #endif
+		std::string gdal_detail;
+		if (!classic_gdal_msgs.empty()) {
+			gdal_detail = "\n       (GDAL) ";
+			for (size_t i = 0; i < classic_gdal_msgs.size(); i++) {
+				if (i > 0) gdal_detail += "; ";
+				gdal_detail += classic_gdal_msgs[i];
+			}
+			//gdal_detail += ")";
+		}
 		if (looks_like_gdal_dsn(fname)) {
-			setError("cannot open this file as a SpatRaster: " + fname);
-		} else if (!file_exists(fname)) {
+			setError("cannot open this file as a SpatRaster: " + fname + gdal_detail);
+		} else if (!file_exists(fname) && classic_gdal_msgs.empty()) {
 			setError("file does not exist: " + fname);
+		} else if (!file_exists(fname)) {
+			// Remote / VSI open often fails without a local path; prefer GDAL's reason (#2185)
+			setError("cannot open this file as a SpatRaster: " + fname + gdal_detail);
 		} else {
-			setError("cannot open this file as a SpatRaster: " + fname);
+			setError("cannot open this file as a SpatRaster: " + fname + gdal_detail);
 		}
 		return false;
 	}

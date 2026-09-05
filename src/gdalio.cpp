@@ -69,13 +69,31 @@ static bool is_multidim_convert_noise_msg(const std::string &msg) {
 	return msg.find("Array data type is not convertible to buffer data type") != std::string::npos;
 }
 
-void gdal_capture_messages_end(bool emit) {
+static std::vector<CapturedGDALMsg> gdal_capture_messages_pop() {
 	CPLPopErrorHandler();
 	std::vector<CapturedGDALMsg> msgs;
 	{
 		std::lock_guard<std::mutex> lock(terra_capture_mtx);
 		msgs.swap(terra_capture_msgs);
 	}
+	return msgs;
+}
+
+std::vector<std::string> gdal_capture_messages_end_take() {
+	std::vector<CapturedGDALMsg> msgs = gdal_capture_messages_pop();
+	std::vector<std::string> out;
+	out.reserve(msgs.size());
+	for (size_t i = 0; i < msgs.size(); i++) {
+		if (is_multidim_convert_noise_msg(msgs[i].msg)) {
+			continue;
+		}
+		out.push_back(msgs[i].msg);
+	}
+	return out;
+}
+
+void gdal_capture_messages_end(bool emit) {
+	std::vector<CapturedGDALMsg> msgs = gdal_capture_messages_pop();
 	if (emit) {
 		for (size_t i = 0; i < msgs.size(); i++) {
 			// Cosmetic HDF-EOS / multidim metadata noise (#2161); do not replay
