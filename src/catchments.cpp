@@ -1,6 +1,5 @@
 #include "spatRaster.h"
 #include <algorithm>
-#include <cstdint>
 #include <limits>
 
 // C/C++ code
@@ -1059,9 +1058,24 @@ void slope_direction(double* e, int nx, int ny, double *sr,double *sm,int *sface
 }
 
 
+// Cap path weight at ncell: flowaccm is only an internal update priority
+// (true catchment size cannot exceed the grid). Avoids UBSAN overflow when
+// drainage paths re-add / amplify counts.
+static void flowaccm_add_cap(int *flowaccm, int dst, int src, int ncell) {
+	const int a = *(flowaccm + dst);
+	const int b = *(flowaccm + src);
+	if (a >= ncell) {
+		*(flowaccm + dst) = ncell;
+	} else if (b > ncell - a) {
+		*(flowaccm + dst) = ncell;
+	} else {
+		*(flowaccm + dst) = a + b;
+	}
+}
+
 // returns false if the maximum number of iterations was exceeded
 bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double *sm, int *sfacet,int nx, int ny, double L,
-		double *atdc, double *atdd, double *atdplus,double *atdplus0, double *pflow,int *has_upstream,int *kupdate,int64_t *flowaccm,
+		double *atdc, double *atdd, double *atdplus,double *atdplus0, double *pflow,int *has_upstream,int *kupdate,int *flowaccm,
 		double *nidps, double lambda,  std::vector<double> ddp1, std::vector<double> ddp2, std::vector<double> sigma,
 		int nncell, int conv_type, int use_lad, int max_iters) {   
 
@@ -1242,24 +1256,25 @@ bool transverse_deviation(double *e, double *tdc, double *tdd,double *sr,double 
         atdplus_temp=atdplus_nextpc;
       }
     }
-    // Stop before re-entering a cell already on this path. Without this guard,
-    // flowaccm can grow without bound (signed integer overflow under UBSAN).
-    if ((nextp != i) && (path_stamp[nextp] == path_gen)) {
+    // Stop before re-entering a cell already on this path.
+    // nextp == i is also a fixed point (self-flow); treat as end of path before
+    // adding (otherwise flowaccm[i] += flowaccm[i] doubles once per sink).
+    if ((nextp == i) || (path_stamp[nextp] == path_gen)) {
       exit_cond = 2;
-    } else if ((*(flowaccm+i)+1)>*(flowaccm+nextp)) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119
+    } else if (*(flowaccm+i) >= *(flowaccm+nextp)) { // same as (flowaccm[i]+1 > flowaccm[nextp])
   ////  if ((abs(atdplus_temp)>=abs(*(atdplus+nextp)))) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119
    ///// if ((abs(atdplus_temp)>=abs(*(atdplus+nextp)))) { // 20260119    if (abs(atdplus_temp)>=abs(*(atdplus+i))){ // 20260119  
         // ADD A CONTROL (kupdate+nextp )
       *(atdplus+nextp)=atdplus_temp; // corrected on 20260429
       *(pflow+nextp)=pflow_estimate;
       *(kupdate+nextp)=cnt;
-      *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
+      flowaccm_add_cap(flowaccm, nextp, i, ncell);
       
     } else if (*(kupdate+nextp)==0) {
       *(atdplus+nextp)=atdplus_temp; // corrected on 20260429
       *(pflow+nextp)=pflow_estimate;
       *(kupdate+nextp)=cnt;
-      *(flowaccm+nextp)=*(flowaccm+nextp)+*(flowaccm+i);
+      flowaccm_add_cap(flowaccm, nextp, i, ncell);
       
     } else {
   //    *(pflow+nextp)=pflow_estimate;
@@ -1314,7 +1329,7 @@ bool d8ltd_computation(double *e,int nx,int ny,double L,double lambda,int use_la
   std::vector<double> atdplus0(nx*ny,0);
   std::vector<double> sr(nx*ny,0);
   std::vector<double> sm(nx*ny,0);
-  std::vector<int64_t> flowaccm(nx*ny,0);
+  std::vector<int> flowaccm(nx*ny,0);
 
   std::vector<int> kupdate(nx*ny,0);
   std::vector<double> npids(nx*ny,0);  // npid number 
