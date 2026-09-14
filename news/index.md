@@ -1,6 +1,18 @@
 # Changelog
 
-## version 1.9-48
+## version 1.9-51
+
+### bug fixes
+
+### enhancements
+
+### new
+
+## version 1.9-50
+
+CRAN release: 2026-09-08
+
+Released 2026-09-08
 
 ### bug fixes
 
@@ -17,7 +29,7 @@
 - terra did not compile with GEOS \< 3.10.0
   [\#2172](https://github.com/rspatial/terra/issues/2172) by Shane
   Sturrock
-- UBSAN error in flowDir (reported by CRAN)
+- UBSAN error in internal use of flowDir (reported by CRAN)
 - `pitfiller` did not properly handle missing values
   [\#2168](https://github.com/rspatial/terra/issues/2168) by Michael
   Chirico
@@ -27,6 +39,9 @@
   the classic driver) when opening such a file with the multidim
   interface [\#2178](https://github.com/rspatial/terra/issues/2178) by
   Yadong Liu
+- `rast` with the default multidim probe discarded GDAL open error
+  messages [\#2185](https://github.com/rspatial/terra/issues/2185) by
+  Krzysztof Dyba
 
 ### enhancements
 
@@ -43,9 +58,9 @@
 
 ### new
 
-`gdal_has_pam` to allow skipping tests if GDAL PAM is not enabled
-[\#2170](https://github.com/rspatial/terra/issues/2170) by Michael
-Chirico
+- `gdal_has_pam` to allow skipping tests if GDAL PAM is not enabled
+  [\#2170](https://github.com/rspatial/terra/issues/2170) by Michael
+  Chirico
 
 ## version 1.9-46
 

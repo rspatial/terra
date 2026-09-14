@@ -73,7 +73,10 @@ projPaths(paths, with_proj = TRUE)
 
 - size:
 
-  numeric. The new cache size in MB
+  numeric. The new cache size in MB. terra sets the GDAL block cache to
+  64 MB when the package is loaded, unless environment variable
+  `GDAL_CACHEMAX` was already set. Use `gdalCache` to change it
+  afterwards
 
 - option:
 

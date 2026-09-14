@@ -9,7 +9,7 @@ values to it in chunks using the list that is returned by `writeStart`.
 When writing is done, close the file with `writeStop`.
 
 `blocks` only returns chunk size information. This can be useful when
-reading, but not writing, raster data.
+reading, but not writing, raster data
 
 ## Usage
 

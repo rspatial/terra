@@ -7,10 +7,10 @@ values, on top an existing plot (map).
 
 ``` r
 # S4 method for class 'SpatRaster'
-text(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, ...)
+text(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 
 # S4 method for class 'SpatVector'
-text(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, ...)
+text(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 ```
 
 ## Arguments
@@ -50,6 +50,12 @@ text(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, ...)
   numeric. The amount of random noise used to adjust label positions,
   possibly avoiding overlaps. See argument 'factor' in
   [`jitter`](https://rdrr.io/r/base/jitter.html)
+
+- xpd:
+
+  logical or `NA`. If `FALSE`, the text is clipped to the plot region,
+  if `TRUE`, the text is clipped to the figure region, and if `NA`, the
+  text is clipped to the device region
 
 - ...:
 

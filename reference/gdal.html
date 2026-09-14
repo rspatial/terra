@@ -19,7 +19,7 @@ projPaths gets or sets the search paths that PROJ uses to find coordinate system
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-48</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-51</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@ projPaths gets or sets the search paths that PROJ uses to find coordinate system
 <dd><p>additional arguments (for backwards compatibility only)</p></dd>
 
   <dt id="arg-size">size<a class="anchor" aria-label="anchor" href="#arg-size"></a></dt>
-<dd><p>numeric. The new cache size in MB</p></dd>
+<dd><p>numeric. The new cache size in MB. terra sets the GDAL block cache to 64 MB when the package is loaded, unless environment variable <code>GDAL_CACHEMAX</code> was already set. Use <code>gdalCache</code> to change it afterwards</p></dd>
 
   <dt id="arg-option">option<a class="anchor" aria-label="anchor" href="#arg-option"></a></dt>
 <dd><p>character. GDAL configuration option name, or a "name=value" string (in which case the value argument is ignored</p></dd>
