@@ -195,7 +195,7 @@ halo <- function(x, y=NULL, labels, col="black", hc="white", hw=0.1, ... ) {
 
 
 setMethod("text", signature(x="SpatRaster"),
-	function(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, ...) {
+	function(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...) {
 		if (missing(labels)) {
 			labels <- 1
 		}
@@ -229,16 +229,16 @@ setMethod("text", signature(x="SpatRaster"),
 #			xy <- getLabelXY(xy, labels, cex)
 #		}
 		if (halo && (isTRUE(hw > 0))) {
-			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
+			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, xpd=xpd, ...)
 		} else {
-			text(xy[,1], xy[,2], labels, ...)
+			text(xy[,1], xy[,2], labels, xpd=xpd, ...)
 		}
 	}
 )
 
 
 setMethod("text", signature(x="SpatVector"),
-	function(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, ...) {
+	function(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...) {
 		if (missing(labels)) {
 			labels <- 1:nrow(x)
 		} else if (length(labels) == 1) {
@@ -260,9 +260,9 @@ setMethod("text", signature(x="SpatVector"),
 		}
 		labels <- as.character(labels)
 		if (halo && (isTRUE(hw > 0))) {
-			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
+			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, xpd=xpd, ...)
 		} else {
-			text(xy[,1], xy[,2], labels, ...)
+			text(xy[,1], xy[,2], labels, xpd=xpd, ...)
 		}
 	}
 )

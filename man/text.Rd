@@ -13,9 +13,9 @@ Plots labels, that is a textual (rather than color) representation of values, on
 }
 
 \usage{
-\S4method{text}{SpatRaster}(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, ...)
+\S4method{text}{SpatRaster}(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 
-\S4method{text}{SpatVector}(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, ...)
+\S4method{text}{SpatVector}(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 }
 
 \arguments{
@@ -27,13 +27,13 @@ Plots labels, that is a textual (rather than color) representation of values, on
   \item{hw}{numeric. The halo width}
   \item{inside}{logical. Should the text always be placed inside one the sub-geometries?}
   \item{jitter}{numeric. The amount of random noise used to adjust label positions, possibly avoiding overlaps. See argument 'factor' in \code{\link{jitter}}}
+  \item{xpd}{logical or \code{NA}. If \code{FALSE}, the text is clipped to the plot region, if \code{TRUE}, the text is clipped to the figure region, and if \code{NA}, the text is clipped to the device region}
   \item{...}{additional arguments to pass to graphics function \code{\link[graphics]{text}} }
 }
 
 \seealso{
 \code{\link[graphics]{text}, \link{plot}, \link{halo}}
 }
-
 
 
 \examples{ 
