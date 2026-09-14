@@ -78,3 +78,49 @@ p_disk <- as.polygons(r_disk[[2]])
 expect_equal(sort(unique(values(p_disk)[, 1])), sort(unique(values(p_mem)[, 1])))
 expect_false(0 %in% values(p_disk)[, 1])
 
+## blocks() align to GDAL tile height on a tiled GeoTIFF
+nr <- 1024L
+bh <- 128L
+rt <- rast(nrows=nr, ncols=32, ext=ext(0, 32, 0, nr), crs="local")
+values(rt) <- 1:ncell(rt)
+ft <- tempfile(fileext=".tif")
+writeRaster(rt, ft, overwrite=TRUE,
+	gdal=c("TILED=YES", "BLOCKXSIZE=32", "BLOCKYSIZE=128"))
+tiled <- rast(ft)
+expect_equal(as.integer(fileBlocksize(tiled)[1, "rows"]), bh)
+
+opt <- terra:::spatOptions(steps=5)
+b <- tiled@pntr$getBlockSizeR(opt)
+rows <- as.integer(unlist(b$row))
+nrows <- as.integer(unlist(b$nrows))
+expect_equal(sum(nrows), nr)
+expect_equal(rows[1], 0L)
+# starts after the first chunk are tile-row boundaries; interior heights
+# are a multiple of the tile height (the last chunk may be a remainder)
+if (length(rows) > 1) {
+	expect_true(all(rows[-1] %% bh == 0L))
+}
+if (length(nrows) > 1) {
+	expect_true(all(nrows[-length(nrows)] %% bh == 0L))
+}
+
+# window that does not start on a file-block row: first chunk reaches the
+# next boundary; later chunks stay on file tile rows
+window(tiled) <- ext(0, 32, 0, nr - 50)
+nrw <- nrow(tiled)
+off <- 50L
+optw <- terra:::spatOptions(steps=4)
+bw <- tiled@pntr$getBlockSizeR(optw)
+wrows <- as.integer(unlist(bw$row))
+wnrows <- as.integer(unlist(bw$nrows))
+expect_equal(sum(wnrows), nrw)
+file_starts <- wrows + off
+if (length(file_starts) > 1) {
+	expect_true(all(file_starts[-1] %% bh == 0L))
+}
+
+# chunked math still matches in-memory values
+expect_equal(as.vector(values(tiled * 2)), as.vector(values(tiled)) * 2)
+
+unlink(ft)
+

@@ -575,6 +575,10 @@ void gdal_init(std::string projpath, std::string datapath) {
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
 	CPLSetConfigOption("GDAL_DATA", datapath.c_str());
 	CPLSetConfigOption("CPL_VSIL_USE_TEMP_FILE_FOR_RANDOM_WRITE", "YES");
+	// Cap the block cache at 64 MB unless the user already set GDAL_CACHEMAX.
+	if (CPLGetConfigOption("GDAL_CACHEMAX", nullptr) == nullptr) {
+		GDALSetCacheMax64(static_cast<GIntBig>(64e6));
+	}
 	//GDAL_NETCDF_IGNORE_XY_AXIS_NAME_CHECKS
 
 	//GDALregistred = true;

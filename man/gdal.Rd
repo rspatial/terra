@@ -49,7 +49,7 @@ projPaths(paths, with_proj = TRUE)
   \item{warn}{If \code{NA} and \code{drivers=FALSE}, the version of the library specified by \code{lib} is returned. Otherwise, the value should be an integer between 1 and 4 representing the level of GDAL warnings and errors that are passed to R. 1 = warnings and errors; 2 = errors only (recoverable errors as a warning); 3 = irrecoverable errors only; 4 = ignore all errors and warnings. The default setting is 2}
   \item{drivers}{logical. If \code{TRUE} a data.frame with the raster and vector data formats that are available.} 
   \item{...}{additional arguments (for backwards compatibility only)}  
-  \item{size}{numeric. The new cache size in MB}  
+  \item{size}{numeric. The new cache size in MB. terra sets the GDAL block cache to 64 MB when the package is loaded, unless environment variable \code{GDAL_CACHEMAX} was already set. Use \code{gdalCache} to change it afterwards}  
   \item{option}{character. GDAL configuration option name, or a "name=value" string (in which case the value argument is ignored}
   \item{value}{character. value for GDAL configuration option. Use "" to reset it to its default value}
   \item{lib}{character. "gdal", "proj", "geos", "TBB", or any other value to get the versions numbers of the first three and a logical value indicating whether TBB paralellization is available}

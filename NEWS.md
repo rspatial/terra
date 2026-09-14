@@ -30,7 +30,7 @@ Released 2026-09-08
 
 ## new 
 
-`gdal_has_pam` to allow skipping tests if GDAL PAM is not enabled  [#2170](https://github.com/rspatial/terra/issues/2170) by Michael Chirico
+- `gdal_has_pam` to allow skipping tests if GDAL PAM is not enabled  [#2170](https://github.com/rspatial/terra/issues/2170) by Michael Chirico
 
 
 # version 1.9-46
