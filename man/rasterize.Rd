@@ -29,10 +29,10 @@ Transfer values associated with the geometries of vector data to a raster
   
   \item{field}{character or numeric. If \code{field} is a character, it should be a variable name in \code{x}. If \code{field} is numeric it typically is a single number or a vector of length \code{nrow(x)}. The values are recycled to \code{nrow(x)}}
 
-  \item{values}{typically a numeric vector of length \code{1} or \code{nrow(x)}. If the length is below \code{nrow(x)}, the values will be recycled to \code{nrow(x)}. Only used when \code{x} is a matrix. Can also be a matrix or data.frame}
+  \item{values}{typically a numeric vector of length \code{1} or \code{nrow(x)}. If the length is below \code{nrow(x)}, the values will be recycled to \code{nrow(x)}. Only used when \code{x} is a matrix. Can also be a matrix or data.frame. \code{value} is accepted as a synonym}
   
   \item{fun}{summarizing function for when there are multiple geometries in one cell. For lines and polygons, you can only use \code{"min"}, \code{"max"}, \code{"mean"}, \code{"count"} and \code{"sum"}.
-  For points you can use any function that returns a single number; for example \code{mean}, \code{length} (to get a count), \code{min} or \code{max}}
+  For points you can use any function that returns a single number; for example \code{mean}, \code{length} (to get a count), \code{min}, \code{max}. The following are also (or only) accepted as character strings: \code{"first"}, \code{"last"}, \code{"pa"}, \code{"sum"}, \code{"mean"}, \code{"count"}, \code{"min"}, \code{"max"}, \code{"prod"}, \code{"modal"}}
   
   \item{...}{additional arguments passed to \code{fun}}
   
@@ -69,7 +69,8 @@ p <- spatSample(r, 1000, xy=TRUE, replace=TRUE)
 
 # rasterize points as a matrix
 x <- rasterize(p, r, fun=sum)
-y <- rasterize(p, r, value=1:nrow(p), fun=max)
+y <- rasterize(p, r, values=1:nrow(p), fun=max)
+ym <- rasterize(p, r, values=sample(10, 1000, replace=TRUE), fun="modal")
 
 # rasterize points as a SpatVector
 pv <- vect(p)

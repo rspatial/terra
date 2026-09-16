@@ -4,7 +4,12 @@
 
 ## enhancements
 
+- GDAL raster block cache is set to 64 MB at load unless `GDAL_CACHEMAX` is already set 
+- raster processing chunks are aligned to the source file's block height when that is reported
+- `rasterize` of points now accepts `fun="modal"`
+
 ## new 
+
 
 
 # version 1.9-50
@@ -17,7 +22,7 @@ Released 2026-09-08
 - `erase` could return more attribute rows than geometries when a polygon difference became a non-polygon (e.g. a line from a zero-area ring) [#2179](https://github.com/rspatial/terra/issues/2179) by Alex Chubaty
 - terra did not compile with GDAL < 3.4 [#2174](https://github.com/rspatial/terra/issues/2174) by Wes Cummings
 - terra did not compile with GEOS < 3.10.0 [#2172](https://github.com/rspatial/terra/issues/2172) by Shane Sturrock
-- UBSAN error in internal use of flowDir (reported by CRAN)
+- integer overflow (UBSAN) error in internal use of flowDir (reported by CRAN)
 - `pitfiller` did not properly handle missing values [#2168](https://github.com/rspatial/terra/issues/2168) by Michael Chirico
 - GRIB files with 0 to 360 longitude are by default remapped to -180 to 180 by the classic GDAL GRIB driver. The multdimensional driver does not do that. This created a mismatched longitude extent (taken from the classic driver) when opening such a file with the multidim interface [#2178](https://github.com/rspatial/terra/issues/2178) by Yadong Liu
 - `rast` with the default multidim probe discarded GDAL open error messages [#2185](https://github.com/rspatial/terra/issues/2185) by Krzysztof Dyba

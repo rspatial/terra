@@ -27,6 +27,7 @@
 #include "recycle.h"
 #include "sort.h"
 #include "gdalio.h"
+#include "vecmath.h"
 
 
 SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double> &y, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt) {
@@ -238,6 +239,27 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 					}
 				}
 				cellcnt++;
+			}
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
+		}
+	} else if (fun == "modal") {
+		for (size_t i=0; i < out.bs.n; i++) {
+			size_t cmin = out.bs.row[i] * nc;
+			size_t cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
+			std::vector<double> v(out.bs.nrows[i] * out.ncol(), background);
+			while ((cellcnt < cells.size()) && (cells[cellcnt] <= cmax)) {
+				size_t cell = cells[cellcnt];
+				std::vector<double> vv;
+				while ((cellcnt < cells.size()) && (cells[cellcnt] == cell)) {
+					if (!(narm && std::isnan(values[cellcnt]))) {
+						vv.push_back(values[cellcnt]);
+					}
+					cellcnt++;
+				}
+				if (!vv.empty()) {
+					size_t k = cell - cmin;
+					v[k] = vmodal(vv, narm);
+				}
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
 		}

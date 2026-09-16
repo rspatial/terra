@@ -672,9 +672,7 @@ T vmodal(std::vector<T>& v, bool narm) {
 
 		return mode->first;
 	}
-	}
-
-
+}
 
 
 

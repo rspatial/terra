@@ -27,9 +27,12 @@ setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 	wopt
 }
 
-rasterize_points <- function(x, y, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
+rasterize_points <- function(x, y, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), value=NULL, ...) {
 
 	if (missing(fun) || (is.null(fun))) fun <- "last"
+	if (!is.null(value)) {
+		values <- value
+	}
 	if (update && (!hasValues(y))) update <- FALSE
 	nrx <- nrow(x)
 
@@ -66,7 +69,7 @@ rasterize_points <- function(x, y, values, fun="last", background=NA, update=FAL
 	if (NCOL(values) == 1 && (!has_levels)) {
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character")) {
-			if (txtfun %in% c("first", "last", "pa", "sum", "mean", "count", "min", "max", "prod")) {	
+			if (txtfun %in% c("first", "last", "pa", "sum", "mean", "count", "min", "max", "prod", "modal")) {	
 				if (is.null(wopt$names)) {
 					wopt$names <- txtfun
 				}
@@ -117,6 +120,19 @@ rasterize_points <- function(x, y, values, fun="last", background=NA, update=FAL
 				length(i)
 			}
 			has_levels <- FALSE
+		} else if (fun == "modal") {
+			fun <- function(i, na.rm=FALSE) {
+				if (na.rm) {
+					i <- i[!is.na(i)]
+				} else if (anyNA(i)) {
+					return(NA)
+				}
+				if (length(i) == 0) {
+					return(NA)
+				}
+				u <- sort(unique(i))
+				u[which.max(tabulate(match(i, u)))]
+			}
 		}
 	} else {
 		has_levels <- FALSE
