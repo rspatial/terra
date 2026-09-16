@@ -36,7 +36,8 @@ rasterize(x, y, values=1, fun, ..., background=NA, update=FALSE,
 
   typically a numeric vector of length `1` or `nrow(x)`. If the length
   is below `nrow(x)`, the values will be recycled to `nrow(x)`. Only
-  used when `x` is a matrix. Can also be a matrix or data.frame
+  used when `x` is a matrix. Can also be a matrix or data.frame. `value`
+  is accepted as a synonym
 
 - fun:
 
@@ -44,7 +45,9 @@ rasterize(x, y, values=1, fun, ..., background=NA, update=FALSE,
   cell. For lines and polygons, you can only use `"min"`, `"max"`,
   `"mean"`, `"count"` and `"sum"`. For points you can use any function
   that returns a single number; for example `mean`, `length` (to get a
-  count), `min` or `max`
+  count), `min`, `max`. The following are also (or only) accepted as
+  character strings: `"first"`, `"last"`, `"pa"`, `"sum"`, `"mean"`,
+  `"count"`, `"min"`, `"max"`, `"prod"`, `"modal"`
 
 - ...:
 
@@ -114,7 +117,8 @@ p <- spatSample(r, 1000, xy=TRUE, replace=TRUE)
 
 # rasterize points as a matrix
 x <- rasterize(p, r, fun=sum)
-y <- rasterize(p, r, value=1:nrow(p), fun=max)
+y <- rasterize(p, r, values=1:nrow(p), fun=max)
+ym <- rasterize(p, r, values=sample(10, 1000, replace=TRUE), fun="modal")
 
 # rasterize points as a SpatVector
 pv <- vect(p)

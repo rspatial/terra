@@ -65,12 +65,12 @@
 
 
   <dt id="arg-values">values<a class="anchor" aria-label="anchor" href="#arg-values"></a></dt>
-<dd><p>typically a numeric vector of length <code>1</code> or <code>nrow(x)</code>. If the length is below <code>nrow(x)</code>, the values will be recycled to <code>nrow(x)</code>. Only used when <code>x</code> is a matrix. Can also be a matrix or data.frame</p></dd>
+<dd><p>typically a numeric vector of length <code>1</code> or <code>nrow(x)</code>. If the length is below <code>nrow(x)</code>, the values will be recycled to <code>nrow(x)</code>. Only used when <code>x</code> is a matrix. Can also be a matrix or data.frame. <code>value</code> is accepted as a synonym</p></dd>
 
 
   <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>summarizing function for when there are multiple geometries in one cell. For lines and polygons, you can only use <code>"min"</code>, <code>"max"</code>, <code>"mean"</code>, <code>"count"</code> and <code>"sum"</code>.
-  For points you can use any function that returns a single number; for example <code>mean</code>, <code>length</code> (to get a count), <code>min</code> or <code>max</code></p></dd>
+  For points you can use any function that returns a single number; for example <code>mean</code>, <code>length</code> (to get a count), <code>min</code>, <code>max</code>. The following are also (or only) accepted as character strings: <code>"first"</code>, <code>"last"</code>, <code>"pa"</code>, <code>"sum"</code>, <code>"mean"</code>, <code>"count"</code>, <code>"min"</code>, <code>"max"</code>, <code>"prod"</code>, <code>"modal"</code></p></dd>
 
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -126,7 +126,8 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rasterize points as a matrix</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rasterize</span><span class="op">(</span><span class="va">p</span>, <span class="va">r</span>, fun<span class="op">=</span><span class="va">sum</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">rasterize</span><span class="op">(</span><span class="va">p</span>, <span class="va">r</span>, value<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">rasterize</span><span class="op">(</span><span class="va">p</span>, <span class="va">r</span>, values<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ym</span> <span class="op">&lt;-</span> <span class="fu">rasterize</span><span class="op">(</span><span class="va">p</span>, <span class="va">r</span>, values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1000</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, fun<span class="op">=</span><span class="st">"modal"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rasterize points as a SpatVector</span></span></span>
 <span class="r-in"><span><span class="va">pv</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>

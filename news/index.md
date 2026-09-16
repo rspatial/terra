@@ -6,6 +6,12 @@
 
 ### enhancements
 
+- GDAL raster block cache is set to 64 MB at load unless `GDAL_CACHEMAX`
+  is already set
+- raster processing chunks are aligned to the source file’s block height
+  when that is reported
+- `rasterize` of points now accepts `fun="modal"`
+
 ### new
 
 ## version 1.9-50
@@ -29,7 +35,8 @@ Released 2026-09-08
 - terra did not compile with GEOS \< 3.10.0
   [\#2172](https://github.com/rspatial/terra/issues/2172) by Shane
   Sturrock
-- UBSAN error in internal use of flowDir (reported by CRAN)
+- integer overflow (UBSAN) error in internal use of flowDir (reported by
+  CRAN)
 - `pitfiller` did not properly handle missing values
   [\#2168](https://github.com/rspatial/terra/issues/2168) by Michael
   Chirico
