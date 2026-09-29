@@ -46,16 +46,17 @@ setMethod("focal", signature(x="SpatRaster"),
 function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list())  {
 
 	dots <- list(...)
+	if (!is.null(dots$NAonly)) {
+		error("focal", "use 'na.policy' instead of 'NAonly'")
+	}
+	if (!is.null(dots$pad)) {
+		error("focal", "use 'expand' instead of 'pad'")
+	}
 	if (is.null(dots$new)) {
 		new <- TRUE
 	} else {
 		new <- isTRUE(dots$new)
 	}
-
-	#if (!is.null(dots$na.only)) {
-	#	warn("focal", "use 'na.policy' instead of 'na.only'")
-	#	na.policy <- "only"
-	#}
 	na.policy <- match.arg(tolower(na.policy), c("all", "only", "omit"))
 	na.only <- na.policy == "only"
 	na.omit <- na.policy == "omit"
