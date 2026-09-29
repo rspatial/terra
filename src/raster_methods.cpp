@@ -3235,7 +3235,27 @@ SpatRaster SpatRaster::disaggregate(std::vector<size_t> fact, SpatOptions &opt) 
 
 
 
+static bool init_write_masked(SpatRaster &src, SpatRaster &out, std::vector<double> &v, size_t i, bool mask, size_t nc) {
+	if (mask) {
+		std::vector<double> m;
+		src.readValues(m, out.bs.row[i], out.bs.nrows[i], 0, nc);
+		recycle(m, v.size());
+		for (size_t j=0; j<v.size(); j++) {
+			if (std::isnan(m[j])) {
+				v[j] = NAN;
+			}
+		}
+	}
+	return out.writeBlock(v, i);
+}
+
+
 SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
+	return init(value, false, plusone, opt);
+}
+
+
+SpatRaster SpatRaster::init(std::string value, bool mask, bool plusone, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 
@@ -3246,10 +3266,17 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		return out;
 	}
 
+	if (mask && !hasValues()) {
+		out.setError("cannot mask: raster has no values");
+		return out;
+	}
+
 	if (value == "xy") {
 		SpatOptions ops(opt);
-		SpatRaster x = init("x", false, ops);
-		SpatRaster y = init("y", false, ops);
+		SpatRaster x = init("x", mask, false, ops);
+		if (x.hasError()) return x;
+		SpatRaster y = init("y", mask, false, ops);
+		if (y.hasError()) return y;
 		x.source.push_back(y.source[0]);
 		if (opt.get_filename() != "") {
 			x = x.writeRaster(opt);
@@ -3259,8 +3286,15 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 
 	out.source[0].setName(0, value);
 
+	if (mask) {
+		if (!readStart()) {
+			out.setError(getError());
+			return out;
+		}
+	}
+
 	if (!out.writeStart(opt, filenames())) {
-		readStop();
+		if (mask) readStop();
 		return out;
 	}
 
@@ -3275,7 +3309,10 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 					v[j*nc+k] = r;
 				}
 			}
-			if (!out.writeBlock(v, i)) return out;
+			if (!init_write_masked(*this, out, v, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 	} else if (value == "col") {
 		std::vector<double> cnn(nc);
@@ -3287,7 +3324,10 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 				v = cnn;
 				recycle(v, out.bs.nrows[i] * nc);
 			}
-			if (!out.writeBlock(v, i)) return out;
+			if (!init_write_masked(*this, out, v, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 	} else if (value == "cell") {
 		for (size_t i = 0; i < out.bs.n; i++) {
@@ -3295,7 +3335,10 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			size_t firstcell = cellFromRowCol(out.bs.row[i], 0);
 			firstcell = plusone ? firstcell + 1 : firstcell;
 			std::iota(v.begin(), v.end(), firstcell);
-			if (!out.writeBlock(v, i)) return out;
+			if (!init_write_masked(*this, out, v, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 	} else if (value == "x") {
 		std::vector<int64_t> col(nc);
@@ -3307,7 +3350,10 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 				v = xcoords;
 				recycle(v, out.bs.nrows[i] * nc);
 			}
-			if (!out.writeBlock(v, i)) return out;
+			if (!init_write_masked(*this, out, v, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 	} else if (value == "y") {
 
@@ -3319,7 +3365,10 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 					v[j*nc+k] = y;
 				}
 			}
-			if (!out.writeBlock(v, i)) return out;
+			if (!init_write_masked(*this, out, v, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 	} else if (value == "chess") {
 		std::vector<double> a(nc);
@@ -3329,29 +3378,38 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			a[i] = even;
 			b[i] = !even;
 		}
-		std::vector<double> v;
+		std::vector<double> vv;
 		for (size_t i = 0; i < out.bs.n; i++) {
 			if ((out.bs.row[i]%2) == 0) {
-				v = a;
-				v.insert(v.end(), b.begin(), b.end());
+				vv = a;
+				vv.insert(vv.end(), b.begin(), b.end());
 			} else {
-				v = b;
-				v.insert(v.end(), b.begin(), b.end());
+				vv = b;
+				vv.insert(vv.end(), b.begin(), b.end());
 			}
-			recycle(v, out.bs.nrows[i] * nc);
-			if (!out.writeBlock(v, i)) return out;
+			recycle(vv, out.bs.nrows[i] * nc);
+			if (!init_write_masked(*this, out, vv, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 		//source[0].range_min.resize(1, 0);
 		//source[0].range_max.resize(1, 1);
 		//source[0].hasRange.resize(1, true);
 	}
 
+	if (mask) readStop();
 	out.writeStop();
 	return(out);
 }
 
 
 SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
+	return init(values, false, opt);
+}
+
+
+SpatRaster SpatRaster::init(std::vector<double> values, bool mask, SpatOptions &opt) {
 
 
 	SpatRaster out = geometry();
@@ -3360,7 +3418,22 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 		return(out);
 	}
 
-	if (!out.writeStart(opt, filenames())) { return out; }
+	if (mask && !hasValues()) {
+		out.setError("cannot mask: raster has no values");
+		return(out);
+	}
+
+	if (mask) {
+		if (!readStart()) {
+			out.setError(getError());
+			return out;
+		}
+	}
+
+	if (!out.writeStart(opt, filenames())) {
+		if (mask) readStop();
+		return out;
+	}
 	size_t nc = ncol();
 	size_t nl = nlyr();
 	if (values.size() == 1) {
@@ -3368,7 +3441,10 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 		std::vector<double> v;
 		for (size_t i = 0; i < out.bs.n; i++) {
 			v.resize(out.bs.nrows[i]*nc*nl, val);
-			if (!out.writeBlock(v, i)) return out;
+			if (!init_write_masked(*this, out, v, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 		//source[0].range_min.resize(1, val);
 		//source[0].range_max.resize(1, val);
@@ -3386,9 +3462,13 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 			recycle(v, out.bs.nrows[i]*nc);
 			recycle(v, out.bs.nrows[i]*nc*nl);
 			over = v.size() % values.size();
-			if (!out.writeBlock(v, i)) return out;
+			if (!init_write_masked(*this, out, v, i, mask, nc)) {
+				if (mask) readStop();
+				return out;
+			}
 		}
 	}
+	if (mask) readStop();
 	out.writeStop();
 	return(out);
 }

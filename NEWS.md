@@ -7,10 +7,11 @@
 - GDAL raster block cache is set to 64 MB at load unless `GDAL_CACHEMAX` is already set 
 - raster processing chunks are aligned to the source file's block height when that is reported
 - `rasterize` of points now accepts `fun="modal"`
-- `modal` works on vectors (numeric, character, factor, logical), using the same C++ implementation as the SpatRaster method
+- `init` gains argument `mask=TRUE` to set output cells to `NA` where `x` is `NA` [#2194](https://github.com/rspatial/terra/issues/2194) by Márcia Barbosa
 
 ## new 
 
+- `modal` for vectors implementation. Moved from the raster package but using the terra C++ implementation
 
 
 # version 1.9-50

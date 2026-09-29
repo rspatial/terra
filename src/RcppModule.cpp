@@ -1050,8 +1050,8 @@ RCPP_MODULE(spat){
 		.method("layerCor", &SpatRaster::layerCor)
 		.method("global_weighted_mean", &SpatRaster::global_weighted_mean)
 
-		.method("initf", ( SpatRaster (SpatRaster::*)(std::string, bool, SpatOptions&) )( &SpatRaster::init ), "init fun")
-		.method("initv", ( SpatRaster (SpatRaster::*)(std::vector<double>, SpatOptions&) )( &SpatRaster::init ), "init value")
+		.method("initf", ( SpatRaster (SpatRaster::*)(std::string, bool, bool, SpatOptions&) )( &SpatRaster::init ), "init fun")
+		.method("initv", ( SpatRaster (SpatRaster::*)(std::vector<double>, bool, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("is_in", &SpatRaster::is_in)
 		.method("is_in_cells", &SpatRaster::is_in_cells)
 

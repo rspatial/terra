@@ -880,7 +880,9 @@ class SpatRaster {
 		SpatRaster costDistanceDijkstra(double target, double m, bool grid, bool nearest, SpatOptions &opt);
 
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
+		SpatRaster init(std::string value, bool mask, bool plusone, SpatOptions &opt);
 		SpatRaster init(std::vector<double> values, SpatOptions &opt);
+		SpatRaster init(std::vector<double> values, bool mask, SpatOptions &opt);
 
 		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
 		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, bool keepvalue, SpatOptions &opt);

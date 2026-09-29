@@ -5,31 +5,32 @@
 
 
 setMethod("init", signature(x="SpatRaster"),
-	function(x, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
-		x <- rast(x)
+	function(x, fun, ..., mask=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 		if (is.character(fun)) {
 			opt <- spatOptions(filename, overwrite=overwrite, wopt=wopt)
-			x <- rast(x, 1)
+			x <- x[[1]]
 			fun <- fun[1]
 			if (fun %in% c("x", "y", "xy", "row", "col", "cell", "chess")) {
-				x@pntr <- x@pntr$initf(fun, TRUE, opt)
+				x@pntr <- x@pntr$initf(fun, isTRUE(mask), TRUE, opt)
 				messages(x, "init")
 			} else if (is.na(fun)) {
-				x@pntr <- x@pntr$initv(as.numeric(NA), opt)
+				x@pntr <- x@pntr$initv(as.numeric(NA), FALSE, opt)
 				messages(x, "init")
 			} else {
-				error("init", "unknown function")
+				error("init", "unknown character function")
 			}
 		} else if (is.numeric(fun) || is.logical(fun)) {
 			if (is.matrix(fun) && (ncol(fun) == ncol(x))) {
 				fun <- as.vector(t(fun))
 			}
 			opt <- spatOptions(filename, overwrite=overwrite, wopt=wopt)
-			x@pntr <- x@pntr$initv(fun, opt)
+			x@pntr <- x@pntr$initv(fun, isTRUE(mask), opt)
 			messages(x, "init")
 		} else {
 			nc <- ncol(x) * nlyr(x)
-			b <- writeStart(x, filename, sources=sources(x), wopt=wopt)
+			fname = filename
+			if (mask) fname = ""
+			b <- writeStart(x, fname, sources=sources(x), wopt=wopt)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n, ...)
@@ -38,7 +39,9 @@ setMethod("init", signature(x="SpatRaster"),
 				}
 				writeValues(x, r, b$row[i], b$nrows[i])
 			}
-			writeStop(x)
+			out <- writeStop(x)
+			if (mask) out <- mask(out, x, filename=filename, wopt=wopt)
+			out
 		}
 	}
 )

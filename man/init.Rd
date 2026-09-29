@@ -10,13 +10,14 @@ Create a SpatRaster with values reflecting a cell property: "x", "y", "xy", "col
 }
 
 \usage{
-\S4method{init}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{init}{SpatRaster}(x, fun, ..., mask=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{fun}{function to be applied. This must be a either single number, multiple numbers, a function, or one of a set of known character values. A function must take the number of cells as a single argument to return a vector of values with a length equal to the number of cells, such as \code{fun=runif}. Allowed character values are "x", "y", "row", "col", "cell", and "chess" to get the x or y coordinate or both, row, col or cell number or a chessboard pattern (alternating 0 and 1 values)}
   \item{...}{additional arguments passed to \code{fun}}
+  \item{mask}{logical. If \code{TRUE}, cells that are \code{NA} in \code{x} (which must have values) are set to \code{NA} in the output}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}    
   \item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -34,6 +35,10 @@ y <- init(r, fun=runif)
 
 # initialize with a single value 
 z <- init(r, fun=8)
+
+# keep NA cells of x
+e <- rast(system.file("ex/elev.tif", package="terra"))
+lat <- init(e, fun="y", mask=TRUE)
 }
 
 \keyword{spatial}

@@ -18,6 +18,15 @@ expect_equal(as.vector(values(sb)), vv)
 ini <- init(r, fun = "cell")
 expect_equal(as.vector(values(ini)), as.numeric(1:ncell(r)))
 
+## init — mask=TRUE uses x
+e <- rast(system.file("ex/elev.tif", package="terra"))
+lat <- init(e, fun="y", mask=TRUE)
+expect_equal(as.vector(is.na(values(lat))), as.vector(is.na(values(e))))
+expect_false(all(is.na(values(lat))))
+z <- init(e, fun=8, mask=TRUE)
+expect_equal(as.vector(is.na(values(z))), as.vector(is.na(values(e))))
+expect_equal(unique(as.vector(values(z)[!is.na(values(z))])), 8)
+
 ## segregate — three binary layers for r < 20
 sg <- segregate(r < 20)
 expect_equal(nlyr(sg), 2L)
