@@ -325,6 +325,20 @@ bool SpatRaster::writeValuesRect(std::vector<double> &vals, size_t startrow, siz
 		setError("incorrect start and/or nrows value");
 		return false;
 	}
+	if ((startcol + ncols) > ncol()) {
+		setError("incorrect start col and/or ncols value");
+		return false;
+	}
+
+	size_t nv = nrows * ncols * nlyr();
+	if (vals.size() != nv) {
+		if (vals.size() > nv) {
+			setError("too many values for writing: " + std::to_string(vals.size()) + " > " + std::to_string(nv));
+		} else {
+			setError("too few values for writing: " + std::to_string(vals.size()) + " < " + std::to_string(nv));
+		}
+		return false;
+	}
 
 	if (source[0].driver == "gdal") {
 		#ifdef useGDAL

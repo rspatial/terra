@@ -943,6 +943,7 @@ RCPP_MODULE(spat){
 		.method("writeStart", &SpatRaster::writeStart)
 		.method("writeStop", &SpatRaster::writeStop)
 		.method("writeValues", &SpatRaster::writeValues)
+		.method("writeValuesRect", &SpatRaster::writeValuesRect)
 		.method("writeRaster", &SpatRaster::writeRaster)
 		.method("canProcessInMemory", &SpatRaster::canProcessInMemory)
 		.method("chunkSize", &SpatRaster::chunkSize)

@@ -9,6 +9,7 @@
 - `rasterize` of points now accepts `fun="modal"`
 - `init` gains argument `mask=TRUE` to set output cells to `NA` where `x` is `NA` [#2194](https://github.com/rspatial/terra/issues/2194) by Márcia Barbosa
 - `focal` now errors if `NAonly` or `pad` (arguments from `raster::focal`) are used [#2189](https://github.com/rspatial/terra/issues/2189) by leunissene-ESNZ
+- `writeValues` gains arguments `col` and `ncols` like `readValues` [#2188](https://github.com/rspatial/terra/issues/2188) by kbvernon
 
 ## new 
 

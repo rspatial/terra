@@ -42,7 +42,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 
 \S4method{writeStop}{SpatRaster}(x)
 
-\S4method{writeValues}{SpatRaster,vector}(x, v, start, nrows)
+\S4method{writeValues}{SpatRaster,vector}(x, v, start, nrows, col=1, ncols=ncol(x))
 
 \S4method{blocks}{SpatRaster}(x, n=4)
 

@@ -124,3 +124,25 @@ expect_equal(as.vector(values(tiled * 2)), as.vector(values(tiled)) * 2)
 
 unlink(ft)
 
+## writeValues col/ncols (rectangle, like readValues)
+x <- rast(nrows=4, ncols=6)
+writeStart(x, "")
+writeValues(x, 1:24, 1, 4)
+x <- writeStop(x)
+expect_equal(as.vector(values(x)), 1:24)
+
+x <- rast(nrows=4, ncols=6)
+writeStart(x, "")
+writeValues(x, 101:106, start=2, nrows=2, col=3, ncols=3)
+x <- writeStop(x)
+expect_equal(as.vector(values(x, row=2, nrows=2, col=3, ncols=3)), 101:106)
+expect_true(all(is.na(values(x)[1, ])))
+
+f <- tempfile(fileext=".tif")
+x <- rast(nrows=4, ncols=6)
+writeStart(x, f, overwrite=TRUE)
+writeValues(x, 201:206, start=2, nrows=2, col=3, ncols=3)
+x <- writeStop(x)
+expect_equal(as.vector(values(x, row=2, nrows=2, col=3, ncols=3)), 201:206)
+unlink(f)
+
