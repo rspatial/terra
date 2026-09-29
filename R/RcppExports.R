@@ -137,6 +137,10 @@ rgb2hex <- function(x) {
     invisible(.Call(`_terra_removeDriver`, d))
 }
 
+.modal_value <- function(values, ties, narm) {
+    .Call(`_terra_modal_value_r`, values, ties, narm)
+}
+
 .pearson <- function(x, y, narm) {
     .Call(`_terra_pearson_cor`, x, y, narm)
 }

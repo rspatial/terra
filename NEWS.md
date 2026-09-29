@@ -7,6 +7,7 @@
 - GDAL raster block cache is set to 64 MB at load unless `GDAL_CACHEMAX` is already set 
 - raster processing chunks are aligned to the source file's block height when that is reported
 - `rasterize` of points now accepts `fun="modal"`
+- `modal` works on vectors (numeric, character, factor, logical), using the same C++ implementation as the SpatRaster method
 
 ## new 
 

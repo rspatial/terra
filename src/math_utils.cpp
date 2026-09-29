@@ -171,13 +171,17 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 
 	if (narm) {
 		na_omit(values);
+	} else {
+		for (size_t i=0; i<values.size(); i++) {
+			if (std::isnan(values[i])) return (NAN);
+		}
 	}
 	size_t n = values.size();
 	if (n == 0) return (NAN);
 	if (n == 1) return (values[0]);
     std::vector<unsigned> counts(n, 0);
 
-	if (ties < 3) {
+	if (ties < 2) {
 		std::sort(values.begin(), values.end());
 	}
 
@@ -225,7 +229,7 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 			} else if (counts[i] == counts[maxCount]) {
 				tieCount++;
 				double randnr = dist(rgen);
-				if (randnr < (1 / tieCount)) {
+				if (randnr < (1.0 / tieCount)) {
 					maxCount = i;
 				}
 			}

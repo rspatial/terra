@@ -701,6 +701,72 @@ setMethod("stdev", signature(x="SpatRaster"),
 )
 
 
+	
+setMethod("modal", signature(x="ANY"),
+function(x, ..., ties="random", na.rm=FALSE, freq=FALSE) {
+
+	ties <- ties[1]
+	ok <- c("lowest", "highest", "first", "random", "NA")
+	ities <- match(ties, ok)
+	if (is.na(ities)) {
+		error("modal", "ties should be 'lowest', 'highest', 'first', 'random', or 'NA'")
+	}
+	ities <- ities - 1L
+
+	dots <- list(...)
+	isfac <- is.factor(x)
+	ischar <- is.character(x)
+	islog <- is.logical(x)
+	isint <- is.integer(x)
+	if (length(dots) > 0) {
+		# combining factors via c() drops levels; use character
+		if (isfac || ischar || any(vapply(dots, function(i) is.factor(i) || is.character(i), TRUE))) {
+			x <- as.character(x)
+			dots <- lapply(dots, as.character)
+			isfac <- FALSE
+			ischar <- TRUE
+			isint <- FALSE
+		}
+		x <- c(x, unlist(dots, use.names=FALSE))
+	}
+
+	if (ischar || isfac) {
+		f <- if (isfac) x else as.factor(x)
+		z <- as.numeric(f)
+		w <- .modal_value(z, ities, na.rm)
+		if (freq) {
+			if (is.na(w)) return(NA_integer_)
+			return(as.integer(sum(z == w, na.rm=TRUE)))
+		}
+		if (is.na(w)) {
+			if (isfac) return(factor(NA, levels=levels(f)))
+			return(NA_character_)
+		}
+		lab <- levels(f)[as.integer(w)]
+		if (isfac) {
+			return(factor(lab, levels=levels(f)))
+		}
+		return(lab)
+	}
+
+	z <- as.numeric(x)
+	w <- .modal_value(z, ities, na.rm)
+	if (freq) {
+		if (is.na(w)) return(NA_integer_)
+		return(as.integer(sum(z == w, na.rm=TRUE)))
+	}
+	if (islog) {
+		return(as.logical(w))
+	}
+	if (isint && !is.na(w)) {
+		return(as.integer(w))
+	}
+	w
+}
+)
+
+
+
 setMethod("modal", signature("SpatRaster"),
 	function(x, ..., ties="first", na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 		opt <- spatOptions(filename, overwrite, wopt=wopt)

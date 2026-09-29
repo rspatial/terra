@@ -41,6 +41,18 @@ expect_equal(as.vector(values(diff(c(r, r * 2)))), v)
 md <- modal(c(r, r, r))
 expect_equal(as.vector(values(md)), v)
 
+## modal — vectors
+expect_equal(modal(c(1, 2, 2, 3), ties="lowest"), 2)
+expect_equal(modal(c(1L, 1L, 2L, 2L), ties="lowest"), 1L)
+expect_equal(modal(c(1, 1, 2, 2), ties="highest"), 2)
+expect_equal(modal(c(2, 2, 1, 1), ties="first"), 2)
+expect_true(is.na(modal(c(1, NA, 1), na.rm=FALSE)))
+expect_equal(modal(c(1, NA, 1), na.rm=TRUE), 1)
+expect_equal(modal(c(1, 1, 2), freq=TRUE), 2L)
+expect_equal(modal(c("a", "b", "b")), "b")
+expect_equal(as.character(modal(factor(c("a", "b", "b"), levels=c("a","b","c")))), "b")
+expect_true(modal(c(TRUE, FALSE, TRUE)))
+
 ## thresh — mean split vs manual classify
 tr <- thresh(r, method = "mean", as.raster = TRUE)
 mu <- unlist(global(r, "mean", na.rm = TRUE))[1]

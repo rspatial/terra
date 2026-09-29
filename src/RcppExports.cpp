@@ -391,6 +391,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// modal_value_r
+double modal_value_r(std::vector<double> values, unsigned ties, bool narm);
+RcppExport SEXP _terra_modal_value_r(SEXP valuesSEXP, SEXP tiesSEXP, SEXP narmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type values(valuesSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type ties(tiesSEXP);
+    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
+    rcpp_result_gen = Rcpp::wrap(modal_value_r(values, ties, narm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pearson_cor
 double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm);
 RcppExport SEXP _terra_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP narmSEXP) {
@@ -492,48 +505,49 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_terra_have_TBB", (DL_FUNC) &_terra_have_TBB, 0},
-    {"_terra_open_file_lim", (DL_FUNC) &_terra_open_file_lim, 0},
-    {"_terra_proj_conf_test", (DL_FUNC) &_terra_proj_conf_test, 0},
-    {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
-    {"_terra_hex2rgb", (DL_FUNC) &_terra_hex2rgb, 1},
-    {"_terra_rgb2hex", (DL_FUNC) &_terra_rgb2hex, 1},
-    {"_terra_sameSRS", (DL_FUNC) &_terra_sameSRS, 2},
-    {"_terra_getCRSname", (DL_FUNC) &_terra_getCRSname, 1},
-    {"_terra_getLinearUnits", (DL_FUNC) &_terra_getLinearUnits, 1},
-    {"_terra_geotransform", (DL_FUNC) &_terra_geotransform, 1},
-    {"_terra_gdal_setconfig", (DL_FUNC) &_terra_gdal_setconfig, 2},
-    {"_terra_gdal_getconfig", (DL_FUNC) &_terra_gdal_getconfig, 1},
-    {"_terra_ginfo", (DL_FUNC) &_terra_ginfo, 3},
-    {"_terra_gmdinfo", (DL_FUNC) &_terra_gmdinfo, 2},
-    {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
-    {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
-    {"_terra_gdal_build_info", (DL_FUNC) &_terra_gdal_build_info, 0},
-    {"_terra_geos_version", (DL_FUNC) &_terra_geos_version, 2},
-    {"_terra_metatdata", (DL_FUNC) &_terra_metatdata, 1},
-    {"_terra_sdsmetatdata", (DL_FUNC) &_terra_sdsmetatdata, 1},
-    {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
-    {"_terra_gdal_drivers", (DL_FUNC) &_terra_gdal_drivers, 0},
-    {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
-    {"_terra_seed_init", (DL_FUNC) &_terra_seed_init, 1},
-    {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 2},
-    {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
-    {"_terra_clearVSIcache", (DL_FUNC) &_terra_clearVSIcache, 1},
-    {"_terra_setGDALCacheSizeMB", (DL_FUNC) &_terra_setGDALCacheSizeMB, 2},
-    {"_terra_getGDALCacheSizeMB", (DL_FUNC) &_terra_getGDALCacheSizeMB, 1},
-    {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
-    {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 2},
-    {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
-    {"_terra_proj_pipelines", (DL_FUNC) &_terra_proj_pipelines, 9},
-    {"_terra_removeDriver", (DL_FUNC) &_terra_removeDriver, 1},
-    {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
-    {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
-    {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
-    {"_terra_arnames", (DL_FUNC) &_terra_arnames, 2},
-    {"_terra_dimfo", (DL_FUNC) &_terra_dimfo, 2},
-    {"_terra_dist2segmentPoint_geo", (DL_FUNC) &_terra_dist2segmentPoint_geo, 8},
-    {"_terra_intermediate", (DL_FUNC) &_terra_intermediate, 6},
-    {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
+    {"_terra_have_TBB", (DL_FUNC) (RCPP_FUNC) &_terra_have_TBB, 0},
+    {"_terra_open_file_lim", (DL_FUNC) (RCPP_FUNC) &_terra_open_file_lim, 0},
+    {"_terra_proj_conf_test", (DL_FUNC) (RCPP_FUNC) &_terra_proj_conf_test, 0},
+    {"_terra_proj_version", (DL_FUNC) (RCPP_FUNC) &_terra_proj_version, 0},
+    {"_terra_hex2rgb", (DL_FUNC) (RCPP_FUNC) &_terra_hex2rgb, 1},
+    {"_terra_rgb2hex", (DL_FUNC) (RCPP_FUNC) &_terra_rgb2hex, 1},
+    {"_terra_sameSRS", (DL_FUNC) (RCPP_FUNC) &_terra_sameSRS, 2},
+    {"_terra_getCRSname", (DL_FUNC) (RCPP_FUNC) &_terra_getCRSname, 1},
+    {"_terra_getLinearUnits", (DL_FUNC) (RCPP_FUNC) &_terra_getLinearUnits, 1},
+    {"_terra_geotransform", (DL_FUNC) (RCPP_FUNC) &_terra_geotransform, 1},
+    {"_terra_gdal_setconfig", (DL_FUNC) (RCPP_FUNC) &_terra_gdal_setconfig, 2},
+    {"_terra_gdal_getconfig", (DL_FUNC) (RCPP_FUNC) &_terra_gdal_getconfig, 1},
+    {"_terra_ginfo", (DL_FUNC) (RCPP_FUNC) &_terra_ginfo, 3},
+    {"_terra_gmdinfo", (DL_FUNC) (RCPP_FUNC) &_terra_gmdinfo, 2},
+    {"_terra_sd_info", (DL_FUNC) (RCPP_FUNC) &_terra_sd_info, 1},
+    {"_terra_gdal_version", (DL_FUNC) (RCPP_FUNC) &_terra_gdal_version, 0},
+    {"_terra_gdal_build_info", (DL_FUNC) (RCPP_FUNC) &_terra_gdal_build_info, 0},
+    {"_terra_geos_version", (DL_FUNC) (RCPP_FUNC) &_terra_geos_version, 2},
+    {"_terra_metatdata", (DL_FUNC) (RCPP_FUNC) &_terra_metatdata, 1},
+    {"_terra_sdsmetatdata", (DL_FUNC) (RCPP_FUNC) &_terra_sdsmetatdata, 1},
+    {"_terra_sdsmetatdataparsed", (DL_FUNC) (RCPP_FUNC) &_terra_sdsmetatdataparsed, 1},
+    {"_terra_gdal_drivers", (DL_FUNC) (RCPP_FUNC) &_terra_gdal_drivers, 0},
+    {"_terra_set_gdal_warnings", (DL_FUNC) (RCPP_FUNC) &_terra_set_gdal_warnings, 1},
+    {"_terra_seed_init", (DL_FUNC) (RCPP_FUNC) &_terra_seed_init, 1},
+    {"_terra_gdal_init", (DL_FUNC) (RCPP_FUNC) &_terra_gdal_init, 2},
+    {"_terra_percRank", (DL_FUNC) (RCPP_FUNC) &_terra_percRank, 5},
+    {"_terra_clearVSIcache", (DL_FUNC) (RCPP_FUNC) &_terra_clearVSIcache, 1},
+    {"_terra_setGDALCacheSizeMB", (DL_FUNC) (RCPP_FUNC) &_terra_setGDALCacheSizeMB, 2},
+    {"_terra_getGDALCacheSizeMB", (DL_FUNC) (RCPP_FUNC) &_terra_getGDALCacheSizeMB, 1},
+    {"_terra_get_proj_search_paths", (DL_FUNC) (RCPP_FUNC) &_terra_get_proj_search_paths, 0},
+    {"_terra_set_proj_search_paths", (DL_FUNC) (RCPP_FUNC) &_terra_set_proj_search_paths, 2},
+    {"_terra_PROJ_network", (DL_FUNC) (RCPP_FUNC) &_terra_PROJ_network, 2},
+    {"_terra_proj_pipelines", (DL_FUNC) (RCPP_FUNC) &_terra_proj_pipelines, 9},
+    {"_terra_removeDriver", (DL_FUNC) (RCPP_FUNC) &_terra_removeDriver, 1},
+    {"_terra_modal_value_r", (DL_FUNC) (RCPP_FUNC) &_terra_modal_value_r, 3},
+    {"_terra_pearson_cor", (DL_FUNC) (RCPP_FUNC) &_terra_pearson_cor, 3},
+    {"_terra_weighted_pearson_cor", (DL_FUNC) (RCPP_FUNC) &_terra_weighted_pearson_cor, 4},
+    {"_terra_uniqueSymmetricRows", (DL_FUNC) (RCPP_FUNC) &_terra_uniqueSymmetricRows, 2},
+    {"_terra_arnames", (DL_FUNC) (RCPP_FUNC) &_terra_arnames, 2},
+    {"_terra_dimfo", (DL_FUNC) (RCPP_FUNC) &_terra_dimfo, 2},
+    {"_terra_dist2segmentPoint_geo", (DL_FUNC) (RCPP_FUNC) &_terra_dist2segmentPoint_geo, 8},
+    {"_terra_intermediate", (DL_FUNC) (RCPP_FUNC) &_terra_intermediate, 6},
+    {"_rcpp_module_boot_spat", (DL_FUNC) (RCPP_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };
 

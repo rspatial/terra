@@ -825,6 +825,15 @@ void removeDriver(std::vector<std::string> d) {
 }
 
 
+// [[Rcpp::export(name = ".modal_value")]]
+double modal_value_r(std::vector<double> values, unsigned ties, bool narm) {
+	uint32_t seed = static_cast<uint32_t>(R::unif_rand() * 4294967295.0);
+	std::default_random_engine rgen(seed);
+	std::uniform_real_distribution<double> dist(0.0, 1.0);
+	return modal_value(values, ties, narm, rgen, dist);
+}
+
+
 // [[Rcpp::export(name = ".pearson")]]
 double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
 
