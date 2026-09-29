@@ -22,6 +22,7 @@
 
 
 
+
 .gdinit <- function() {
 	path = ""
 	proj_path <- system.file("proj", package="terra")
