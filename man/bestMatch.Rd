@@ -5,7 +5,7 @@
 \alias{bestMatch,SpatRaster,data.frame-method}
 \alias{bestMatch,SpatRaster,matrix-method}
 
-\title{bestMatch}
+\title{Similarity between points and raster cells}
 
 \description{
 Determine for each grid cell which reference it is most similar to. A reference consists of a SpatVector with reference locations, or a data.frame or matrix in which each column matches a layer name in the SpatRaster.

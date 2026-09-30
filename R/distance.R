@@ -285,7 +285,6 @@ match_sqr <- function(x, y, ...) {
 }
 
 
-
 setMethod("bestMatch", signature(x="SpatRaster", y="matrix"),
 	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=FALSE, wopt=list()) {
 		
@@ -296,14 +295,12 @@ setMethod("bestMatch", signature(x="SpatRaster", y="matrix"),
 		if (inherits(fun, "character")) {
 			fun <- match.arg(tolower(fun), c("abs", "squared"))
 			if (fun == "abs") {
-				f <- match_abs
-			} else {
-				f <- match_sqr
+				fun <- match_abs
+			} else if (fun == "squared") {
+				fun <- match_sqr
 			}	
-			out <- app(x, f, y=t(y), ...)
-		} else {
-			out <- app(x, fun, y=t(y), ...)
-		}
+		} 
+		out <- app(x, fun, y=t(y), ...)
 
 		if (!is.null(labels)) {
 			levels(out) <- data.frame(ID=1:nrow(y), label=labels)
@@ -336,5 +333,70 @@ setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
 		}
 		y <- as.matrix(y)
 		bestMatch(x, y, labels=labels, fun=fun, filename=filename, ...)
+	}
+)
+
+
+
+
+dist_abs <- function(x, y, ...) {
+	mean(colMeans(abs(y - x), ...))
+}
+
+dist_sqr <- function(x, y, ...) {
+	mean(colMeans((y - x)^2, ...))
+}
+
+
+
+
+setMethod("distValues", signature(x="SpatRaster", y="matrix"),
+	function(x, y, fun="squared", weights=NULL, ..., filename="", overwrite=FALSE, wopt=list()) {
+		
+		if (!(all(colnames(y) %in% names(x)) && (all(names(x) %in% colnames(y))))) {
+			error("distValues", "names of x and y must match")
+		}
+		
+		if (inherits(fun, "character")) {
+			fun <- match.arg(tolower(fun), c("abs", "squared"))
+			if (fun == "abs") {
+				fun <- dist_abs
+			} else if (fun == "squared") {
+				fun <- dist_sqr
+			}	
+		} 
+		
+		if (!is.null(weights)) {
+			stopifnot(is.vector(weights))
+			stopifnot(length(weights) == nlyr(x))
+			weights <- abs(weights)
+			stopifnot(any(abs(weights) > 0))
+			weights <- weights / max(weights)
+			x <- x * weights
+		}
+		
+		out <- app(x, fun, y=t(y), ...)
+		
+		if (filename!="") {
+			out <- writeRaster(out, filename, wopt=wopt)
+		}
+		out
+	}
+)
+
+setMethod("distValues", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, fun="squared", center=FALSE, scale=FALSE, weights=NULL, ..., filename="", overwrite=FALSE, wopt=list()) {
+		if (center || scale) {
+			x <- scale(x, center, scale)
+		}
+		y <- extract(x, y, ID=FALSE)
+		distValues(x, as.matrix(y), fun, weights, ..., filename=filename, overwrite=overwrite, wopt=wopt)
+	}
+)
+
+
+setMethod("distValues", signature(x="SpatRaster", y="data.frame"),
+	function(x, y, fun="squared", weights=NULL, ..., filename="", overwrite=FALSE, wopt=list()) {
+		distValues(x, as.matrix(y), fun, weights, ..., filename=filename, overwrite=overwrite, wopt=wopt)
 	}
 )

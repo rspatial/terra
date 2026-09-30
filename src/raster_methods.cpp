@@ -4878,6 +4878,14 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 
 SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt) {
 	SpatRaster out;
+	if (!(docenter || doscale)) {
+		if (!opt.get_filename().empty()) {
+			out = writeRaster(opt);
+		} else {
+			out = deepCopy();
+		}
+		return(out);
+	}
 	SpatOptions opts(opt);
 	SpatDataFrame df;
 	if (docenter) {

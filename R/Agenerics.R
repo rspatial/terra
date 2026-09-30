@@ -1,25 +1,16 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 #if (!isGeneric("prcomp")) {setGeneric("prcomp", function(x, ...) standardGeneric("princomp"))}
 
-## ADDED BY ecor
-if (!isGeneric("watershed")) {setGeneric("watershed", function(x, ...) standardGeneric("watershed"))}
-if (!isGeneric("pitfinder")) {setGeneric("pitfinder", function(x, ...) standardGeneric("pitfinder"))}
-if (!isGeneric("NIDP")) {setGeneric("NIDP", function(x, ...) standardGeneric("NIDP"))}
-if (!isGeneric("flowAccumulation")) {setGeneric("flowAccumulation", function(x, ...) standardGeneric("flowAccumulation"))}
-if (!isGeneric("flowDir")) {setGeneric("flowDir", function(x, ...) standardGeneric("flowDir"))}
-if (!isGeneric("pitfiller")) {setGeneric("pitfiller", function(x, pit, ...) standardGeneric("pitfiller"))}
 
 if (!isGeneric("tessellate")) {setGeneric("tessellate", function(x, ...) standardGeneric("tessellate"))}
-
 if (!isGeneric("snapTo")) {setGeneric("snapTo", function(x, y, ...) standardGeneric("snapTo"))}
-
 if (!isGeneric("agitate")) {setGeneric("agitate", function(x, ...) standardGeneric("agitate"))}
-
 if (!isGeneric("nany")) {setGeneric("nany", function(x, ...) standardGeneric("nany"))}
 if (!isGeneric("chunk")) {setGeneric("chunk", function(x, ...) standardGeneric("chunk"))}
 if (!isGeneric("thresh")) {setGeneric("thresh", function(x, ...) standardGeneric("thresh"))}
 if (!isGeneric("divide")) {setGeneric("divide", function(x, ...) standardGeneric("divide"))}
 
+if (!isGeneric("distValues")) {setGeneric("distValues", function(x, y, ...) standardGeneric("distValues"))}
 if (!isGeneric("bestMatch")) {setGeneric("bestMatch", function(x, y, ...) standardGeneric("bestMatch"))}
 if (!isGeneric("k_means")) {setGeneric("k_means", function(x, ...) standardGeneric("k_means"))}
 if (!isGeneric("princomp")) {setGeneric("princomp", function(x, ...) standardGeneric("princomp"))}
@@ -432,3 +423,11 @@ if (!isGeneric("zoom")) {setGeneric("zoom", function(x, ...)standardGeneric("zoo
 
 
 
+
+## ADDED BY ecor
+if (!isGeneric("watershed")) {setGeneric("watershed", function(x, ...) standardGeneric("watershed"))}
+if (!isGeneric("pitfinder")) {setGeneric("pitfinder", function(x, ...) standardGeneric("pitfinder"))}
+if (!isGeneric("NIDP")) {setGeneric("NIDP", function(x, ...) standardGeneric("NIDP"))}
+if (!isGeneric("flowAccumulation")) {setGeneric("flowAccumulation", function(x, ...) standardGeneric("flowAccumulation"))}
+if (!isGeneric("flowDir")) {setGeneric("flowDir", function(x, ...) standardGeneric("flowDir"))}
+if (!isGeneric("pitfiller")) {setGeneric("pitfiller", function(x, pit, ...) standardGeneric("pitfiller"))}
