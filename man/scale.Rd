@@ -23,6 +23,8 @@ Center and/or scale raster data. For details see \code{\link[base]{scale}}
  
 \value{
 SpatRaster
+
+The result has attributes \code{"scaled:center"} and/or \code{"scaled:scale"}, as in \code{\link[base]{scale}}, when centering and/or scaling is requested.
 }
 
 
@@ -31,6 +33,8 @@ SpatRaster
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
 s <- scale(r)
+attr(s, "scaled:center")
+attr(s, "scaled:scale")
 
 ## the equivalent, computed in steps
 m <- global(r, "mean")
