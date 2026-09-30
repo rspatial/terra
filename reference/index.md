@@ -170,7 +170,7 @@
 - [`bestMatch(`*`<SpatRaster>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/bestMatch.md)
   [`bestMatch(`*`<SpatRaster>`*`,`*`<data.frame>`*`)`](https://rspatial.github.io/terra/reference/bestMatch.md)
   [`bestMatch(`*`<SpatRaster>`*`,`*`<matrix>`*`)`](https://rspatial.github.io/terra/reference/bestMatch.md)
-  : bestMatch
+  : Similarity between points and raster cells
 
 - [`boundaries(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/boundaries.md)
   : Detect boundaries (edges)
@@ -354,6 +354,11 @@
 - [`disagg(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/disaggregate.md)
   [`disagg(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/disaggregate.md)
   : Disaggregate raster cells or vector geometries
+
+- [`distValues(`*`<SpatRaster>`*`,`*`<matrix>`*`)`](https://rspatial.github.io/terra/reference/distValues.md)
+  [`distValues(`*`<SpatRaster>`*`,`*`<data.frame>`*`)`](https://rspatial.github.io/terra/reference/distValues.md)
+  [`distValues(`*`<SpatRaster>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/distValues.md)
+  : Distance to reference values
 
 - [`distance(`*`<SpatRaster>`*`,`*`<missing>`*`)`](https://rspatial.github.io/terra/reference/distance.md)
   [`distance(`*`<SpatRaster>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/distance.md)
@@ -703,6 +708,7 @@
   : Get or compute the minimum and maximum cell values
 
 - [`modal(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/modal.md)
+  [`modal(`*`<ANY>`*`)`](https://rspatial.github.io/terra/reference/modal.md)
   : modal value
 
 - [`mosaic(`*`<SpatRaster>`*`,`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/mosaic.md)

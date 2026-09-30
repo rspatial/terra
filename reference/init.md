@@ -13,7 +13,7 @@ function will also work for SpatRasters with many cells.
 
 ``` r
 # S4 method for class 'SpatRaster'
-init(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
+init(x, fun, ..., mask=FALSE, filename="", overwrite=FALSE, wopt=list())
 ```
 
 ## Arguments
@@ -35,6 +35,11 @@ init(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 - ...:
 
   additional arguments passed to `fun`
+
+- mask:
+
+  logical. If `TRUE`, cells that are `NA` in `x` (which must have
+  values) are set to `NA` in the output
 
 - filename:
 
@@ -62,4 +67,8 @@ y <- init(r, fun=runif)
 
 # initialize with a single value 
 z <- init(r, fun=8)
+
+# keep NA cells of x
+e <- rast(system.file("ex/elev.tif", package="terra"))
+lat <- init(e, fun="y", mask=TRUE)
 ```

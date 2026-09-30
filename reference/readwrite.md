@@ -30,7 +30,7 @@ writeStart(x, filename="", overwrite=FALSE, n=4, sources="", ...)
 writeStop(x)
 
 # S4 method for class 'SpatRaster,vector'
-writeValues(x, v, start, nrows)
+writeValues(x, v, start, nrows, col=1, ncols=ncol(x))
 
 # S4 method for class 'SpatRaster'
 blocks(x, n=4)

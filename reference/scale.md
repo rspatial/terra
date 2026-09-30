@@ -36,6 +36,10 @@ scale(x, center=TRUE, scale=TRUE)
 
 SpatRaster
 
+The result has attributes `"scaled:center"` and/or `"scaled:scale"`, as
+in [`scale`](https://rdrr.io/r/base/scale.html), when centering and/or
+scaling is requested.
+
 ## See also
 
 [`scale_linear`](https://rspatial.github.io/terra/reference/scale_linear.md)
@@ -45,6 +49,10 @@ SpatRaster
 ``` r
 r <- rast(system.file("ex/logo.tif", package="terra"))   
 s <- scale(r)
+attr(s, "scaled:center")
+#> [1] 182.2855 185.3509 192.8046
+attr(s, "scaled:scale")
+#> [1] 74.59471 73.11226 70.44815
 
 ## the equivalent, computed in steps
 m <- global(r, "mean")

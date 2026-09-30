@@ -1,4 +1,4 @@
-# bestMatch
+# Similarity between points and raster cells
 
 Determine for each grid cell which reference it is most similar to. A
 reference consists of a SpatVector with reference locations, or a
