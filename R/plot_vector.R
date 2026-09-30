@@ -289,6 +289,9 @@ setMethod("dots", signature(x="SpatVector"),
 	out$main_cols <- out$cols[grps]
 	out$leg$border <- rep_len(out$leg$border, length(out$cols))
 	out$main_border <- out$leg$border[grps]
+	if (!is.null(out$colNA)) {
+		out$main_cols[is.na(out$main_cols)] <- out$colNA
+	}
 
 	out
 }
