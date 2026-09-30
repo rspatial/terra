@@ -4916,6 +4916,12 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 			out = arith(scale, "/", false, false, opt);
 		}
 	}
+	if (docenter) {
+		out.misc.insert(out.misc.end(), center.begin(), center.end());
+	}
+	if (doscale) {
+		out.misc.insert(out.misc.end(), scale.begin(), scale.end());
+	}
 	return out;
 }
 

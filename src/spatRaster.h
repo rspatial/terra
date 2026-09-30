@@ -347,6 +347,9 @@ class SpatRaster {
 		std::string getError() { return msg.getError();}
 		std::string getMessage() { return msg.getMessage();}
 
+		std::vector<double> misc;
+		std::vector<double> get_misc() { return misc; };
+
 		std::vector<std::vector<std::string>> user_tags;
 		bool addTag(std::string name, std::string value, std::string domain);
 		bool removeTag(std::string name, std::string domain);

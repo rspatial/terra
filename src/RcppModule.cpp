@@ -757,6 +757,7 @@ RCPP_MODULE(spat){
 		.method("getError", &SpatRaster::getError)
 		.method("getWarnings", &SpatRaster::getWarnings)
 		.method("getMessage", &SpatRaster::getMessage)
+		.method("get_misc", &SpatRaster::get_misc)
 
 		.method("addTag", &SpatRaster::addTag)
 		.method("getTags", &SpatRaster::getTags)

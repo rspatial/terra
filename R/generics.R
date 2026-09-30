@@ -1242,7 +1242,17 @@ setMethod("scale", signature(x="SpatRaster"),
 			doscale = TRUE;
 		}
 		x@pntr <- x@pntr$scale(center, docenter, scale, doscale, opt)
-		messages(x, "scale")
+		x <- messages(x, "scale")
+		v <- x@pntr$get_misc()
+		if (docenter) {
+			n <- if (length(center) == 0) nlyr(x) else length(center)
+			attr(x, "scaled:center") <- v[seq_len(n)]
+			v <- v[-seq_len(n)]
+		}
+		if (doscale) {
+			attr(x, "scaled:scale") <- v
+		}
+		x
 	}
 )
 
