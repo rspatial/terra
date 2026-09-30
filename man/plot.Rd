@@ -59,8 +59,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{mar}{numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. The default for a RGB raster is 0. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use \code{plg} for more refined placement. Not supported for continuous legends (the default for raster data)}
   \item{axes}{logical. Draw axes?}
-  \item{buffer}{logical. If \code{TRUE} (default), the plotting area is made slightly larger than the extent of \code{x}}
-  \item{background}{background color. Default is no color (transparent, or \code{par()$bg})}
+  \item{buffer}{logical. If \code{TRUE} the plotting area is made slightly larger than the extent of \code{x}}
+  \item{background}{background color. Default is no color (or \code{par()$bg})}
   \item{box}{logical. Should a box be drawn around the map?}
   \item{clip}{logical. Should the axes be clipped to the extent of \code{x}?}
   \item{overview}{logical. Should "overviews" be used for fast rendering? This can result in much faster plotting of raster files that have overviews (e.g. "COG" format) and are accessed over a http connection. However, these overviews generally show aggregate values, thus reducing the range of the actual values. If \code{NULL}, the argument is set to \code{TRUE} for rasters that are accessed over http and \code{FALSE} in other cases}
