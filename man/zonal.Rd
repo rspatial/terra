@@ -35,12 +35,12 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
   \item{w}{SpatRaster with weights. Should have a single-layer with non-negative values}
   \item{wide}{logical. Should the values returned in a wide format? For the \code{SpatRaster, SpatRaster} method this only affects the results when \code{nlyr(z) == 2}. For the \code{SpatRaster, SpatVector} method this only affects the results when \code{fun=table}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned with the zonal statistic for each zone}  
-  \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE}}
+  \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE})}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
 
-  \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is used to compute a weighted mean}
-  \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
+  \item{weights}{logical. If \code{TRUE} and \code{z} has polygons, the approximate fraction of each cell that is covered is used to compute a weighted mean}
+  \item{exact}{logical. If \code{TRUE} and \code{z} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
   \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
   \item{small}{logical. If \code{TRUE}, values for all cells in touched polygons are extracted if none of the cells center points is within the polygon; even if \code{touches=FALSE}}
   \item{weighted}{logical. If \code{TRUE}, a weighted.mean is computed and \code{fun} is ignored. Weights are based on the length of the lines or the area of the polygons in \code{x} that intersect with \code{z}. This argument is ignored of \code{x} is a SpatVector or points}  

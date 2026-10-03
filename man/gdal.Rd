@@ -50,9 +50,9 @@ projPaths(paths, with_proj = TRUE)
   \item{drivers}{logical. If \code{TRUE} a data.frame with the raster and vector data formats that are available.} 
   \item{...}{additional arguments (for backwards compatibility only)}  
   \item{size}{numeric. The new cache size in MB. terra sets the GDAL block cache to 64 MB when the package is loaded, unless environment variable \code{GDAL_CACHEMAX} was already set. Use \code{gdalCache} to change it afterwards}  
-  \item{option}{character. GDAL configuration option name, or a "name=value" string (in which case the value argument is ignored}
+  \item{option}{character. GDAL configuration option name, or a "name=value" string (in which case the value argument is ignored)}
   \item{value}{character. value for GDAL configuration option. Use "" to reset it to its default value}
-  \item{lib}{character. "gdal", "proj", "geos", "TBB", or any other value to get the versions numbers of the first three and a logical value indicating whether TBB paralellization is available}
+  \item{lib}{character. "gdal", "proj", "geos", "TBB", or any other value to get the versions numbers of the first three and a logical value indicating whether TBB parallelization is available}
   \item{parse}{logical. Should the version be parsed into three numerical values (major, minor and sub versions)?}
   \item{x}{character. Drivers names such as "GTiff" to be unloaded. Or "" to reload all drivers}
   \item{enable}{logical. If \code{TRUE}, enable PROJ network access for high-accuracy grid-based transformations. If \code{FALSE}, disable network access and use ballpark transformations. If missing, return the current network status}

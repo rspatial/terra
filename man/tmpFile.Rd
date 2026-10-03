@@ -7,7 +7,7 @@
 \description{
 List and optionally remove temporary files created by the terra package. These files are created when an output SpatRaster may be too large to store in memory (RAM). This can happen when no filename is provided to a function and when using functions where you cannot provide a filename.
 
-Temporary files are automatically removed at the end of each R session that ends normally. You can use \code{tmpFiles} to see the files in the current sessions, including those that are orphaned (not connect to a SpatRaster object any more) and from other (perhaps old) sessions, and remove all the temporary files. 
+Temporary files are automatically removed at the end of each R session that ends normally. You can use \code{tmpFiles} to see the files in the current sessions, including those that are orphaned (not connected to a SpatRaster object any more) and from other (perhaps old) sessions, and remove all the temporary files. 
 }
 
 \usage{

@@ -44,7 +44,7 @@ Calculate focal ("moving window") values for each cell.
 }
 
 \details{
-\code{focal} 
+
 The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row of \code{NA}'s to mask out values.
 
 Window values are typically 1 or \code{NA} to indicate whether a value is used or ignored in computations, respectively. \code{NA} values in \code{w} can be useful for creating non-rectangular (e.g. circular) windows. 

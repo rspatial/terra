@@ -35,7 +35,7 @@ If \code{y} is a SpatVector, the geographic distance between all objects is comp
 
 If \code{x} is a \bold{matrix}:
 
-\code{x} should consist of two columns, the first with "x" (or longitude) and the second with "y" coordinates (or latitude). If \code{y} is a also a matrix, the distance between each point in \code{x} and all points in \code{y} is computed, unless \code{pairwise=TRUE}
+\code{x} should consist of two columns, the first with "x" (or longitude) and the second with "y" coordinates (or latitude). If \code{y} is also a matrix, the distance between each point in \code{x} and all points in \code{y} is computed, unless \code{pairwise=TRUE}
 
 If \code{y} is missing, the distance between each point in \code{x} with all other points in \code{x} is computed, unless \code{sequential=TRUE}
 }
