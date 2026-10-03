@@ -216,7 +216,7 @@ Apart from the functions listed below, you can also use indexing with \code{[} w
 	\code{\link{as.data.frame}} \tab get cell values as a data.frame (including class labels)\cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (with cell numbers, coordinates, points, lines, or polygons)\cr
     \code{\link{extractAlong}} \tab Extract cell values along a line such that the values are in the right order\cr
-    \code{\link{spatSample}} \tab Take a sample (regular, random, stratified, weighted) sample from a SpatRaster\cr
+    \code{\link{spatSample}} \tab Take a sample (regular, random, stratified, weighted) from a SpatRaster\cr
     \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr
 
@@ -734,6 +734,7 @@ Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\li
 \section{\bold{Comparison with the raster package}}{
 
 ---------------------------------------------------------------------------------------------------------------------
+
 "terra" was written to replace the "raster" package. "terra" has a very similar, but simpler, interface; it is faster, and it can do much more. This section highlights some of the differences between the two packages. 
 
 }

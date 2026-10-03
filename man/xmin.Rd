@@ -36,7 +36,7 @@
 \title{Get or set single values of an extent}
 
 \description{
-Get or set single values of an extent. Values can be set for a SpatExtent or SpatRaster, but not for a SpatVector)
+Get or set single values of an extent. Values can be set for a SpatExtent or SpatRaster, but not for a SpatVector.
 }
 
 \usage{

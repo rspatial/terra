@@ -7,7 +7,7 @@
 \alias{spatSample,SpatExtent-method}
 \alias{spatSample,SpatVector-method}
 
-\title{Take a regular sample}
+\title{Take a sample from a spatial object}
 
 \description{
 Take a spatial sample from a SpatRaster, SpatVector or SpatExtent. Sampling a SpatVector or SpatExtent always returns a SpatVector of points. 
