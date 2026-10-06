@@ -4,6 +4,10 @@
 
 ### bug fixes
 
+- `plot<SpatVector>` ignored `colNA` when `type="continuous"`
+  [\#2198](https://github.com/rspatial/terra/issues/2198) by Márcia
+  Barbosa
+
 ### enhancements
 
 - GDAL raster block cache is set to 64 MB at load unless `GDAL_CACHEMAX`

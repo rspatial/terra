@@ -56,8 +56,8 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
 
 - y:
 
-  missing or positive integer or name indicating the layer(s) to be
-  plotted
+  missing or positive integer or name indicating the layer(s) or
+  attributes(s) to be plotted
 
 - col:
 
@@ -104,7 +104,7 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
 
 - background:
 
-  background color. Default is no color (white)
+  background color. Default is no color ("white", or `par()$bg`)
 
 - box:
 

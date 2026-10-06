@@ -86,7 +86,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>SpatRaster or SpatVector</p></dd>
 
   <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>missing or positive integer or name indicating the layer(s) to be plotted</p></dd>
+<dd><p>missing or positive integer or name indicating the layer(s) or attributes(s) to be plotted</p></dd>
 
   <dt id="arg-col">col<a class="anchor" aria-label="anchor" href="#arg-col"></a></dt>
 <dd><p>character vector to specify the colors to use. The default is <code>map.pal("viridis", 100)</code>. The default can be changed with the <code>terra.pal</code> option. For example: <code>options(terra.pal=terrain.colors(10))</code>. If <code>x</code> is a <code>SpatRaster</code> it can also be a <code>data.frame</code> with two columns (value, color) for a "classes" type legend or with three columns (from, to, color) for an "interval" type legend. If <code>x</code> is a <code>SpatVector</code> it can also be a <code>data.frame</code> with two columns (value, color) or a named vector (value=color) for a "classes" type legend. If <code>x</code> is a SpatVectorCollection, a list can be provided with colors for each SpatVector</p></dd>
@@ -107,7 +107,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>logical. If <code>TRUE</code> the plotting area is made slightly larger than the extent of <code>x</code></p></dd>
 
   <dt id="arg-background">background<a class="anchor" aria-label="anchor" href="#arg-background"></a></dt>
-<dd><p>background color. Default is no color (white)</p></dd>
+<dd><p>background color. Default is no color ("white", or <code>par()$bg</code>)</p></dd>
 
   <dt id="arg-box">box<a class="anchor" aria-label="anchor" href="#arg-box"></a></dt>
 <dd><p>logical. Should a box be drawn around the map?</p></dd>
