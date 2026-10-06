@@ -26,7 +26,7 @@
 \title{Add points, lines, or polygons to a map}
 
 \description{
-Add a vector geometries to a plot (map) with \code{points}, \code{lines}, or \code{polys}. 
+Add vector geometries to a plot (map) with \code{points}, \code{lines}, or \code{polys}. 
 
 These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
 
@@ -60,7 +60,7 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
   \item{legend}{logical. If \code{TRUE} and \code{y} is a variable name/number, a legend is shown}
   \item{border}{character. color(s) of the polygon borders. Use \code{NULL} or \code{NA} to not draw a border}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
-  \item{pch}{positive integer, point type. See \code{\link{points}}. On some (linux) devices, the default symbol "16" is a not a very smooth circle. You can use "20" instead (it takes a bit longer to draw) or "1" for an open circle}
+  \item{pch}{positive integer, point type. See \code{\link{points}}. On some (linux) devices, the default symbol "16" is not a very smooth circle. You can use "20" instead (it takes a bit longer to draw) or "1" for an open circle}
   \item{alpha}{number between 0 and 1 to set transparency}
   \item{jitter}{numeric. The amount of random noise used to adjust label positions, possibly avoiding overlaps. See argument 'factor' in \code{\link{jitter}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}

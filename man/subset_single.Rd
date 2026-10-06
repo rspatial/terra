@@ -98,7 +98,7 @@ Same as \code{x} if \code{drop=FALSE}. Otherwise a data.frame
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 r[3638]
-rowColFromCell(r, 2638)
+rowColFromCell(r, 3638)
 r[39, 28]
 x <- r[39:40, 28:29, drop=FALSE] 
 as.matrix(x, wide=TRUE)
