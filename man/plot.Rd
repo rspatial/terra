@@ -53,14 +53,14 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
+  \item{y}{missing or positive integer or name indicating the layer(s) or attributes(s) to be plotted}
   \item{col}{character vector to specify the colors to use. The default is \code{map.pal("viridis", 100)}. The default can be changed with the \code{terra.pal} option. For example: \code{options(terra.pal=terrain.colors(10))}. If \code{x} is a \code{SpatRaster} it can also be a \code{data.frame} with two columns (value, color) for a "classes" type legend or with three columns (from, to, color) for an "interval" type legend. If \code{x} is a \code{SpatVector} it can also be a \code{data.frame} with two columns (value, color) or a named vector (value=color) for a "classes" type legend. If \code{x} is a SpatVectorCollection, a list can be provided with colors for each SpatVector}
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval". If not specified, the type is chosen based on the data}
   \item{mar}{numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. The default for a RGB raster is 0. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use \code{plg} for more refined placement. Not supported for continuous legends (the default for raster data)}
   \item{axes}{logical. Draw axes?}
   \item{buffer}{logical. If \code{TRUE} the plotting area is made slightly larger than the extent of \code{x}}
-  \item{background}{background color. Default is no color (white)}
+  \item{background}{background color. Default is no color ("white", or \code{par()$bg})}
   \item{box}{logical. Should a box be drawn around the map?}
   \item{clip}{logical. Should the axes be clipped to the extent of \code{x}?}
   \item{overview}{logical. Should "overviews" be used for fast rendering? This can result in much faster plotting of raster files that have overviews (e.g. "COG" format) and are accessed over a http connection. However, these overviews generally show aggregate values, thus reducing the range of the actual values. If \code{NULL}, the argument is set to \code{TRUE} for rasters that are accessed over http and \code{FALSE} in other cases}
