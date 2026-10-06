@@ -66,7 +66,7 @@ predict(object, model, fun=predict, ..., const=NULL, na.rm=FALSE,
 
 - index:
 
-  integer or character. Can be used to to select a subset of the model
+  integer or character. Can be used to select a subset of the model
   output variables
 
 - cores:

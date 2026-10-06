@@ -33,12 +33,12 @@ global(x, fun="mean", weights=NULL, maxcell=Inf, ...)
 
 - fun:
 
-  function to be applied to summarize the values by zone. Either as one
-  or more of these built-in character values: "max", "min", "mean",
-  "sum", "range", "rms" (root mean square), "sd", "std" (population sd,
-  using `n` rather than `n-1`), "isNA", "notNA", "anyNA", "anynotNA"; or
-  a proper R function (but these may fail for very large SpatRasters
-  unless you specify `maxcell`)
+  function to be applied to summarize the values of each raster layer.
+  Either as one or more of these built-in character values: "max",
+  "min", "mean", "sum", "range", "rms" (root mean square), "sd", "std"
+  (population sd, using `n` rather than `n-1`), "isNA", "notNA",
+  "anyNA", "anynotNA"; or a proper R function (but these may fail for
+  very large SpatRasters unless you specify `maxcell`)
 
 - ...:
 

@@ -84,7 +84,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <dd><p>logical. If <code>TRUE</code>, a SpatRaster is returned with the zonal statistic for each zone</p></dd>
 
   <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
-<dd><p>character. Output filename (ignored if <code>as.raster=FALSE</code></p></dd>
+<dd><p>character. Output filename (ignored if <code>as.raster=FALSE</code>)</p></dd>
 
   <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
@@ -94,10 +94,10 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 
 
   <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
-<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is used to compute a weighted mean</p></dd>
+<dd><p>logical. If <code>TRUE</code> and <code>z</code> has polygons, the approximate fraction of each cell that is covered is used to compute a weighted mean</p></dd>
 
   <dt id="arg-exact">exact<a class="anchor" aria-label="anchor" href="#arg-exact"></a></dt>
-<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
+<dd><p>logical. If <code>TRUE</code> and <code>z</code> has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
 
   <dt id="arg-touches">touches<a class="anchor" aria-label="anchor" href="#arg-touches"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered <code>TRUE</code> when <code>weights=TRUE</code> or <code>exact=TRUE</code></p></dd>

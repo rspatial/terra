@@ -7,7 +7,7 @@ function and when using functions where you cannot provide a filename.
 
 Temporary files are automatically removed at the end of each R session
 that ends normally. You can use `tmpFiles` to see the files in the
-current sessions, including those that are orphaned (not connect to a
+current sessions, including those that are orphaned (not connected to a
 SpatRaster object any more) and from other (perhaps old) sessions, and
 remove all the temporary files.
 
@@ -52,5 +52,5 @@ character
 
 ``` r
 tmpFiles()
-#> [1] "/tmp/RtmproNvxn/spat_229676a9f947_8854_DvggOkjkTOQeAAI.vrt"
+#> [1] "/tmp/RtmpIq34Pt/spat_224f233e8bac_8783_DvggOkjkTOQeAAI.vrt"
 ```

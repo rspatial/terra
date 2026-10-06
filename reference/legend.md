@@ -19,7 +19,7 @@ add_legend(x, y, xpd=TRUE, ...)
 
 - y:
 
-  The y coordinate to be used to position the legend (is x is also a
+  The y coordinate to be used to position the legend (if x is also a
   coordinate)
 
 - xpd:

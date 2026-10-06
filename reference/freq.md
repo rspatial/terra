@@ -46,7 +46,7 @@ freq(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE,
 
 - wide:
 
-  logical. Should the results by "wide" instead of "long"?
+  logical. Should the results be "wide" instead of "long"?
 
 - touches:
 

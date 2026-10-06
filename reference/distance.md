@@ -33,8 +33,8 @@ objects is computed, and a vector is returned.
 If `x` is a **matrix**:
 
 `x` should consist of two columns, the first with "x" (or longitude) and
-the second with "y" coordinates (or latitude). If `y` is a also a
-matrix, the distance between each point in `x` and all points in `y` is
+the second with "y" coordinates (or latitude). If `y` is also a matrix,
+the distance between each point in `x` and all points in `y` is
 computed, unless `pairwise=TRUE`
 
 If `y` is missing, the distance between each point in `x` with all other

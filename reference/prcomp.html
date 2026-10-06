@@ -55,10 +55,10 @@
 <dd><p>a logical value indicating whether the rotated variables should be returned</p></dd>
 
   <dt id="arg-center">center<a class="anchor" aria-label="anchor" href="#arg-center"></a></dt>
-<dd><p>a logical value indicating whether the variables should be shifted to be zero centered. Alternately, a vector of length equal the number of columns of x can be supplied. The value is passed to <code><a href="scale.html">scale</a></code></p></dd>
+<dd><p>a logical value indicating whether the variables should be shifted to be zero centered. Alternately, a vector of length equal the number of layers of x can be supplied. The value is passed to <code><a href="scale.html">scale</a></code></p></dd>
 
   <dt id="arg-scale-">scale.<a class="anchor" aria-label="anchor" href="#arg-scale-"></a></dt>
-<dd><p>a logical value indicating whether the variables should be scaled to have unit variance before the analysis takes place. The default is FALSE for consistency with S, but in general scaling is advisable. Alternatively, a vector of length equal the number of columns of x can be supplied. The value is passed to <code><a href="scale.html">scale</a></code></p></dd>
+<dd><p>a logical value indicating whether the variables should be scaled to have unit variance before the analysis takes place. The default is FALSE for consistency with S, but in general scaling is advisable. Alternatively, a vector of length equal the number of layers of x can be supplied. The value is passed to <code><a href="scale.html">scale</a></code></p></dd>
 
   <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
 <dd><p>a value indicating the magnitude below which components should be omitted. (Components are omitted if their standard deviations are less than or equal to tol times the standard deviation of the first component.) With the default null setting, no components are omitted (unless <code>rank.</code> is specified less than <code>min(dim(x))</code>). Other settings for <code>tol</code> could be <code>tol = 0</code> or <code>tol = sqrt(.Machine$double.eps)</code>, which would omit essentially constant components</p></dd>

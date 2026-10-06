@@ -1,4 +1,4 @@
-# Take a regular sample
+# Take a sample from a spatial object
 
 Take a spatial sample from a SpatRaster, SpatVector or SpatExtent.
 Sampling a SpatVector or SpatExtent always returns a SpatVector of

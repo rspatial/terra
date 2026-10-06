@@ -82,12 +82,11 @@ aggregate(x, by=NULL, dissolve=TRUE, fun="mean", count=TRUE, ...)
 ## Details
 
 Aggregation starts at the upper-left end of a SpatRaster. If a division
-of the number of columns or rows with `factor` does not return an
-integer, the extent of the resulting SpatRaster will be somewhat larger
-than that of the original SpatRaster. For example, if an input
-SpatRaster has 100 columns, and `fact=12`, the output SpatRaster will
-have 9 columns and the maximum x coordinate of the output SpatRaster is
-also adjusted.
+of the number of columns or rows with `fact` does not return an integer,
+the extent of the resulting SpatRaster will be somewhat larger than that
+of the original SpatRaster. For example, if an input SpatRaster has 100
+columns, and `fact=12`, the output SpatRaster will have 9 columns and
+the maximum x coordinate of the output SpatRaster is also adjusted.
 
 The function `fun` should take multiple numbers, and return one or more
 numeric values. If multiple numbers are returned, the length of the

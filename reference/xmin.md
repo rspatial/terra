@@ -1,7 +1,7 @@
 # Get or set single values of an extent
 
 Get or set single values of an extent. Values can be set for a
-SpatExtent or SpatRaster, but not for a SpatVector)
+SpatExtent or SpatRaster, but not for a SpatVector.
 
 ## Usage
 

@@ -647,7 +647,7 @@
   : Add points, lines, or polygons to a map
 
 - [`make.RGB()`](https://rspatial.github.io/terra/reference/make.RGB.md)
-  : Create a RGB SpatRaster
+  : Create an RGB SpatRaster
 
 - [`makeTiles(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/makeTiles.md)
   [`getTileExtents(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/makeTiles.md)
@@ -937,7 +937,7 @@
 - [`spatSample(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/sample.md)
   [`spatSample(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/sample.md)
   [`spatSample(`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/sample.md)
-  : Take a regular sample
+  : Take a sample from a spatial object
 
 - [`sapp(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/sapp.md)
   [`sapp(`*`<SpatRasterDataset>`*`)`](https://rspatial.github.io/terra/reference/sapp.md)

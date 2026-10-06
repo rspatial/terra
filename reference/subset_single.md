@@ -72,9 +72,9 @@ r <- rast(f)
 r[3638]
 #>   elevation
 #> 1       473
-rowColFromCell(r, 2638)
+rowColFromCell(r, 3638)
 #>      [,1] [,2]
-#> [1,]   28   73
+#> [1,]   39   28
 r[39, 28]
 #>   elevation
 #> 1       473

@@ -69,7 +69,7 @@ zonal(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)
 
 - filename:
 
-  character. Output filename (ignored if `as.raster=FALSE`
+  character. Output filename (ignored if `as.raster=FALSE`)
 
 - overwrite:
 
@@ -82,12 +82,12 @@ zonal(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)
 
 - weights:
 
-  logical. If `TRUE` and `y` has polygons, the approximate fraction of
+  logical. If `TRUE` and `z` has polygons, the approximate fraction of
   each cell that is covered is used to compute a weighted mean
 
 - exact:
 
-  logical. If `TRUE` and `y` has polygons, the exact fraction of each
+  logical. If `TRUE` and `z` has polygons, the exact fraction of each
   cell that is covered is returned as well, for example to compute a
   weighted mean
 

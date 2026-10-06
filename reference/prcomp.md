@@ -33,7 +33,7 @@ prcomp(x, retx=TRUE, center=TRUE, scale.=FALSE,
 
   a logical value indicating whether the variables should be shifted to
   be zero centered. Alternately, a vector of length equal the number of
-  columns of x can be supplied. The value is passed to
+  layers of x can be supplied. The value is passed to
   [`scale`](https://rspatial.github.io/terra/reference/scale.md)
 
 - scale.:
@@ -41,7 +41,7 @@ prcomp(x, retx=TRUE, center=TRUE, scale.=FALSE,
   a logical value indicating whether the variables should be scaled to
   have unit variance before the analysis takes place. The default is
   FALSE for consistency with S, but in general scaling is advisable.
-  Alternatively, a vector of length equal the number of columns of x can
+  Alternatively, a vector of length equal the number of layers of x can
   be supplied. The value is passed to
   [`scale`](https://rspatial.github.io/terra/reference/scale.md)
 

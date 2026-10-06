@@ -91,9 +91,8 @@ focal(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA,
 
 ## Details
 
-`focal` The window used must have odd dimensions. If you need even
-sides, you can use a matrix and add a column or row of `NA`'s to mask
-out values.
+The window used must have odd dimensions. If you need even sides, you
+can use a matrix and add a column or row of `NA`'s to mask out values.
 
 Window values are typically 1 or `NA` to indicate whether a value is
 used or ignored in computations, respectively. `NA` values in `w` can be

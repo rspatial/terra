@@ -1,6 +1,6 @@
 # Add points, lines, or polygons to a map
 
-Add a vector geometries to a plot (map) with `points`, `lines`, or
+Add vector geometries to a plot (map) with `points`, `lines`, or
 `polys`.
 
 These are simpler alternatives for
@@ -76,8 +76,8 @@ polys(x, col, alpha=1, ...)
 - pch:
 
   positive integer, point type. See `points`. On some (linux) devices,
-  the default symbol "16" is a not a very smooth circle. You can use
-  "20" instead (it takes a bit longer to draw) or "1" for an open circle
+  the default symbol "16" is not a very smooth circle. You can use "20"
+  instead (it takes a bit longer to draw) or "1" for an open circle
 
 - alpha:
 

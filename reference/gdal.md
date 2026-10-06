@@ -81,7 +81,7 @@ projPaths(paths, with_proj = TRUE)
 - option:
 
   character. GDAL configuration option name, or a "name=value" string
-  (in which case the value argument is ignored
+  (in which case the value argument is ignored)
 
 - value:
 
@@ -92,7 +92,7 @@ projPaths(paths, with_proj = TRUE)
 
   character. "gdal", "proj", "geos", "TBB", or any other value to get
   the versions numbers of the first three and a logical value indicating
-  whether TBB paralellization is available
+  whether TBB parallelization is available
 
 - parse:
 
