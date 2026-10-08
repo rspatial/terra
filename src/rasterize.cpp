@@ -480,6 +480,8 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 bool SpatRaster::getDShMEM(GDALDatasetH &rstDS, SpatRaster &out, double &naval, double background, SpatOptions &opt) {
 
 	SpatOptions ops(opt);
+	// integer output datatype is applied at writeBlock; MEM must be able to hold NA
+	ops.set_datatype("FLT4S");
 	if (opt.names.size() == nlyr()) {
 		out.setNames(opt.names);
 	}
