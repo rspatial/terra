@@ -104,7 +104,8 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
 
 - background:
 
-  background color. Default is no color ("white", or `par()$bg`)
+  background color. By default, the color is taken from `par("bg")`
+  (usually white; in some cases transparent)
 
 - box:
 

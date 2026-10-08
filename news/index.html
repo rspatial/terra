@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-52</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-53</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,14 +34,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-52" id="version-19-52">version 1.9-52<a class="anchor" aria-label="anchor" href="#version-19-52"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-53" id="version-19-53">version 1.9-53<a class="anchor" aria-label="anchor" href="#version-19-53"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-52">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-52"></a></h3>
+<h3 id="bug-fixes-1-9-53">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-53"></a></h3>
 <ul><li>
 <code>plot&lt;SpatVector&gt;</code> ignored <code>colNA</code> when <code>type="continuous"</code> <a href="https://github.com/rspatial/terra/issues/2198" class="external-link">#2198</a> by Márcia Barbosa</li>
+<li>
+<code>rasterize</code> with <code>filename</code> and an integer <code>datatype</code> wrote the background as 0 instead of <code>NA</code> <a href="https://github.com/rspatial/terra/issues/2195" class="external-link">#2195</a> by NewGraphEnvironment</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-52">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-52"></a></h3>
+<h3 id="enhancements-1-9-53">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-53"></a></h3>
 <ul><li>GDAL raster block cache is set to 64 MB at load unless <code>GDAL_CACHEMAX</code> is already set</li>
 <li>raster processing chunks are aligned to the source file’s block height when that is reported</li>
 <li>
@@ -58,11 +60,11 @@
 </li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-9-52">new<a class="anchor" aria-label="anchor" href="#new-1-9-52"></a></h3>
+<h3 id="new-1-9-53">new<a class="anchor" aria-label="anchor" href="#new-1-9-53"></a></h3>
 <ul><li>
 <code>modal</code> for vectors implementation. Moved from the raster package but using the terra C++ implementation</li>
 <li>
-<code>distValues</code> to compute the distance from the (environmental) values at sites to these values in each raster cell</li>
+<code>distValues</code> to compute the distance from the (environmental) values at sites to these values in each raster cell.</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -33,8 +33,8 @@ distValues(x, y, fun="squared", center=FALSE, scale=FALSE,
 
 - fun:
 
-  character. `"abs"` (mean absolute difference) or `"squared"` (mean
-  squared difference). Or a function
+  character. `"abs"` (mean absolute difference), `"squared"` (mean
+  squared difference) or a function
 
 - weights:
 

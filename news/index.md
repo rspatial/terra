@@ -1,12 +1,16 @@
 # Changelog
 
-## version 1.9-52
+## version 1.9-53
 
 ### bug fixes
 
 - `plot<SpatVector>` ignored `colNA` when `type="continuous"`
   [\#2198](https://github.com/rspatial/terra/issues/2198) by Márcia
   Barbosa
+- `rasterize` with `filename` and an integer `datatype` wrote the
+  background as 0 instead of `NA`
+  [\#2195](https://github.com/rspatial/terra/issues/2195) by
+  NewGraphEnvironment
 
 ### enhancements
 
@@ -33,7 +37,7 @@
 - `modal` for vectors implementation. Moved from the raster package but
   using the terra C++ implementation
 - `distValues` to compute the distance from the (environmental) values
-  at sites to these values in each raster cell
+  at sites to these values in each raster cell.
 
 ## version 1.9-50
 
