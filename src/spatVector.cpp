@@ -218,11 +218,8 @@ std::vector<std::vector<double>> SpatGeom::coordinates() {
 	out[0].reserve(ncrds);
 	out[1].reserve(ncrds);
 	for (size_t j=0; j<np; j++) {
-		size_t nx = parts[j].x.size();
-		for (size_t q=0; q < nx; q++) {
-			out[0].insert(out[0].end(), parts[j].x.begin(), parts[j].x.end());
-			out[1].insert(out[1].end(), parts[j].y.begin(), parts[j].y.end());
-		}
+		out[0].insert(out[0].end(), parts[j].x.begin(), parts[j].x.end());
+		out[1].insert(out[1].end(), parts[j].y.begin(), parts[j].y.end());
 		if (parts[j].hasHoles()) {
 			size_t nh =  parts[j].nHoles();
 			for (size_t k=0; k < nh; k++) {
