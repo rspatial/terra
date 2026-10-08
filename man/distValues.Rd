@@ -26,7 +26,7 @@ For each cell, compute the distance in value-space to reference values. Referenc
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{matrix, data.frame, or SpatVector}
-  \item{fun}{character. \code{"abs"} (mean absolute difference) or \code{"squared"} (mean squared difference). Or a function}
+  \item{fun}{character. \code{"abs"} (mean absolute difference), \code{"squared"} (mean squared difference) or a function}
   \item{weights}{numeric. Optional weights for the layers of \code{x}}
   \item{center}{logical or numeric. Passed to \code{\link{scale}} (SpatVector method only)}
   \item{scale}{logical or numeric. Passed to \code{\link{scale}} (SpatVector method only)}

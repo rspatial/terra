@@ -348,15 +348,14 @@ dist_sqr <- function(x, y, ...) {
 }
 
 
-
-
 setMethod("distValues", signature(x="SpatRaster", y="matrix"),
 	function(x, y, fun="squared", weights=NULL, ..., filename="", overwrite=FALSE, wopt=list()) {
 		
 		if (!(all(colnames(y) %in% names(x)) && (all(names(x) %in% colnames(y))))) {
 			error("distValues", "names of x and y must match")
 		}
-		
+		y <- y[, names(x), drop=FALSE]
+
 		if (inherits(fun, "character")) {
 			fun <- match.arg(tolower(fun), c("abs", "squared"))
 			if (fun == "abs") {
