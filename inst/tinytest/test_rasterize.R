@@ -25,6 +25,25 @@ y <- rasterize(p, r, value=sample(10, 1000, replace=TRUE), fun="modal")
 expect_false(all(is.na(values(y))))
 expect_true(all(values(y) %in% c(1:10, NA)))
 
+# integer datatype + filename keeps NA background (#2195)
+v <- vect("POLYGON((0 0,1 0,1 1,0 1,0 0))", crs="EPSG:4326")
+v$z <- 5L
+r <- rast(nrows=4, ncols=4, xmin=0, xmax=2, ymin=0, ymax=2, crs="EPSG:4326")
+nas <- function(...) {
+	f <- tempfile(fileext=".tif")
+	on.exit(unlink(f))
+	rasterize(v, r, field="z", filename=f, ...)
+	sum(is.na(values(rast(f))))
+}
+expect_equal(nas(), 12)
+expect_equal(nas(wopt=list(datatype="FLT4S")), 12)
+expect_equal(nas(wopt=list(datatype="INT1U")), 12)
+expect_equal(nas(wopt=list(datatype="INT2S")), 12)
+f <- tempfile(fileext=".tif")
+writeRaster(rasterize(v, r, field="z"), f, datatype="INT1U")
+expect_equal(sum(is.na(values(rast(f)))), 12)
+unlink(f)
+
 v <- vect(system.file("ex/lux.shp", package = "terra"))
 r <- rast(v, ncols = 75, nrows = 100)
 z <- rasterize(v, r, cover = TRUE, by = "ID_2")
