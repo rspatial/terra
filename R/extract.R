@@ -281,10 +281,10 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		cn <- c("ID", names(x))
 	} else {
 
-		lyrs <- unique(layer) 
-		if ((geo == "points") && (!isTRUE(cells[1])) && (!isTRUE(xy[1])) &&
-				((nrow(y) * length(lyrs)) <= 2^26)) {
-			# extract all used layers with a single call and then select the 
+		lyrs <- unique(layer)
+		# values only here; if cells/xy are TRUE these are attached below.
+		if ((geo == "points") && ((nrow(y) * length(lyrs)) <= 2^26)) {
+			# extract all used layers with a single call and then select the
 			# requested layer for each point. Much faster than one call per layer,
 			# especially for files with compressed chunks (#2145)
 			xlyr <- x[[lyrs]]
@@ -300,12 +300,23 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 				xlyr <- x[[lyr]]
 				i <- which(layer == lyr)
 				ylyr <- yy[i]
-				e[i] <- xlyr@pntr$extractVectorFlat(ylyr@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+				e[i] <- xlyr@pntr$extractVectorFlat(ylyr@pntr, "", FALSE, touches[1], small[1], method, FALSE, FALSE, FALSE, FALSE, opt)
 			}
 		}
 		nc <- nl <- 1
 		cn <- c("ID", "value")
 		x <- rast(xlyr) # for .makeDataFrame
+		if ((geo == "points") && (isTRUE(cells[1]) || isTRUE(xy[1]))) {
+			cc <- cellFromXY(x, crds(y))
+			extra <- NULL
+			if (isTRUE(cells[1])) {
+				extra <- cbind(extra, cc - 1)
+			}
+			if (isTRUE(xy[1])) {
+				extra <- cbind(extra, xyFromCell(x, cc))
+			}
+			e <- as.vector(t(cbind(as.numeric(e), extra)))
+		}
 	}
 
 	if (cells) {
