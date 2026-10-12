@@ -152,7 +152,7 @@ find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
 	nl <- 1
 	testrow <- round(0.51*nr)
 	rnr <- 1
-	if (nc==1) rnr <- min(nr, 20) - testrow + 1
+	if (nc==1) rnr <- max(1, min(20, nr - testrow + 1))
 	d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
 	nrd <- nrow(d)
 	cn <- NULL
