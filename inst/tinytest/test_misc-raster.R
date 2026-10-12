@@ -146,3 +146,12 @@ x <- writeStop(x)
 expect_equal(as.vector(values(x, row=2, nrows=2, col=3, ncols=3)), 201:206)
 unlink(f)
 
+# predict on a one-column raster (#2206)
+r1 <- rast(nrows=50, ncols=1, nlyr=2, vals=cbind(1:50, (1:50)^2))
+names(r1) <- c("a", "b")
+m1 <- lm(y ~ a + b, data=data.frame(y=1:10, a=1:10, b=(1:10)^2))
+p1 <- predict(r1, m1)
+expect_equal(ncol(p1), 1)
+expect_equal(nrow(p1), 50)
+expect_false(anyNA(values(p1)))
+
