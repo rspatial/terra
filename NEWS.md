@@ -6,6 +6,7 @@
 - `rasterize` with `filename` and an integer `datatype` wrote the background as 0 instead of `NA` [#2195](https://github.com/rspatial/terra/issues/2195) by NewGraphEnvironment
 - `extract` with `layer` did not work well if `cells` or `xy` were set to TRUE [#2203](https://github.com/rspatial/terra/issues/2203) by Breeze-Hu
 - `predict` failed on a one-column raster with more than about 40 rows [#2206](https://github.com/rspatial/terra/issues/2206) by Acanthiza
+- `crop` to disk treated valid `INT2U` values of 65535 as NoData when the source had no NoData tag [#2207](https://github.com/rspatial/terra/issues/2207) by Nowosad
 
 ## enhancements
 
