@@ -633,6 +633,10 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	if (dtype != x.dtype) {
 		dtype = "";
 	}
+	if (!hasFileNA && x.hasFileNA) {
+		hasFileNA = true;
+		fileNAflag = x.fileNAflag;
+	}
 	return true;
 }
 
@@ -701,6 +705,10 @@ bool SpatRasterSource::combine(SpatRasterSource &x) {
 	has_scale_offset.insert(has_scale_offset.end(), x.has_scale_offset.begin(), x.has_scale_offset.end());
 	scale.insert(scale.end(), x.scale.begin(), x.scale.end());
 	offset.insert(offset.end(), x.offset.begin(), x.offset.end());
+	if (!hasFileNA && x.hasFileNA) {
+		hasFileNA = true;
+		fileNAflag = x.fileNAflag;
+	}
 	return true;
 }
 

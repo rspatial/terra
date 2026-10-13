@@ -820,6 +820,32 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	source[0].driver = "gdal" ;
 	source[0].filename = filename;
 	source[0].memory = false;
+	if (hasNAflag) {
+		source[0].hasFileNA = !std::isnan(naflag);
+		source[0].fileNAflag = naflag;
+	} else if (datatype.size() >= 3 && datatype.compare(0, 3, "INT") == 0) {
+		source[0].hasFileNA = true;
+		if (datatype == "INT4S") {
+			source[0].fileNAflag = INT32_MIN;
+		} else if (datatype == "INT2S") {
+			source[0].fileNAflag = INT16_MIN;
+		} else if (datatype == "INT4U") {
+			source[0].fileNAflag = UINT32_MAX;
+		} else if (datatype == "INT2U") {
+			source[0].fileNAflag = UINT16_MAX;
+		} else if (datatype == "INT1U") {
+			source[0].fileNAflag = 255;
+		} else if (datatype == "INT1S") {
+			source[0].fileNAflag = -128;
+		} else if (datatype == "INT8S") {
+			source[0].fileNAflag = (double)INT64_MIN;
+		} else if (datatype == "INT8U") {
+			source[0].fileNAflag = (double)(UINT64_MAX - 1101);
+		}
+	} else {
+		source[0].hasFileNA = false;
+		source[0].fileNAflag = NAN;
+	}
 
 	if (driver != "GTiff") write_aux_json(filename);
 /*

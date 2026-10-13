@@ -713,6 +713,10 @@ static bool md_fill_source_from_marray(
 	} else {
 		s.m_missing_value = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
 	}
+	if (s.m_hasNA && !std::isnan(s.m_missing_value)) {
+		s.hasFileNA = true;
+		s.fileNAflag = s.m_missing_value;
+	}
 
 	int ix = md_find_col_dim(dimnames, dimData);
 	int iy = md_find_row_dim(dimnames, dimData);

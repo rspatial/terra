@@ -1565,12 +1565,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		// }
 
 		int success;
-	//	double naflag = poBand->GetNoDataValue(&success);
-	//	if (success) {
-	//		s.NAflag = naflag;
-	//	} else {
-	//		s.NAflag = NAN;
-	//	}
+		if (!s.hasFileNA) {
+			double naflag = poBand->GetNoDataValue(&success);
+			if (success && !std::isnan(naflag)) {
+				s.hasFileNA = true;
+				s.fileNAflag = naflag;
+			}
+		}
 
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
@@ -1819,25 +1820,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 bool SpatRaster::sourceHasFileNA() {
 	for (size_t i=0; i<source.size(); i++) {
-		if (source[i].memory || source[i].filename.empty()) {
-			continue;
-		}
-		GDALDataset *ds = openGDAL(source[i].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[i].open_drivers, source[i].open_ops);
-		if (ds == NULL) {
-			continue;
-		}
-		int nl = ds->GetRasterCount();
-		bool hasNA = false;
-		for (int b=1; b<=nl; b++) {
-			int ok = 0;
-			double flag = ds->GetRasterBand(b)->GetNoDataValue(&ok);
-			if (ok && !std::isnan(flag)) {
-				hasNA = true;
-				break;
-			}
-		}
-		GDALClose(ds);
-		if (hasNA) {
+		if (source[i].hasFileNA) {
 			return true;
 		}
 	}

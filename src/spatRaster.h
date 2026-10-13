@@ -257,6 +257,9 @@ class SpatRasterSource {
 		// user set for reading:
 		bool hasNAflag = false;
 		double NAflag = NAN;
+		// from file metadata (GetNoDataValue), not a user override
+		bool hasFileNA = false;
+		double fileNAflag = NAN;
 
 		std::vector<bool> has_scale_offset;
 		std::vector<double> scale;
