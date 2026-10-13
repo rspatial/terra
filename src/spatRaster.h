@@ -486,6 +486,7 @@ class SpatRaster {
 
 		bool setNAflag(std::vector<double> flag);
 		std::vector<double> getNAflag();
+		bool sourceHasFileNA();
 
 		std::vector<std::vector<std::string>> getMetadata(bool layers);
 

@@ -335,7 +335,22 @@ SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool
 				opt.set_datatype(dt[0]);
 			}
 		}
-	}	
+	}
+	// inherit "no NoData" from file sources so crop/write do not invent
+	// an integer sentinel (e.g. 65535 for INT2U) (#2207)
+	double naflag;
+	if (!opt.has_NAflag(naflag)) {
+		bool fromfile = false;
+		for (size_t i=0; i<source.size(); i++) {
+			if (!source[i].memory) {
+				fromfile = true;
+				break;
+			}
+		}
+		if (fromfile && !sourceHasFileNA()) {
+			opt.set_NAflag(NAN);
+		}
+	}
 
 	return geometry(nlyrs, properties, time, units, tags);
 }

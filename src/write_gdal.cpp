@@ -720,8 +720,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan."
+			// NAflag=NA (NaN) means do not write a NoData tag. Integer defaults
+			// must not be applied in that case: UINT16_MAX is valid data (#2207).
 			if (hasNAflag) {
-				poBand->SetNoDataValue(naflag);
+				if (!std::isnan(naflag)) {
+					poBand->SetNoDataValue(naflag);
+				}
 			} else if (datatype == "INT4S") {
 				poBand->SetNoDataValue(INT32_MIN); //-2147483648;
 			} else if (datatype == "INT2S") {
