@@ -1052,6 +1052,33 @@ static void fill_geolocation(GDALDataset *poDataset, SpatRasterSource &s) {
 }
 
 
+// MD builds extent from 1D dim coordinates (half-cell padded). Index dims
+// (0..n-1) become ~(-0.5, n-0.5). Classic fallback with no GT is (0, n).
+// A TEMPO-style L3 grid has real lon/lat extent; do not warn (#2208).
+static bool extent_looks_like_indices(const SpatRasterSource &s) {
+	if (s.ncol == 0 || s.nrow == 0) return true;
+	auto near = [](double a, double b) {
+		return std::fabs(a - b) <= 1e-6;
+	};
+	auto axis_is_index = [&](double a, double b, double n) {
+		return (near(a, 0) && near(b, n)) ||
+		       (near(a, -0.5) && near(b, n - 0.5)) ||
+		       (near(a, 0.5) && near(b, n + 0.5));
+	};
+	return axis_is_index(s.extent.xmin, s.extent.xmax, (double)s.ncol) &&
+	       axis_is_index(s.extent.ymin, s.extent.ymax, (double)s.nrow);
+}
+
+static bool sources_have_coord_extent(const SpatRaster &r) {
+	for (size_t i=0; i<r.source.size(); i++) {
+		if (!extent_looks_like_indices(r.source[i])) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 // Copy GEOLOCATION / GCP fields onto multidim sources and, if CRS is still
 // empty, apply geoloc_srs. The multidim API does not expose GDAL's classic
 // GEOLOCATION domain, so we read it from a classic 2D dataset handle (#1175).
@@ -1075,7 +1102,7 @@ static void apply_geolocation_to_sources(SpatRaster &r, SpatRasterSource &geo, b
 		}
 	}
 	if (warn_no_gt && (geo.has_geolocation || any_crs)) {
-		r.addWarning("no geotransform; using GDAL geolocation arrays (project/rectify to georeference)");
+		r.addWarning("file has no georeference; using geolocation arrays (use project/rectify to georeference)");
 	}
 }
 
@@ -1083,6 +1110,9 @@ static void apply_geolocation_to_sources(SpatRaster &r, SpatRasterSource &geo, b
 static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDataset,
 		const std::string &md_fname, const std::vector<std::string> &drivers,
 		const std::vector<std::string> &options, bool has_2d_gt) {
+	// Parent grouped netCDF has no bands, so has_2d_gt is false even when MD
+	// already built a regular lon/lat grid from 1D coordinates (#2208).
+	const bool warn_no_gt = !has_2d_gt && !sources_have_coord_extent(r);
 	SpatRasterSource geo;
 	if (poDataset != NULL && poDataset->GetRasterCount() > 0) {
 		fill_geolocation(poDataset, geo);
@@ -1100,7 +1130,7 @@ static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDatase
 		}
 	}
 	if (!try_netcdf_subds) {
-		apply_geolocation_to_sources(r, geo, !has_2d_gt);
+		apply_geolocation_to_sources(r, geo, warn_no_gt);
 		return;
 	}
 	if (!geo.has_geolocation && !geo.has_gcps && !r.source.empty()) {
@@ -1139,18 +1169,18 @@ static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDatase
 						r.addWarning(msg);
 					}
 				}
-				if (!has_2d_gt && g.has_geolocation) {
+				if (warn_no_gt && g.has_geolocation) {
 					geo.has_geolocation = true; // for a single warning below
 				}
 			}
 		}
 		gdal_capture_messages_end(false);
-		if (geo.has_geolocation && !has_2d_gt) {
+		if (geo.has_geolocation && warn_no_gt) {
 			r.addWarning("no geotransform; using GDAL geolocation arrays (project/rectify to georeference)");
 		}
 		return;
 	}
-	apply_geolocation_to_sources(r, geo, !has_2d_gt);
+	apply_geolocation_to_sources(r, geo, warn_no_gt);
 }
 
 
