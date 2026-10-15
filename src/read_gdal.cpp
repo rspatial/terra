@@ -625,7 +625,7 @@ void get_tags(std::vector<std::string> meta, std::string prefix,  std::vector<st
 		for (size_t i=0; i<meta.size(); i++) {
 			size_t tagpos = meta[i].find(prefix);
 			if (tagpos != std::string::npos) {		
-				size_t pos = meta[i].find("=");
+				size_t pos = meta[i].find('=');
 				if (pos != std::string::npos) {
 					std::string mn = meta[i].substr(prefix.size(), pos-tagpos-prefix.size());
 					if (!((mn == "_FillValue") || (mn == "grid_mapping") || (mn == "Conventions") || (mn == "created_by") || (mn == "created_date"))) {
@@ -1405,7 +1405,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			std::vector<std::string> meta;
 			for (size_t j=0; meterra[j] != NULL; j++) {
 				std::string s = meterra[j];
-				size_t pos = s.find("=");
+				size_t pos = s.find('=');
 				if (pos != std::string::npos) {
 					std::string name = s.substr(0, pos);
 					std::string value = s.substr(pos+1); 
@@ -1584,7 +1584,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 //				std::vector<std::string> meta;
 				for (size_t j=0; meterra[j] != NULL; j++) {
 					std::string ms = meterra[j];
-					size_t pos = ms.find("=");
+					size_t pos = ms.find('=');
 					if (pos != std::string::npos) {
 						std::string name = ms.substr(0, pos);
 						std::string value = ms.substr(pos+1); 
@@ -2629,7 +2629,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		std::string s="skipped sub-datasets (see 'describe(sds=TRUE)'):\n" + skipped[0];
 		for (size_t i=1; i<skipped.size(); i++) {
 			s += ", " + skipped[i];
-			if ((i%3) == 0) s += "\n";
+			if ((i%3) == 0) s += '\n';
 		}
 		addWarning(s);
 	}
@@ -3002,7 +3002,7 @@ void ncdf_names(const std::vector<std::vector<std::string>> &m, std::vector<std:
 				}
 			}
 		}
-		size_t pos = dim.find("=");
+		size_t pos = dim.find('=');
 		double v;
 		if (pos != std::string::npos) {
 			if (i == 0) {
