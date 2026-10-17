@@ -1453,7 +1453,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 				warp_args.push_back(trans_opts[ti]);
 			}
 			std::vector<const char*> cargs;
-			cargs.reserve(wrap_args.size());
+			cargs.reserve(warp_args.size());
 			for (auto &s : warp_args) cargs.push_back(s.c_str());
 			cargs.push_back(nullptr);
 			GDALWarpAppOptions *psWarpAppOptions = GDALWarpAppOptionsNew(
