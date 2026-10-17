@@ -13,7 +13,7 @@ mosaic SpatRasters
 \description{
 Combine adjacent and (partly) overlapping SpatRasters to form a single new SpatRaster. Values in overlapping cells are averaged (by default) or can be computed with another function. 
 
-With the "blend" function, smooth gradients in overlappoing zones are created by weighting each raster's contribution by the distance from the cell to the raster's nearest edge. 
+With the "blend" function, smooth gradients in overlapping zones are created by weighting each raster's contribution by the distance from the cell to the raster's nearest edge. 
 
 The SpatRasters must have the same origin and spatial resolution. 
 

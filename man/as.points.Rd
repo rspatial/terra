@@ -38,7 +38,7 @@ SpatVector
 }
 
 \seealso{
-\code{\link{as.lines}}, \code{\link{as.points}}
+\code{\link{as.lines}}, \code{\link{as.polygons}}
 }
 
 
