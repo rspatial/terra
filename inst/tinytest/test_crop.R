@@ -47,3 +47,13 @@ expect_false(anyNA(values(b2207)))
 expect_true(any(values(b2207) == 65535))
 unlink(f2207)
 
+# crop(mask=TRUE) on md=TRUE netCDF must use the window (#2212)
+r2212 <- rast(nrows=10, ncols=10, vals=1:100, crs="EPSG:4326")
+f2212 <- tempfile(fileext=".nc")
+writeCDF(r2212, f2212, overwrite=TRUE)
+poly2212 <- vect("POLYGON ((-90 -45, 90 -45, 90 45, -90 45, -90 -45))", crs="EPSG:4326")
+x2212 <- crop(rast(f2212, md=TRUE), poly2212, mask=TRUE)
+y2212 <- crop(rast(f2212, md=FALSE), poly2212, mask=TRUE)
+expect_equal(values(x2212, mat=FALSE), values(y2212, mat=FALSE))
+unlink(f2212)
+
