@@ -831,6 +831,7 @@ static bool md_fill_source_from_marray(
 
 
 	std::vector<size_t> extra_sizes;
+	extra_sizes.reserve(dimmap_extras.size());
 	for (size_t e : dimmap_extras) {
 		extra_sizes.push_back(dimcount[e]);
 	}
