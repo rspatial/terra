@@ -37,7 +37,7 @@ Divides a \code{SpatVector} of polygons into \code{n} compact and approximately 
   \item{...}{additional arguments such as \code{iter.max} passed on to \code{\link{kmeans}}}
 }
 
-\seealso{\code{\link{thresh}}; \code{\link{makeTiles}}}
+\seealso{\code{\link{thresh}}; \code{\link{makeTiles}}; \code{\link{split}}; \code{\link{segregate}}}
 
 \value{SpatVector or SpatRaster, or a list with both}
 
