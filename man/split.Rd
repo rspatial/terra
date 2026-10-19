@@ -32,7 +32,7 @@ Split a SpatRaster by layer, or a SpatVector by attributes. You can also split t
 list or SpatVector
 }
 
-\seealso{\code{\link{segregate}}}
+\seealso{\code{\link{segregate}}; \code{\link{divide}}; \code{\link{makeTiles}}}
 
 \examples{
 
