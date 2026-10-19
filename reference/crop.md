@@ -62,7 +62,7 @@ crop(x, y)
   to the geometry (cells) of `x`. You can snap the extent to the nearest
   cell boundaries; to the nearest cell boundaries that are inside the
   extent; or to the nearest cell boundaries that are outside the extent.
-  This works independently of arguments `mask` and `touches`)
+  This works independently of arguments `mask` and `touches`
 
 - mask:
 

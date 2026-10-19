@@ -11,7 +11,7 @@ See classify to merge a SpatRaster with a data.frame."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-53</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-54</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ See classify to merge a SpatRaster with a data.frame."><meta property="og:image"
 <dd><p>logical. If <code>TRUE</code>, in areas where rasters overlap, the first value is used. Otherwise the last value is used</p></dd>
 
   <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
-<dd><p>logical. If <code>TRUE</code> missing values are are ignored. This is only used for algo 1; the other two always ignore missing values</p></dd>
+<dd><p>logical. If <code>TRUE</code> missing values are ignored. This is only used for algo 1; the other two always ignore missing values</p></dd>
 
   <dt id="arg-algo">algo<a class="anchor" aria-label="anchor" href="#arg-algo"></a></dt>
 <dd><p>integer. You can use 1, 2 or 3 to pick a merge algorithm. algo 1 is generally faster than algo 2, but it may have poorer file compression. Algo 3 creates a virtual raster (see <code><a href="vrt.html">vrt</a></code>). This is very quick and can be a good approach if the merge raster is used as input to a next step in the analysis. It allows any amount of misalignment and resamples without giving a warning. Otherwise its speed is similar to that of algo 2</p></dd>

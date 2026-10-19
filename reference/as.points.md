@@ -56,7 +56,7 @@ SpatVector
 ## See also
 
 [`as.lines`](https://rspatial.github.io/terra/reference/as.lines.md),
-`as.points`
+[`as.polygons`](https://rspatial.github.io/terra/reference/as.polygons.md)
 
 ## Examples
 

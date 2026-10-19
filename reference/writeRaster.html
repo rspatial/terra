@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-53</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-54</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@ The first three letters indicate whether the datatype is an integer (whole numbe
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>GeoTiff files are, by default, written with LZW compression. If you do not want compression, use <code>gdal="COMPRESS=NONE"</code>.</p>
-<p>When writing integer values the lowest available value (given the datatype) is used to represent <code>NA</code> for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for <code>NA</code>. To keep the value 255, you need to set another value as <code>NAflag</code>, or do not set a <code>NAflag</code> (with <code>NAflag=NA</code>)</p>
+<p>When writing integer values the lowest available value (given the datatype) is used to represent <code>NA</code> for signed types, and the highest value is used for unsigned values. For example, this can be a problem with byte data (between 0 and 255) as the value 255 is reserved for <code>NA</code>. To keep the value 255, you need to set another value as <code>NAflag</code>, or do not set a <code>NAflag</code> (with <code>NAflag=NA</code>).</p>
     </div>
 
     <div class="section level2">

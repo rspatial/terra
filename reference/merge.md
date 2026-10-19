@@ -55,8 +55,8 @@ merge(x, y, ...)
 
 - na.rm:
 
-  logical. If `TRUE` missing values are are ignored. This is only used
-  for algo 1; the other two always ignore missing values
+  logical. If `TRUE` missing values are ignored. This is only used for
+  algo 1; the other two always ignore missing values
 
 - algo:
 

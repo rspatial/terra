@@ -739,10 +739,10 @@ Geometric "vector overlay" operations such as
 [`crop`](https://rspatial.github.io/terra/reference/crop.md) do not
 adjust for lon/lat intersections (use
 [`densify`](https://rspatial.github.io/terra/reference/densify.md) to
-approximate it better if needed)
+approximate it better if needed).
 
-[`voronoi`](https://rspatial.github.io/terra/reference/voronoi.md),
-[`hull`](https://rspatial.github.io/terra/reference/convhull.md)) treat
+[`voronoi`](https://rspatial.github.io/terra/reference/voronoi.md) and
+[`hull`](https://rspatial.github.io/terra/reference/convhull.md) treat
 longitude/latitude coordinates as if they were planar.
 
 |  |  |

@@ -37,7 +37,6 @@ add_abline(h=NULL, v=NULL, ...)
 [`graticule`](https://rspatial.github.io/terra/reference/graticule.md),
 [`add_legend`](https://rspatial.github.io/terra/reference/legend.md),
 [`add_box`](https://rspatial.github.io/terra/reference/box.md),
-[`add_grid`](https://rspatial.github.io/terra/reference/grid.md),
 [`add_mtext`](https://rspatial.github.io/terra/reference/add_mtext.md)
 
 ## Examples

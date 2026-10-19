@@ -73,10 +73,10 @@ not want compression, use `gdal="COMPRESS=NONE"`.
 
 When writing integer values the lowest available value (given the
 datatype) is used to represent `NA` for signed types, and the highest
-value is used for unsigned values. This can be a problem with byte data
-(between 0 and 255) as the value 255 is reserved for `NA`. To keep the
-value 255, you need to set another value as `NAflag`, or do not set a
-`NAflag` (with `NAflag=NA`)
+value is used for unsigned values. For example, this can be a problem
+with byte data (between 0 and 255) as the value 255 is reserved for
+`NA`. To keep the value 255, you need to set another value as `NAflag`,
+or do not set a `NAflag` (with `NAflag=NA`).
 
 ## Examples
 
