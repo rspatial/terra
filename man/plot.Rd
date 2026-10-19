@@ -29,7 +29,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
     maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, 
 	all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL,
-	sort=FALSE,  reverse=FALSE, grid=FALSE, zebra=FALSE, ext=NULL, reset=FALSE,
+	sort=FALSE, reverse=FALSE, grid=FALSE, zebra=FALSE, ext=NULL, reset=FALSE,
 	add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, 
@@ -115,7 +115,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{main}{character. Main plot titles (one for each layer to be plotted). You can use arguments \code{cex.main}, \code{font.main}, \code{col.main} to change the appearance; and \code{loc.main} to change the location of the main title (either two coordinates, or a character value such as "topleft"). You can also use \code{sub=""} for a subtitle. See \code{\link{title}}}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object).}
   \item{add}{logical. If \code{TRUE} add the object to the current plot}
-  \item{ext}{SpatExtent or other object for which \code{\link{ext}} returns one. Can be use instead of xlim and ylim to set the extent of the plot}
+  \item{ext}{SpatExtent or other object for which \code{\link{ext}} returns one. Can be used instead of xlim and ylim to set the extent of the plot}
   \item{reset}{logical. If \code{TRUE} the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}})}
   \item{values}{Either a vector with values to be used for plotting or a two-column data.frame, where the first column matches a variable in \code{x} and the second column has the values to be plotted}
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  

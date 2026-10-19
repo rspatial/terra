@@ -20,7 +20,7 @@ add_abline(h=NULL, v=NULL, ...)
   \item{...}{additional graphical parameters for drawing lines}
 }
 
-\seealso{\code{\link{add_grid}}, \code{\link{graticule}}, \code{\link{add_legend}}, \code{\link{add_box}}, \code{\link{add_grid}}, \code{\link{add_mtext}}}
+\seealso{\code{\link{add_grid}}, \code{\link{graticule}}, \code{\link{add_legend}}, \code{\link{add_box}}, \code{\link{add_mtext}}}
 
 \examples{
 v <- vect(system.file("ex/lux.shp", package="terra"))

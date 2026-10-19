@@ -713,9 +713,9 @@ Most methods that involve distance, area, direction, or sampling account for the
 
 Some methods do \bold{not} use geodesic algorithms, require a planar CRS, or interpret parameters in the units of the CRS (degrees for lon/lat). 
 
-Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\link{union}}, \code{\link{erase}}, \code{\link{symdif}}, \code{\link{crop}} do not adjust for lon/lat intersections (use \code{\link{densify}} to approximate it better if needed) 
+Geometric "vector overlay" operations such as \code{\link{intersect}}, \code{\link{union}}, \code{\link{erase}}, \code{\link{symdif}}, \code{\link{crop}} do not adjust for lon/lat intersections (use \code{\link{densify}} to approximate it better if needed).
 
-\code{\link{voronoi}}, \code{\link{hull}}) treat longitude/latitude coordinates as if they were planar.
+\code{\link{voronoi}} and \code{\link{hull}} treat longitude/latitude coordinates as if they were planar.
 
 \tabular{ll}{
 \code{\link{viewshed}} \tab Requires a planar CRS (not lon/lat)\cr
