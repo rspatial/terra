@@ -44,7 +44,9 @@ list or SpatVector
 
 ## See also
 
-[`segregate`](https://rspatial.github.io/terra/reference/segregate.md)
+[`segregate`](https://rspatial.github.io/terra/reference/segregate.md);
+[`divide`](https://rspatial.github.io/terra/reference/divide.md);
+[`makeTiles`](https://rspatial.github.io/terra/reference/makeTiles.md)
 
 ## Examples
 

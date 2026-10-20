@@ -74,7 +74,9 @@ divide(x, n=5, w=NULL, alpha=1, ...)
 ## See also
 
 [`thresh`](https://rspatial.github.io/terra/reference/thresh.md);
-[`makeTiles`](https://rspatial.github.io/terra/reference/makeTiles.md)
+[`makeTiles`](https://rspatial.github.io/terra/reference/makeTiles.md);
+[`split`](https://rspatial.github.io/terra/reference/split.md);
+[`segregate`](https://rspatial.github.io/terra/reference/segregate.md)
 
 ## Value
 

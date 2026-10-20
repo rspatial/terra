@@ -16,10 +16,14 @@
   Breeze-Hu
 - `predict` failed on a one-column raster with more than about 40 rows
   [\#2206](https://github.com/rspatial/terra/issues/2206) by Acanthiza
-- `crop` to disk treated valid `INT2U` values of 65535 as NoData when
+- `crop` to disk treated valid `INT2U` values of 65535 as missing when
   the source had no NoData tag
   [\#2207](https://github.com/rspatial/terra/issues/2207) by Jakub
   Nowosad
+- `crop` with `mask=TRUE` on a raster opened with the multidimensional
+  API ignored the cropping window
+  [\#2212](https://github.com/rspatial/terra/issues/2212) by Ondřej
+  Ledvinka
 
 ### enhancements
 
