@@ -884,3 +884,89 @@ setMethod("plotRGB", signature(x="SpatRaster"),
 }
 )
 
+
+setMethod("plot", signature(x="SpatRasterCollection", y="ANY"),
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, plg=list(), pax=list(), ...)  {
+
+		nl <- max(1, min(length(x), maxnl))
+
+		if (nl==1) {
+			if (missing(main)) main = ""
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, add=add, plg=plg, pax=pax, ...)
+			return(invisible(out))
+		}
+
+		nrnc <- .get_nrnc(nr, nc, nl)
+		old.par <- graphics::par(no.readonly = TRUE)
+		on.exit(graphics::par(old.par))
+		if (is.null(mar)) {
+			mar=c(1.5, 1, 2.5, 3)
+		}
+		graphics::par(mfrow=nrnc)
+		maxcell= 2 * maxcell / nl
+
+		if (missing("main")) {
+			main <- names(x)
+		} else {
+			main <- rep_len(main, nl)
+		}
+		plg$title <- suppressWarnings(rep(plg$title, length.out=nl))
+
+		if (!missing(y)) {
+			stopifnot(is.character(y) || is.numeric(y))
+			y <- rep(y, length.out=nl)
+			plg$leg_i <- i
+			if (is.numeric(y[i]) && !(y[i] %in% 1:nlyr(x[i]))) y[i] <- 1
+			if (is.character(y[i]) && !(y[i] %in% 1:nlyr(x[i]))) y[i] <- 1
+			plot(x[i], y[i], main=main[i], mar=mar, maxcell=maxcell, plg=plg, pax=pax, ...)
+		} else {
+			for (i in 1:nl) {
+				plg$leg_i <- i
+				plot(x[i], 1, main=main[i], mar=mar, maxcell=maxcell, plg=plg, pax=pax, ...)
+			}
+		}
+	}
+)
+
+setMethod("plot", signature(x="SpatRasterDataset", y="ANY"),
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, plg=list(), pax=list(), ...)  {
+
+		nl <- max(1, min(length(x), maxnl))
+
+		if (nl==1) {
+			if (missing(main)) main = ""
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, add=add, plg=plg, pax=pax, ...)
+			return(invisible(out))
+		}
+
+		nrnc <- .get_nrnc(nr, nc, nl)
+		old.par <- graphics::par(no.readonly = TRUE)
+		on.exit(graphics::par(old.par))
+		if (is.null(mar)) {
+			mar=c(1.5, 1, 2.5, 3)
+		}
+		graphics::par(mfrow=nrnc)
+		maxcell= 2 * maxcell / nl
+
+		if (missing("main")) {
+			main <- names(x)
+		} else {
+			main <- rep_len(main, nl)
+		}
+		plg$title <- suppressWarnings(rep(plg$title, length.out=nl))
+
+		if (!missing(y)) {
+			stopifnot(is.character(y) || is.numeric(y))
+			y <- rep(y, length.out=nl)
+			plg$leg_i <- i
+			if (is.numeric(y[i]) && !(y[i] %in% 1:nlyr(x[i]))) y[i] <- 1
+			if (is.character(y[i]) && !(y[i] %in% 1:nlyr(x[i]))) y[i] <- 1
+			plot(x[i], y[i], main=main[i], mar=mar, maxcell=maxcell, plg=plg, pax=pax, ...)
+		} else {
+			for (i in 1:nl) {
+				plg$leg_i <- i
+				plot(x[i], 1, main=main[i], mar=mar, maxcell=maxcell, plg=plg, pax=pax, ...)
+			}
+		}
+	}
+)

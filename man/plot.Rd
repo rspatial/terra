@@ -6,6 +6,8 @@
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
 \alias{plot,SpatRaster,character-method}
+\alias{plot,SpatRasterCollection,ANY-method}
+\alias{plot,SpatRasterDataset,ANY-method}
 
 \alias{plot,SpatVector,missing-method}
 \alias{plot,SpatVector,numeric-method}
