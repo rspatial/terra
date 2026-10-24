@@ -81,5 +81,5 @@ x  = (f - r)
 expect_equal(sum(values(x), na.rm=TRUE), 0)
 
 expect_error(focal(r, 3, fun=mean, na.rm=TRUE, NAonly=TRUE), pattern="na.policy")
-expect_error(focal(r, 3, fun=mean, na.rm=TRUE, pad=TRUE), pattern="expand")
+expect_warning(focal(r, 3, fun=mean, na.rm=TRUE, pad=TRUE), pattern="pad")
 
