@@ -49,6 +49,11 @@
 <code>crop</code> to disk treated valid <code>INT2U</code> values of 65535 as missing when the source had no NoData tag <a href="https://github.com/rspatial/terra/issues/2207" class="external-link">#2207</a> by Jakub Nowosad</li>
 <li>
 <code>crop</code> with <code>mask=TRUE</code> on a raster opened with the multidimensional API ignored the cropping window <a href="https://github.com/rspatial/terra/issues/2212" class="external-link">#2212</a> by Ondřej Ledvinka</li>
+<li>
+<code>init</code> with a function failed on a multi-source SpatRaster (<code>the condition has length &gt; 1</code> in <code>writeStop</code>) after the <code>mask</code> argument was added</li>
+<li>
+<code>aggregate&lt;SpatVector&gt;</code> by more than one variable failed with when a grouping field had <code>NA</code>
+</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-9-54">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-54"></a></h3>
@@ -60,7 +65,7 @@
 <li>
 <code>init</code> gains argument <code>mask=TRUE</code> to set output cells to <code>NA</code> where <code>x</code> is <code>NA</code> <a href="https://github.com/rspatial/terra/issues/2194" class="external-link">#2194</a> by Márcia Barbosa</li>
 <li>
-<code>focal</code> now errors if <code>NAonly</code> or <code>pad</code> (arguments from <code><a href="https://rspatial.github.io/terra/reference/focal.html">raster::focal</a></code>) are used <a href="https://github.com/rspatial/terra/issues/2189" class="external-link">#2189</a> by leunissene-ESNZ</li>
+<code>focal</code> now errors if <code>NAonly</code> is used, and ignores <code>pad</code> with a warning (arguments from <code><a href="https://rspatial.github.io/terra/reference/focal.html">raster::focal</a></code>) <a href="https://github.com/rspatial/terra/issues/2189" class="external-link">#2189</a> by leunissene-ESNZ</li>
 <li>
 <code>writeValues</code> gains arguments <code>col</code> and <code>ncols</code> like <code>readValues</code> <a href="https://github.com/rspatial/terra/issues/2188" class="external-link">#2188</a> by kbvernon</li>
 <li>

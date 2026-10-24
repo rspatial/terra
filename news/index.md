@@ -24,6 +24,11 @@
   API ignored the cropping window
   [\#2212](https://github.com/rspatial/terra/issues/2212) by Ondřej
   Ledvinka
+- `init` with a function failed on a multi-source SpatRaster
+  (`the condition has length > 1` in `writeStop`) after the `mask`
+  argument was added
+- `aggregate<SpatVector>` by more than one variable failed with when a
+  grouping field had `NA`
 
 ### enhancements
 
@@ -35,9 +40,10 @@
 - `init` gains argument `mask=TRUE` to set output cells to `NA` where
   `x` is `NA` [\#2194](https://github.com/rspatial/terra/issues/2194) by
   Márcia Barbosa
-- `focal` now errors if `NAonly` or `pad` (arguments from
+- `focal` now errors if `NAonly` is used, and ignores `pad` with a
+  warning (arguments from
   [`raster::focal`](https://rspatial.github.io/terra/reference/focal.html))
-  are used [\#2189](https://github.com/rspatial/terra/issues/2189) by
+  [\#2189](https://github.com/rspatial/terra/issues/2189) by
   leunissene-ESNZ
 - `writeValues` gains arguments `col` and `ncols` like `readValues`
   [\#2188](https://github.com/rspatial/terra/issues/2188) by kbvernon

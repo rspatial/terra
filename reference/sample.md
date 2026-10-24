@@ -53,7 +53,11 @@ spatSample(x, size, method="random", lonlat, as.points=FALSE, exact=FALSE)
   (each value in `x` is a probability weight), or "spread" (an
   approximately regular sample, using compact zones generated with
   [`k_means`](https://rspatial.github.io/terra/reference/k_means.md)
-  clustering of the raster cell locations)
+  clustering of the raster cell locations). An additional method for
+  `SpatRaster` is "display" which is used to quickly create a subsample
+  for mapping. It uses regular sampling but this method should not be
+  used in data analysis because the results may depend on whether the
+  data are on-disk or in-memory
 
 - replace:
 

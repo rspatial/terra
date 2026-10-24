@@ -62,5 +62,4 @@ set.seed(1)
 r <- init(r, runif)
 s <- init(r, runif)
 x <- xapp(r, s, fun=cor)
-#> Warning: [readStart] source already open for reading
 ```
