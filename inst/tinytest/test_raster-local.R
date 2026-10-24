@@ -27,6 +27,16 @@ z <- init(e, fun=8, mask=TRUE)
 expect_equal(as.vector(is.na(values(z))), as.vector(is.na(values(e))))
 expect_equal(unique(as.vector(values(z)[!is.na(values(z))])), 8)
 
+## init — function on a multi-source raster (mrangr / writeStop)
+r1 <- rast(nrows=5, ncols=5, vals=1)
+r2 <- rast(r1, vals=2)
+xs <- rast(list(r1, r2))
+ini2 <- init(xs, function(n) seq_len(n))
+expect_equal(nlyr(ini2), 2)
+expect_equal(as.vector(values(ini2)[,1]), 1:ncell(r1))
+ini2m <- init(xs, function(n) seq_len(n), mask=TRUE)
+expect_equal(nlyr(ini2m), 2)
+
 ## segregate — three binary layers for r < 20
 sg <- segregate(r < 20)
 expect_equal(nlyr(sg), 2L)

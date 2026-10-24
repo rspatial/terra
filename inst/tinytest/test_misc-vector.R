@@ -50,3 +50,10 @@ expect_true(isTRUE(is.empty(ext(0, 0, 1, 1))))
 
 ## relate — same geometry is equal to itself
 expect_true(relate(v[1, ], v[1, ], "equals"))
+
+## aggregate by two fields keeps groups with NA in a by-column
+vna <- v
+vna$NAME_2[1] <- NA
+ana <- aggregate(vna, c("NAME_1", "NAME_2"))
+expect_equal(nrow(ana), nrow(unique(data.frame(vna$NAME_1, vna$NAME_2))))
+expect_true(any(is.na(ana$NAME_2)))

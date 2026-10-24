@@ -27,19 +27,19 @@ setMethod("init", signature(x="SpatRaster"),
 			x@pntr <- x@pntr$initv(fun, isTRUE(mask), opt)
 			messages(x, "init")
 		} else {
-			nc <- ncol(x) * nlyr(x)
-			fname = filename
-			if (mask) fname = ""
-			b <- writeStart(x, fname, sources=sources(x), wopt=wopt)
+			out <- rast(x)
+			nc <- ncol(out) * nlyr(out)
+			fname <- ifelse(mask, "", filename)
+			b <- writeStart(out, fname, sources=sources(orig), wopt=wopt)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n, ...)
 				if (length(r) != n) {
 					error("init","the number of values returned by 'fun' is not correct")
 				}
-				writeValues(x, r, b$row[i], b$nrows[i])
+				writeValues(out, r, b$row[i], b$nrows[i])
 			}
-			out <- writeStop(x)
+			out <- writeStop(out)
 			if (mask) out <- mask(out, x, filename=filename, wopt=wopt)
 			out
 		}

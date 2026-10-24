@@ -50,7 +50,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		error("focal", "use 'na.policy' instead of 'NAonly'")
 	}
 	if (!is.null(dots$pad)) {
-		error("focal", "use 'expand' instead of 'pad'")
+		warn("focal", "invalid argument 'pad' is ignored")
 	}
 	if (is.null(dots$new)) {
 		new <- TRUE

@@ -258,7 +258,14 @@ setMethod("aggregate", signature(x="SpatVector"),
 
 			if (mvars) {
 				d[[by]] <- cvar
-				a <- aggregate_attributes(d, c(by, names(d)[iby]), fun=fun, count=count, ...)
+				# Group only on the composite key. stats::aggregate drops a
+				# group if any by-column is NA, while C++ still makes a
+				# geometry (paste() turns NA into "NA") — nrow mismatch.
+				a <- aggregate_attributes(d, by, fun=fun, count=count, ...)
+				keys <- unique(d[, c(by, names(d)[iby]), drop=FALSE])
+				dropcols <- setdiff(names(d)[iby], by)
+				a[intersect(names(a), dropcols)] <- NULL
+				a <- merge(keys, a, by=by, sort=FALSE)
 			} else {
 				a <- aggregate_attributes(d, names(d)[iby], fun=fun, count=count, ...)
 			}
