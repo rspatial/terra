@@ -53,6 +53,10 @@
 - removed spurious “missing geotransform” warning for some file when
   using `rast(..., md=TRUE)`
   [\#2208](https://github.com/rspatial/terra/issues/2208) by Kodi Arfer
+- `shift` gains argument `to` to center an object on a point or on the
+  extent of another object
+  [\#2201](https://github.com/rspatial/terra/issues/2201) by Márcia
+  Barbosa
 
 ### new
 
@@ -60,6 +64,9 @@
   using the terra C++ implementation
 - `distValues` to compute the distance from the (environmental) values
   at sites to these values in each raster cell.
+- `plot` methods for SpatRasterCollection and SpatRasterDataset
+  [\#2199](https://github.com/rspatial/terra/issues/2199) by Márcia
+  Barbosa
 
 ## version 1.9-50
 
