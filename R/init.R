@@ -30,7 +30,7 @@ setMethod("init", signature(x="SpatRaster"),
 			out <- rast(x)
 			nc <- ncol(out) * nlyr(out)
 			fname <- ifelse(mask, "", filename)
-			b <- writeStart(out, fname, sources=sources(orig), wopt=wopt)
+			b <- writeStart(out, fname, sources=sources(x), wopt=wopt)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n, ...)
