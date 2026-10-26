@@ -15,7 +15,8 @@ Plots labels, that is a textual (rather than color) representation of values, on
 \usage{
 \S4method{text}{SpatRaster}(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 
-\S4method{text}{SpatVector}(x, labels, halo=FALSE, inside=FALSE, fit=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
+\S4method{text}{SpatVector}(x, labels, halo=FALSE, inside=FALSE, fit=FALSE, 
+		hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 }
 
 \arguments{
