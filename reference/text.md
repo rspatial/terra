@@ -10,7 +10,8 @@ values, on top an existing plot (map).
 text(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 
 # S4 method for class 'SpatVector'
-text(x, labels, halo=FALSE, inside=FALSE, fit=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
+text(x, labels, halo=FALSE, inside=FALSE, fit=FALSE, 
+    hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 ```
 
 ## Arguments

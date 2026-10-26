@@ -80,15 +80,12 @@ v <- vect(f)
 
 # Select the five largest polygons
 large5 <- selectSize(v, n=5)
-#> Error in selectSize(v, n = 5): could not find function "selectSize"
 
 # Select the three smallest polygons
 small3 <- selectSize(v, n=3, largest=FALSE)
-#> Error in selectSize(v, n = 3, largest = FALSE): could not find function "selectSize"
 
 # Select up to 4 largest polygons satisfying a given minimum area
 large <- selectSize(v, n=4, threshold=260e+6)
-#> Error in selectSize(v, n = 4, threshold = 2.6e+08): could not find function "selectSize"
 
 if (FALSE) { # \dontrun{
 plot(v)

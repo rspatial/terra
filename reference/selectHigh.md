@@ -1,13 +1,19 @@
 # select cells with high or low values
 
-Identify n cells that have the highest or lowest values in the first
-layer of a SpatRaster.
+Identify the cells that have the `n` highest or lowest values in the
+first layer of a SpatRaster.
+
+With `ties="all"` (the default), all cells that have one of these values
+are selected, so the number of `TRUE` cells can be larger than `n` when
+there are ties (as is common with integer data). With `ties="first"`,
+exactly `n` cells are selected; ties are broken by choosing the smallest
+cell numbers.
 
 ## Usage
 
 ``` r
 # S4 method for class 'SpatRaster'
-selectHighest(x, n, low=FALSE)
+selectHighest(x, n, low=FALSE, ties="first", filename="", ...)
 ```
 
 ## Arguments
@@ -18,12 +24,28 @@ selectHighest(x, n, low=FALSE)
 
 - n:
 
-  The number of cells to select
+  positive integer. The number of highest or lowest values to select
 
 - low:
 
   logical. If `TRUE`, the lowest values are selected instead of the
   highest values
+
+- ties:
+
+  character. Either `"all"` to select all cells that have one of the `n`
+  highest or lowest values (the number of cells can be larger than `n`
+  when there are ties), or `"first"` to select exactly `n` cells,
+  breaking ties by choosing the smallest cell numbers
+
+- filename:
+
+  character. Output filename
+
+- ...:
+
+  additional arguments for writing files as in
+  [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md)
 
 ## Value
 
