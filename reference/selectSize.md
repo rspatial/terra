@@ -8,6 +8,7 @@ multipart features into single parts.
 ## Usage
 
 ``` r
+# S4 method for class 'SpatVector'
 selectSize(x, n=Inf, largest=TRUE, threshold=NULL,
            dissolve=FALSE, singleparts=TRUE)
 ```

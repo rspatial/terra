@@ -3,11 +3,11 @@
 Identify the cells that have the `n` highest or lowest values in the
 first layer of a SpatRaster.
 
-With `ties="all"` (the default), all cells that have one of these values
-are selected, so the number of `TRUE` cells can be larger than `n` when
-there are ties (as is common with integer data). With `ties="first"`,
-exactly `n` cells are selected; ties are broken by choosing the smallest
-cell numbers.
+With `ties="first"` (the default), exactly `n` cells are selected; ties
+are broken by choosing the smallest cell numbers. With `ties="all"`, all
+cells that have one of the `n` highest or lowest values are selected, so
+the number of `TRUE` cells can be larger than `n` when there are ties
+(as is common with integer data).
 
 ## Usage
 
