@@ -23,7 +23,7 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 
 setMethod("convHull", signature(x="SpatVector"),
 	function(x, by="") {
-#		warn("convHull", "method is deprecated, please use 'hull(type='convex')'")
+		warn("convHull", "method is deprecated, please use 'hull(type='convex')'")
 		hull(x, type="convex", by=by)
 	}
 )

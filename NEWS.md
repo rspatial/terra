@@ -22,6 +22,8 @@
 - `scale<SpatRaster>` attaches attributes `"scaled:center"` and `"scaled:scale"` as in `base::scale`
 - removed spurious "missing geotransform" warning for some file when using `rast(..., md=TRUE)` [#2208](https://github.com/rspatial/terra/issues/2208) by Kodi Arfer
 - `shift` gains argument `to` to center an object on a point or on the extent of another object [#2201](https://github.com/rspatial/terra/issues/2201) by Márcia Barbosa
+- `text<SpatVector>` gains argument `fit` to attempt to plot labels entirely inside their corresponding polygon
+- `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine the mapped colors (and alpha) of `x` with another raster (e.g. hillshade with `"multiply"`) [#36](https://github.com/rspatial/terra/discussions/36)
 
 
 ## new 
@@ -29,6 +31,8 @@
 - `modal` for vectors implementation. Moved from the raster package but using the terra C++ implementation
 - `distValues` to compute the distance from the (environmental) values at sites to these values in each raster cell.
 - `plot` methods for SpatRasterCollection and SpatRasterDataset [#2199](https://github.com/rspatial/terra/issues/2199) by Márcia Barbosa
+- `selectSize<SpatVector>` method to select polygons by size [#2215](https://github.com/rspatial/terra/pull/2215) by Márcia Barbosa
+
 
 # version 1.9-50
 

@@ -67,7 +67,7 @@ lines(eln, col='red', lwd=2)
 
 
 ## self-erase
-h <- convHull(v[-12], "NAME_1")
+h <- hull(v[-12], by="NAME_1")
 he <- erase(h)
 plot(h, lwd=2, border="red", lty=2)
 lines(he, col="gray", lwd=3)
