@@ -10,7 +10,7 @@
 \description{
 Identify the cells that have the \code{n} highest or lowest values in the first layer of a SpatRaster.
 
-With \code{ties="all"} (the default), all cells that have one of these values are selected, so the number of \code{TRUE} cells can be larger than \code{n} when there are ties (as is common with integer data). With \code{ties="first"}, exactly \code{n} cells are selected; ties are broken by choosing the smallest cell numbers. 
+With \code{ties="first"} (the default), exactly \code{n} cells are selected; ties are broken by choosing the smallest cell numbers. With \code{ties="all"}, all cells that have one of the \code{n} highest or lowest values are selected, so the number of \code{TRUE} cells can be larger than \code{n} when there are ties (as is common with integer data). 
 }
 
 \usage{
