@@ -233,12 +233,218 @@ setMethod("text", signature(x="SpatRaster"),
 		} else {
 			text(xy[,1], xy[,2], labels, xpd=xpd, ...)
 		}
+		invisible(xy)
 	}
 )
 
 
+.central_loc <- function(x, labels="", dots=list(), halo=FALSE, hw=0.1, inside=FALSE) {
+
+	.label_boxes <- function(xy, labels, dots, halo=FALSE, hw=0.1) {
+		n <- nrow(xy)
+		labels <- rep_len(as.character(labels), n)
+		cex <- dots$cex
+		if (is.null(cex)) cex <- graphics::par("cex")
+		cex <- rep_len(cex, n)
+		font <- dots$font
+		if (is.null(font)) font <- graphics::par("font")
+		family <- dots$family
+		if (is.null(family)) family <- graphics::par("family")
+		vfont <- dots$vfont
+		srt <- dots$srt
+		if (is.null(srt)) srt <- 0
+		srt <- rep_len(srt, n)
+
+		sw <- function(s, c) {
+			graphics::strwidth(s, units="user", cex=c, font=font, family=family, vfont=vfont)
+		}
+		sh <- function(s, c) {
+			graphics::strheight(s, units="user", cex=c, font=font, family=family, vfont=vfont)
+		}
+		w <- h <- numeric(n)
+		for (c in unique(cex)) {
+			j <- which(cex == c)
+			w[j] <- sw(labels[j], c)
+			h[j] <- sh(labels[j], c)
+		}
+		if (halo && isTRUE(hw > 0)) {
+			w <- w + 2 * hw * sw(rep("A", n), cex)
+			h <- h + 2 * hw * sh(rep("A", n), cex)
+		}
+
+		xx <- xy[, 1]
+		yy <- xy[, 2]
+		ax <- rep(0.5, n)
+		ay <- rep(0.5, n)
+		pos <- dots$pos
+		if (!is.null(pos)) {
+			pos <- rep_len(as.integer(pos), n)
+			offset <- dots$offset
+			if (is.null(offset)) offset <- 0.5
+			ox <- offset * sw(rep("m", n), cex)
+			oy <- offset * sh(rep("X", n), cex)
+			i <- pos == 1
+			ax[i] <- 0.5; ay[i] <- 1; yy[i] <- yy[i] - oy[i]
+			i <- pos == 2
+			ax[i] <- 1; ay[i] <- 0.5; xx[i] <- xx[i] - ox[i]
+			i <- pos == 3
+			ax[i] <- 0.5; ay[i] <- 0; yy[i] <- yy[i] + oy[i]
+			i <- pos == 4
+			ax[i] <- 0; ay[i] <- 0.5; xx[i] <- xx[i] + ox[i]
+		} else if (!is.null(dots$adj)) {
+			adj <- rep_len(dots$adj, 2)
+			ax[] <- adj[1]
+			ay[] <- adj[2]
+		}
+
+		xmin <- xx - ax * w
+		xmax <- xx + (1 - ax) * w
+		ymin <- yy - ay * h
+		ymax <- yy + (1 - ay) * h
+		cx <- xy[, 1]
+		cy <- xy[, 2]
+		dx <- cbind(xmin - cx, xmax - cx, xmax - cx, xmin - cx)
+		dy <- cbind(ymin - cy, ymin - cy, ymax - cy, ymax - cy)
+		cs <- cos(srt * pi / 180)
+		sn <- sin(srt * pi / 180)
+		rx <- cx + dx * cs - dy * sn
+		ry <- cy + dx * sn + dy * cs
+		rx <- cbind(rx, rx[, 1])
+		ry <- cbind(ry, ry[, 1])
+		g <- cbind(
+			geom = rep(seq_len(n), each = 5),
+			part = 1,
+			x = as.vector(t(rx)),
+			y = as.vector(t(ry)),
+			hole = 0
+		)
+		vect(g, type="polygons", crs="local")
+	}
+
+
+	.label_inside <- function(x, xy, labels, dots, halo=FALSE, hw=0.1) {
+		n <- nrow(x)
+		if (n == 0) {
+			return(logical(0))
+		}
+		b <- try(.label_boxes(xy, labels, dots, halo, hw), silent=TRUE)
+		if (inherits(b, "try-error") || nrow(b) != n) {
+			return(rep(FALSE, n))
+		}
+		xx <- x
+		crs(xx) <- "local"
+		vapply(seq_len(n), function(i) {
+			isTRUE(is.related(xx[i], b[i], "contains"))
+		}, logical(1))
+	}
+
+
+	.central_part <- function(b) {
+		if (nrow(b) == 0) {
+			return(b)
+		}
+		b <- disagg(b)
+		if (nrow(b) > 1) {
+			b <- b[which.max(expanse(b, transform=FALSE))]
+		}
+		b
+	}
+
+	n <- nrow(x)
+	if (n == 0) {
+		return(cbind(x=numeric(), y=numeric()))
+	}
+	
+	# same starting point as text(..., fit=FALSE)
+	xy <- crds(centroids(x, inside=inside))
+	# only shrink-search polygons whose drawn label does not fit
+	if (grDevices::dev.cur() > 1) {
+		need <- !.label_inside(x, xy, labels, dots, halo=halo, hw=hw)
+	} else {
+		need <- rep(TRUE, n)
+	}
+	if (!any(need)) {
+		return(xy)
+	}
+	allxy <- xy
+	x <- x[need]
+	xy <- xy[need, , drop=FALSE]
+	n <- nrow(x)
+	# geodesic buffer is slow; treat coordinates as planar
+	crs(x) <- "local"
+	rad <- sqrt(expanse(x, transform=FALSE) / pi)
+	# dense outlines: one light simplify makes every later buffer cheaper
+	nv <- try(nrow(geom(x)), silent=TRUE)
+	if (!inherits(nv, "try-error") && nv > 400) {
+		tol <- stats::median(rad[is.finite(rad) & rad > 0], na.rm=TRUE) * 0.01
+		if (is.finite(tol) && tol > 0) {
+			xs <- try(simplifyGeom(x, tol), silent=TRUE)
+			if (!inherits(xs, "try-error") && nrow(xs) == n) {
+				x <- xs
+				rad <- sqrt(expanse(x, transform=FALSE) / pi)
+			}
+		}
+	}
+
+	for (i in seq_len(n)) {
+		p <- x[i]
+		rmax <- rad[i]
+		if (!is.finite(rmax) || rmax <= 0) {
+			next
+		}
+		# holes make convHull(p2) ⊂ p impossible; test against the outer ring
+		pouter <- fillHoles(p)
+		# already convex (enough): true centroid if it lies inside
+		if (is.related(pouter, hull(p, "convex"), "contains")) {
+			cand <- centroids(p)
+			if (is.related(p, cand, "contains")) {
+				xy[i, ] <- crds(cand)
+			}
+			next
+		}
+		# binary search: smallest r whose inner hull fits, else the
+		# largest non-empty shrink. Label placement only needs ~5% of rad.
+		lo <- 0
+		hi <- rmax
+		tol <- rmax * 0.05
+		found <- NULL
+		last <- NULL
+		for (k in 1:8) {
+			if ((hi - lo) <= tol) {
+				break
+			}
+			mid <- (lo + hi) / 2
+			b <- buffer(p, -mid, quadsegs=3)
+			a <- if (nrow(b) == 0) 0 else expanse(b, transform=FALSE)
+			if (length(a) == 0 || is.na(a[1]) || a[1] <= 0) {
+				hi <- mid
+				next
+			}
+			b <- .central_part(b)
+			last <- b
+			if (is.related(pouter, hull(b, "convex"), "contains")) {
+				found <- b
+				hi <- mid
+			} else {
+				lo <- mid
+			}
+		}
+		inner <- if (!is.null(found)) found else last
+		if (!is.null(inner) && nrow(inner) > 0) {
+			cand <- centroids(inner)
+			if (is.related(p, cand, "contains")) {
+				xy[i, ] <- crds(cand)
+			}
+		}
+	}
+	allxy[need, ] <- xy
+	allxy
+}
+
+
+
 setMethod("text", signature(x="SpatVector"),
-	function(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...) {
+	function(x, labels, halo=FALSE, inside=FALSE, fit=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...) {
 		if (missing(labels)) {
 			labels <- 1:nrow(x)
 		} else if (length(labels) == 1) {
@@ -254,16 +460,24 @@ setMethod("text", signature(x="SpatVector"),
 				}
 			}
 		}
-		xy <- geom(centroids(x, inside=inside))[,c("x","y"),drop=FALSE]
+		labels <- as.character(labels)
+		if (length(labels) < nrow(x)) {
+			labels <- rep_len(labels, nrow(x))
+		}
+		if (fit && (geomtype(x) == "polygons")) {
+			xy <- .central_loc(x, labels, list(...), halo=halo, hw=hw, inside=inside)
+		} else {
+			xy <- crds(centroids(x, inside=inside))
+		}
         if (isTRUE(jitter > 0)) {
 			xy <- jitter(xy, factor = jitter)
 		}
-		labels <- as.character(labels)
 		if (halo && (isTRUE(hw > 0))) {
 			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, xpd=xpd, ...)
 		} else {
 			text(xy[,1], xy[,2], labels, xpd=xpd, ...)
 		}
+		invisible(xy)
 	}
 )
 
