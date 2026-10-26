@@ -10,7 +10,7 @@ values, on top an existing plot (map).
 text(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 
 # S4 method for class 'SpatVector'
-text(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
+text(x, labels, halo=FALSE, inside=FALSE, fit=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE, ...)
 ```
 
 ## Arguments
@@ -42,8 +42,14 @@ text(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE
 
 - inside:
 
-  logical. Should the text always be placed inside one the
-  sub-geometries?
+  logical. if \\x) is a SpatVector of polygons, should the (x,y)
+  coordinates of the label be inside the geometry
+
+- fit:
+
+  logical. if \\x) is a SpatVector of polygons, should an attempt be
+  made assure that the labels are entirely inside their corresponding
+  polygon
 
 - jitter:
 
@@ -66,6 +72,10 @@ text(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, xpd=TRUE
 
 [`text`](https://rdrr.io/r/graphics/text.html)`, `[`plot`](https://rspatial.github.io/terra/reference/plot.md)`, `[`halo`](https://rspatial.github.io/terra/reference/halo.md)
 
+## Value
+
+matrix with the label locations (invisibly)
+
 ## Examples
 
 ``` r
@@ -84,5 +94,14 @@ text(r, halo=TRUE, hc="blue", col="white", hw=0.2)
 
 
 plot(r, col=rainbow(16))
-text(r, col=c("black", "white"), vfont=c("sans serif", "bold"), cex=2)
+xy <- text(r, col=c("black", "white"), vfont=c("sans serif", "bold"), cex=2)
+
+head(xy)
+#>         x    y
+#> [1,] -135 67.5
+#> [2,]  -45 67.5
+#> [3,]   45 67.5
+#> [4,]  135 67.5
+#> [5,] -135 22.5
+#> [6,]  -45 22.5
 ```

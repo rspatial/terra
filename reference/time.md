@@ -74,8 +74,8 @@ time(s)
 # with time zone
 time(s) <- as.POSIXlt(Sys.time(), "America/New_York") + 0:2
 time(s)
-#> [1] "2026-10-24 14:04:36 EDT" "2026-10-24 14:04:37 EDT"
-#> [3] "2026-10-24 14:04:38 EDT"
+#> [1] "2026-10-26 10:38:20 EDT" "2026-10-26 10:38:21 EDT"
+#> [3] "2026-10-26 10:38:22 EDT"
 timeInfo(s)
 #>   time    step             zone
 #> 1 TRUE seconds America/New_York

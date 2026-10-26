@@ -29,6 +29,13 @@ selectHighest(x, n, low=FALSE)
 
 SpatRaster
 
+## See also
+
+[`where.max`](https://rspatial.github.io/terra/reference/where.md),
+[`where.min`](https://rspatial.github.io/terra/reference/where.md),
+[`ifel`](https://rspatial.github.io/terra/reference/ifelse.md),
+[`selectSize`](https://rspatial.github.io/terra/reference/selectSize.md)
+
 ## Examples
 
 ``` r

@@ -981,6 +981,9 @@
   : Select the values of a range of layers, as specified by cell values
   in another SpatRaster
 
+- [`selectSize()`](https://rspatial.github.io/terra/reference/selectSize.md)
+  : Select features by size
+
 - [`saveRDS(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/serialize.md)
   [`saveRDS(`*`<SpatRasterDataset>`*`)`](https://rspatial.github.io/terra/reference/serialize.md)
   [`saveRDS(`*`<SpatRasterCollection>`*`)`](https://rspatial.github.io/terra/reference/serialize.md)

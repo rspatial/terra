@@ -44,7 +44,7 @@
 <span><span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, digits<span class="op">=</span><span class="fl">0</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, hc<span class="op">=</span><span class="st">"white"</span>, hw<span class="op">=</span><span class="fl">0.1</span>, jitter<span class="op">=</span><span class="fl">0</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, inside<span class="op">=</span><span class="cn">FALSE</span>, hc<span class="op">=</span><span class="st">"white"</span>, hw<span class="op">=</span><span class="fl">0.1</span>, jitter<span class="op">=</span><span class="fl">0</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, inside<span class="op">=</span><span class="cn">FALSE</span>, fit<span class="op">=</span><span class="cn">FALSE</span>, hc<span class="op">=</span><span class="st">"white"</span>, hw<span class="op">=</span><span class="fl">0.1</span>, jitter<span class="op">=</span><span class="fl">0</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,7 +69,10 @@
 <dd><p>numeric. The halo width</p></dd>
 
   <dt id="arg-inside">inside<a class="anchor" aria-label="anchor" href="#arg-inside"></a></dt>
-<dd><p>logical. Should the text always be placed inside one the sub-geometries?</p></dd>
+<dd><p>logical. if \(x) is a SpatVector of polygons, should the (x,y) coordinates of the label be inside the geometry</p></dd>
+
+  <dt id="arg-fit">fit<a class="anchor" aria-label="anchor" href="#arg-fit"></a></dt>
+<dd><p>logical. if \(x) is a SpatVector of polygons, should an attempt be made assure that the labels are entirely inside their corresponding polygon</p></dd>
 
   <dt id="arg-jitter">jitter<a class="anchor" aria-label="anchor" href="#arg-jitter"></a></dt>
 <dd><p>numeric. The amount of random noise used to adjust label positions, possibly avoiding overlaps. See argument 'factor' in <code><a href="https://rdrr.io/r/base/jitter.html" class="external-link">jitter</a></code></p></dd>
@@ -84,6 +87,10 @@
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a>, <a href="plot.html">plot</a>, <a href="halo.html">halo</a></code></p></div>
+    </div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>matrix with the label locations (invisibly)</p>
     </div>
 
     <div class="section level2">
@@ -103,8 +110,16 @@
 <span class="r-plt img"><img src="text-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">16</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">text</span><span class="op">(</span><span class="va">r</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"white"</span><span class="op">)</span>, vfont<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"sans serif"</span>, <span class="st">"bold"</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu">text</span><span class="op">(</span><span class="va">r</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"white"</span><span class="op">)</span>, vfont<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"sans serif"</span>, <span class="st">"bold"</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="text-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">xy</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         x    y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -135 67.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  -45 67.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]   45 67.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  135 67.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -135 22.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]  -45 22.5</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
