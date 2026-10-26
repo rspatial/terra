@@ -51,6 +51,17 @@ expect_true(isTRUE(is.empty(ext(0, 0, 1, 1))))
 ## relate — same geometry is equal to itself
 expect_true(relate(v[1, ], v[1, ], "equals"))
 
+## .central_loc — shrink until convex hull fits; point is inside
+bean <- vect("POLYGON ((5.9 50, 6.3 50, 6.5 49.8, 6.3 49.6, 5.9 49.5, 6.3 49.7, 6.3 49.9, 5.9 50))")
+expect_false(is.related(bean, centroids(bean), "contains"))
+lp <- terra:::.central_loc(bean)
+expect_true(is.related(bean, vect(lp), "contains"))
+
+# hole / C-shape: hull can never fit; must still return a point inside
+donut <- vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (3 3, 7 3, 7 7, 3 7, 3 3))")
+ld <- terra:::.central_loc(donut)
+expect_true(is.related(donut, vect(ld), "contains"))
+
 ## aggregate by two fields keeps groups with NA in a by-column
 vna <- v
 vna$NAME_2[1] <- NA

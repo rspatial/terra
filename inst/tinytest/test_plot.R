@@ -3,6 +3,26 @@
 s <- rast(system.file("ex/logo.tif", package="terra"))
 plotRGB(c(s[[1]], s[[2]], s[[3]]))
 
+# blend: grayscale hill-like layer, RGB, user function, and resample
+r <- rast(nrows=6, ncols=6, xmin=0, xmax=6, ymin=0, ymax=6, crs="local", vals=1:36)
+h <- rast(r, vals=rep(seq(0.3, 1, length.out=6), each=6))
+png(tempfile(fileext=".png"))
+plot(r, blend=h, legend=FALSE, axes=FALSE, mar=NA)
+plot(r, blend=h, blendfun="screen", legend=FALSE, axes=FALSE, mar=NA)
+plot(r, blend=h, blendfun="overlay", legend=FALSE, axes=FALSE, mar=NA)
+plot(r, blend=h, blendfun=function(a, b) a * b, legend=FALSE, axes=FALSE, mar=NA)
+hrgb <- c(h, h, h)
+plot(r, blend=hrgb, legend=FALSE, axes=FALSE, mar=NA)
+h2 <- rast(nrows=3, ncols=3, ext=ext(r), crs="local", vals=0.5)
+plot(r, blend=h2, legend=FALSE, axes=FALSE, mar=NA)
+ha <- rast(r, vals=0.5)
+plot(r, blend=h, alpha=ha, legend=FALSE, axes=FALSE, mar=NA)
+h4 <- c(h, h, h, ha)
+plot(r, blend=h4, legend=FALSE, axes=FALSE, mar=NA)
+dev.off()
+expect_error(plot(r, blend=1, legend=FALSE, axes=FALSE, mar=NA))
+expect_error(plot(r, blend=h, blendfun="nope", legend=FALSE, axes=FALSE, mar=NA))
+
 # colNA for continuous vector plot (#2198)
 v <- vect(system.file("ex/lux.shp", package="terra"))
 v[5, "AREA"] <- NA

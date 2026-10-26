@@ -32,7 +32,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
     maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, 
 	all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL,
 	sort=FALSE, reverse=FALSE, grid=FALSE, zebra=FALSE, ext=NULL, reset=FALSE,
-	add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL, ...)
+	add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL,
+	blend=NULL, blendfun="multiply", ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, 
 	plg=list(), pax=list(), ...)
@@ -108,6 +109,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the layer that is plotted (1 to the number of layers) }  
   \item{colNA}{character. color for the NA values}
   \item{alpha}{Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly}
+  \item{blend}{NULL or SpatRaster. If not \code{NULL}, the colors of \code{x} are combined with the colors of \code{blend} (after \code{x} has been mapped to colors). \code{blend} may be a single layer (treated as grayscale), an RGB raster, or a raster with a color table. A fourth RGB layer or a color-table alpha column is used as the alpha of \code{blend}; otherwise that alpha is 1 (opaque). It is resampled to the plotted grid of \code{x} if needed. Missing values in \code{blend} are treated as white and opaque (no change under \code{"multiply"}). The \code{alpha} of \code{x} (scalar, color alpha, or a SpatRaster) is included in the same blend; it is not applied afterwards. The legend of \code{x} is not affected}
+  \item{blendfun}{character or function. How to combine the RGB and alpha of \code{x} and \code{blend}. One of \code{"multiply"} (the default), \code{"screen"}, or \code{"overlay"}; or a function of two arguments (each a three-column matrix of RGB values between 0 and 1, one row per cell) that returns a matrix of the same shape. The first argument is the colors of \code{x}, the second those of \code{blend}. Alpha is combined with the same function}
   \item{sort}{logical. If \code{TRUE} legends with categorical values are sorted. If \code{x} is a \code{SpatVector} you can also supply a vector of the unique values, in the order in which you want them to appear in the legend}
   \item{reverse}{logical. If \code{TRUE}, the legend order is reversed}
   \item{grid}{logical. If \code{TRUE} grid lines are drawn. Their properties such as type and color can be set with the \code{pax} argument. The grid is drawn first such that it is covered by \code{x}. See \code{\link{add_grid}} to add grid lines on top of the map}
@@ -177,6 +180,13 @@ plot(r/2, range=c(50,600), mar=c(2, 2, 2, 2), legend=FALSE,
 	pax=list(side=c(1,4), cex.axis=.6), box=FALSE)
 
 par(oldpar)
+
+# hillshade with multiply blend (legend stays on elevation)
+e <- rast(system.file("ex/elev.tif", package="terra"))
+slp <- terrain(e, "slope", unit="radians")
+asp <- terrain(e, "aspect", unit="radians")
+hill <- shade(slp, asp, 30, 270)
+plot(e, blend=hill)
 
 # multi-layer with RGB
 s <- rast(system.file("ex/logo.tif", package="terra"))   

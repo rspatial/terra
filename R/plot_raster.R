@@ -460,6 +460,151 @@
 
 
 
+.scale01 <- function(v) {
+	ok <- is.finite(v)
+	if (!any(ok)) {
+		return(rep(1, length(v)))
+	}
+	mx <- max(v[ok])
+	mn <- min(v[ok])
+	if (mx > 1.5) {
+		v <- v / 255
+	} else if (mn < 0 || mx > 1) {
+		if (mx > mn) {
+			v <- (v - mn) / (mx - mn)
+		} else {
+			v[] <- 1
+		}
+	}
+	v[v < 0] <- 0
+	v[v > 1] <- 1
+	v[is.na(v)] <- 1
+	v
+}
+
+
+.get_blendfun <- function(blendfun) {
+	if (is.character(blendfun)) {
+		nm <- match.arg(blendfun[1], c("multiply", "screen", "overlay"))
+		if (nm == "multiply") {
+			return(function(a, b) a * b)
+		} else if (nm == "screen") {
+			return(function(a, b) 1 - (1 - a) * (1 - b))
+		} else {
+			return(function(a, b) {
+				out <- 1 - 2 * (1 - a) * (1 - b)
+				lo <- a <= 0.5
+				out[lo] <- (2 * a * b)[lo]
+				out
+			})
+		}
+	}
+	if (!is.function(blendfun)) {
+		error("plot", "blendfun must be a function or one of 'multiply', 'screen', 'overlay'")
+	}
+	function(a, b) {
+		out <- blendfun(a, b)
+		if (!is.matrix(out) || (ncol(out) != 3) || (nrow(out) != nrow(a))) {
+			error("plot", "blendfun must return a three-column matrix with one row per cell")
+		}
+		out
+	}
+}
+
+
+.align_blend <- function(blend, x) {
+	if (!inherits(blend, "SpatRaster")) {
+		error("plot", "'blend' must be a SpatRaster")
+	}
+	if (nlyr(blend) < 1) {
+		error("plot", "'blend' has no layers")
+	}
+	ok <- try(compareGeom(blend, x, crs=FALSE, stopOnError=FALSE), silent=TRUE)
+	if (!isTRUE(ok)) {
+		method <- if (has.colors(blend)[1]) "near" else "bilinear"
+		ct <- if (has.colors(blend)[1]) coltab(blend) else NULL
+		blend <- resample(blend, x, method=method)
+		if (!is.null(ct) && !has.colors(blend)[1]) {
+			coltab(blend) <- ct
+		}
+	}
+	blend
+}
+
+
+.blend_rgb01 <- function(blend) {
+	nl <- nlyr(blend)
+	rgb_i <- RGB(blend)
+	if ((length(rgb_i) >= 3) || (nl >= 3)) {
+		ii <- if (length(rgb_i) >= 3) rgb_i[1:3] else 1:3
+		m <- sapply(ii, function(i) as.vector(as.matrix(blend[[i]], wide=TRUE)))
+		m <- cbind(m)
+		for (j in 1:3) {
+			m[, j] <- .scale01(m[, j])
+		}
+		ia <- if (length(rgb_i) >= 4) rgb_i[4] else if (nl >= 4) 4 else NULL
+		if (is.null(ia)) {
+			al <- rep(1, nrow(m))
+		} else {
+			al <- .scale01(as.vector(as.matrix(blend[[ia]], wide=TRUE)))
+		}
+		return(cbind(m, al))
+	}
+	if (has.colors(blend)[1]) {
+		ct <- coltab(blend)[[1]]
+		z <- as.vector(as.matrix(blend[[1]], wide=TRUE))
+		i <- match(z, ct[, 1])
+		rgba <- matrix(1, length(z), 4)
+		ok <- !is.na(i)
+		if (ncol(ct) >= 4) {
+			rgba[ok, 1:3] <- as.matrix(ct[i[ok], 2:4, drop=FALSE]) / 255
+		}
+		if (ncol(ct) >= 5) {
+			rgba[ok, 4] <- ct[i[ok], 5] / 255
+		}
+		return(rgba)
+	}
+	g <- .scale01(as.vector(as.matrix(blend[[1]], wide=TRUE)))
+	cbind(g, g, g, rep(1, length(g)))
+}
+
+
+.apply_blend <- function(out, blend, blendfun, alpha=NULL) {
+	rmat <- as.matrix(out$r)
+	nr <- nrow(rmat)
+	nc <- ncol(rmat)
+	a <- t(grDevices::col2rgb(rmat, alpha=TRUE)) / 255
+	b <- .blend_rgb01(blend)
+	if (nrow(b) != nrow(a)) {
+		error("plot", "blended rasters do not have the same number of cells")
+	}
+	if (inherits(alpha, "SpatRaster")) {
+		al <- .scale01(as.vector(as.matrix(alpha[[1]], wide=TRUE)))
+		if (length(al) != nrow(a)) {
+			error("plot", "alpha does not have the same number of cells as x")
+		}
+		a[, 4] <- al
+	}
+	fun <- .get_blendfun(blendfun)
+	rgb <- fun(a[, 1:3, drop=FALSE], b[, 1:3, drop=FALSE])
+	al <- fun(cbind(a[, 4], a[, 4], a[, 4]), cbind(b[, 4], b[, 4], b[, 4]))[, 1]
+	rgb[!is.finite(rgb)] <- 0
+	rgb[rgb < 0] <- 0
+	rgb[rgb > 1] <- 1
+	al[!is.finite(al)] <- 0
+	al[al < 0] <- 0
+	al[al > 1] <- 1
+	cols <- grDevices::rgb(rgb[, 1], rgb[, 2], rgb[, 3], al, maxColorValue=1)
+	rnew <- matrix(cols, nrow=nr, ncol=nc)
+	na <- is.na(rmat)
+	if (any(na)) {
+		rnew[na] <- rmat[na]
+	}
+	out$r <- as.raster(rnew)
+	out
+}
+
+
 .prep.plot.data <- function(x, type, cols, mar=NULL, draw=FALSE,
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
   levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
@@ -472,6 +617,7 @@
   maxcell=500000, buffer=FALSE, clip=TRUE, 
   # for rgb 
   stretch=NULL, scale=NULL, bgalpha=NULL, zlim=NULL, zcol=NULL, overview=NULL, 
+  blend=NULL, blendfun="multiply",
 #catch and kill
   cex=1, decreasing=FALSE, font=NULL,
   ...) {
@@ -675,6 +821,15 @@
 				out$r[is.na(out$r)] <- out$colNA
 			}
 		}
+
+		if (!is.null(blend) && out$values && !is.null(out$r)) {
+			blend <- .align_blend(blend, x)
+			if (inherits(alpha, "SpatRaster")) {
+				alpha <- .align_blend(alpha, x)
+			}
+			out <- .apply_blend(out, blend, blendfun, alpha)
+			alpha <- NULL
+		}
 	}
 
 	if (draw) {
@@ -697,7 +852,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"),
-	function(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, reverse=FALSE, grid=FALSE, zebra=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL, ...) {
+	function(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, reverse=FALSE, grid=FALSE, zebra=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL, blend=NULL, blendfun="multiply", ...) {
 
 		old.mar <- graphics::par()$mar
 		on.exit(graphics::par(mar=old.mar))
@@ -726,7 +881,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					alpha <- alpha[[y]]
 				}
 			}
-			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=2*maxcell/length(y), smooth=smooth, range=range, fill_range=fill_range, levels=levels, all_levels=all_levels, breaks=breaks, breakby=breakby, fun=fun, colNA=colNA, alpha=alpha, zebra=zebra, grid=grid, sort=sort, reverse=reverse, ext=ext, reset=reset, add=add, buffer=buffer, background=background, box=box, clip=clip, overview=overview, ...)
+			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=2*maxcell/length(y), smooth=smooth, range=range, fill_range=fill_range, levels=levels, all_levels=all_levels, breaks=breaks, breakby=breakby, fun=fun, colNA=colNA, alpha=alpha, zebra=zebra, grid=grid, sort=sort, reverse=reverse, ext=ext, reset=reset, add=add, buffer=buffer, background=background, box=box, clip=clip, overview=overview, blend=blend, blendfun=blendfun, ...)
 			return(invisible())
 		} else {
 			x <- x[[y]]
@@ -802,7 +957,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 
-		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, fill_range=fill_range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, zebra=zebra, sort=sort, reverse=reverse, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, buffer=buffer, background=background, box=box, maxcell=maxcell, clip=clip, overview=overview, ...)
+		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, fill_range=fill_range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, zebra=zebra, sort=sort, reverse=reverse, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, buffer=buffer, background=background, box=box, maxcell=maxcell, clip=clip, overview=overview, blend=blend, blendfun=blendfun, ...)
 
 		add_more(fun, y)
 		
