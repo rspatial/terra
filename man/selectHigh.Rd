@@ -26,7 +26,7 @@ Identify n cells that have the highest or lowest values in the first layer of a 
 SpatRaster
 }
 
-\seealso{\code{\link{where.max}}, \code{\link{where.min}}, \code{\link{ifel}}, \code{\link{selectSize}}
+\seealso{\code{\link{where.max}}, \code{\link{where.min}}, \code{\link{ifel}}, \code{\link{selectSize}}}
 
 \examples{
 f <- system.file("ex/elev.tif", package="terra")
