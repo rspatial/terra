@@ -20,7 +20,8 @@ plot(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=l
     maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, 
   all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL,
   sort=FALSE, reverse=FALSE, grid=FALSE, zebra=FALSE, ext=NULL, reset=FALSE,
-  add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL, ...)
+  add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL,
+  blend=NULL, blendfun="multiply", ...)
 
 # S4 method for class 'SpatRaster,missing'
 plot(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, 
@@ -268,6 +269,28 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
   between 0 and 1 to set the transparency by cell. To set the
   transparency for a given color, set it to the colors directly
 
+- blend:
+
+  NULL or SpatRaster. If not `NULL`, the colors of `x` are combined with
+  the colors of `blend` (after `x` has been mapped to colors). `blend`
+  may be a single layer (treated as grayscale), an RGB raster, or a
+  raster with a color table. A fourth RGB layer or a color-table alpha
+  column is used as the alpha of `blend`; otherwise that alpha is 1
+  (opaque). It is resampled to the plotted grid of `x` if needed.
+  Missing values in `blend` are treated as white and opaque (no change
+  under `"multiply"`). The `alpha` of `x` (scalar, color alpha, or a
+  SpatRaster) is included in the same blend; it is not applied
+  afterwards. The legend of `x` is not affected
+
+- blendfun:
+
+  character or function. How to combine the RGB and alpha of `x` and
+  `blend`. One of `"multiply"` (the default), `"screen"`, or
+  `"overlay"`; or a function of two arguments (each a three-column
+  matrix of RGB values between 0 and 1, one row per cell) that returns a
+  matrix of the same shape. The first argument is the colors of `x`, the
+  second those of `blend`. Alpha is combined with the same function
+
 - sort:
 
   logical. If `TRUE` legends with categorical values are sorted. If `x`
@@ -417,6 +440,13 @@ plot(r/2, range=c(50,600), mar=c(2, 2, 2, 2), legend=FALSE,
   pax=list(side=c(1,4), cex.axis=.6), box=FALSE)
 
 par(oldpar)
+
+# hillshade with multiply blend (legend stays on elevation)
+e <- rast(system.file("ex/elev.tif", package="terra"))
+slp <- terrain(e, "slope", unit="radians")
+asp <- terrain(e, "aspect", unit="radians")
+hill <- shade(slp, asp, 30, 270)
+plot(e, blend=hill)
 
 # multi-layer with RGB
 s <- rast(system.file("ex/logo.tif", package="terra"))   

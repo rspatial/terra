@@ -16,33 +16,33 @@ selectSize(x, n=Inf, largest=TRUE, threshold=NULL,
 
 - x:
 
-  `SpatVector` of polygons or lines.
+  `SpatVector` of polygons or lines
 
 - n:
 
   optional integer value (default Inf) indicating the maximum number of
   largest or smallest features to select (if they pass the optional
-  threshold).
+  threshold)
 
 - largest:
 
   if `TRUE` (default) select the largest feature(s), otherwise the
-  smallest.
+  smallest
 
 - threshold:
 
   optional size threshold (area in square meters for polygons, length in
   meters for lines) above which (if `largest=TRUE` or below which (if
-  `largest=FALSE` features should be selected.
+  `largest=FALSE` features should be selected
 
 - dissolve:
 
-  if `TRUE`, aggregate features before selection. Default `FALSE`.
+  if `TRUE`, aggregate features before selection. Default `FALSE`
 
 - singleparts:
 
   if `TRUE` (default), split multipart features into individual parts
-  before selection.
+  before selection
 
 ## Details
 
@@ -64,7 +64,7 @@ calculation.
 
 ## Author
 
-A. Marcia Barbosa, Robert J. Hijmans
+A. Márcia Barbosa
 
 ## See also
 

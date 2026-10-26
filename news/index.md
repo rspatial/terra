@@ -57,6 +57,12 @@
   extent of another object
   [\#2201](https://github.com/rspatial/terra/issues/2201) by Márcia
   Barbosa
+- `text<SpatVector>` gains argument `fit` to attempt to plot labels
+  entirely inside their corresponding polygon
+- `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine
+  the mapped colors (and alpha) of `x` with another raster
+  (e.g. hillshade with `"multiply"`)
+  [\#36](https://github.com/rspatial/terra/discussions/36)
 
 ### new
 
@@ -66,6 +72,9 @@
   at sites to these values in each raster cell.
 - `plot` methods for SpatRasterCollection and SpatRasterDataset
   [\#2199](https://github.com/rspatial/terra/issues/2199) by Márcia
+  Barbosa
+- `selectSize<SpatVector>` method to select polygons by size
+  [\#2215](https://github.com/rspatial/terra/pull/2215) by Márcia
   Barbosa
 
 ## version 1.9-50

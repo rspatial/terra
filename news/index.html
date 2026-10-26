@@ -74,6 +74,11 @@
 <li>removed spurious “missing geotransform” warning for some file when using <code>rast(..., md=TRUE)</code> <a href="https://github.com/rspatial/terra/issues/2208" class="external-link">#2208</a> by Kodi Arfer</li>
 <li>
 <code>shift</code> gains argument <code>to</code> to center an object on a point or on the extent of another object <a href="https://github.com/rspatial/terra/issues/2201" class="external-link">#2201</a> by Márcia Barbosa</li>
+<li>
+<code>text&lt;SpatVector&gt;</code> gains argument <code>fit</code> to attempt to plot labels entirely inside their corresponding polygon</li>
+<li>
+<code>plot&lt;SpatRaster&gt;</code> gains arguments <code>blend</code> and <code>blendfun</code> to combine the mapped colors (and alpha) of <code>x</code> with another raster (e.g. hillshade with <code>"multiply"</code>) <a href="https://github.com/rspatial/terra/discussions/36" class="external-link">#36</a>
+</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-9-54">new<a class="anchor" aria-label="anchor" href="#new-1-9-54"></a></h3>
@@ -83,6 +88,8 @@
 <code>distValues</code> to compute the distance from the (environmental) values at sites to these values in each raster cell.</li>
 <li>
 <code>plot</code> methods for SpatRasterCollection and SpatRasterDataset <a href="https://github.com/rspatial/terra/issues/2199" class="external-link">#2199</a> by Márcia Barbosa</li>
+<li>
+<code>selectSize&lt;SpatVector&gt;</code> method to select polygons by size <a href="https://github.com/rspatial/terra/pull/2215" class="external-link">#2215</a> by Márcia Barbosa</li>
 </ul></div>
 </div>
     <div class="section level2">
