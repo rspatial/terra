@@ -1,5 +1,7 @@
 \name{selectSize}
 \alias{selectSize}
+\alias{selectSize,SpatVector-method}
+
 \title{Select features by size}
 
 \description{
@@ -7,7 +9,7 @@ Select the largest or smallest polygons or lines in a \code{SpatVector}, optiona
 }
 
 \usage{
-selectSize(x, n=Inf, largest=TRUE, threshold=NULL,
+\S4method{selectSize}{SpatVector}(x, n=Inf, largest=TRUE, threshold=NULL,
            dissolve=FALSE, singleparts=TRUE)
 }
 
