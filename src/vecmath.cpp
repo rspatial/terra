@@ -19,6 +19,8 @@
 #include <algorithm>
 #include <string>
 #include <functional>
+#include <cmath>
+#include <numeric>
 #include "vecmath.h"
 
 
@@ -71,6 +73,72 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 		theFun = vmean<double>;
 	}
 	return theFun;
+}
+
+
+static bool vselect_better(double a, size_t ia, double b, size_t ib, bool low) {
+	if (a != b) {
+		return low ? (a < b) : (a > b);
+	}
+	return ia < ib;
+}
+
+
+std::vector<size_t> vselect_index(const std::vector<double>& v, size_t n, bool low) {
+	std::vector<size_t> idx;
+	idx.reserve(v.size());
+	for (size_t i=0; i<v.size(); i++) {
+		if (!std::isnan(v[i])) {
+			idx.push_back(i);
+		}
+	}
+	if ((n == 0) || idx.empty()) {
+		return std::vector<size_t>();
+	}
+	if (n > idx.size()) {
+		n = idx.size();
+	}
+	std::nth_element(idx.begin(), idx.begin()+n, idx.end(),
+		[&](size_t i, size_t j) { return vselect_better(v[i], i, v[j], j, low); });
+	idx.resize(n);
+	return idx;
+}
+
+
+std::vector<double> vselect(const std::vector<double>& v, size_t n, bool low) {
+	std::vector<size_t> idx = vselect_index(v, n, low);
+	std::vector<double> out;
+	out.reserve(idx.size());
+	for (size_t i=0; i<idx.size(); i++) {
+		out.push_back(v[idx[i]]);
+	}
+	return out;
+}
+
+
+void vselect_keep(std::vector<double>& val, std::vector<size_t>& cell, size_t n, bool low) {
+	size_t m = val.size();
+	if ((n >= m) || (m == 0) || (n == 0)) {
+		if (n == 0) {
+			val.clear();
+			cell.clear();
+		}
+		return;
+	}
+	std::vector<size_t> ord(m);
+	std::iota(ord.begin(), ord.end(), 0);
+	std::nth_element(ord.begin(), ord.begin()+n, ord.end(),
+		[&](size_t i, size_t j) { return vselect_better(val[i], cell[i], val[j], cell[j], low); });
+	std::vector<double> nv;
+	std::vector<size_t> nc;
+	nv.reserve(n);
+	nc.reserve(n);
+	for (size_t i=0; i<n; i++) {
+		nv.push_back(val[ord[i]]);
+		nc.push_back(cell[ord[i]]);
+	}
+	val.swap(nv);
+	cell.swap(nc);
 }
 
 

@@ -104,9 +104,25 @@ er <- extractRange(stk, xy, first = 1, last = 3)
 ex <- extract(stk, xy)
 expect_equal(as.numeric(unlist(er[[1]][1, ])), as.numeric(ex[1, -1]))
 
-## selectHighest — five largest cells marked
+## selectHighest — five largest / smallest values marked
 sh <- selectHighest(r, n = 5)
 expect_equal(sum(sh[] == 1, na.rm = TRUE), 5)
+expect_equal(sort(v[sh[] == 1]), sort(tail(sort(v), 5)))
+sl <- selectHighest(r, n = 5, low=TRUE)
+expect_equal(sum(sl[] == 1, na.rm = TRUE), 5)
+expect_equal(sort(v[sl[] == 1]), sort(head(sort(v), 5)))
+# integer ties: all cells with the selected values, or exactly n cells
+rt <- rast(nrows=5, ncols=5, vals=rep(1:5, each=5))
+st <- selectHighest(rt, n=7)
+expect_equal(sum(st[] == 1, na.rm=TRUE), 10)
+expect_true(all(values(rt)[st[] == 1] >= 4))
+st1 <- selectHighest(rt, n=7, ties="first")
+expect_equal(sum(st1[] == 1, na.rm=TRUE), 7)
+expect_true(all(values(rt)[st1[] == 1] >= 4))
+# first cells among the tied 4s
+vt <- as.vector(values(rt))
+i <- which(st1[] == 1)
+expect_equal(i, order(vt, decreasing=TRUE)[1:7])
 
 ## classify — two-column lookup (from test_classify.R pattern)
 set.seed(1)

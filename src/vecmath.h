@@ -36,6 +36,9 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun);
 bool bany(const std::vector<bool>& v);
 bool ball(const std::vector<bool>& v);
 bool bnone(const std::vector<bool>& v);
+std::vector<size_t> vselect_index(const std::vector<double>& v, size_t n, bool low);
+std::vector<double> vselect(const std::vector<double>& v, size_t n, bool low);
+void vselect_keep(std::vector<double>& val, std::vector<size_t>& cell, size_t n, bool low);
 
 
 template <typename T>

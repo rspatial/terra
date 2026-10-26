@@ -1021,7 +1021,7 @@ class SpatRaster {
 		SpatRaster hillshade(SpatRaster aspect, std::vector<double> angle, std::vector<double> direction, bool normalize, SpatOptions &opt);
 
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);
-		SpatRaster selectHighest(size_t n, bool low, SpatOptions &opt);
+		SpatRaster selectHighest(size_t n, bool low, bool all, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);

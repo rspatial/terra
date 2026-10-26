@@ -30,6 +30,7 @@
 #include "spatLookup.h"
 
 #include "tbb_helper.h"
+#include <unordered_set>
 
 SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, 
 	double othersValue, SpatOptions &opt) {
@@ -246,41 +247,113 @@ SpatRaster SpatRaster::lookup_catalyze(std::vector<double> from_vals, std::vecto
 }
 
 
-/*
-SpatRaster SpatRaster::selectHighest(size_t n, bool low, SpatOptions &opt) {
-
-	SpatVector out;
+SpatRaster SpatRaster::selectHighest(size_t n, bool low, bool all, SpatOptions &opt) {
 
 	if (nlyr() > 1) {
 		SpatOptions ops(opt);
-		out.addWarning("only processing the first layer");
-		std::vector<unsigned> lyr = {0};
-		*this = subset(lyr, ops);
+		ops.set_filenames({""});
+		SpatRaster x = subset(std::vector<size_t>{0}, ops);
+		if (x.hasError()) {
+			return x;
+		}
+		SpatRaster out = x.selectHighest(n, low, all, opt);
+		out.addWarning("only the first layer is used");
+		return out;
 	}
+
+	SpatRaster out = geometry(1);
 	if (!hasValues()) {
-		return(out);
+		out.setError("SpatRaster has no cell values");
+		return out;
+	}
+	if (n < 1) {
+		out.setError("n must be larger than 0");
+		return out;
 	}
 	if (n >= ncell()) {
-		return isnotnan(opt);
+		return isnotnan(true, opt);
 	}
 
-	std::vector<double> sel;
-
 	if (!readStart()) {
-		return(out);
+		out.setError(getError());
+		return out;
 	}
 
 	BlockSize bs = getBlockSize(opt);
-	for (size_t i = 0; i < bs.n; i++) {
-		std::vector<double> v;
-		readBlock(v, out.bs, i);
-		for (size_t j=0; j<v.size(); j++) {
+
+	if (all) {
+		std::vector<double> best;
+		best.reserve(n);
+		for (size_t i=0; i<bs.n; i++) {
+			std::vector<double> v;
+			readBlock(v, bs, i);
+			std::vector<double> sel = vselect(v, n, low);
+			best.insert(best.end(), sel.begin(), sel.end());
+			if (best.size() > n) {
+				best = vselect(best, n, low);
+			}
+		}
+		readStop();
+
+		if (best.empty()) {
+			return isnotnan(true, opt);
 		}
 
+		std::sort(best.begin(), best.end());
+		best.erase(std::unique(best.begin(), best.end()), best.end());
+		size_t nr = best.size();
+		std::vector<double> rcl(2 * nr);
+		std::copy(best.begin(), best.end(), rcl.begin());
+		std::fill(rcl.begin()+nr, rcl.end(), 1.0);
+		return reclassify(rcl, 2, 0, false, true, NAN, false, false, false, opt);
+	}
+
+	std::vector<double> bestv;
+	std::vector<size_t> besti;
+	bestv.reserve(n);
+	besti.reserve(n);
+	size_t cell0 = 0;
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, bs, i);
+		std::vector<size_t> idx = vselect_index(v, n, low);
+		for (size_t k=0; k<idx.size(); k++) {
+			bestv.push_back(v[idx[k]]);
+			besti.push_back(cell0 + idx[k]);
+		}
+		if (bestv.size() > n) {
+			vselect_keep(bestv, besti, n, low);
+		}
+		cell0 += v.size();
+	}
 	readStop();
-	return(out);
+
+	if (besti.empty()) {
+		return isnotnan(true, opt);
+	}
+
+	std::unordered_set<size_t> sel(besti.begin(), besti.end());
+	out.setValueType(3);
+	if (!out.writeStart(opt, filenames())) {
+		return out;
+	}
+	cell0 = 0;
+	for (size_t i=0; i<out.bs.n; i++) {
+		size_t nc = (size_t)out.bs.nrows[i] * ncol();
+		std::vector<double> v(nc, NAN);
+		for (size_t j=0; j<nc; j++) {
+			if (sel.find(cell0 + j) != sel.end()) {
+				v[j] = 1;
+			}
+		}
+		cell0 += nc;
+		if (!out.writeBlock(v, i)) {
+			return out;
+		}
+	}
+	out.writeStop();
+	return out;
 }
-*/
 
 
 

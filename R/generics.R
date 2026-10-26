@@ -5,6 +5,21 @@
 
 
 
+setMethod("selectHighest", signature(x="SpatRaster"),
+	function(x, n, low=FALSE, ties="first", filename="", ...) {
+		n <- as.numeric(n[1])
+		if (!is.finite(n) || (n < 1)) {
+			error("selectHighest", "n must be a positive number")
+		}
+		ties <- match.arg(ties[1], c("all", "first"))
+		opt <- spatOptions(filename, ...)
+		x@pntr <- x@pntr$selectHighest(n, isTRUE(low[1]), ties == "all", opt)
+		messages(x, "selectHighest")
+	}
+)
+
+
+
 setMethod("centroids", signature(x="SpatRaster"),
 	function(x, weighted=FALSE) {
 		opt <- spatOptions()

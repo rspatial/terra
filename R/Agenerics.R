@@ -99,6 +99,7 @@ if (!isGeneric("density")) { setGeneric("density", function(x, ...) standardGene
 if (!isGeneric("densify")) { setGeneric("densify", function(x, ...) standardGeneric("densify"))}
 
 
+if (!isGeneric("selectSize")) {setGeneric("selectSize", function(x, ...) standardGeneric("selectSize"))}
 if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) standardGeneric("selectHighest"))}
 if (!isGeneric("focal3D")) { setGeneric("focal3D", function(x, ...) standardGeneric("focal3D")) }
 if (!isGeneric("focalReg")) { setGeneric("focalReg", function(x, ...) standardGeneric("focalReg")) }

@@ -1018,6 +1018,7 @@ RCPP_MODULE(spat){
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, size_t, unsigned, bool, bool, double, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify))
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange)
+		.method("selectHighest", &SpatRaster::selectHighest)
 		.method("separate", &SpatRaster::separate)
 		.method("sort", &SpatRaster::sort)
 		.method("intersect", &SpatRaster::intersect)
