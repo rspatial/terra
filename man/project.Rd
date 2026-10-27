@@ -10,7 +10,7 @@
 \title{Change the coordinate reference system}
 
 \description{
-Change the coordinate reference system ("project") of a SpatVector, SpatRaster or a matrix with coordinates. 
+Change the coordinate reference system ("projection") of a SpatVector, SpatRaster or a matrix with coordinates. 
 }
 
 \usage{
