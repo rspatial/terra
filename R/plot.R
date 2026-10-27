@@ -399,8 +399,8 @@ setMethod("text", signature(x="SpatRaster"),
 			cand <- centroids(p)
 			if (is.related(p, cand, "contains")) {
 				xy[i, ] <- crds(cand)
+				next
 			}
-			next
 		}
 		# binary search: smallest r whose inner hull fits, else the
 		# largest non-empty shrink. Label placement only needs ~5% of rad.
@@ -432,9 +432,15 @@ setMethod("text", signature(x="SpatRaster"),
 		inner <- if (!is.null(found)) found else last
 		if (!is.null(inner) && nrow(inner) > 0) {
 			cand <- centroids(inner)
+			if (!is.related(p, cand, "contains")) {
+				cand <- centroids(inner, inside=TRUE)
+			}
 			if (is.related(p, cand, "contains")) {
 				xy[i, ] <- crds(cand)
 			}
+		}
+		if (!is.related(p, vect(xy[i, , drop=FALSE]), "contains")) {
+			xy[i, ] <- crds(centroids(p, inside=TRUE))
 		}
 	}
 	allxy[need, ] <- xy
