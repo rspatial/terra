@@ -63,7 +63,7 @@ character or modified SpatRaster/Vector
 }
 
 \seealso{
-\code{\link{same.crs}}, {\code{\link{is.lonlat}}}
+\code{\link{same.crs}}, \code{\link{is.lonlat}}, \code{\link{project}}
 }
 
 \examples{ 
