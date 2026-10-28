@@ -69,6 +69,13 @@
 - continuous `plot` legends with `plg$x` of `"left"`/`"right"`,
   `"topleft"`/`"topright"` and `"bottomleft"`/`"bottomright"` now share
   `size` and only differ in vertical alignment
+- categorical `plot` legends accept an `"...-out"` placement keyword
+  (e.g. `"bottomleft-out"`, `"top-out"`) to draw the legend outside the
+  map; the default is `"topright-out"`
+  [\#2219](https://github.com/rspatial/terra/issues/2219)
+- `hull` gains argument `percent` to use only the features closest to
+  the centroid [\#2217](https://github.com/rspatial/terra/issues/2217)
+  by Márcia Barbosa
 
 ### new
 

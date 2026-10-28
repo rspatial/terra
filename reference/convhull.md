@@ -12,7 +12,7 @@ version.
 
 ``` r
 # S4 method for class 'SpatVector'
-hull(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE)
+hull(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE, percent=100)
 ```
 
 ## Arguments
@@ -53,6 +53,13 @@ hull(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE)
   logical. Should the hull follow the outer boundaries of the input
   polygons? For "concave_length" with polygon geometry only
 
+- percent:
+
+  numeric \> 0 and \<= 100. If below 100, only the given percentage of
+  features closest to the centroid is used (outliers are excluded). When
+  `by` is a variable name this is applied within each group. Ignored
+  when `by=NA`
+
 ## Value
 
 SpatVector
@@ -92,5 +99,6 @@ plot(pts, ext=ext(p)+0.1)
 lines(hull(pts, type="convex"), col="darkgreen")
 lines(hull(pts, type="rect"), col="blue")
 lines(hull(pts, type="circle"), col="red")
+lines(hull(pts, percent=60), col="orange")
 
 ```
