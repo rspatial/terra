@@ -26,6 +26,8 @@
 - `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine the mapped colors (and alpha) of `x` with another raster (e.g. hillshade with "multiply") [#36](https://github.com/rspatial/terra/discussions/36)
 - `selectHighest` has new argument `ties` to choose exactly `n` cells (`"first"`, the default) or all cells with the `n` extreme values (`"all"`)
 - continuous `plot` legends with `plg$x` of `"left"`/`"right"`, `"topleft"`/`"topright"` and `"bottomleft"`/`"bottomright"` now share `size` and only differ in vertical alignment
+- categorical `plot` legends accept an `"...-out"` placement keyword (e.g. `"bottomleft-out"`, `"top-out"`) to draw the legend outside the map; the default is `"topright-out"` [#2219](https://github.com/rspatial/terra/issues/2219)
+- `hull` gains argument `percent` to use only the features closest to the centroid [#2217](https://github.com/rspatial/terra/issues/2217) by Márcia Barbosa
 
 
 ## new 

@@ -316,10 +316,37 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 
 
 
+.hull_core <- function(x, percent) {
+	n <- nrow(x)
+	if (n < 2) {
+		return(rep(TRUE, n))
+	}
+	d <- as.vector(distance(x, centroids(aggregate(x))))
+	d <= stats::quantile(d, percent / 100, na.rm=TRUE, names=FALSE)
+}
+
+
 setMethod("hull", signature(x="SpatVector"),
-	function(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE) {
+	function(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE, percent=100) {
 		type <- match.arg(tolower(type), c("convex", "rectangle", "circle", "concave_ratio", "concave_length"))
+		percent <- percent[1]
+		if (!is.numeric(percent) || is.na(percent) || (percent <= 0) || (percent > 100)) {
+			error("hull", "percent must be a number > 0 and <= 100")
+		}
 		if (is.na(by)) by <- "_"
+		if ((percent < 100) && (by != "_") && (nrow(x) > 1)) {
+			if (by != "") {
+				g <- x[[by[1], drop=TRUE]]
+				keep <- logical(nrow(x))
+				for (u in unique(g)) {
+					i <- if (is.na(u)) which(is.na(g)) else which(g == u)
+					keep[i] <- .hull_core(x[i], percent)
+				}
+				x <- x[keep]
+			} else {
+				x <- x[.hull_core(x, percent)]
+			}
+		}
 		x@pntr <- x@pntr$hull(type, by[1], param, allowHoles, tight)
 		messages(x, "hull")
 	}
