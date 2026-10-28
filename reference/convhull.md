@@ -55,10 +55,8 @@ hull(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE, percent=100)
 
 - percent:
 
-  numeric \> 0 and \<= 100. If below 100, only the given percentage of
-  features closest to the centroid is used (outliers are excluded). When
-  `by` is a variable name this is applied within each group. Ignored
-  when `by=NA`
+  numeric \> 0 and \<= 100. If below 100, only that percentage of
+  geometries closest to the centroid is used
 
 ## Value
 
