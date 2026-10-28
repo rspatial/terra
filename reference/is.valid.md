@@ -58,7 +58,7 @@ is.valid(w)
 #> [1] FALSE
 is.valid(w, TRUE)
 #>   valid                                                reason
-#> 1 FALSE Self-intersection[4.54545454545454 -2.72727272727273]
+#> 1 FALSE Self-intersection[4.54545454545455 -2.72727272727273]
 v1 <- makeValid(w)
 is.valid(v1)
 #> [1] TRUE

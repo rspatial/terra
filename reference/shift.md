@@ -72,5 +72,5 @@ shift(e, to=e2)
 shift(e, to=c(11, 6))
 #> SpatExtent : 10.5, 11.5, 5.5, 6.5 (xmin, xmax, ymin, ymax)
 shift(e, to=c(11, NA))
-#> SpatExtent : 10.5, 11.5, -1, 0 (xmin, xmax, ymin, ymax)
+#> SpatExtent : 10.5, 11.5, -1, 3.8163916471489756e-17 (xmin, xmax, ymin, ymax)
 ```

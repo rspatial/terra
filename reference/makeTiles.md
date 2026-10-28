@@ -127,11 +127,11 @@ values(r) <- 1:ncell(r)
 x <- rast(ncols=2, nrows=2)
 
 getTileExtents(r, x)
-#>      xmin xmax ymin ymax
-#> [1,] -180    0    0   90
-#> [2,]    0  180    0   90
-#> [3,] -180    0  -90    0
-#> [4,]    0  180  -90    0
+#>               xmin         xmax          ymin          ymax
+#> [1,] -1.800000e+02 4.440892e-15 -2.220446e-15  9.000000e+01
+#> [2,]  4.440892e-15 1.800000e+02 -2.220446e-15  9.000000e+01
+#> [3,] -1.800000e+02 4.440892e-15 -9.000000e+01 -2.220446e-15
+#> [4,]  4.440892e-15 1.800000e+02 -9.000000e+01 -2.220446e-15
 getTileExtents(r, x, buffer=3)
 #>        xmin  xmax  ymin ymax
 #> [1,] -190.8  10.8  -5.4 95.4
@@ -151,10 +151,10 @@ getTileExtents(r, cores=4)   # smaller tiles, sized for 4 concurrent workers
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/RtmpfSn3Oe/file2374232f092_1.tif"
-#> [2] "/tmp/RtmpfSn3Oe/file2374232f092_2.tif"
-#> [3] "/tmp/RtmpfSn3Oe/file2374232f092_3.tif"
-#> [4] "/tmp/RtmpfSn3Oe/file2374232f092_4.tif"
+#> [1] "/tmp/Rtmp5yWEWZ/file236b14346a98_1.tif"
+#> [2] "/tmp/Rtmp5yWEWZ/file236b14346a98_2.tif"
+#> [3] "/tmp/Rtmp5yWEWZ/file236b14346a98_3.tif"
+#> [4] "/tmp/Rtmp5yWEWZ/file236b14346a98_4.tif"
 
 vrt(ff)
 #> class       : SpatRaster
@@ -162,8 +162,8 @@ vrt(ff)
 #> resolution  : 3.6, 1.8  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
-#> source      : spat_237454ea7bde_9076_DvggOkjkTOQeAAI.vrt
-#> name        : spat_237454ea7bde_9076_DvggOkjkTOQeAAI
+#> source      : spat_236b1db3c4d2_9067_DvggOkjkTOQeAAI.vrt
+#> name        : spat_236b1db3c4d2_9067_DvggOkjkTOQeAAI
 #> min value   :                                      1
 #> max value   :                                  10000
 ```

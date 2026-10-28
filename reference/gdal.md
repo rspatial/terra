@@ -161,14 +161,14 @@ grids locally.
 
 ``` r
 gdal()
-#> [1] "3.8.4"
+#> [1] "3.12.2"
 gdal(2)
 #head(gdal(drivers=TRUE))
 libVersion("all", TRUE)
 #>      major minor sub
-#> gdal     3     8   4
-#> proj     9     4   0
-#> geos     3    12   1
+#> gdal     3    12   2
+#> proj     9     7   1
+#> geos     3    14   1
 projNetwork()
 #> [1] NA
 projPaths()

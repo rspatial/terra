@@ -83,7 +83,8 @@ character or modified SpatRaster/Vector
 ## See also
 
 [`same.crs`](https://rspatial.github.io/terra/reference/same.crs.md),
-[`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md)
+[`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md),
+[`project`](https://rspatial.github.io/terra/reference/project.md)
 
 ## Examples
 
@@ -161,13 +162,13 @@ cat(crs(r))
 # You can use epsg codes
 crs(r)  <- "epsg:25831"
 crs(r, describe=TRUE)$area
-#> [1] "Europe between 0°E and 6°E: Andorra; Belgium - onshore and offshore; Denmark - offshore; Germany - offshore; Jan Mayen - offshore; Norway including Svalbard - onshore and offshore; Spain - onshore and offshore"
+#> [1] "Europe between 0°E and 6°E: Andorra; Denmark - offshore; Germany - offshore; Jan Mayen - offshore; Norway including Svalbard - onshore and offshore; Spain - mainland and Balearic islands - onshore and offshore"
 
 crs("epsg:25831", describe=TRUE)
 #>                    name authority  code
 #> 1 ETRS89 / UTM zone 31N      EPSG 25831
 #>                                                                                                                                                                                                                area
-#> 1 Europe between 0°E and 6°E: Andorra; Belgium - onshore and offshore; Denmark - offshore; Germany - offshore; Jan Mayen - offshore; Norway including Svalbard - onshore and offshore; Spain - onshore and offshore
+#> 1 Europe between 0°E and 6°E: Andorra; Denmark - offshore; Germany - offshore; Jan Mayen - offshore; Norway including Svalbard - onshore and offshore; Spain - mainland and Balearic islands - onshore and offshore
 #>                     extent
 #> 1 0.00, 6.01, 37.00, 82.45
 ```

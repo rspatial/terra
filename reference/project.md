@@ -1,7 +1,7 @@
 # Change the coordinate reference system
 
-Change the coordinate reference system ("project") of a SpatVector,
-SpatRaster or a matrix with coordinates.
+Change / transform the coordinate reference system ("projection") of a
+SpatVector, SpatRaster or a matrix with coordinates.
 
 ## Usage
 
