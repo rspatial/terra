@@ -70,13 +70,13 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
  
  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link[graphics]{legend}}. 
  
-  A legend can be placed by specifying arguments \code{x} and \code{y}. For a continuous legend \code{y} can have two values. \code{x} can also be a SpatExtent. Furthermore, \code{x} can be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument \code{nudge} that moves the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax). When supplying coordinates, use \code{horiz=TRUE} to get a horizontal legend.
+  A legend can be placed by specifying arguments \code{x} and \code{y}. For a continuous legend \code{y} can have two values. \code{x} can also be a SpatExtent. Furthermore, \code{x} can be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, the placement keywords "left", "right", "top", "bottom", "topleft", "topright", "bottomleft" and "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument \code{nudge} that moves the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax). When supplying coordinates, use \code{horiz=TRUE} to get a horizontal legend.
     
   Additional parameters for continuous legends include: 
 
   \itemize{
 	\item \code{digits} integer. The number of digits to print after the decimal point
-    \item \code{size} to change the height and/or width; the defaults are \code{c(1,1)} 
+    \item \code{size} to change the height and/or width; the defaults are \code{c(1,1)}. For a continuous legend this is a fraction of the map. \code{x="right"} and \code{x="left"} are vertically centered; \code{x="topright"}/\code{x="topleft"} and \code{x="bottomright"}/\code{x="bottomleft"} use the same size and align the legend to the top or bottom 
 	\item \code{at} to set the location of the tickmarks
 	\item \code{format} as in \code{\link{formatC}} to format the numbers. For example, you can use \code{format="g"} for scientific notation. The default is \code{"f"}
 	\item \code{tick} One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tickmark placement/length that is different from the default "throughout". 

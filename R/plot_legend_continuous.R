@@ -70,8 +70,24 @@
 #		ymin <- ymid - yd 
 #		ymax <- ymid + yd
 
-		rng <- (ymax - ymin) * x$leg$size[1]
-		ymin <- ymax - rng  
+		full_ymin <- ymin
+		full_ymax <- ymax
+		rng <- (full_ymax - full_ymin) * x$leg$size[1]
+		yalign <- x$leg$yalign
+		if (is.null(yalign)) {
+			yalign <- "top"
+		}
+		if (yalign == "bottom") {
+			ymin <- full_ymin
+			ymax <- full_ymin + rng
+		} else if (yalign == "center") {
+			ymid <- (full_ymin + full_ymax) / 2
+			ymin <- ymid - rng / 2
+			ymax <- ymid + rng / 2
+		} else {
+			ymin <- full_ymax - rng
+			ymax <- full_ymax
+		}
 
 		xd <- xmax - xmin
 		#xmin <- xmin + xd * x$leg$size[2]/5
@@ -143,27 +159,38 @@
 	dxy <- graphics::par("cxy") * graphics::par("cex")
 	p <- NULL
 	if (is.character(loc)) {
-		if (loc == "left") {
+		if (loc %in% c("left", "topleft", "bottomleft")) {
 			#s <- .line.usr(trunc(graphics::par("mar")[2]), 2)
-			#p <- c(s+4*dxy[1], s+5*dxy[1], ymin, ymax)	
+			#p <- c(s+4*dxy[1], s+5*dxy[1], ymin, ymax)
 			if (any(2 %in% x$axs$lab)) {
-				p <- c(xmin-4*dxy[1], xmin-3*dxy[1], ymin, ymax)			
+				p <- c(xmin-4*dxy[1], xmin-3*dxy[1], ymin, ymax)
 			} else {
 				p <- c(xmin-2*dxy[1], xmin-dxy[1], ymin, ymax)
 			}
+			if (loc == "topleft") {
+				x$leg$yalign <- "top"
+			} else if (loc == "bottomleft") {
+				x$leg$yalign <- "bottom"
+			} else {
+				x$leg$yalign <- "center"
+			}
+			x$leg$x <- "left"
 		} else if (loc == "bottom") {
 			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
 			p <- c(xmin, xmax, s+1.75*dxy[2], s+2.25*dxy[2])
 		} else if (loc == "top") {
 			p <- c(xmin, xmax, ymax+.6*dxy[2], ymax+1*dxy[2])
 		} else if (loc == "topright") {
-			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin + (ymax-ymin) / 2, ymax)
+			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax)
 			x$leg$x <- "right"
+			x$leg$yalign <- "top"
 		} else if (loc == "bottomright") {
-			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax - (ymax-ymin) / 2)
+			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax)
 			x$leg$x <- "right"
+			x$leg$yalign <- "bottom"
 		} else { #if (loc == "right" or "default" 
 			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax)
+			x$leg$yalign <- "center"
 			if (isTRUE(x$leg$yshift)) {
 				hy <- (ymax - ymin) / 2
 				p[3:4] <- p[3:4] - hy
@@ -254,7 +281,7 @@
 	if (is.null(x$leg[["x"]])) {
 		x$leg$x <- "right"
 	} else if (is.character(x$leg[["x"]])) {
-		if (!(x$leg$x %in% c("left", "right", "top", "bottom", "topright", "bottomright"))) {
+		if (!(x$leg$x %in% c("left", "right", "top", "bottom", "topleft", "topright", "bottomleft", "bottomright"))) {
 			x$leg$x <- "right"	
 		} else if (x$leg$x %in% c("top", "bottom")) {
 			x$leg$horiz <- TRUE

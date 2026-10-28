@@ -228,7 +228,7 @@ get_mar <- function(out, is_raster=TRUE) {
 							out$mar <- c(2, 2, w-1, 2)
 						} else if (out$leg$x == "bottom") {
 							out$mar <- c(w, 2, 2, 2)
-						} else if (out$leg$x == "left") {
+						} else if (out$leg$x %in% c("left", "topleft", "bottomleft")) {
 							out$mar <- c(2, w, 2, 1)
 						} else {
 							out$mar <- c(2, 2, 2, w)

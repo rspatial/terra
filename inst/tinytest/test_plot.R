@@ -35,3 +35,19 @@ out <- terra:::.vect.legend.continuous(out)
 expect_equal(out$main_cols[3], "grey")
 expect_true(all(!is.na(out$main_cols)))
 
+# continuous legend: same size, different vertical alignment
+mkleg <- function(yalign) {
+	list(clip=TRUE, lim=c(0, 1, 0, 100),
+		leg=list(reverse=FALSE, horiz=FALSE, size=0.75,
+			ext=c(1, 1.1, 0, 100), yalign=yalign))
+}
+et <- terra:::.get.leg.coords(mkleg("top"))$leg$ext
+ec <- terra:::.get.leg.coords(mkleg("center"))$leg$ext
+eb <- terra:::.get.leg.coords(mkleg("bottom"))$leg$ext
+expect_equal(et$dy, 75)
+expect_equal(ec$dy, 75)
+expect_equal(eb$dy, 75)
+expect_equal(et$ymax, 100)
+expect_equal(eb$ymin, 0)
+expect_equal((ec$ymin + ec$ymax) / 2, 50)
+

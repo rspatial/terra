@@ -25,6 +25,7 @@
 - `text<SpatVector>` gains argument `fit` to attempt to plot labels entirely inside their corresponding polygon
 - `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine the mapped colors (and alpha) of `x` with another raster (e.g. hillshade with "multiply") [#36](https://github.com/rspatial/terra/discussions/36)
 - `selectHighest` has new argument `ties` to choose exactly `n` cells (`"first"`, the default) or all cells with the `n` extreme values (`"all"`)
+- continuous `plot` legends with `plg$x` of `"left"`/`"right"`, `"topleft"`/`"topright"` and `"bottomleft"`/`"bottomright"` now share `size` and only differ in vertical alignment
 
 
 ## new 
