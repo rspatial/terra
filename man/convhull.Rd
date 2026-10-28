@@ -28,7 +28,7 @@ The old method \code{convHull} is deprecated and will be removed in a future ver
   \item{param}{numeric between 0 and 1. For the "concave_*" types only. For \code{type="concave_ratio"} this is the edge length ratio value, between 0 and 1. For \code{type="concave_length"} this the maximum edge length (a value > 0). For \code{type="concave_polygons"} this specifies the maximum Edge Length as a fraction of the difference between the longest and shortest edge lengths between the polygons. This normalizes the maximum edge length to be scale-free. A value of 1 produces the convex hull; a value of 0 produces the original polygons}
   \item{allowHoles}{logical. May the output polygons contain holes? For "concave_*" methods only}
   \item{tight}{logical. Should the hull follow the outer boundaries of the input polygons? For "concave_length" with polygon geometry only}
-  \item{percent}{numeric > 0 and <= 100. If below 100, only the given percentage of features closest to the centroid is used (outliers are excluded). When \code{by} is a variable name this is applied within each group. Ignored when \code{by=NA}}
+  \item{percent}{numeric > 0 and <= 100. If below 100, only that percentage of geometries closest to the centroid is used}
 }
 
 \value{
