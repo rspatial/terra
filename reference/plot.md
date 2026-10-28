@@ -90,9 +90,10 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
 
   logical or character. If not `FALSE` a legend is drawn. The character
   value can be used to indicate where the legend is to be drawn. For
-  example "topright" or "bottomleft". Use `plg` for more refined
-  placement. Not supported for continuous legends (the default for
-  raster data)
+  example "topright" or "bottomleft" (inside the map). Append `"-out"`
+  to place a categorical legend outside the map rectangle (e.g.
+  `"bottomleft-out"`, `"top-out"`). The default for a categorical legend
+  is `"topright-out"`. Use `plg` for more refined placement
 
 - axes:
 
@@ -132,17 +133,19 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
 
   A legend can be placed by specifying arguments `x` and `y`. For a
   continuous legend `y` can have two values. `x` can also be a
-  SpatExtent. Furthermore, `x` can be a keyword such "topleft" and
-  "bottomright" to place the legend at these locations inside the map
-  rectangle. For a continuous legend, the placement keywords "left",
-  "right", "top", "bottom", "topleft", "topright", "bottomleft" and
-  "bottomright" are recognized; and when using these keywords, the
-  legend is placed outside of the map rectangle. The placement of the
-  legend can be altered with argument `nudge` that moves the location in
-  the directions specified with one value (x direction) or two values
-  (x, y). For a continuous legend it can also have four values (xmin,
-  xmax, ymin, ymax). When supplying coordinates, use `horiz=TRUE` to get
-  a horizontal legend.
+  SpatExtent. Furthermore, `x` can be a keyword such as "topleft" and
+  "bottomright". For a categorical legend these keywords place the
+  legend inside the map rectangle; append `"-out"` to place it outside
+  (e.g. `"bottomleft-out"`). `"top-out"` is above the map; the default
+  is `"topright-out"`. For a continuous legend, the placement keywords
+  "left", "right", "top", "bottom", "topleft", "topright", "bottomleft"
+  and "bottomright" are recognized (an `"-out"` suffix is ignored); and
+  when using these keywords, the legend is placed outside of the map
+  rectangle. The placement of the legend can be altered with argument
+  `nudge` that moves the location in the directions specified with one
+  value (x direction) or two values (x, y). For a continuous legend it
+  can also have four values (xmin, xmax, ymin, ymax). When supplying
+  coordinates, use `horiz=TRUE` to get a horizontal legend.
 
   Additional parameters for continuous legends include:
 
