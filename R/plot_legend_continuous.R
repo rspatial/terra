@@ -281,6 +281,10 @@
 	if (is.null(x$leg[["x"]])) {
 		x$leg$x <- "right"
 	} else if (is.character(x$leg[["x"]])) {
+		pl <- .parse_leg_loc(x$leg$x)
+		if (!is.null(pl)) {
+			x$leg$x <- pl$pos
+		}
 		if (!(x$leg$x %in% c("left", "right", "top", "bottom", "topleft", "topright", "bottomleft", "bottomright"))) {
 			x$leg$x <- "right"	
 		} else if (x$leg$x %in% c("top", "bottom")) {

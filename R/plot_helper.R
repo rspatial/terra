@@ -212,6 +212,29 @@ hexcols <- function(out) {
 
 
 
+.leg_keywords <- c("left", "right", "top", "bottom", "topleft", "topright",
+	"bottomleft", "bottomright", "center", "default")
+
+.parse_leg_loc <- function(x) {
+	if (!is.character(x) || (length(x) < 1) || is.na(x[1])) {
+		return(NULL)
+	}
+	loc <- tolower(trimws(x[1]))
+	outside <- grepl("-out$", loc)
+	if (outside) {
+		loc <- sub("-out$", "", loc)
+	}
+	if (loc == "default") {
+		loc <- "topright"
+		outside <- TRUE
+	}
+	if (!loc %in% .leg_keywords) {
+		return(NULL)
+	}
+	list(pos=loc, outside=outside)
+}
+
+
 get_mar <- function(out, is_raster=TRUE) {
 
 	if (is.null(out$mar)) {
@@ -221,20 +244,26 @@ get_mar <- function(out, is_raster=TRUE) {
 			out$mar <- c(2, 2, 2, w)
 			if (is.null(out$leg$ext)) {
 				if (is.null(out$leg$x)) {
-					out$leg$x <- "default"
-				} else if (out$legend_type == "continuous") {
-					if (inherits(out$leg[["x"]], "character")) {
-						if (out$leg$x == "top") {
+					out$leg$x <- if (isTRUE(out$legend_type == "continuous")) "right" else "topright-out"
+				}
+				if (inherits(out$leg[["x"]], "character")) {
+					pl <- .parse_leg_loc(out$leg$x)
+					pos <- if (is.null(pl)) out$leg$x else pl$pos
+					outside <- !is.null(pl) && isTRUE(pl$outside)
+					if (out$legend_type == "continuous" || outside) {
+						if (pos == "top") {
 							out$mar <- c(2, 2, w-1, 2)
-						} else if (out$leg$x == "bottom") {
+						} else if (pos == "bottom") {
 							out$mar <- c(w, 2, 2, 2)
-						} else if (out$leg$x %in% c("left", "topleft", "bottomleft")) {
+						} else if (pos %in% c("left", "topleft", "bottomleft")) {
 							out$mar <- c(2, w, 2, 1)
 						} else {
 							out$mar <- c(2, 2, 2, w)
 						}
+					} else {
+						out$mar <- c(2, 2, 2, 2)
 					}
-				}	
+				}
 			} 
 		}
 	} else {
