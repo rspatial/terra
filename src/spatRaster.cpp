@@ -878,7 +878,7 @@ std::vector<int64_t> SpatRaster::getTime() {
 }
 
 std::string SpatRaster::getTimeStep() {
-	std::string step, zone;
+	std::string step;
 	bool found = false;
 	for (size_t i=0; i<source.size(); i++) {
 		if (!source[i].hasTime) continue;

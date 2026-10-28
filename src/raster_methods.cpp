@@ -6007,7 +6007,6 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 
 	std::vector<size_t> dim = {nrow(), ncol()};
 
-	std::string tempfile = "";
     std::vector<double> d, v, vv;
 	if (!readStart()) {
 		out.setError(getError());

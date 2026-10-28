@@ -109,7 +109,6 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	// recursive writing of layers
 	std::vector<std::string> fnames = opt.get_filenames();
-	std::string msg;
 
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {

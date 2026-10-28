@@ -505,7 +505,6 @@ bool SpatRaster::getDShMEM(GDALDatasetH &rstDS, SpatRaster &out, double &naval, 
 SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double background, bool touches, bool update, SpatOptions &opt) {
 
 // not working well in some cases. See #552
-	std::string gtype = x.type();
 	SpatRaster out;
 	out.setNames({"ID"});
 
@@ -724,7 +723,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	}
 	GDALClose(vecDS);
 
-	std::string errmsg, driver, filename;
+	std::string driver;
 	GDALDatasetH rstDS;
 	double naval;
 	if (add) {	background = 0;	}
