@@ -66,6 +66,9 @@
 - `selectHighest` has new argument `ties` to choose exactly `n` cells
   (`"first"`, the default) or all cells with the `n` extreme values
   (`"all"`)
+- continuous `plot` legends with `plg$x` of `"left"`/`"right"`,
+  `"topleft"`/`"topright"` and `"bottomleft"`/`"bottomright"` now share
+  `size` and only differ in vertical alignment
 
 ### new
 

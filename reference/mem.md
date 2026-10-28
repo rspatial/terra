@@ -40,8 +40,8 @@ mem_info(rast())
 #> Memory (GB) 
 #> ------------------------
 #> check threshold : 1 (memmin)
-#> available       : 13.7 (memmax)
-#> allowed (50%)   : 6.85
+#> available       : 13.76 (memmax)
+#> allowed (50%)   : 6.88
 #> needed (n=1)    : 0
 #> ------------------------
 #> proc in memory  : TRUE
@@ -49,5 +49,5 @@ mem_info(rast())
 #> ------------------------
 
 free_RAM()
-#> [1] 14369992
+#> [1] 14424680
 ```
