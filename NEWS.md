@@ -1,4 +1,4 @@
-# version 1.9-55
+# version 1.9-57
 
 ## bug fixes
 
@@ -23,7 +23,7 @@
 - removed spurious "missing geotransform" warning for some file when using `rast(..., md=TRUE)` [#2208](https://github.com/rspatial/terra/issues/2208) by Kodi Arfer
 - `shift` gains argument `to` to center an object on a point or on the extent of another object [#2201](https://github.com/rspatial/terra/issues/2201) by Márcia Barbosa
 - `text<SpatVector>` gains argument `fit` to attempt to plot labels entirely inside their corresponding polygon
-- `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine the mapped colors (and alpha) of `x` with another raster (e.g. hillshade with "multiply") [#36](https://github.com/rspatial/terra/discussions/36)
+- `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine the mapped colors (and alpha) of `x` with another raster (e.g. hillshade with "multiply")
 - `selectHighest` has new argument `ties` to choose exactly `n` cells (`"first"`, the default) or all cells with the `n` extreme values (`"all"`)
 - continuous `plot` legends with `plg$x` of `"left"`/`"right"`, `"topleft"`/`"topright"` and `"bottomleft"`/`"bottomright"` now share `size` and only differ in vertical alignment
 - categorical `plot` legends accept an `"...-out"` placement keyword (e.g. `"bottomleft-out"`, `"top-out"`) to draw the legend outside the map; the default is `"topright-out"` [#2219](https://github.com/rspatial/terra/issues/2219)

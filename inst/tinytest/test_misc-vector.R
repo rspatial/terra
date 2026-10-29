@@ -68,3 +68,15 @@ vna$NAME_2[1] <- NA
 ana <- aggregate(vna, c("NAME_1", "NAME_2"))
 expect_equal(nrow(ana), nrow(unique(data.frame(vna$NAME_1, vna$NAME_2))))
 expect_true(any(is.na(ana$NAME_2)))
+
+## hull percent keeps the features closest to the centroid
+pts <- centroids(v)
+h100 <- hull(pts)
+h60 <- hull(pts, percent=60)
+expect_true(relate(h100, h60, "contains"))
+expect_true(expanse(h60) < expanse(h100))
+d <- as.vector(distance(pts, centroids(aggregate(pts))))
+h60b <- hull(pts[d <= stats::quantile(d, 0.6)])
+expect_true(relate(h60, h60b, "equals"))
+expect_error(hull(pts, percent=0))
+expect_error(hull(pts, percent=101))
