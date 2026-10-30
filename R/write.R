@@ -138,6 +138,8 @@ get_filetype <- function(filename) {
 		"MapInfo File"
 	} else if (ext == "gpx") {
 		"GPX"
+	} else if (ext == "fgb") {
+		"FlatGeobuf"
 	} else {
 		error("writeVector", "cannot guess filetype from filename")
 	}
