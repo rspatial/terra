@@ -110,7 +110,7 @@ get_basename <- function(x, n=150) {
 	if ((nsr == 1) && (object@pntr$is_multidim)) {
 		dnms <- paste(rev(object@pntr$dim_names()[[1]]), collapse=", ")
 		dsz <- paste(rev(object@pntr$dim_size()[[1]]), collapse=", ")
-		cat("dimensions  : ", dnms, " (", dsz, "}\n", sep="" )
+		cat("dimensions  : ", dnms, " (", dsz, ")\n", sep="" )
 	}
 
 	xyres <- res(object)

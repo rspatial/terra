@@ -308,7 +308,7 @@ std::string SpatRaster::show(bool one_based) {
 				dnames += dnms[0][i-1];
 				dsizes += std::to_string(dsz[0][i-1]);
 			}
-			s << "dimensions  : " << dnames << " (" << dsizes << "}\n";
+			s << "dimensions  : " << dnames << " (" << dsizes << ")\n";
 		}
 	}
 
