@@ -21,6 +21,8 @@ expect_equivalent(as.numeric(e1[1, 1]), 297.0172, tolerance = 1e-3)
 r2 <- rast(f, subds = "t2m", md = TRUE)
 expect_equal(nlyr(r2), 48)
 expect_equal(dim(r2), c(3L, 3L, 48L))
+expect_equal(grep("^dimensions ", capture.output(show(r2)), value = TRUE),
+             "dimensions  : longitude, latitude, expver, time (3, 3, 2, 24)")
 
 v2 <- values(r2)
 expect_equivalent(v2[1, 1], 296.9571, tolerance = 1e-3)
