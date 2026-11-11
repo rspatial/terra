@@ -9,7 +9,7 @@ The old method convHull is deprecated and will be removed in a future version.">
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-55</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-58</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@ The old method convHull is deprecated and will be removed in a future version.">
 <dd><p>character (variable name), to get a new geometry for groups of input geometries. Use <code>""</code> to get a hull around all geometries combined. Use <code>NA</code> to get a hull around each geometry in <code>x</code></p></dd>
 
   <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
-<dd><p>numeric between 0 and 1. For the "concave_*" types only. For <code>type="concave_ratio"</code> this is the edge length ratio value, between 0 and 1. For <code>type="concave_length"</code> this the maximum edge length (a value &gt; 0). For <code>type="concave_polygons"</code> this specifies the maximum Edge Length as a fraction of the difference between the longest and shortest edge lengths between the polygons. This normalizes the maximum edge length to be scale-free. A value of 1 produces the convex hull; a value of 0 produces the original polygons</p></dd>
+<dd><p>numeric. For <code>type="concave_ratio"</code>, use an edge length ratio between 0 and 1. For <code>type="concave_length"</code>, the meaning depends on the input geometry: use a ratio between 0 and 1 for polygons, or a maximum edge length in coordinate units (0 or greater) for points and lines.</p></dd>
 
   <dt id="arg-allowholes">allowHoles<a class="anchor" aria-label="anchor" href="#arg-allowholes"></a></dt>
 <dd><p>logical. May the output polygons contain holes? For "concave_*" methods only</p></dd>
@@ -79,7 +79,8 @@ The old method convHull is deprecated and will be removed in a future version.">
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A concave hull is a polygon which contains all the points of the input. It can be a better representation of the input data (typically points) than the convex hull. There are many possible concave hulls with different degrees of concaveness. These can be created with argument <code>param</code>.</p>
-<p>The hull is constructed by removing the longest outer edges of the Delaunay Triangulation of the space between the polygons, until the target criterion <code>param</code> is reached. If <code>type="concave_ratio"</code>, <code>param</code> expresses the ratio between the lengths of the longest and shortest edges. 1 produces the convex hull; 0 produces a hull with maximum concaveness. If <code>type="concave_length"</code>, <code>param</code> specifies the maximm edge length. A large value produces the convex hull, 0 produces the hull of maximum concaveness.</p>
+<p>For <code>type="concave_ratio"</code>, larger ratios retain longer edges. A ratio of 0 gives the most concave hull and 1 gives the convex hull. This method requires GEOS 3.11 or later.</p>
+<p>For <code>type="concave_length"</code> with polygons, the ratio applies to the edges between polygons. At 0 the original polygons are retained. The <code>tight</code> argument controls whether the hull follows their outer boundaries. This method requires GEOS 3.11 or later. For points and lines, a larger maximum edge length gives a less concave hull. This method requires GEOS 3.12 or later.</p>
     </div>
 
     <div class="section level2">

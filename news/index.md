@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-55
+## version 1.9-58
 
 ### bug fixes
 
@@ -29,6 +29,9 @@
   argument was added
 - `aggregate<SpatVector>` by more than one variable failed with when a
   grouping field had `NA`
+- scatterplot of two rasters did not work when supplying xlim/ylim
+  arguments [\#2230](https://github.com/rspatial/terra/issues/2230) by
+  Agustín Lobo
 
 ### enhancements
 
@@ -62,7 +65,6 @@
 - `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine
   the mapped colors (and alpha) of `x` with another raster
   (e.g. hillshade with “multiply”)
-  [\#36](https://github.com/rspatial/terra/discussions/36)
 - `selectHighest` has new argument `ties` to choose exactly `n` cells
   (`"first"`, the default) or all cells with the `n` extreme values
   (`"all"`)
@@ -76,6 +78,8 @@
 - `hull` gains argument `percent` to use only the features closest to
   the centroid [\#2217](https://github.com/rspatial/terra/issues/2217)
   by Márcia Barbosa
+- Fixed parenthesis in multidimensional raster print of dimensions
+  [\#2226](https://github.com/rspatial/terra/pull/2226) by Sinkleberg
 
 ### new
 

@@ -34,14 +34,10 @@ hull(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE, percent=100)
 
 - param:
 
-  numeric between 0 and 1. For the "concave\_\*" types only. For
-  `type="concave_ratio"` this is the edge length ratio value, between 0
-  and 1. For `type="concave_length"` this the maximum edge length (a
-  value \> 0). For `type="concave_polygons"` this specifies the maximum
-  Edge Length as a fraction of the difference between the longest and
-  shortest edge lengths between the polygons. This normalizes the
-  maximum edge length to be scale-free. A value of 1 produces the convex
-  hull; a value of 0 produces the original polygons
+  numeric. For `type="concave_ratio"`, use an edge length ratio between
+  0 and 1. For `type="concave_length"`, the meaning depends on the input
+  geometry: use a ratio between 0 and 1 for polygons, or a maximum edge
+  length in coordinate units (0 or greater) for points and lines.
 
 - allowHoles:
 
@@ -70,14 +66,16 @@ than the convex hull. There are many possible concave hulls with
 different degrees of concaveness. These can be created with argument
 `param`.
 
-The hull is constructed by removing the longest outer edges of the
-Delaunay Triangulation of the space between the polygons, until the
-target criterion `param` is reached. If `type="concave_ratio"`, `param`
-expresses the ratio between the lengths of the longest and shortest
-edges. 1 produces the convex hull; 0 produces a hull with maximum
-concaveness. If `type="concave_length"`, `param` specifies the maximm
-edge length. A large value produces the convex hull, 0 produces the hull
-of maximum concaveness.
+For `type="concave_ratio"`, larger ratios retain longer edges. A ratio
+of 0 gives the most concave hull and 1 gives the convex hull. This
+method requires GEOS 3.11 or later.
+
+For `type="concave_length"` with polygons, the ratio applies to the
+edges between polygons. At 0 the original polygons are retained. The
+`tight` argument controls whether the hull follows their outer
+boundaries. This method requires GEOS 3.11 or later. For points and
+lines, a larger maximum edge length gives a less concave hull. This
+method requires GEOS 3.12 or later.
 
 ## Examples
 

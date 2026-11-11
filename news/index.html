@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-55</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-58</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-55" id="version-19-55">version 1.9-55<a class="anchor" aria-label="anchor" href="#version-19-55"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-58" id="version-19-58">version 1.9-58<a class="anchor" aria-label="anchor" href="#version-19-58"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-55">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-55"></a></h3>
+<h3 id="bug-fixes-1-9-58">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-58"></a></h3>
 <ul><li>
 <code>plot&lt;SpatVector&gt;</code> ignored <code>colNA</code> when <code>type="continuous"</code> <a href="https://github.com/rspatial/terra/issues/2198" class="external-link">#2198</a> by Márcia Barbosa</li>
 <li>
@@ -54,9 +54,10 @@
 <li>
 <code>aggregate&lt;SpatVector&gt;</code> by more than one variable failed with when a grouping field had <code>NA</code>
 </li>
+<li>scatterplot of two rasters did not work when supplying xlim/ylim arguments <a href="https://github.com/rspatial/terra/issues/2230" class="external-link">#2230</a> by Agustín Lobo</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-55">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-55"></a></h3>
+<h3 id="enhancements-1-9-58">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-58"></a></h3>
 <ul><li>GDAL raster block cache is set to 64 MB at load unless <code>GDAL_CACHEMAX</code> is already set</li>
 <li>raster processing chunks are aligned to the source file’s block height when that is reported</li>
 <li>
@@ -77,8 +78,7 @@
 <li>
 <code>text&lt;SpatVector&gt;</code> gains argument <code>fit</code> to attempt to plot labels entirely inside their corresponding polygon</li>
 <li>
-<code>plot&lt;SpatRaster&gt;</code> gains arguments <code>blend</code> and <code>blendfun</code> to combine the mapped colors (and alpha) of <code>x</code> with another raster (e.g. hillshade with “multiply”) <a href="https://github.com/rspatial/terra/discussions/36" class="external-link">#36</a>
-</li>
+<code>plot&lt;SpatRaster&gt;</code> gains arguments <code>blend</code> and <code>blendfun</code> to combine the mapped colors (and alpha) of <code>x</code> with another raster (e.g. hillshade with “multiply”)</li>
 <li>
 <code>selectHighest</code> has new argument <code>ties</code> to choose exactly <code>n</code> cells (<code>"first"</code>, the default) or all cells with the <code>n</code> extreme values (<code>"all"</code>)</li>
 <li>continuous <code>plot</code> legends with <code>plg$x</code> of <code>"left"</code>/<code>"right"</code>, <code>"topleft"</code>/<code>"topright"</code> and <code>"bottomleft"</code>/<code>"bottomright"</code> now share <code>size</code> and only differ in vertical alignment</li>
@@ -86,9 +86,10 @@
 </li>
 <li>
 <code>hull</code> gains argument <code>percent</code> to use only the features closest to the centroid <a href="https://github.com/rspatial/terra/issues/2217" class="external-link">#2217</a> by Márcia Barbosa</li>
+<li>Fixed parenthesis in multidimensional raster print of dimensions <a href="https://github.com/rspatial/terra/pull/2226" class="external-link">#2226</a> by Sinkleberg</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-9-55">new<a class="anchor" aria-label="anchor" href="#new-1-9-55"></a></h3>
+<h3 id="new-1-9-58">new<a class="anchor" aria-label="anchor" href="#new-1-9-58"></a></h3>
 <ul><li>
 <code>modal</code> for vectors implementation. Moved from the raster package but using the terra C++ implementation</li>
 <li>
