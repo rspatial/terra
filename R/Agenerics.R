@@ -171,7 +171,7 @@ if (!isGeneric("cartogram")) {setGeneric("cartogram", function(x, ...) standardG
 if (!isGeneric("dots")) {setGeneric("dots", function(x, ...) standardGeneric("dots"))}
 if (!isGeneric("crds")) {setGeneric("crds", function(x, ...) standardGeneric("crds"))}
 if (!isGeneric("symdif")) {setGeneric("symdif", function(x, y, ...) standardGeneric("symdif"))}
-if (!isGeneric("median")) {setGeneric("median", function(x, na.rm) standardGeneric("median"))}
+if (!isGeneric("median")) {setGeneric("median", function(x, na.rm = FALSE, ...) standardGeneric("median"))}
 if (!isGeneric("polys")) {setGeneric("polys", function(x,...) standardGeneric("polys"))}
 if (!isGeneric("centroids")) {setGeneric("centroids", function(x, ...) standardGeneric("centroids"))}
 if (!isGeneric("coltab")) {setGeneric("coltab", function(x, ...) standardGeneric("coltab"))}
