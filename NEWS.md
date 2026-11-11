@@ -1,4 +1,4 @@
-# version 1.9-57
+# version 1.9-58
 
 ## bug fixes
 
@@ -10,6 +10,8 @@
 - `crop` with `mask=TRUE` on a raster opened with the multidimensional API ignored the cropping window [#2212](https://github.com/rspatial/terra/issues/2212) by Ondřej Ledvinka
 - `init` with a function failed on a multi-source SpatRaster (`the condition has length > 1` in `writeStop`) after the `mask` argument was added
 - `aggregate<SpatVector>` by more than one variable failed with when a grouping field had `NA`
+- scatterplot of two rasters did not work when supplying xlim/ylim arguments [#2230](https://github.com/rspatial/terra/issues/2230) by Agustín Lobo
+
 
 ## enhancements
 
@@ -28,6 +30,7 @@
 - continuous `plot` legends with `plg$x` of `"left"`/`"right"`, `"topleft"`/`"topright"` and `"bottomleft"`/`"bottomright"` now share `size` and only differ in vertical alignment
 - categorical `plot` legends accept an `"...-out"` placement keyword (e.g. `"bottomleft-out"`, `"top-out"`) to draw the legend outside the map; the default is `"topright-out"` [#2219](https://github.com/rspatial/terra/issues/2219)
 - `hull` gains argument `percent` to use only the features closest to the centroid [#2217](https://github.com/rspatial/terra/issues/2217) by Márcia Barbosa
+- Fixed parenthesis in multidimensional raster print of dimensions [#2226](https://github.com/rspatial/terra/pull/2226) by Sinkleberg
 
 
 ## new 
