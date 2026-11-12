@@ -42,7 +42,7 @@ plot(x, y, maxcell=100000, warn=TRUE, nc, nr,
 - smooth:
 
   logical. If `TRUE` show a smooth scatterplot (see
-  [`smoothScatter`](https://rdrr.io/r/graphics/smoothScatter.html)
+  [`smoothScatter`](https://rdrr.io/r/graphics/smoothScatter.html))
 
 - gridded:
 
