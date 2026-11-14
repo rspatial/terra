@@ -33,8 +33,8 @@ selectSize(x, n=Inf, largest=TRUE, threshold=NULL,
 - threshold:
 
   optional size threshold (area in square meters for polygons, length in
-  meters for lines) above which (if `largest=TRUE` or below which (if
-  `largest=FALSE` features should be selected
+  meters for lines) above which (if `largest=TRUE`) or below which (if
+  `largest=FALSE`) features should be selected
 
 - dissolve:
 

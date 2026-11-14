@@ -29,7 +29,7 @@ is.valid(x)
 - as.points:
 
   logical. If `TRUE`, it is attempted to return locations where polygons
-  are invalid as a SpatVector or points
+  are invalid as a SpatVector of points
 
 - buffer:
 

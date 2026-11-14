@@ -57,7 +57,7 @@ zonal(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)
 
 - wide:
 
-  logical. Should the values returned in a wide format? For the
+  logical. Should the values be returned in a wide format? For the
   `SpatRaster, SpatRaster` method this only affects the results when
   `nlyr(z) == 2`. For the `SpatRaster, SpatVector` method this only
   affects the results when `fun=table`
@@ -108,8 +108,8 @@ zonal(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)
 
   logical. If `TRUE`, a weighted.mean is computed and `fun` is ignored.
   Weights are based on the length of the lines or the area of the
-  polygons in `x` that intersect with `z`. This argument is ignored of
-  `x` is a SpatVector or points
+  polygons in `x` that intersect with `z`. This argument is ignored if
+  `x` is a SpatVector of points
 
 - as.polygons:
 

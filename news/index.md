@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-58
+## version 1.9-59
 
 ### bug fixes
 

@@ -20,9 +20,9 @@ focalReg(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 
 - w:
 
-  numeric or matrix to define the focal window. The window an be defined
-  as one (for a square) or two numbers (row, col); or with an odd-sized
-  weights matrix. See the Details section in
+  numeric or matrix to define the focal window. The window can be
+  defined as one (for a square) or two numbers (row, col); or with an
+  odd-sized weights matrix. See the Details section in
   [`focal`](https://rspatial.github.io/terra/reference/focal.md). Note
   that if a matrix with numbers other than zero or one are used, the
   values are used as weights. For this to work, `fun` must have an
@@ -63,8 +63,9 @@ SpatRaster
 
 ## See also
 
-[`focal`](https://rspatial.github.io/terra/reference/focal.md)`, `[`focal3D`](https://rspatial.github.io/terra/reference/focal3D.md),
-[focalValues](https://rspatial.github.io/terra/reference/focalValues.md)
+[`focal`](https://rspatial.github.io/terra/reference/focal.md),
+[`focal3D`](https://rspatial.github.io/terra/reference/focal3D.md),
+[`focalValues`](https://rspatial.github.io/terra/reference/focalValues.md)
 
 ## Examples
 

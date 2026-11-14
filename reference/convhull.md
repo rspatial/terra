@@ -37,7 +37,7 @@ hull(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE, percent=100)
   numeric. For `type="concave_ratio"`, use an edge length ratio between
   0 and 1. For `type="concave_length"`, the meaning depends on the input
   geometry: use a ratio between 0 and 1 for polygons, or a maximum edge
-  length in coordinate units (0 or greater) for points and lines.
+  length in coordinate units (0 or greater) for points and lines
 
 - allowHoles:
 
@@ -93,7 +93,7 @@ lines(hh, col="purple")
 pts <- centroids(p)
 plot(pts, ext=ext(p)+0.1)
 lines(hull(pts, type="convex"), col="darkgreen")
-lines(hull(pts, type="rect"), col="blue")
+lines(hull(pts, type="rectangle"), col="blue")
 lines(hull(pts, type="circle"), col="red")
 lines(hull(pts, percent=60), col="orange")
 

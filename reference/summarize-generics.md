@@ -54,9 +54,6 @@ all(x, ..., na.rm=FALSE)
 nany(x, ..., na.rm=FALSE)
 
 # S4 method for class 'SpatRaster'
-range(x, ..., na.rm=FALSE)
-
-# S4 method for class 'SpatRaster'
 which.min(x)
 
 # S4 method for class 'SpatRaster'
@@ -133,7 +130,7 @@ layers, `max(x, 5)` will return a single layer (the number five is
 treated as a layer in which all cells have value five). In contrast
 `max(x, 5, par=TRUE)` returns three layers (the number five is treated
 as another SpatRaster with a single layer with all cells having the
-value five.
+value five).
 
 ## See also
 

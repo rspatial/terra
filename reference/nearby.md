@@ -53,7 +53,7 @@ nearest(x, y, pairs=FALSE, centroids=TRUE, lines=FALSE, method="geo")
 - pairs:
 
   logical. If `TRUE` pairwise nearest points are returned (only relevant
-  when using at least one SpatVector of lines or polygons
+  when using at least one SpatVector of lines or polygons)
 
 - lines:
 

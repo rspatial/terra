@@ -71,12 +71,12 @@ expanse(x, unit="m", transform=TRUE)
 cells is returned. Otherwise, the area of all cells that are not `NA` is
 returned.
 
-**SpatVector**: numeric (one value for each (multi-) polygon geometry.
+**SpatVector**: numeric (one value for each (multi-) polygon geometry).
 
 ## See also
 
 [`cellSize`](https://rspatial.github.io/terra/reference/cellSize.md) for
-a the size of individual cells of a raster, that can be summed with
+the size of individual cells of a raster, that can be summed with
 [`global`](https://rspatial.github.io/terra/reference/global.md) or with
 [`zonal`](https://rspatial.github.io/terra/reference/zonal.md) to get
 the area for different zones;

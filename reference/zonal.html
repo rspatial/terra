@@ -11,7 +11,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-58</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-59</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <dd><p>SpatRaster with weights. Should have a single-layer with non-negative values</p></dd>
 
   <dt id="arg-wide">wide<a class="anchor" aria-label="anchor" href="#arg-wide"></a></dt>
-<dd><p>logical. Should the values returned in a wide format? For the <code>SpatRaster, SpatRaster</code> method this only affects the results when <code>nlyr(z) == 2</code>. For the <code>SpatRaster, SpatVector</code> method this only affects the results when <code>fun=table</code></p></dd>
+<dd><p>logical. Should the values be returned in a wide format? For the <code>SpatRaster, SpatRaster</code> method this only affects the results when <code>nlyr(z) == 2</code>. For the <code>SpatRaster, SpatVector</code> method this only affects the results when <code>fun=table</code></p></dd>
 
   <dt id="arg-as-raster">as.raster<a class="anchor" aria-label="anchor" href="#arg-as-raster"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatRaster is returned with the zonal statistic for each zone</p></dd>
@@ -106,7 +106,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <dd><p>logical. If <code>TRUE</code>, values for all cells in touched polygons are extracted if none of the cells center points is within the polygon; even if <code>touches=FALSE</code></p></dd>
 
   <dt id="arg-weighted">weighted<a class="anchor" aria-label="anchor" href="#arg-weighted"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, a weighted.mean is computed and <code>fun</code> is ignored. Weights are based on the length of the lines or the area of the polygons in <code>x</code> that intersect with <code>z</code>. This argument is ignored of <code>x</code> is a SpatVector or points</p></dd>
+<dd><p>logical. If <code>TRUE</code>, a weighted.mean is computed and <code>fun</code> is ignored. Weights are based on the length of the lines or the area of the polygons in <code>x</code> that intersect with <code>z</code>. This argument is ignored if <code>x</code> is a SpatVector of points</p></dd>
 
   <dt id="arg-as-polygons">as.polygons<a class="anchor" aria-label="anchor" href="#arg-as-polygons"></a></dt>
 <dd><p>logical. Should the zonal statistics be combined with the geometry of <code>z</code>?</p></dd>

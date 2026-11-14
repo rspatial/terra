@@ -1,11 +1,11 @@
 # Spatial relationships between geometries
 
 `relate` returns a logical matrix indicating the presence or absence of
-a specific spatial relationships between the geometries in `x` and `y`.
+a specific spatial relationship between the geometries in `x` and `y`.
 
 `is.related` returns a logical vector indicating the presence or absence
-of a specific spatial relationships between `x` and any of the
-geometries in `y`.
+of a specific spatial relationship between `x` and any of the geometries
+in `y`.
 
 ## Usage
 

@@ -1,7 +1,7 @@
 # Compare two SpatRaster, SpatVector or SpatExtent objects for equality
 
 When, comparing two SpatRasters for equality, first the attributes of
-the objects are compared. If these are the same, a the raster cells are
+the objects are compared. If these are the same, the raster cells are
 compared as well. This can be time consuming, and you may prefer to use
 a sample instead with
 [`all.equal`](https://rspatial.github.io/terra/reference/all.equal.md)

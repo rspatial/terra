@@ -20,9 +20,9 @@ focalPairs(x, w=3, fun, ..., fillvalue=NA,
 
 - w:
 
-  numeric or matrix to define the focal window. The window an be defined
-  as one (for a square) or two numbers (row, col); or with an odd-sized
-  weights matrix. See the Details section in
+  numeric or matrix to define the focal window. The window can be
+  defined as one (for a square) or two numbers (row, col); or with an
+  odd-sized weights matrix. See the Details section in
   [`focal`](https://rspatial.github.io/terra/reference/focal.md). Note
   that if a matrix with numbers other than zero or one are used, the
   values are used as weights. For this to work, `fun` must have an
@@ -32,7 +32,7 @@ focalPairs(x, w=3, fun, ..., fillvalue=NA,
 
   a function with at least two arguments (one for each layer). There is
   a built-in function "pearson" (for both the weighted and the
-  unweighted Pearson correlation coefficient. This function has an
+  unweighted Pearson correlation coefficient). This function has an
   additional argument `na.rm=FALSE`
 
 - ...:

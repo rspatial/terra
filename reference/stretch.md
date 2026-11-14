@@ -32,7 +32,7 @@ stretch(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
 
 - maxv:
 
-  numeric \<= 255 and larger than maxv. upper bound of stretched value
+  numeric \<= 255 and larger than minv. upper bound of stretched value
 
 - minq:
 

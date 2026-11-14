@@ -42,7 +42,7 @@ animate(x, pause=0.25, n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...)
 - maxcell:
 
   positive integer. Maximum number of cells to use for the plot. If
-  `maxcell < ncell(x)`, `spatSample(type="regular")` is used before
+  `maxcell < ncell(x)`, `spatSample(method="regular")` is used before
   plotting
 
 - n:

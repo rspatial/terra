@@ -15,7 +15,7 @@ numbers. Or if the input SpatRaster(s) have multiple layers, it should
 work for a matrix (multiple cells) of input data (or matrices in the
 case of a SpatRasterDataSet). The function must return the same number
 of elements as its input vectors, or multiples of that. Also make sure
-that the function is `NA`-proof: it should returns the same number of
+that the function is `NA`-proof: it should return the same number of
 values when some or all input values are `NA`. And the function must
 return a vector or a matrix, not a `data.frame`. To test it, run it with
 `do.call(fun, data)` (see examples).

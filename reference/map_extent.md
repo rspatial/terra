@@ -11,8 +11,7 @@ coordinates.
 
 The coordinates returned by this function are used in, for example,
 [`add_legend`](https://rspatial.github.io/terra/reference/legend.md)
-such that a legend can be automatically placed in the a particular
-corner.
+such that a legend can be automatically placed in a particular corner.
 
 This function only returns meaningful results of the active plot
 (canvas) was create with a call to `plot` with a SpatRaster or

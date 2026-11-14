@@ -3,7 +3,7 @@
 The values in a SpatRaster layer are by default numeric, but they can
 also be set to be logical (Boolean), integer, or categorical (factor).
 
-For a `SpatRaster`, `as.logical` and `isTRUE` is equivalent to
+For a `SpatRaster`, `as.logical` and `isTRUE` are equivalent to
 `as.bool`. `isFALSE` is equivalent to `!as.bool`, and `as.integer` is
 the same as `as.int`.
 

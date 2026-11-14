@@ -77,9 +77,9 @@ classify(x, rcl, include.lowest=FALSE, right=TRUE,
 
 - brackets:
 
-  logical. If `TRUE`, intervals are have parenthesis or brackets around
-  them to indicate whether they are open or closed. Only applies if
-  `rcl` is a vector (or single column matrix)
+  logical. If `TRUE`, intervals have parentheses or brackets around them
+  to indicate whether they are open or closed. Only applies if `rcl` is
+  a vector (or single column matrix)
 
 - filename:
 
