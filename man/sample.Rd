@@ -49,10 +49,10 @@ In order to assure regularity when requesting a regular sample, the number of ce
   
   \item{exp}{numeric >= 1. "Expansion factor" that is multiplied with \code{size} to get an initial sample used for stratified samples and random samples with \code{na.rm=TRUE} to try to get at least \code{size} samples}
   
-  \item{exhaustive}{logical. If \code{TRUE} and (\code{method=="random"} and \code{na.rm=TRUE}) or \code{method=="stratified"}, all cells that are not \code{NA} are determined and a sample is taken from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are \code{NA}). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values}
-  \item{exact}{logical. If \code{TRUE} and \code{method=="regular"}, the sample returned is exactly \code{size}, perhaps at the expense of some regularity. Otherwise you get at least \code{size} many samples. Ignored for lon/lat rasters}
-  \item{each}{logical. If \code{TRUE} and \code{method=="stratified"}, the sample returned is \code{size} for each stratum. Otherwise \code{size} is the total sample size}
-  \item{...}{additional arguments passed to \code{\link{k_means}} when \code{method="kmeans"}}
+  \item{exhaustive}{logical. If \code{TRUE} and (\code{method="random"} and \code{na.rm=TRUE}) or \code{method="stratified"}, all cells that are not \code{NA} are determined and a sample is taken from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are \code{NA}). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values}
+  \item{exact}{logical. If \code{TRUE} and \code{method="regular"}, the sample returned is exactly \code{size}, perhaps at the expense of some regularity. Otherwise you get at least \code{size} many samples. Ignored for lon/lat rasters}
+  \item{each}{logical. If \code{TRUE} and \code{method="stratified"}, the sample returned is \code{size} for each stratum. Otherwise \code{size} is the total sample size}
+  \item{...}{additional arguments passed to \code{\link{k_means}} when \code{method="spread"}}
 
   \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
   \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}

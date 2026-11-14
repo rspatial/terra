@@ -26,7 +26,7 @@ Animate (sequentially plot) the layers of a SpatRaster, or a SpatVectorCollectio
   \item{pause}{numeric. How long should the pause be between layers?}  
   \item{main}{title for each layer. For SpatRaster, if not supplied, the z-value is used if available. Otherwise the names are used.}  
   \item{range}{numeric vector of length 2. Range of values to plot, If \code{NULL} the range of all layers is used for rasters, or all variables for vectors if they are all numeric. If \code{NA} the range of each individual layer is used}
-  \item{maxcell}{positive integer. Maximum number of cells to use for the plot. If \code{maxcell < ncell(x)}, \code{spatSample(type="regular")} is used before plotting}
+  \item{maxcell}{positive integer. Maximum number of cells to use for the plot. If \code{maxcell < ncell(x)}, \code{spatSample(method="regular")} is used before plotting}
   \item{n}{integer > 0. Number of plotting loops}
   \item{vars}{numeric or character to indicate the variables to animate. If this is NULL, the geometries are animated instead}
   \item{ext}{\code{SpatExtent} object (or an object for which \code{\link{ext}} returns one) setting the spatial extent of the plot.}

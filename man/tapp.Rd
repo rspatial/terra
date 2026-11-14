@@ -39,7 +39,7 @@ SpatRaster
 }
 
 \details{
-"week" follows the ISO 8601 definition. Weeks start on Monday. If the week containing 1 January has four or more days in the new year, then it is considered week "01". Otherwise, it is the last week of the previous year (week "52" or "53", and the next week is week 1.
+"week" follows the ISO 8601 definition. Weeks start on Monday. If the week containing 1 January has four or more days in the new year, then it is considered week "01". Otherwise, it is the last week of the previous year (week "52" or "53"), and the next week is week 1.
 }
 
 \seealso{\code{\link{app}}, \code{\link{Summary-methods}}}
