@@ -24,7 +24,7 @@ Check the validity of polygons or attempt to fix it. Or check the validity of a 
 \arguments{
 \item{x}{SpatVector or SpatExtent}
 \item{messages}{logical. If \code{TRUE} the error messages are returned}
-\item{as.points}{logical. If \code{TRUE}, it is attempted to return locations where polygons are invalid as a SpatVector or points}
+\item{as.points}{logical. If \code{TRUE}, it is attempted to return locations where polygons are invalid as a SpatVector of points}
 \item{buffer}{logical. If \code{TRUE} the zero-width buffer method is used to create valid polygons. Be careful when  using this method because it may result in data loss. For example, only a single part of a self-intersecting may be preserved. See the example below}
 }
 

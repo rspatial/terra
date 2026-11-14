@@ -39,7 +39,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
  
  \item{others}{numeric. If not \code{NULL} all values that are not matched are set to this value. Otherwise they retain their original value.} 
 
- \item{brackets}{logical. If \code{TRUE}, intervals are have parenthesis or brackets around them to indicate whether they are open or closed. Only applies if \code{rcl} is a vector (or single column matrix)} 
+ \item{brackets}{logical. If \code{TRUE}, intervals have parentheses or brackets around them to indicate whether they are open or closed. Only applies if \code{rcl} is a vector (or single column matrix)} 
 
  \item{filename}{character. Output filename}
  \item{...}{Additional arguments for writing files as in \code{\link{writeRaster}}}

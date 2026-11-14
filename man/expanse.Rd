@@ -41,11 +41,11 @@ Note that it is important that polygon geometries are valid. If they are not val
 \value{
 \bold{SpatRaster}: \code{data.frame} with at least two columns ("layer" and "area") and possibly also "value" (if \code{byValue} is \code{TRUE}), and "zone" (if \code{zones} is \code{TRUE}). If \code{x} has no values, the total area of all cells is returned. Otherwise, the area of all cells that are not \code{NA} is returned. 
 
-\bold{SpatVector}: numeric (one value for each (multi-) polygon geometry.
+\bold{SpatVector}: numeric (one value for each (multi-) polygon geometry).
 }
 
 \seealso{
-\code{\link{cellSize}} for a the size of individual cells of a raster, that can be summed with \code{\link{global}} or with \code{\link{zonal}} to get the area for different zones; \code{\link{surfArea}} for a raster with elevation values, taking into account the sloping nature of the surface.
+\code{\link{cellSize}} for the size of individual cells of a raster, that can be summed with \code{\link{global}} or with \code{\link{zonal}} to get the area for different zones; \code{\link{surfArea}} for a raster with elevation values, taking into account the sloping nature of the surface.
 }
 
 \examples{

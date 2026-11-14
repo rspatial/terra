@@ -25,7 +25,7 @@ The old method \code{convHull} is deprecated and will be removed in a future ver
   \item{x}{SpatVector}
   \item{type}{character. One of "convex", "rectangle", "circle", "concave_ratio", "concave_length"}
   \item{by}{character (variable name), to get a new geometry for groups of input geometries. Use \code{""} to get a hull around all geometries combined. Use \code{NA} to get a hull around each geometry in \code{x}}
-  \item{param}{numeric. For \code{type="concave_ratio"}, use an edge length ratio between 0 and 1. For \code{type="concave_length"}, the meaning depends on the input geometry: use a ratio between 0 and 1 for polygons, or a maximum edge length in coordinate units (0 or greater) for points and lines.}
+  \item{param}{numeric. For \code{type="concave_ratio"}, use an edge length ratio between 0 and 1. For \code{type="concave_length"}, the meaning depends on the input geometry: use a ratio between 0 and 1 for polygons, or a maximum edge length in coordinate units (0 or greater) for points and lines}
   \item{allowHoles}{logical. May the output polygons contain holes? For "concave_*" methods only}
   \item{tight}{logical. Should the hull follow the outer boundaries of the input polygons? For "concave_length" with polygon geometry only}
   \item{percent}{numeric > 0 and <= 100. If below 100, only that percentage of geometries closest to the centroid is used}
@@ -59,7 +59,7 @@ lines(hh, col="purple")
 pts <- centroids(p)
 plot(pts, ext=ext(p)+0.1)
 lines(hull(pts, type="convex"), col="darkgreen")
-lines(hull(pts, type="rect"), col="blue")
+lines(hull(pts, type="rectangle"), col="blue")
 lines(hull(pts, type="circle"), col="red")
 lines(hull(pts, percent=60), col="orange")
 

@@ -17,7 +17,7 @@ Select the largest or smallest polygons or lines in a \code{SpatVector}, optiona
   \item{x}{\code{SpatVector} of polygons or lines}
   \item{n}{optional integer value (default Inf) indicating the maximum number of largest or smallest features to select (if they pass the optional threshold)  }
   \item{largest}{if \code{TRUE} (default) select the largest feature(s), otherwise the smallest}
-  \item{threshold}{optional size threshold (area in square meters for polygons, length in meters for lines) above which (if \code{largest=TRUE} or below which (if \code{largest=FALSE} features should be selected}
+  \item{threshold}{optional size threshold (area in square meters for polygons, length in meters for lines) above which (if \code{largest=TRUE}) or below which (if \code{largest=FALSE}) features should be selected}
   \item{dissolve}{if \code{TRUE}, aggregate features before selection. Default \code{FALSE}}
   \item{singleparts}{if \code{TRUE} (default), split multipart features into individual parts before selection}
 }

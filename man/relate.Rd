@@ -31,9 +31,9 @@ Spatial relationships between geometries
 }
 
 \description{
-\code{relate} returns a logical matrix indicating the presence or absence of a specific spatial relationships between the geometries in \code{x} and \code{y}. 
+\code{relate} returns a logical matrix indicating the presence or absence of a specific spatial relationship between the geometries in \code{x} and \code{y}. 
 
-\code{is.related} returns a logical vector indicating the presence or absence of a specific spatial relationships between \code{x} and any of the geometries in \code{y}.
+\code{is.related} returns a logical vector indicating the presence or absence of a specific spatial relationship between \code{x} and any of the geometries in \code{y}.
 }
 
 \usage{
