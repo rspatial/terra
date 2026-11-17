@@ -85,8 +85,6 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \S4method{nany}{SpatRaster}(x, ..., na.rm=FALSE)
 
-\S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
-
 \S4method{which.min}{SpatRaster}(x)
 
 \S4method{which.max}{SpatRaster}(x)
@@ -121,7 +119,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 \value{SpatRaster}
 
 \details{
-Additional argument \code{par} can be used for "parallel" summarizing a SpatRaster and a numeric or logical value. If a SpatRaster \code{x} has three layers, \code{max(x, 5)} will return a single layer (the number five is treated as a layer in which all cells have value five). In contrast \code{max(x, 5, par=TRUE)} returns three layers (the number five is treated as another SpatRaster with a single layer with all cells having the value five.
+Additional argument \code{par} can be used for "parallel" summarizing a SpatRaster and a numeric or logical value. If a SpatRaster \code{x} has three layers, \code{max(x, 5)} will return a single layer (the number five is treated as a layer in which all cells have value five). In contrast \code{max(x, 5, par=TRUE)} returns three layers (the number five is treated as another SpatRaster with a single layer with all cells having the value five).
 }
 
 

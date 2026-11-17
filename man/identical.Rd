@@ -10,7 +10,7 @@
 \title{Compare two SpatRaster, SpatVector or SpatExtent objects for equality}
 
 \description{
-When, comparing two SpatRasters for equality, first the attributes of the objects are compared. If these are the same, a the raster cells are compared as well. This can be time consuming, and you may prefer to use a sample instead with \code{\link{all.equal}}
+When, comparing two SpatRasters for equality, first the attributes of the objects are compared. If these are the same, the raster cells are compared as well. This can be time consuming, and you may prefer to use a sample instead with \code{\link{all.equal}}
 }
 
 \usage{

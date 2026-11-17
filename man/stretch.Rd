@@ -21,7 +21,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 \arguments{
 \item{x}{SpatRaster} 
 \item{minv}{numeric >= 0 and smaller than maxv. lower bound of stretched value}
-\item{maxv}{numeric <= 255 and larger than maxv. upper bound of stretched value}
+\item{maxv}{numeric <= 255 and larger than minv. upper bound of stretched value}
 \item{minq}{numeric >= 0 and smaller than maxq. lower quantile bound of original value. Ignored if smin is supplied}
 \item{maxq}{numeric <= 1 and larger than minq. upper quantile bound of original value. Ignored if smax is supplied}
 \item{smin}{numeric < smax. user supplied lower value for the layers, to be used instead of a quantile computed by the function itself}

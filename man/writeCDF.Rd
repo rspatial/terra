@@ -44,7 +44,7 @@ See \code{\link{depth}} and \code{\link{time}} for specifying the axes of the th
 }
 
 \value{
-SpatRaster or SpatDataSet
+SpatRaster or SpatRasterDataset. This function is used for the side-effect of writing values to a file.
 }
 
 \seealso{
