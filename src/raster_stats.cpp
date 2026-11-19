@@ -1617,10 +1617,11 @@ std::vector<double> SpatRaster::crosstab(int digits, bool narm, SpatOptions &opt
     });
 
     size_t n = keys.size();
-    out.reserve(n * (nl + 1));
+    out.resize(n * (nl + 1));
+    size_t k = 0;
     for (size_t i=0; i<n; i++) {
-        for (size_t lyr=0; lyr<nl; lyr++) out.push_back(keys[i][lyr]);
-        out.push_back((double)tab[keys[i]]);
+        for (size_t lyr=0; lyr<nl; lyr++) out[k++] = keys[i][lyr];
+        out[k++] = (double)tab[keys[i]];
     }
     return(out);
 }

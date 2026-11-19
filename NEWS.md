@@ -1,4 +1,4 @@
-# version 1.9-59
+# version 1.9-60
 
 ## bug fixes
 
@@ -11,6 +11,7 @@
 - `init` with a function failed on a multi-source SpatRaster (`the condition has length > 1` in `writeStop`) after the `mask` argument was added
 - `aggregate<SpatVector>` by more than one variable failed with when a grouping field had `NA`
 - scatterplot of two rasters did not work when supplying xlim/ylim arguments [#2230](https://github.com/rspatial/terra/issues/2230) by Agustín Lobo
+- a rescaled spatstat image was not imported correctly, it applied the scale factor to the values [#2236](https://github.com/rspatial/terra/issues/2236) by Manny Gimond
 
 
 ## enhancements

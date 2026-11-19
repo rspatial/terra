@@ -1679,8 +1679,7 @@ double length_plane(const SpatGeom &geom) {
 std::vector<double> SpatVector::length() {
 
 	size_t s = size();
-	std::vector<double> r;
-	r.reserve(s);
+	std::vector<double> r(s);
 
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
@@ -1695,11 +1694,11 @@ std::vector<double> SpatVector::length() {
 		double f = 1 / 298.257223563;
 		geod_init(&g, a, f);
 		for (size_t i=0; i<s; i++) {
-			r.push_back(length_lonlat(g, geoms[i]));
+			r[i] = length_lonlat(g, geoms[i]);
 		}
 	} else {
 		for (size_t i=0; i<s; i++) {
-			r.push_back(length_plane(geoms[i]) * m);
+			r[i] = length_plane(geoms[i]) * m;
 		}
 	}
 	return r;
