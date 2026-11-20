@@ -3,43 +3,8 @@
 # License GPL3
 
 
-getv <- function(x, a) {
-	cumsum(values(aggregate(x, a, sum, na.rm=TRUE)) / 1000)
-}
-
-splitNS3 <- function(x) {
-	v <- getv(x, c(1, ncol(x)))
-	m1 <- which.min(abs(v - max(v)/3))
-	m2 <- which.min(abs(v - max(v) * 2/3))
-	list(n=x[1:m1, ,drop=FALSE], m=x[(m1+1):m2, ,drop=FALSE], s=x[(m2+1):nrow(x), ,drop=FALSE])
-}
-
-
-splitNS <- function(x) {
-	v <- getv(x, c(1, ncol(x)))
-	m <- which.min(abs(v - max(v)/2))
-	list(n=x[1:m, ,drop=FALSE], s=x[(m+1):nrow(x), ,drop=FALSE])
-}
-
-splitWE3 <- function(x) {
-	v <- getv(x, c(nrow(x), 1))
-	m1 <- which.min(abs(v - max(v)/3))
-	m2 <- which.min(abs(v - max(v) * 2/3))
-	list(w=x[, 1:m1, drop=FALSE], m=x[, (m1+1):m2, drop=FALSE], e=x[, (m2+1):ncol(x), drop=FALSE])
-}
-
-
-splitWE <- function(x) {
-	v <- getv(x, c(nrow(x), 1))
-	m <- which.min(abs(v - max(v)/2))
-	list(w=x[, 1:m, drop=FALSE], e=x[, (m+1):ncol(x), drop=FALSE])
-}
-
-
 setMethod("divide", signature(x="SpatRaster"),
 	function(x, n=2, start="ns", as.raster=FALSE, na.rm=TRUE) {
-
-#		if (!is.null(border)) stopifnot(inherits(border, "SpatVector"))
 
 		if (nlyr(x) > 1) {
 			warn("divide", "only the first layer is used")
@@ -47,9 +12,10 @@ setMethod("divide", signature(x="SpatRaster"),
 		}
 
 		n <- round(n)
+		north <- TRUE
 		if (length(n) > 1) {
-			if (!all(n %in% c(-2,-1,1,2))) {
-				error("divide", "if (length(n) > 1), values can only be -3, -2 for WE and 2, 3 for NS")
+			if (any(n == 0)) {
+				error("divide", "n values cannot be 0")
 			}
 		} else {
 			if (!isTRUE(n > 0)) {
@@ -70,54 +36,46 @@ setMethod("divide", signature(x="SpatRaster"),
 					cols <- n - rows
 				} else {
 					cols <- ceiling(n / 2)
-					rows <- n - cols				
+					rows <- n - cols
 				}
 				nrow(out) <- rows * 2
 				ncol(out) <- cols * 2
 			}
 			out <- as.polygons(out)
-		} else {
-			out <- list(classify(trim(x), cbind(NA, 0)))
-			if (length(n) > 1) {
-				for (i in 1:length(n)) {
-					if (n[i] == 1) {
-						out <- unlist(lapply(out, function(i) splitNS(i)))
-					} else if (n[i] == -1) {
-						out <- unlist(lapply(out, function(i) splitWE(i)))
-					} else if (n[i] == 2) {
-						out <- unlist(lapply(out, function(i) splitNS3(i)))
-					} else { # if (n[i] == -2) {
-						out <- unlist(lapply(out, function(i) splitWE3(i)))
-					}
+			out$zones <- 1:nrow(out)
+			if (isTRUE(as.raster) || is.na(as.raster)) {
+				r <- rasterize(out, x, "zones")
+				if (is.na(as.raster)) {
+					return(list(r=r, v=out))
+				} else {
+					return(r)
 				}
-			} else {
-				for (i in 1:n) {
-					if (north) {
-						out <- unlist(lapply(out, function(s) splitNS(s)))
-					} else {
-						out <- unlist(lapply(out, function(s) splitWE(s)))
-					}
-					north <- !north
-				}  
 			}
-			out <- vect(lapply(out, function(i) as.polygons(ext(i))))
-			crs(out) <- crs(out)
+			return(out)
 		}
-		out$zones <- 1:nrow(out)
 
+		opt <- spatOptions()
+		nn <- as.integer(n)
 		if (isTRUE(as.raster) || is.na(as.raster)) {
-			r <- rasterize(out, x, "zones")
+			r <- x
+			r@pntr <- x@pntr$divide(nn, north, opt)
+			r <- messages(r, "divide")
 			if (na.rm) {
 				r <- mask(r, x)
 			}
-			if (is.na(as.raster)) {
-				return(list(r=r, v=out))
-			} else {
+			if (isTRUE(as.raster)) {
 				return(r)
 			}
-		} else if (na.rm) {
+		}
+		out <- methods::new("SpatVector")
+		out@pntr <- x@pntr$divide_vector(nn, north, opt)
+		out <- messages(out, "divide")
+		if (na.rm) {
 			border <- as.polygons(not.na(x, TRUE))
 			out <- crop(out, border)
+		}
+		if (is.na(as.raster)) {
+			return(list(r=r, v=out))
 		}
 		out
 	}

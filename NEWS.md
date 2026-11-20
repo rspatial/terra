@@ -1,7 +1,11 @@
 # version 1.9-61
 
 ## bug fixes
+
 ## enhancements
+
+- `divide<SpatRaster>` is not much faster for larger values of `n`) [#2239](https://github.com/rspatial/terra/issues/2239) by Márcia Barbosa
+
 ## new 
 
 

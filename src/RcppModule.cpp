@@ -1019,6 +1019,8 @@ RCPP_MODULE(spat){
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange)
 		.method("selectHighest", &SpatRaster::selectHighest)
+		.method("divide", &SpatRaster::divide)
+		.method("divide_vector", &SpatRaster::divide_vector)
 		.method("separate", &SpatRaster::separate)
 		.method("sort", &SpatRaster::sort)
 		.method("intersect", &SpatRaster::intersect)
