@@ -151,7 +151,7 @@ Also see the methods in section VIII
 | [`thresh`](https://rspatial.github.io/terra/reference/thresh.md) | Threshold raster layers |
 | [`identical`](https://rspatial.github.io/terra/reference/identical.md) | Test near-identity of SpatRaster objects |
 | [`all.equal`](https://rspatial.github.io/terra/reference/all.equal.md) | Compare SpatRaster objects with a degree of tolerance |
-| [`divide`](https://rspatial.github.io/terra/reference/divide.md) | Divide rasters in areas of equal cell value sums |
+| [`divide`](https://rspatial.github.io/terra/reference/divide.md) | Divide rasters in areas of equal cell value sums or equal numbers of non-NA cells |
 | ————————— | —————————————————————————————— |
 
 ## IV. Zonal and global methods

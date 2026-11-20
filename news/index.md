@@ -6,13 +6,22 @@
 
 ### enhancements
 
-- `divide<SpatRaster>` is not much faster for larger values of `n`)
+- `divide<SpatRaster>` is much faster for larger values of `n`
   [\#2239](https://github.com/rspatial/terra/issues/2239) by Márcia
   Barbosa
+- `divide<SpatRaster>` gains argument `split`: `"values"` (the default)
+  balances cell-value sums, `"notNA"` the number of non-NA cells,
+  `"cells"` the number of cells
+  [\#2238](https://github.com/rspatial/terra/issues/2238) by Márcia
+  Barbosa
+- more efficient VRT reading
+  [\#2224](https://github.com/rspatial/terra/pull/2224) by Mike Sumner
 
 ### new
 
 ## version 1.9-60
+
+CRAN release: 2026-11-20
 
 ### bug fixes
 

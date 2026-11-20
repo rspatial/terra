@@ -58,7 +58,7 @@ d
 #> class       : SpatVector
 #> geometry    : points
 #> dimensions  : 650, 7  (geometries, attributes)
-#> extent      : 5.781312, 6.525015, 49.45332, 50.14841  (xmin, xmax, ymin, ymax)
+#> extent      : 5.775597, 6.515952, 49.46754, 50.00753  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP population
 #> type        : <num>    <chr> <num>    <chr> <num> <num>      <num>
