@@ -58,24 +58,18 @@ setMethod("divide", signature(x="SpatRaster"),
 		smode <- match(split, c("values", "notna", "cells")) - 1L
 		opt <- spatOptions()
 		nn <- as.integer(n)
+		narm <- isTRUE(na.rm)
 		if (isTRUE(as.raster) || is.na(as.raster)) {
 			r <- x
-			r@pntr <- x@pntr$divide(nn, north, smode, opt)
+			r@pntr <- x@pntr$divide(nn, north, smode, narm, opt)
 			r <- messages(r, "divide")
-			if (na.rm) {
-				r <- mask(r, x)
-			}
 			if (isTRUE(as.raster)) {
 				return(r)
 			}
 		}
 		out <- methods::new("SpatVector")
-		out@pntr <- x@pntr$divide_vector(nn, north, smode, opt)
+		out@pntr <- x@pntr$divide_vector(nn, north, smode, narm, opt)
 		out <- messages(out, "divide")
-		if (na.rm) {
-			border <- as.polygons(not.na(x, TRUE))
-			out <- crop(out, border)
-		}
 		if (is.na(as.raster)) {
 			return(list(r=r, v=out))
 		}

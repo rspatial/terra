@@ -32,6 +32,7 @@
 
 #include "tbb_helper.h"
 #include <unordered_set>
+#include <cstdint>
 
 SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, 
 	double othersValue, SpatOptions &opt) {
@@ -469,7 +470,33 @@ void divide_split(const std::vector<double> &P, size_t nc1, const DivideRect &d,
 	}
 }
 
-bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, int split, std::vector<DivideRect> &rects) {
+void divide_add_cell(std::vector<double> &P, std::vector<uint8_t> &hasval, size_t nc, size_t nc1,
+		size_t r, size_t c, double val, bool notNA, bool keep_hasval, bool fillP,
+		size_t &rmin, size_t &rmax, size_t &cmin, size_t &cmax, bool &any) {
+	if (std::isnan(val)) {
+		val = 0;
+	} else {
+		any = true;
+		if (r < rmin) rmin = r;
+		if (r > rmax) rmax = r;
+		if (c < cmin) cmin = c;
+		if (c > cmax) cmax = c;
+		if (keep_hasval) {
+			hasval[r * nc + c] = 1;
+		}
+		if (notNA) {
+			val = 1;
+		}
+	}
+	if (fillP) {
+		size_t off = (r + 1) * nc1;
+		size_t prev = r * nc1;
+		P[off + c + 1] = val + P[prev + c + 1] + P[off + c] - P[prev + c];
+	}
+}
+
+bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, int split, bool keep_hasval,
+		std::vector<DivideRect> &rects, std::vector<uint8_t> &hasval) {
 
 	size_t nr = x.nrow();
 	size_t nc = x.ncol();
@@ -484,6 +511,9 @@ bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, int sp
 	bool any = false;
 	bool bycell = (split == 2);
 	bool notNA = (split == 1);
+	if (keep_hasval) {
+		hasval.assign(nr * nc, 0);
+	}
 
 	if (bycell) {
 		for (size_t r=0; r<nr; r++) {
@@ -497,33 +527,41 @@ bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, int sp
 		cmin = 0;
 		cmax = nc - 1;
 		any = true;
-	} else {
-		if (!x.readStart()) {
-			return false;
-		}
-		for (size_t r=0; r<nr; r++) {
-			std::vector<double> row;
-			x.readValues(row, r, 1, 0, nc);
-			size_t off = (r + 1) * nc1;
-			size_t prev = r * nc1;
-			for (size_t c=0; c<nc; c++) {
-				double val = row[c];
-				if (std::isnan(val)) {
-					val = 0;
-				} else {
-					any = true;
-					if (r < rmin) rmin = r;
-					if (r > rmax) rmax = r;
-					if (c < cmin) cmin = c;
-					if (c > cmax) cmax = c;
-					if (notNA) {
-						val = 1;
-					}
+	}
+
+	if (!bycell || keep_hasval) {
+		SpatOptions ropt;
+		std::vector<double> vals = x.getValues(0, ropt);
+		bool fillP = !bycell;
+		if (vals.size() == (nr * nc)) {
+			for (size_t r=0; r<nr; r++) {
+				size_t roff = r * nc;
+				for (size_t c=0; c<nc; c++) {
+					divide_add_cell(P, hasval, nc, nc1, r, c, vals[roff + c], notNA, keep_hasval, fillP,
+						rmin, rmax, cmin, cmax, any);
 				}
-				P[off + c + 1] = val + P[prev + c + 1] + P[off + c] - P[prev + c];
 			}
+		} else {
+			if (!x.readStart()) {
+				return false;
+			}
+			for (size_t r=0; r<nr; r++) {
+				std::vector<double> row;
+				x.readValues(row, r, 1, 0, nc);
+				for (size_t c=0; c<nc; c++) {
+					divide_add_cell(P, hasval, nc, nc1, r, c, row[c], notNA, keep_hasval, fillP,
+						rmin, rmax, cmin, cmax, any);
+				}
+			}
+			x.readStop();
 		}
-		x.readStop();
+		if (bycell) {
+			rmin = 0;
+			rmax = nr - 1;
+			cmin = 0;
+			cmax = nc - 1;
+			any = true;
+		}
 	}
 
 	if (!any) {
@@ -569,9 +607,17 @@ bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, int sp
 	return true;
 }
 
+SpatGeom divide_rect_geom(SpatRaster &x, const DivideRect &d) {
+	SpatExtent e = x.ext_from_rc((int64_t)d.r0, (int64_t)d.r1, (int64_t)d.c0, (int64_t)d.c1);
+	std::vector<double> px = { e.xmin, e.xmin, e.xmax, e.xmax, e.xmin };
+	std::vector<double> py = { e.ymin, e.ymax, e.ymax, e.ymin, e.ymin };
+	SpatPart p(px, py);
+	return SpatGeom(p, polygons);
 }
 
-SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, int split, SpatOptions &opt) {
+}
+
+SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, int split, bool narm, SpatOptions &opt) {
 
 	if (nlyr() > 1) {
 		SpatOptions ops(opt);
@@ -580,7 +626,7 @@ SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, int split, SpatO
 		if (x.hasError()) {
 			return x;
 		}
-		SpatRaster out = x.divide(n, startNS, split, opt);
+		SpatRaster out = x.divide(n, startNS, split, narm, opt);
 		out.addWarning("only the first layer is used");
 		return out;
 	}
@@ -592,7 +638,8 @@ SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, int split, SpatO
 	}
 
 	std::vector<DivideRect> rects;
-	if (!divide_rects(*this, n, startNS, split, rects)) {
+	std::vector<uint8_t> hasval;
+	if (!divide_rects(*this, n, startNS, split, narm, rects, hasval)) {
 		out.setError(getError());
 		return out;
 	}
@@ -608,12 +655,17 @@ SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, int split, SpatO
 	}
 
 	size_t nc = ncol();
-	std::vector<double> zv((size_t)nrow() * nc, NAN);
+	size_t ncell = (size_t)nrow() * nc;
+	std::vector<double> zv(ncell, NAN);
+	bool maskNA = narm && (hasval.size() == ncell);
 	for (size_t i=0; i<rects.size(); i++) {
 		double id = (double)(i + 1);
 		for (size_t r=rects[i].r0; r<=rects[i].r1; r++) {
 			size_t off = r * nc;
 			for (size_t c=rects[i].c0; c<=rects[i].c1; c++) {
+				if (maskNA && (hasval[off + c] == 0)) {
+					continue;
+				}
 				zv[off + c] = id;
 			}
 		}
@@ -621,19 +673,19 @@ SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, int split, SpatO
 
 	size_t cell0 = 0;
 	for (size_t i=0; i<out.bs.n; i++) {
-		size_t ncell = (size_t)out.bs.nrows[i] * nc;
-		std::vector<double> v(zv.begin() + cell0, zv.begin() + cell0 + ncell);
+		size_t nblk = (size_t)out.bs.nrows[i] * nc;
+		std::vector<double> v(zv.begin() + cell0, zv.begin() + cell0 + nblk);
 		if (!out.writeBlock(v, i)) {
 			return out;
 		}
-		cell0 += ncell;
+		cell0 += nblk;
 	}
 	out.writeStop();
 	return out;
 }
 
 
-SpatVector SpatRaster::divide_vector(std::vector<int> n, bool startNS, int split, SpatOptions &opt) {
+SpatVector SpatRaster::divide_vector(std::vector<int> n, bool startNS, int split, bool narm, SpatOptions &opt) {
 
 	SpatVector out;
 	out.srs = source[0].srs;
@@ -650,28 +702,105 @@ SpatVector SpatRaster::divide_vector(std::vector<int> n, bool startNS, int split
 			out.setError(x.getError());
 			return out;
 		}
-		out = x.divide_vector(n, startNS, split, opt);
+		out = x.divide_vector(n, startNS, split, narm, opt);
 		out.addWarning("only the first layer is used");
 		return out;
 	}
 
 	std::vector<DivideRect> rects;
-	if (!divide_rects(*this, n, startNS, split, rects)) {
+	std::vector<uint8_t> hasval;
+	if (!divide_rects(*this, n, startNS, split, narm, rects, hasval)) {
 		out.setError(getError());
 		return out;
 	}
 
+	size_t nc = ncol();
+	size_t ncell = (size_t)nrow() * nc;
+	std::vector<SpatGeom> geoms(rects.size());
+	std::vector<char> keep(rects.size(), 0);
+	std::vector<uint8_t> kind(rects.size(), 0);
+	size_t nmixed = 0;
+	bool canmask = narm && (hasval.size() == ncell);
+
+	if (canmask) {
+		for (size_t i=0; i<rects.size(); i++) {
+			size_t nfin = 0;
+			size_t ncells = (rects[i].r1 - rects[i].r0 + 1) * (rects[i].c1 - rects[i].c0 + 1);
+			for (size_t r=rects[i].r0; r<=rects[i].r1; r++) {
+				size_t off = r * nc;
+				for (size_t c=rects[i].c0; c<=rects[i].c1; c++) {
+					nfin += hasval[off + c];
+				}
+			}
+			if (nfin == 0) {
+				kind[i] = 0;
+			} else if (nfin == ncells) {
+				kind[i] = 1;
+				geoms[i] = divide_rect_geom(*this, rects[i]);
+				keep[i] = 1;
+			} else {
+				kind[i] = 2;
+				nmixed++;
+			}
+		}
+	} else {
+		for (size_t i=0; i<rects.size(); i++) {
+			geoms[i] = divide_rect_geom(*this, rects[i]);
+			keep[i] = 1;
+		}
+	}
+
+	if (nmixed > 0) {
+		std::vector<double> zv(ncell, NAN);
+		for (size_t i=0; i<rects.size(); i++) {
+			if (kind[i] != 2) {
+				continue;
+			}
+			double id = (double)(i + 1);
+			for (size_t r=rects[i].r0; r<=rects[i].r1; r++) {
+				size_t off = r * nc;
+				for (size_t c=rects[i].c0; c<=rects[i].c1; c++) {
+					if (hasval[off + c]) {
+						zv[off + c] = id;
+					}
+				}
+			}
+		}
+		SpatRaster tmp = geometry(1);
+		tmp.setNames({"zones"});
+		SpatOptions popt(opt);
+		popt.set_filenames({""});
+		if (!tmp.setValues(zv, popt)) {
+			out.setError(tmp.getError());
+			return out;
+		}
+		SpatVector mixed = tmp.as_polygons(true, true, true, true, false, 0, popt);
+		if (mixed.hasError()) {
+			out.setError(mixed.getError());
+			return out;
+		}
+		if (mixed.nrow() > 0) {
+			std::vector<double> mz = mixed.df.as_double(0);
+			for (size_t j=0; j<mz.size(); j++) {
+				if (std::isnan(mz[j]) || (mz[j] < 1) || (mz[j] > (double)rects.size())) {
+					continue;
+				}
+				size_t idx = (size_t)(mz[j] + 0.5) - 1;
+				geoms[idx] = mixed.getGeom(j);
+				keep[idx] = 1;
+			}
+		}
+	}
+
+	std::vector<double> zid;
+	zid.reserve(rects.size());
 	out.reserve(rects.size());
-	std::vector<double> zid(rects.size());
 	for (size_t i=0; i<rects.size(); i++) {
-		SpatExtent e = ext_from_rc((int64_t)rects[i].r0, (int64_t)rects[i].r1,
-			(int64_t)rects[i].c0, (int64_t)rects[i].c1);
-		std::vector<double> x = { e.xmin, e.xmin, e.xmax, e.xmax, e.xmin };
-		std::vector<double> y = { e.ymin, e.ymax, e.ymax, e.ymin, e.ymin };
-		SpatPart p(x, y);
-		SpatGeom g(p, polygons);
-		out.addGeom(g);
-		zid[i] = (double)(i + 1);
+		if (!keep[i]) {
+			continue;
+		}
+		out.addGeom(geoms[i]);
+		zid.push_back((double)(i + 1));
 	}
 	out.df.add_column(zid, "zones");
 	out.computeExtent();
