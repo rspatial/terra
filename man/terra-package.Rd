@@ -132,7 +132,7 @@ Also see the methods in section VIII
     \code{\link{thresh}} \tab Threshold raster layers \cr
     \code{\link{identical}} \tab Test near-identity of SpatRaster objects \cr
     \code{\link{all.equal}} \tab Compare SpatRaster objects with a degree of tolerance \cr
-    \code{\link{divide}} \tab Divide rasters in areas of equal cell value sums \cr
+    \code{\link{divide}} \tab Divide rasters in areas of equal cell value sums or equal numbers of non-NA cells \cr
 
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
