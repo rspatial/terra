@@ -1,6 +1,18 @@
 # Changelog
 
-## version 1.9-59
+## version 1.9-61
+
+### bug fixes
+
+### enhancements
+
+- `divide<SpatRaster>` is not much faster for larger values of `n`)
+  [\#2239](https://github.com/rspatial/terra/issues/2239) by Márcia
+  Barbosa
+
+### new
+
+## version 1.9-60
 
 ### bug fixes
 
@@ -32,6 +44,10 @@
 - scatterplot of two rasters did not work when supplying xlim/ylim
   arguments [\#2230](https://github.com/rspatial/terra/issues/2230) by
   Agustín Lobo
+- a rescaled spatstat image was not imported correctly, it applied the
+  scale factor to the values
+  [\#2236](https://github.com/rspatial/terra/issues/2236) by Manny
+  Gimond
 
 ### enhancements
 

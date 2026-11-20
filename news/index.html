@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-59</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-61</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,23 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-59" id="version-19-59">version 1.9-59<a class="anchor" aria-label="anchor" href="#version-19-59"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-61" id="version-19-61">version 1.9-61<a class="anchor" aria-label="anchor" href="#version-19-61"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-59">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-59"></a></h3>
+<h3 id="bug-fixes-1-9-61">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-61"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="enhancements-1-9-61">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-61"></a></h3>
+<ul><li>
+<code>divide&lt;SpatRaster&gt;</code> is not much faster for larger values of <code>n</code>) <a href="https://github.com/rspatial/terra/issues/2239" class="external-link">#2239</a> by Márcia Barbosa</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-1-9-61">new<a class="anchor" aria-label="anchor" href="#new-1-9-61"></a></h3>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.9-60" id="version-19-60">version 1.9-60<a class="anchor" aria-label="anchor" href="#version-19-60"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-1-9-60">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-60"></a></h3>
 <ul><li>
 <code>plot&lt;SpatVector&gt;</code> ignored <code>colNA</code> when <code>type="continuous"</code> <a href="https://github.com/rspatial/terra/issues/2198" class="external-link">#2198</a> by Márcia Barbosa</li>
 <li>
@@ -55,9 +69,10 @@
 <code>aggregate&lt;SpatVector&gt;</code> by more than one variable failed with when a grouping field had <code>NA</code>
 </li>
 <li>scatterplot of two rasters did not work when supplying xlim/ylim arguments <a href="https://github.com/rspatial/terra/issues/2230" class="external-link">#2230</a> by Agustín Lobo</li>
+<li>a rescaled spatstat image was not imported correctly, it applied the scale factor to the values <a href="https://github.com/rspatial/terra/issues/2236" class="external-link">#2236</a> by Manny Gimond</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-59">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-59"></a></h3>
+<h3 id="enhancements-1-9-60">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-60"></a></h3>
 <ul><li>GDAL raster block cache is set to 64 MB at load unless <code>GDAL_CACHEMAX</code> is already set</li>
 <li>raster processing chunks are aligned to the source file’s block height when that is reported</li>
 <li>
@@ -89,7 +104,7 @@
 <li>Fixed parenthesis in multidimensional raster print of dimensions <a href="https://github.com/rspatial/terra/pull/2226" class="external-link">#2226</a> by Sinkleberg</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-9-59">new<a class="anchor" aria-label="anchor" href="#new-1-9-59"></a></h3>
+<h3 id="new-1-9-60">new<a class="anchor" aria-label="anchor" href="#new-1-9-60"></a></h3>
 <ul><li>
 <code>modal</code> for vectors implementation. Moved from the raster package but using the terra C++ implementation</li>
 <li>
