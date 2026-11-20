@@ -110,3 +110,22 @@ ev <- as.vector(ext(v))
 cr <- crds(pv)
 expect_true(all(cr[, 1] >= ev[1] & cr[, 1] <= ev[2]))
 expect_true(all(cr[, 2] >= ev[3] & cr[, 2] <= ev[4]))
+
+## SpatVector — sparse multipolygon still returns size points (#2233)
+p1 <- as.polygons(ext(0, 1, 0, 1))
+p2 <- as.polygons(ext(100, 100.1, 50, 50.1))
+p <- rbind(p1, p2)
+crs(p) <- "local"
+set.seed(1)
+ps <- spatSample(p, 15)
+expect_equal(nrow(ps), 15)
+
+## SpatVector — date-line crossing ring (#2233)
+dl <- vect("POLYGON ((170 -18, 179 -18, -179 -18, -175 -18, -175 -16, 170 -16, 170 -18))",
+	crs = "+proj=longlat +datum=WGS84")
+set.seed(1)
+sdl <- spatSample(dl, 12)
+expect_equal(nrow(sdl), 12)
+xc <- crds(sdl)[, 1]
+expect_true(all(xc <= 180 & xc >= -180))
+expect_true(all(xc >= 170 | xc <= -175))
