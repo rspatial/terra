@@ -947,6 +947,24 @@ SpatVector sample_poly_reject(SpatVector &pol, size_t n, bool lonlat, bool rando
 	return got;
 }
 
+void sample_apply_lon_offset(SpatVector &p, double offset) {
+	if (offset == 0) {
+		return;
+	}
+	for (size_t i=0; i<p.geoms.size(); i++) {
+		for (size_t j=0; j<p.geoms[i].parts.size(); j++) {
+			for (size_t k=0; k<p.geoms[i].parts[j].x.size(); k++) {
+				double &x = p.geoms[i].parts[j].x[k];
+				if (x >= 180.0) {
+					x -= offset;
+				}
+			}
+		}
+		p.geoms[i].computeExtent();
+	}
+	p.computeExtent();
+}
+
 SpatVector sample_poly_by_parts(SpatVector &v, size_t n, bool lonlat, bool random, unsigned seed) {
 	SpatVector parts = v.disaggregate(false);
 	if (parts.hasError()) {
@@ -1096,6 +1114,21 @@ SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 		return out;
 	}
 
+
+	if (lonlat && ((extent.xmax - extent.xmin) > 180.0)) {
+		const double lon_cut = 0;
+		const double lon_offset = 360;
+		SpatVector rot = rotate_longitude(lon_cut, false);
+		double w0 = extent.xmax - extent.xmin;
+		double w1 = rot.extent.xmax - rot.extent.xmin;
+		if (w1 < (w0 - 1.0)) {
+			out = rot.sample(n, method, seed);
+			if (!out.hasError()) {
+				sample_apply_lon_offset(out, lon_offset);
+			}
+			return out;
+		}
+	}
 
 	std::vector<double> a = area("m", true, {});
 	if (hasError()) {
