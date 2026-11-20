@@ -469,7 +469,7 @@ void divide_split(const std::vector<double> &P, size_t nc1, const DivideRect &d,
 	}
 }
 
-bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, std::vector<DivideRect> &rects) {
+bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, int split, std::vector<DivideRect> &rects) {
 
 	size_t nr = x.nrow();
 	size_t nc = x.ncol();
@@ -477,34 +477,54 @@ bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, std::v
 		x.setError("SpatRaster has no rows or columns");
 		return false;
 	}
-	if (!x.readStart()) {
-		return false;
-	}
 
 	size_t nc1 = nc + 1;
 	std::vector<double> P((nr + 1) * nc1, 0.0);
 	size_t rmin = nr, rmax = 0, cmin = nc, cmax = 0;
 	bool any = false;
-	for (size_t r=0; r<nr; r++) {
-		std::vector<double> row;
-		x.readValues(row, r, 1, 0, nc);
-		size_t off = (r + 1) * nc1;
-		size_t prev = r * nc1;
-		for (size_t c=0; c<nc; c++) {
-			double val = row[c];
-			if (std::isnan(val)) {
-				val = 0;
-			} else {
-				any = true;
-				if (r < rmin) rmin = r;
-				if (r > rmax) rmax = r;
-				if (c < cmin) cmin = c;
-				if (c > cmax) cmax = c;
+	bool bycell = (split == 2);
+	bool notNA = (split == 1);
+
+	if (bycell) {
+		for (size_t r=0; r<nr; r++) {
+			size_t off = (r + 1) * nc1;
+			for (size_t c=0; c<nc; c++) {
+				P[off + c + 1] = (double)((r + 1) * (c + 1));
 			}
-			P[off + c + 1] = val + P[prev + c + 1] + P[off + c] - P[prev + c];
 		}
+		rmin = 0;
+		rmax = nr - 1;
+		cmin = 0;
+		cmax = nc - 1;
+		any = true;
+	} else {
+		if (!x.readStart()) {
+			return false;
+		}
+		for (size_t r=0; r<nr; r++) {
+			std::vector<double> row;
+			x.readValues(row, r, 1, 0, nc);
+			size_t off = (r + 1) * nc1;
+			size_t prev = r * nc1;
+			for (size_t c=0; c<nc; c++) {
+				double val = row[c];
+				if (std::isnan(val)) {
+					val = 0;
+				} else {
+					any = true;
+					if (r < rmin) rmin = r;
+					if (r > rmax) rmax = r;
+					if (c < cmin) cmin = c;
+					if (c > cmax) cmax = c;
+					if (notNA) {
+						val = 1;
+					}
+				}
+				P[off + c + 1] = val + P[prev + c + 1] + P[off + c] - P[prev + c];
+			}
+		}
+		x.readStop();
 	}
-	x.readStop();
 
 	if (!any) {
 		x.setError("no cells with values");
@@ -551,7 +571,7 @@ bool divide_rects(SpatRaster &x, const std::vector<int> &n, bool startNS, std::v
 
 }
 
-SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, SpatOptions &opt) {
+SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, int split, SpatOptions &opt) {
 
 	if (nlyr() > 1) {
 		SpatOptions ops(opt);
@@ -560,7 +580,7 @@ SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, SpatOptions &opt
 		if (x.hasError()) {
 			return x;
 		}
-		SpatRaster out = x.divide(n, startNS, opt);
+		SpatRaster out = x.divide(n, startNS, split, opt);
 		out.addWarning("only the first layer is used");
 		return out;
 	}
@@ -572,7 +592,7 @@ SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, SpatOptions &opt
 	}
 
 	std::vector<DivideRect> rects;
-	if (!divide_rects(*this, n, startNS, rects)) {
+	if (!divide_rects(*this, n, startNS, split, rects)) {
 		out.setError(getError());
 		return out;
 	}
@@ -613,7 +633,7 @@ SpatRaster SpatRaster::divide(std::vector<int> n, bool startNS, SpatOptions &opt
 }
 
 
-SpatVector SpatRaster::divide_vector(std::vector<int> n, bool startNS, SpatOptions &opt) {
+SpatVector SpatRaster::divide_vector(std::vector<int> n, bool startNS, int split, SpatOptions &opt) {
 
 	SpatVector out;
 	out.srs = source[0].srs;
@@ -630,13 +650,13 @@ SpatVector SpatRaster::divide_vector(std::vector<int> n, bool startNS, SpatOptio
 			out.setError(x.getError());
 			return out;
 		}
-		out = x.divide_vector(n, startNS, opt);
+		out = x.divide_vector(n, startNS, split, opt);
 		out.addWarning("only the first layer is used");
 		return out;
 	}
 
 	std::vector<DivideRect> rects;
-	if (!divide_rects(*this, n, startNS, rects)) {
+	if (!divide_rects(*this, n, startNS, split, rects)) {
 		out.setError(getError());
 		return out;
 	}

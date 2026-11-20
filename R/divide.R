@@ -4,7 +4,7 @@
 
 
 setMethod("divide", signature(x="SpatRaster"),
-	function(x, n=2, start="ns", as.raster=FALSE, na.rm=TRUE) {
+	function(x, n=2, start="ns", as.raster=FALSE, na.rm=TRUE, split="values") {
 
 		if (nlyr(x) > 1) {
 			warn("divide", "only the first layer is used")
@@ -54,11 +54,13 @@ setMethod("divide", signature(x="SpatRaster"),
 			return(out)
 		}
 
+		split <- match.arg(tolower(split[1]), c("values", "notna", "cells"))
+		smode <- match(split, c("values", "notna", "cells")) - 1L
 		opt <- spatOptions()
 		nn <- as.integer(n)
 		if (isTRUE(as.raster) || is.na(as.raster)) {
 			r <- x
-			r@pntr <- x@pntr$divide(nn, north, opt)
+			r@pntr <- x@pntr$divide(nn, north, smode, opt)
 			r <- messages(r, "divide")
 			if (na.rm) {
 				r <- mask(r, x)
@@ -68,7 +70,7 @@ setMethod("divide", signature(x="SpatRaster"),
 			}
 		}
 		out <- methods::new("SpatVector")
-		out@pntr <- x@pntr$divide_vector(nn, north, opt)
+		out@pntr <- x@pntr$divide_vector(nn, north, smode, opt)
 		out <- messages(out, "divide")
 		if (na.rm) {
 			border <- as.polygons(not.na(x, TRUE))

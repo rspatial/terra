@@ -1022,8 +1022,8 @@ class SpatRaster {
 
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);
 		SpatRaster selectHighest(size_t n, bool low, bool all, SpatOptions &opt);
-		SpatRaster divide(std::vector<int> n, bool startNS, SpatOptions &opt);
-		SpatVector divide_vector(std::vector<int> n, bool startNS, SpatOptions &opt);
+		SpatRaster divide(std::vector<int> n, bool startNS, int split, SpatOptions &opt);
+		SpatVector divide_vector(std::vector<int> n, bool startNS, int split, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
