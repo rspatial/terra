@@ -23,6 +23,9 @@
 #include <random>
 #include <set>
 #include <unordered_set>
+#include <numeric>
+#include <algorithm>
+#include <cmath>
 #include "string_utils.h"
 #include "geodesic.h"
 #include "table_utils.h"
@@ -820,6 +823,183 @@ std::vector<size_t> SpatRaster::sampleCells(double size, std::string method, boo
 }
 */
 
+namespace {
+
+void sample_poly_allocate(std::vector<size_t> &k, const std::vector<double> &w, size_t n, bool random, unsigned seed) {
+	k.assign(w.size(), 0);
+	if (w.empty() || n == 0) {
+		return;
+	}
+	double tot = std::accumulate(w.begin(), w.end(), 0.0);
+	if (!(tot > 0)) {
+		return;
+	}
+	if (random) {
+		std::discrete_distribution<int> dd(w.begin(), w.end());
+		std::default_random_engine gen(seed);
+		for (size_t i=0; i<n; i++) {
+			k[(size_t)dd(gen)]++;
+		}
+		return;
+	}
+	std::vector<double> rem(w.size());
+	size_t assigned = 0;
+	for (size_t i=0; i<w.size(); i++) {
+		double e = (double)n * (w[i] / tot);
+		k[i] = (size_t)std::floor(e);
+		rem[i] = e - (double)k[i];
+		assigned += k[i];
+	}
+	size_t left = n - assigned;
+	if (left == 0) {
+		return;
+	}
+	std::vector<size_t> idx(w.size());
+	std::iota(idx.begin(), idx.end(), 0);
+	std::sort(idx.begin(), idx.end(), [&](size_t a, size_t b) {
+		if (rem[a] == rem[b]) return a < b;
+		return rem[a] > rem[b];
+	});
+	for (size_t i=0; i<left; i++) {
+		k[idx[i % idx.size()]]++;
+	}
+}
+
+SpatVector sample_poly_reject(SpatVector &pol, size_t n, bool lonlat, bool random, unsigned seed) {
+	SpatVector out;
+	out.srs = pol.srs;
+	if (n == 0) {
+		return out;
+	}
+	if (std::isnan(pol.extent.xmin)) {
+		return out;
+	}
+
+	std::vector<double> aa = pol.area("m", true, {});
+	if (pol.hasError()) {
+		out.setError(pol.getError());
+		return out;
+	}
+	double suma = std::accumulate(aa.begin(), aa.end(), 0.0);
+	if (!(suma > 0)) {
+		return out;
+	}
+
+	SpatVector ve(pol.extent, "");
+	ve.srs = pol.srs;
+	double vea = ve.area("m", true, {})[0];
+	if (!(vea > 0)) {
+		vea = suma;
+	}
+	double p = suma / vea;
+	if (p > 1) p = 1;
+	if (p < 1e-12) p = 1e-12;
+
+	SpatVector got;
+	got.srs = pol.srs;
+	size_t need = n;
+	const size_t max_round = random ? 25 : 1;
+	unsigned sd = seed;
+
+	for (size_t round=0; (need > 0) && (round < max_round); round++) {
+		double m = 1.5 / p;
+		if (m < 2) m = 2;
+		double ds = std::ceil((double)need * m);
+		if (ds > 1000000.0) ds = 1000000.0;
+		size_t ssize = (size_t)ds;
+		if (ssize < need) ssize = need;
+
+		std::vector<std::vector<double>> pxy;
+		if (random) {
+			pxy = pol.extent.sampleRandom(ssize, lonlat, sd);
+		} else {
+			pxy = pol.extent.sampleRegular(ssize, lonlat);
+		}
+		SpatVector pts(pxy[0], pxy[1], points, "");
+		pts.srs = pol.srs;
+		SpatVector hits = pol.intersect(pts, true);
+		if (hits.hasError()) {
+			out.setError(hits.getError());
+			return out;
+		}
+		size_t nh = hits.size();
+		if (nh > 0) {
+			p = (double)nh / (double)ssize;
+			if (p < 1e-12) p = 1e-12;
+			got = got.append(hits, true);
+		} else {
+			p *= 0.5;
+			if (p < 1e-12) p = 1e-12;
+		}
+		size_t ng = got.size();
+		need = (ng >= n) ? 0 : n - ng;
+		sd += 1 + (unsigned)round;
+	}
+
+	if (random && (got.size() > n)) {
+		std::vector<long> rows(got.size());
+		std::iota(rows.begin(), rows.end(), 0);
+		std::default_random_engine gen(seed);
+		std::shuffle(rows.begin(), rows.end(), gen);
+		rows.resize(n);
+		got = got.subset_rows(rows);
+	}
+	return got;
+}
+
+SpatVector sample_poly_by_parts(SpatVector &v, size_t n, bool lonlat, bool random, unsigned seed) {
+	SpatVector parts = v.disaggregate(false);
+	if (parts.hasError()) {
+		return parts;
+	}
+	std::vector<double> a = parts.area("m", true, {});
+	if (parts.hasError()) {
+		SpatVector err;
+		err.setError(parts.getError());
+		return err;
+	}
+
+	std::vector<size_t> id;
+	std::vector<double> w;
+	id.reserve(a.size());
+	w.reserve(a.size());
+	for (size_t i=0; i<a.size(); i++) {
+		if (a[i] > 0) {
+			id.push_back(i);
+			w.push_back(a[i]);
+		}
+	}
+	if (w.empty()) {
+		SpatVector out;
+		out.srs = v.srs;
+		return out;
+	}
+	if (w.size() == 1) {
+		SpatVector one = parts.subset_rows((long)id[0]);
+		return sample_poly_reject(one, n, lonlat, random, seed);
+	}
+
+	std::vector<size_t> k;
+	sample_poly_allocate(k, w, n, random, seed);
+
+	SpatVector out;
+	out.srs = v.srs;
+	for (size_t i=0; i<k.size(); i++) {
+		if (k[i] == 0) {
+			continue;
+		}
+		SpatVector one = parts.subset_rows((long)id[i]);
+		SpatVector p = sample_poly_reject(one, k[i], lonlat, random, seed + (unsigned)i + 1);
+		if (p.hasError()) {
+			return p;
+		}
+		out = out.append(p, true);
+	}
+	return out;
+}
+
+}
+
 SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 
 	std::string gt = type();
@@ -923,41 +1103,33 @@ SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 		return out;
 	}
 
-	double suma = accumulate(a.begin(), a.end(), 0.0);
-	std::vector<std::vector<double>> pxy(2);
+	double suma = std::accumulate(a.begin(), a.end(), 0.0);
+	if (!(suma > 0)) {
+		out.srs = srs;
+		return out;
+	}
 
 	SpatVector ve(extent, "");
 	ve.srs = srs;
 	double vea = ve.area("m", true, {})[0];
-	if (random) {
-		double m = vea / suma;
-	// the larger the sample size, the fewer extra samples needed
-		double smx = sqrt(std::max(9.0, 100.0 - n));
-		m = std::max(smx, std::min(m*m, 100.0));
-		size_t ssize = n * m;
-		pxy = extent.sampleRandom(ssize, lonlat, seed);
+	if (!(vea > 0)) {
+		vea = suma;
+	}
+	double ratio = vea / suma;
+	bool wide = lonlat && ((extent.xmax - extent.xmin) > 180.0);
+	size_t np = nparts(false);
+	if ((np > 1) && (wide || (ratio > 25.0))) {
+		out = sample_poly_by_parts(*this, n, lonlat, random, seed);
 	} else {
-		size_t ssize = std::round(n * vea / suma);
-		pxy = extent.sampleRegular(ssize, lonlat);
+		out = sample_poly_reject(*this, n, lonlat, random, seed);
 	}
-	out = SpatVector(pxy[0], pxy[1], points, "");
-	out = intersect(out, true);
-	if (random) {
-		if (out.size() > n) {
-			std::vector<long> rows(out.size());
-			std::iota(rows.begin(), rows.end(), 0);
-			std::default_random_engine gen(seed);
-			std::shuffle(rows.begin(), rows.end(), gen);
-			rows.resize(n);
-			out = out.subset_rows(rows);
-		}
+	if (out.hasError()) {
+		return out;
 	}
-	//std::vector<long> id(out.size(), 1);
-	//SpatDataFrame df;
-	//df.add_column(id, "pol.id");
-	//out.df = df;
-//	}
 	out.srs = srs;
+	if (out.size() < n) {
+		out.addWarning("fewer points returned than requested");
+	}
 	return out;
 }
 
