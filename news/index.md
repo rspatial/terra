@@ -4,6 +4,11 @@
 
 ### bug fixes
 
+- `spatSample<SpatVector>` could return fewer points than requested for
+  polygons whose bounding box is much larger than their area, such as
+  USA in lon/lat [\#2233](https://github.com/rspatial/terra/issues/2233)
+  by plantarum.
+
 ### enhancements
 
 - `divide<SpatRaster>` is much faster for larger values of `n`

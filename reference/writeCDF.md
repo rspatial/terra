@@ -15,6 +15,20 @@ See [`depth`](https://rspatial.github.io/terra/reference/depth.md) and
 [`time`](https://rspatial.github.io/terra/reference/time.md) for
 specifying the axes of the third and/or fourth dimension(s).
 
+Factor layers
+([`is.factor`](https://rspatial.github.io/terra/reference/is.bool.md))
+are written with the CF attributes `flag_values` and `flag_meanings`,
+taken from
+[`levels`](https://rspatial.github.io/terra/reference/factors.md).
+Reading the file with
+[`rast`](https://rspatial.github.io/terra/reference/rast.md) or
+[`sds`](https://rspatial.github.io/terra/reference/sds.md) restores
+those categories. A NetCDF variable has one set of categories, shared by
+all of its layers. Use `split=TRUE` when layers of one SpatRaster do not
+share categories. Additional columns of
+[`cats`](https://rspatial.github.io/terra/reference/factors.md) are not
+stored.
+
 ## Usage
 
 ``` r
@@ -154,7 +168,7 @@ x[1]
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
-#> source      : file225015b4cbb4.nc:TH
+#> source      : file221c6db29904.nc:TH
 #> varname     : TH
 #> names       : TH_angle=0_1, TH_angle=2_1, TH_angle=0_2, TH_angle=2_2
 #> unit        : -
@@ -171,7 +185,7 @@ x[2]
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
-#> source      : file225015b4cbb4.nc:DBZH
+#> source      : file221c6db29904.nc:DBZH
 #> varname     : DBZH
 #> names       : DBZH_~=10_1, DBZH_~=10_2, DBZH_~=20_1, DBZH_~=20_2, DBZH_~=30_1, DBZH_~=30_2
 #> unit        : Pa
