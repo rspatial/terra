@@ -1348,6 +1348,109 @@ static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDatase
 }
 
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 12, 3)
+
+// Path inside a NETCDF:"file":var dataset name, or fname itself.
+static std::string nc_filename_for_md(std::string f) {
+	const std::string pfx = "NETCDF:";
+	if (f.size() <= pfx.size() || f.compare(0, pfx.size(), pfx) != 0) {
+		return f;
+	}
+	f.erase(0, pfx.size());
+	if (!f.empty() && (f[0] == '"' || f[0] == '\'')) {
+		char q = f[0];
+		size_t end = f.find(q, 1);
+		if (end != std::string::npos) {
+			return f.substr(1, end - 1);
+		}
+	}
+	size_t colon = f.rfind(':');
+	if (colon != std::string::npos && colon > 1) {
+		return f.substr(0, colon);
+	}
+	return f;
+}
+
+
+static bool nc_is_y_name(const std::string &nm) {
+	std::string n = lower_case(nm);
+	return n == "latitude" || n == "lat" || n == "y" || n == "northing";
+}
+
+
+// True when a 1D Y coordinate decreases, i.e. the array is already stored north-up.
+static bool nc_y_decreases(const std::string &fname) {
+	std::string path = nc_filename_for_md(fname);
+	CPLPushErrorHandler(CPLQuietErrorHandler);
+	std::unique_ptr<GDALDataset> ds(GDALDataset::Open(path.c_str(), GDAL_OF_MULTIDIM_RASTER | GDAL_OF_READONLY));
+	CPLPopErrorHandler();
+	if (!ds) return false;
+	auto root = ds->GetRootGroup();
+	if (!root) return false;
+
+	std::vector<std::shared_ptr<GDALMDArray>> arrays;
+	for (const std::string &nm : root->GetMDArrayNames(nullptr)) {
+		auto ar = root->OpenMDArray(nm);
+		if (ar) arrays.push_back(ar);
+	}
+	auto dt = GDALExtendedDataType::Create(GDT_Float64);
+	for (const auto &ar : arrays) {
+		for (const auto &dim : ar->GetDimensions()) {
+			if (!dim) continue;
+			bool ydim = dim->GetType() == "HORIZONTAL_Y" || nc_is_y_name(dim->GetName());
+			if (!ydim) continue;
+			auto iv = dim->GetIndexingVariable();
+			if (!iv) continue;
+			GUInt64 n = 0;
+			auto ivdims = iv->GetDimensions();
+			if (ivdims.size() == 1) n = ivdims[0]->GetSize();
+			if (n < 2) continue;
+			double v[2];
+			GUInt64 start0 = 0;
+			GUInt64 start1 = n - 1;
+			size_t count = 1;
+			if (!iv->Read(&start0, &count, nullptr, nullptr, dt, &v[0])) continue;
+			if (!iv->Read(&start1, &count, nullptr, nullptr, dt, &v[1])) continue;
+			return v[0] > v[1];
+		}
+	}
+	return false;
+}
+
+
+// GDAL looks up "GeoTransform" case-insensitively. terra writes "geotransform".
+static bool nc_geotransform_attr_matches(const std::vector<std::string> &md, const double *gt) {
+	for (size_t i = 0; i < md.size(); i++) {
+		size_t eq = md[i].find('=');
+		if (eq == std::string::npos) continue;
+		std::string key = lower_case(md[i].substr(0, eq));
+		size_t hash = key.rfind('#');
+		std::string name = (hash == std::string::npos) ? key : key.substr(hash + 1);
+		if (name != "geotransform") continue;
+		const char *p = md[i].c_str() + eq + 1;
+		double got[6];
+		bool ok = true;
+		for (int k = 0; k < 6; k++) {
+			char *end = nullptr;
+			while (*p && std::isspace(static_cast<unsigned char>(*p))) p++;
+			got[k] = std::strtod(p, &end);
+			if (end == p) { ok = false; break; }
+			p = end;
+		}
+		if (!ok) continue;
+		bool match = true;
+		for (int k = 0; k < 6; k++) {
+			double tol = 1e-6 * std::max(1.0, std::abs(gt[k]));
+			if (std::abs(got[k] - gt[k]) > tol) match = false;
+		}
+		if (match) return true;
+	}
+	return false;
+}
+
+#endif
+
+
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multi) {
 
 	// sf (and raster→terra load order) can replace CPL's error handler after
@@ -1611,6 +1714,18 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			s.extset = true;
 			s.flipped = true;
 		}
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 12, 3)
+		// GDAL 3.12.3+ forces the classic netCDF driver bottom-up when a
+		// GeoTransform attribute agrees with the dimension variables. Files
+		// whose Y coordinate already decreases (north-up storage, as writeCDF
+		// writes) are then upside down. Undo that flip on read (#2212).
+		else if (gdrv == "netCDF" && adfGeoTransform[5] < 0 &&
+		         adfGeoTransform[2] == 0 && adfGeoTransform[4] == 0 &&
+		         nc_geotransform_attr_matches(s.smdata, adfGeoTransform) &&
+		         nc_y_decreases(fname)) {
+			s.flipped = true;
+		}
+#endif
 		// normalize for rotated rasters
 		if (xmin > xmax) { // gt[1]<0
 			std::swap(xmin, xmax);

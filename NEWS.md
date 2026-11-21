@@ -2,6 +2,7 @@
 
 ## bug fixes
 
+- `crop(mask=TRUE)` on a NetCDF opened with the classic driver disagreed with `md=TRUE` on GDAL >= 3.12.3, which forces those files bottom-up when a GeoTransform attribute is present
 - `spatSample<SpatVector>` could return fewer points than requested for polygons whose bounding box is much larger than their area, such as USA in lon/lat [#2233](https://github.com/rspatial/terra/issues/2233) by Tyler Smith.
 
 ## enhancements
