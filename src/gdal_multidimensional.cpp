@@ -457,6 +457,51 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 #if (GDAL_VERSION_MAJOR > 3) || (GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR >= 4) // && defined(IS_64_BIT)
 
 
+bool categories_from_cf_flags(const std::vector<double> &vals, const std::string &meanings, const std::string &terra_labels, const std::string &colname, const std::string &labtype, SpatCategories &out);
+
+
+static bool md_cf_categories(const std::shared_ptr<GDALMDArray> &poVar, SpatCategories &out) {
+	if (!poVar) return false;
+	if (poVar->GetAttribute("flag_masks") != nullptr) return false;
+	auto fv = poVar->GetAttribute("flag_values");
+	auto fm = poVar->GetAttribute("flag_meanings");
+	if (!fv || !fm) return false;
+
+	std::vector<double> ids = fv->ReadAsDoubleArray();
+	if (ids.empty()) {
+		double one = fv->ReadAsDouble();
+		if (std::isfinite(one)) ids.push_back(one);
+	}
+
+	std::string meanings;
+	CPLStringList arr = fm->ReadAsStringArray();
+	if (arr.Count() > 1) {
+		for (int i = 0; i < arr.Count(); i++) {
+			if (i > 0) meanings.push_back(' ');
+			if (arr[i] != nullptr) meanings += arr[i];
+		}
+	} else {
+		const char *p = fm->ReadAsString();
+		if (p != nullptr) meanings = p;
+	}
+
+	std::string tlabels, col, typ;
+	if (auto a = poVar->GetAttribute("terra_labels")) {
+		const char *p = a->ReadAsString();
+		if (p != nullptr) tlabels = p;
+	}
+	if (auto a = poVar->GetAttribute("terra_category")) {
+		const char *p = a->ReadAsString();
+		if (p != nullptr && p[0] != '\0') col = p;
+	}
+	if (auto a = poVar->GetAttribute("terra_category_type")) {
+		const char *p = a->ReadAsString();
+		if (p != nullptr) typ = p;
+	}
+	return categories_from_cf_flags(ids, meanings, tlabels, col, typ, out);
+}
+
+
 std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x, bool filter) {
 // FROM GDAL 3.11 (while not widely available).
 // * Author:   Even Rouault <even.rouault at spatialys.com>
@@ -1102,6 +1147,13 @@ static bool md_fill_source_from_marray(
 		}
 	}
 	s.names = nms;
+
+	SpatCategories scat;
+	if (md_cf_categories(poVar, scat)) {
+		for (size_t i = 0; i < s.nlyr; i++) {
+			if (!s.hasCat(i)) s.setCat(i, scat);
+		}
+	}
 
 // time
 	s.m_size = dimcount;

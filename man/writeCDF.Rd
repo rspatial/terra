@@ -16,6 +16,8 @@ Always use the \code{".nc"} or \code{".cdf"} file extension to assure that the f
 You can write multiple rasters (variables) that are two (x, y), three (x, y, z or x, y, time) or four dimensional (x, y, z, time).
 
 See \code{\link{depth}} and \code{\link{time}} for specifying the axes of the third and/or fourth dimension(s).
+
+Factor layers (\code{\link{is.factor}}) are written with the CF attributes \code{flag_values} and \code{flag_meanings}, taken from \code{\link{levels}}. Reading the file with \code{\link{rast}} or \code{\link{sds}} restores those categories. A NetCDF variable has one set of categories, shared by all of its layers. Use \code{split=TRUE} when layers of one SpatRaster do not share categories. Additional columns of \code{\link{cats}} are not stored.
 }
 
 \usage{

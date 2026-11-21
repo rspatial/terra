@@ -101,6 +101,88 @@ get_time_vars <- function(y) {
 }
 
 
+# CF flag_meanings tokens: alphanumeric plus "_", "-", ".", "+", "@".
+# Done without a character-class regex: TRE rejects ranges such as "_\-.".
+.cf_flag_token <- function(labs) {
+	labs <- as.character(labs)
+	labs[is.na(labs)] <- "NA"
+	ok <- c(letters, LETTERS, as.character(0:9), "_", "-", ".", "+", "@")
+	parts <- strsplit(labs, "", fixed=TRUE)
+	tok <- vapply(parts, function(ch) {
+		if (!length(ch)) return("")
+		ch[!(ch %in% ok)] <- "_"
+		paste(ch, collapse="")
+	}, "")
+	tok[!nzchar(tok)] <- "NA"
+	if (anyDuplicated(tok)) {
+		tok <- make.unique(tok, sep="_")
+	}
+	tok
+}
+
+
+# A NetCDF variable has one set of CF flag attributes. Those come from
+# levels() (the active categories). cats() may carry extra columns; only
+# the active pair is stored.
+.write_cdf_levels <- function(nc, var, y, prec) {
+	if (!any(is.factor(y))) {
+		return()
+	}
+	lv <- levels(y)
+	ff <- which(is.factor(y))
+	tabs <- lv[ff]
+	tabs <- tabs[vapply(tabs, is.data.frame, logical(1))]
+	if (length(tabs) == 0 || nrow(tabs[[1]]) == 0) {
+		return()
+	}
+	base <- tabs[[1]]
+	if (length(tabs) > 1) {
+		same <- vapply(tabs[-1], function(a) {
+			isTRUE(all.equal(a[, 1:2], base[, 1:2], check.attributes=FALSE))
+		}, logical(1))
+		if (!all(same)) {
+			warn("writeCDF", "layers do not share categories; the NetCDF variable stores the categories of the first factor layer. Use split=TRUE to store each layer separately")
+		}
+	}
+	extra <- vapply(cats(y), function(d) is.data.frame(d) && ncol(d) > 2, logical(1))
+	if (any(extra)) {
+		warn("writeCDF", "only the active categories are written to the NetCDF file")
+	}
+
+	ids <- base[[1]]
+	labs <- base[[2]]
+	if (is.integer(labs)) {
+		cat_type <- "integer"
+	} else if (is.numeric(labs)) {
+		cat_type <- "numeric"
+	} else {
+		cat_type <- "character"
+	}
+	labs_chr <- as.character(labs)
+	toks <- .cf_flag_token(labs_chr)
+	if (prec %in% c("float", "double")) {
+		ids <- as.numeric(ids)
+	} else {
+		ids <- as.integer(ids)
+	}
+	ncdf4::ncatt_put(nc, var, "flag_values", ids, prec=prec)
+	ncdf4::ncatt_put(nc, var, "flag_meanings", paste(toks, collapse=" "), prec="text")
+
+	# Labels that are not legal CF tokens (for example those with spaces)
+	# are kept so levels() can be restored exactly.
+	if (!identical(toks, labs_chr) && !any(grepl("\x1f", labs_chr, fixed=TRUE))) {
+		ncdf4::ncatt_put(nc, var, "terra_labels", paste(labs_chr, collapse="\x1f"), prec="text")
+	}
+	cn <- colnames(base)[2]
+	if (!is.null(cn) && !is.na(cn) && nzchar(cn) && cn != "label") {
+		ncdf4::ncatt_put(nc, var, "terra_category", cn, prec="text")
+	}
+	if (cat_type != "character") {
+		ncdf4::ncatt_put(nc, var, "terra_category_type", cat_type, prec="text")
+	}
+}
+
+
 .write_cdf <- function(x, filename, overwrite=FALSE, timename="time", atts="", gridmap="", prec="float", compression=NA, missval, tags=FALSE, force_v4=TRUE, verbose=FALSE, ...) {
 
 	n <- length(x)
@@ -353,6 +435,7 @@ get_time_vars <- function(y) {
 		if (haveprj) {
 			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 		}
+		.write_cdf_levels(ncobj, ncvars[[i]], y, prec[i])
 		if (tags) write_tags(metags(y), ncobj, ncvars[[i]], "")
 	}
 	if (progress) close(pb)

@@ -20,7 +20,11 @@
 #include <algorithm>
 #include <stdint.h>
 #include <cmath>
+#include <cstdlib>
+#include <cerrno>
 #include <cstring>
+#include <cctype>
+#include <limits>
 #include <vector>
 //#include <regex>
 
@@ -487,6 +491,166 @@ SpatDataFrame GetColFromRAT(SpatDataFrame &rat) {
 	return out;
 }
 */
+
+static bool meta_item(const std::vector<std::string> &items, const std::string &key, std::string &val) {
+	const std::string pfx = key + "=";
+	for (size_t i = 0; i < items.size(); i++) {
+		if (items[i].compare(0, pfx.size(), pfx) == 0) {
+			val = items[i].substr(pfx.size());
+			return true;
+		}
+	}
+	return false;
+}
+
+
+static std::vector<std::string> split_ws(const std::string &s) {
+	std::vector<std::string> out;
+	size_t i = 0;
+	while (i < s.size()) {
+		while (i < s.size() && std::isspace(static_cast<unsigned char>(s[i]))) i++;
+		if (i >= s.size()) break;
+		size_t j = i;
+		while (j < s.size() && !std::isspace(static_cast<unsigned char>(s[j]))) j++;
+		out.push_back(s.substr(i, j - i));
+		i = j;
+	}
+	return out;
+}
+
+
+static std::vector<std::string> split_sep(const std::string &s, char sep) {
+	std::vector<std::string> out;
+	std::string cur;
+	for (size_t i = 0; i < s.size(); i++) {
+		if (s[i] == sep) {
+			out.push_back(cur);
+			cur.clear();
+		} else {
+			cur.push_back(s[i]);
+		}
+	}
+	out.push_back(cur);
+	return out;
+}
+
+
+static bool parse_flag_values(const std::string &in, std::vector<double> &out) {
+	std::string s = in;
+	lrtrim(s);
+	if (s.size() >= 2 && s.front() == '{' && s.back() == '}') {
+		s = s.substr(1, s.size() - 2);
+	}
+	out.clear();
+	size_t i = 0;
+	while (i < s.size()) {
+		while (i < s.size() && (s[i] == ',' || std::isspace(static_cast<unsigned char>(s[i])))) i++;
+		if (i >= s.size()) break;
+		size_t j = i;
+		while (j < s.size() && s[j] != ',' && !std::isspace(static_cast<unsigned char>(s[j]))) j++;
+		std::string tok = s.substr(i, j - i);
+		char *end = nullptr;
+		double v = std::strtod(tok.c_str(), &end);
+		if (end == tok.c_str() || end == nullptr || *end != '\0' || !std::isfinite(v)) {
+			return false;
+		}
+		out.push_back(v);
+		i = j;
+	}
+	return !out.empty();
+}
+
+
+// CF flag_values / flag_meanings. flag_masks is a bitfield, not categories.
+// terra_labels keeps labels that are not legal CF tokens (joined by ASCII unit separator).
+bool categories_from_cf_flags(const std::vector<double> &vals, const std::string &meanings, const std::string &terra_labels, const std::string &colname, const std::string &labtype, SpatCategories &out) {
+	if (vals.empty()) return false;
+
+	const double lo = static_cast<double>(std::numeric_limits<int>::min());
+	const double hi = static_cast<double>(std::numeric_limits<int>::max());
+	std::vector<long> ids(vals.size());
+	for (size_t i = 0; i < vals.size(); i++) {
+		double r = std::round(vals[i]);
+		if (!std::isfinite(r) || r < lo || r > hi) return false;
+		ids[i] = static_cast<long>(r);
+	}
+	std::vector<long> sorted = ids;
+	std::sort(sorted.begin(), sorted.end());
+	if (std::adjacent_find(sorted.begin(), sorted.end()) != sorted.end()) return false;
+
+	std::vector<std::string> labs;
+	if (!terra_labels.empty()) {
+		labs = split_sep(terra_labels, '\x1f');
+		if (labs.size() != ids.size()) labs.clear();
+	}
+	if (labs.size() != ids.size()) {
+		labs = split_ws(meanings);
+	}
+	if (labs.size() != ids.size()) return false;
+
+	std::string cn = colname.empty() ? "label" : colname;
+	out = SpatCategories();
+	out.d.add_column(ids, "value");
+	if (labtype == "integer" || labtype == "numeric") {
+		bool ok = true;
+		if (labtype == "integer") {
+			std::vector<long> n(labs.size());
+			for (size_t i = 0; i < labs.size() && ok; i++) {
+				char *end = nullptr;
+				errno = 0;
+				long v = std::strtol(labs[i].c_str(), &end, 10);
+				if (end == labs[i].c_str() || end == nullptr || *end != '\0' || errno == ERANGE) ok = false;
+				else n[i] = v;
+			}
+			if (ok) out.d.add_column(n, cn);
+		} else {
+			std::vector<double> n(labs.size());
+			for (size_t i = 0; i < labs.size() && ok; i++) {
+				char *end = nullptr;
+				double v = std::strtod(labs[i].c_str(), &end);
+				if (end == labs[i].c_str() || end == nullptr || *end != '\0' || !std::isfinite(v)) ok = false;
+				else n[i] = v;
+			}
+			if (ok) out.d.add_column(n, cn);
+		}
+		if (!ok) out.d.add_column(labs, cn);
+	} else {
+		out.d.add_column(labs, cn);
+	}
+	out.index = 1;
+	return true;
+}
+
+
+static bool cf_flags_from_items(const std::vector<std::string> &items, SpatCategories &out) {
+	std::string dummy;
+	if (meta_item(items, "flag_masks", dummy)) return false;
+	std::string fv, fm;
+	if (!meta_item(items, "flag_values", fv)) return false;
+	if (!meta_item(items, "flag_meanings", fm)) return false;
+	std::vector<double> vals;
+	if (!parse_flag_values(fv, vals)) return false;
+	std::string tlabels, col, typ;
+	meta_item(items, "terra_labels", tlabels);
+	meta_item(items, "terra_category", col);
+	meta_item(items, "terra_category_type", typ);
+	return categories_from_cf_flags(vals, fm, tlabels, col, typ, out);
+}
+
+
+static bool cf_flags_from_dataset(const std::vector<std::string> &dataset, const std::string &var, SpatCategories &out) {
+	if (var.empty()) return false;
+	const char *keys[] = {"flag_values", "flag_meanings", "flag_masks", "terra_labels", "terra_category", "terra_category_type"};
+	std::vector<std::string> items;
+	for (size_t k = 0; k < 6; k++) {
+		std::string val;
+		if (meta_item(dataset, var + "#" + keys[k], val)) {
+			items.push_back(std::string(keys[k]) + "=" + val);
+		}
+	}
+	return cf_flags_from_items(items, out);
+}
+
 
 SpatCategories GetCategories(char **pCat, std::string name) {
 	long n = CSLCount(pCat);
@@ -1823,6 +1987,20 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	// needs to get its own generic one 
 	//	s.set_names_time_tif(bandmeta, msg);
 	}
+	// CF flag_values / flag_meanings are metadata, not category names or a RAT.
+	for (size_t i = 0; i < s.nlyr && i < bandmeta.size(); i++) {
+		if (s.hasCat(i)) continue;
+		SpatCategories scat;
+		bool got = cf_flags_from_items(bandmeta[i], scat);
+		if (!got) {
+			std::string var;
+			if (meta_item(bandmeta[i], "NETCDF_VARNAME", var)) {
+				got = cf_flags_from_dataset(s.smdata, var, scat);
+			}
+		}
+		if (got) s.setCat(i, scat);
+	}
+
 	s.bmdata = bandmeta;
 	if (msg.size() > 1) {
 		addWarning(msg);
