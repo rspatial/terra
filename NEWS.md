@@ -2,18 +2,23 @@
 
 ## bug fixes
 
-- `spatSample<SpatVector>` could return fewer points than requested for polygons whose bounding box is much larger than their area, such as USA in lon/lat [#2233](https://github.com/rspatial/terra/issues/2233) by plantarum. 
+- `spatSample<SpatVector>` could return fewer points than requested for polygons whose bounding box is much larger than their area, such as USA in lon/lat [#2233](https://github.com/rspatial/terra/issues/2233) by Tyler Smith.
 
 ## enhancements
 
 - `divide<SpatRaster>` is much faster for larger values of `n` [#2239](https://github.com/rspatial/terra/issues/2239) by Márcia Barbosa
 - `divide<SpatRaster>` gains argument `split`: `"values"` (the default) balances cell-value sums, `"notNA"` the number of non-NA cells, `"cells"` the number of cells [#2238](https://github.com/rspatial/terra/issues/2238) by Márcia Barbosa
 - more efficient VRT reading [#2224](https://github.com/rspatial/terra/pull/2224) by Mike Sumner
+- `writeCDF` writes factor levels as CF flag attributes, and reading the file restores the categories [#2228](https://github.com/rspatial/terra/issues/2228) by Kodi Arfer 
+
 
 ## new 
 
 
+
 # version 1.9-60
+
+Released 2026-11-19
 
 ## bug fixes
 

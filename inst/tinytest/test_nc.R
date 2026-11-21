@@ -101,3 +101,43 @@ expect_equivalent(dv[9, 48], -1.0656, tolerance = 1e-3)
 
 de <- extract(du, xy)
 expect_equivalent(as.numeric(de[1, 1]), -1.1612, tolerance = 1e-3)
+
+
+## --- factor levels round-trip (#2228) ---------------------------------------
+if (requireNamespace("ncdf4", quietly=TRUE)) {
+	set.seed(1337)
+	r <- rast(nrows=18, ncols=36)
+	r$v <- factor(sample.int(26, ncell(r), replace=TRUE), labels=LETTERS)
+	fcat <- tempfile(fileext=".nc")
+	writeCDF(r, fcat, overwrite=TRUE, varname="v")
+	r2 <- rast(fcat)
+	expect_true(is.factor(r2))
+	expect_equal(levels(r2)[[1]], levels(r)[[1]])
+	expect_equal(table(as.data.frame(r2)[[1]]), table(as.data.frame(r)[[1]]))
+	expect_equal(as.character(as.data.frame(r2)[[1]]), as.character(as.data.frame(r)[[1]]))
+
+	rc <- rast(nrows=2, ncols=2, vals=c(1, 2, 2, 1))
+	levels(rc) <- data.frame(id=1:2, cover=c("open water", "dry forest"), stringsAsFactors=FALSE)
+	fcc <- tempfile(fileext=".nc")
+	writeCDF(rc, fcc, overwrite=TRUE, varname="cover")
+	rc2 <- rast(fcc)
+	expect_true(is.factor(rc2))
+	expect_equal(levels(rc2)[[1]][, 2], c("open water", "dry forest"))
+	expect_equal(as.character(as.data.frame(rc2)[[1]]), as.character(as.data.frame(rc)[[1]]))
+
+	rn <- rast(nrows=2, ncols=2, vals=1:4)
+	fn <- tempfile(fileext=".nc")
+	writeCDF(rn, fn, overwrite=TRUE, varname="v")
+	expect_false(is.factor(rast(fn)))
+
+	rm <- rast(nrows=2, ncols=2, nlyr=2, vals=1)
+	levels(rm) <- rep(list(data.frame(value=1, label="yes", stringsAsFactors=FALSE)), 2)
+	fm <- tempfile(fileext=".nc")
+	writeCDF(rm, fm, overwrite=TRUE, varname="cls")
+	rm2 <- rast(fm)
+	expect_equal(is.factor(rm2), c(TRUE, TRUE))
+	expect_equal(levels(rm2)[[1]][, 2], "yes")
+	expect_equal(levels(rm2)[[2]][, 2], "yes")
+
+	file.remove(fcat, fcc, fn, fm)
+}
