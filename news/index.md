@@ -31,6 +31,10 @@
 - `writeCDF` writes factor levels as CF flag attributes, and reading the
   file restores the categories
   [\#2228](https://github.com/rspatial/terra/issues/2228) by Kodi Arfer
+- `centroids<SpatVector>` gains argument “geoms=TRUE” and
+  `centroids<SpatRaster>` gains argument “na.rm=TRUE”.
+  [\#2234](https://github.com/rspatial/terra/issues/2234) by Márcia
+  Barbosa
 
 ### new
 

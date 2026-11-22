@@ -1,10 +1,10 @@
 # Centroids
 
-Get the centroids of polygons or lines, or centroid-like points that are
-guaranteed to be inside the polygons or on the lines.
+SpatVector: Get the centroids of polygons or lines, or centroid-like
+points that are guaranteed to be inside the polygons or on the lines.
 
-Or get the (weighted) centroid of the cells with values (not `NA`) of a
-SpatRaster.
+SpatRaster: Get the centroid of all cells, or he (weighted) centroid of
+the cells that are not `NA`.
 
 ## Usage
 
@@ -13,7 +13,7 @@ SpatRaster.
 centroids(x, inside=FALSE, correct=FALSE, geoms=TRUE)
 
 # S4 method for class 'SpatRaster'
-centroids(x, weighted=FALSE)
+centroids(x, weighted=FALSE, na.rm=TRUE)
 ```
 
 ## Arguments
@@ -47,9 +47,14 @@ centroids(x, weighted=FALSE)
   logical. If `TRUE` the centroids are computed as the weighted means of
   the coordinates of cells with values
 
+- na.rm:
+
+  logical. If `TRUE` cells that are `NA` are not included in the
+  computation. Cannot be combined with `na.rm=FALSE`
+
 ## Value
 
-SpatVector of points
+SpatVector: SpatVector of points. SpatRaster: data.frame
 
 ## Examples
 
