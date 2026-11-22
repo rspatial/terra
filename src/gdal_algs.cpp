@@ -914,12 +914,15 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			//ok = gdal_warper(psWarpOptions, hSrcDS, hDstDS);
 
 			bool ok=true;
-			GDALWarpOperation oOperation;
-			if (oOperation.Initialize(psWarpOptions) != CE_None) {
+			// C API: GDALWarpOperation::Initialize takes a std::unique_ptr, so the
+			// C++ symbol differs between libc++ and the libstdc++ build of libgdal.
+			GDALWarpOperationH hWarp = GDALCreateWarpOperation(psWarpOptions);
+			if (hWarp == NULL) {
 				ok = false;
-			} else if (oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS)) != CE_None) {
+			} else if (GDALChunkAndWarpImage(hWarp, 0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS)) != CE_None) {
 				ok = false;
 			}
+			GDALDestroyWarpOperation(hWarp);
 			GDALDestroyGenImgProjTransformer(psWarpOptions->pTransformerArg);
 			GDALDestroyWarpOptions(psWarpOptions);
 
