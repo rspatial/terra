@@ -32,8 +32,10 @@
 #include <cmath>
 #include <algorithm>
 #include <cstdint>
+#include <deque>
 #include <limits>
 #include <list>
+#include <set>
 
 //#include <cstdint>
 
@@ -502,6 +504,124 @@ static bool md_cf_categories(const std::shared_ptr<GDALMDArray> &poVar, SpatCate
 }
 
 
+// GDALGroup::ResolveMDArray() is not virtual and its symbol includes
+// std::string, so it differs between libc++ and a libstdc++ libgdal.
+// The search below uses OpenMDArray / OpenGroup, which are virtual.
+static std::vector<std::string> md_path_parts(const std::string &full) {
+	std::vector<std::string> parts;
+	std::string cur;
+	for (size_t i = 0; i < full.size(); i++) {
+		if (full[i] == '/') {
+			if (!cur.empty()) parts.push_back(cur);
+			cur.clear();
+		} else {
+			cur.push_back(full[i]);
+		}
+	}
+	if (!cur.empty()) parts.push_back(cur);
+	return parts;
+}
+
+
+static std::shared_ptr<GDALMDArray> md_open_array_fullname(
+		const GDALGroup *root, const std::string &full) {
+	if (full.empty() || full[0] != '/') return nullptr;
+	std::vector<std::string> parts = md_path_parts(full);
+	if (parts.empty()) return nullptr;
+	const GDALGroup *cur = root;
+	std::shared_ptr<GDALGroup> hold;
+	for (size_t i = 0; i + 1 < parts.size(); i++) {
+		hold = cur->OpenGroup(parts[i], nullptr);
+		if (!hold) {
+			CPLError(CE_Failure, CPLE_AppDefined, "Cannot find group %s", parts[i].c_str());
+			return nullptr;
+		}
+		cur = hold.get();
+	}
+	return cur->OpenMDArray(parts.back(), nullptr);
+}
+
+
+static std::shared_ptr<GDALGroup> md_open_group_fullname(
+		const GDALGroup *root, const std::string &full) {
+	if (full.empty() || full[0] != '/') return nullptr;
+	std::vector<std::string> parts = md_path_parts(full);
+	if (parts.empty()) return nullptr;
+	const GDALGroup *cur = root;
+	std::shared_ptr<GDALGroup> hold;
+	for (size_t i = 0; i < parts.size(); i++) {
+		hold = cur->OpenGroup(parts[i], nullptr);
+		if (!hold) return nullptr;
+		cur = hold.get();
+	}
+	return hold;
+}
+
+
+static std::shared_ptr<GDALMDArray> md_search_array(
+		const GDALGroup *start, const std::string &name, std::set<std::string> &seen) {
+	std::deque<std::shared_ptr<GDALGroup>> q;
+	const GDALGroup *first = start;
+	while (first != nullptr || !q.empty()) {
+		const GDALGroup *g = nullptr;
+		std::shared_ptr<GDALGroup> hold;
+		if (first != nullptr) {
+			g = first;
+			first = nullptr;
+		} else {
+			hold = std::move(q.front());
+			q.pop_front();
+			g = hold.get();
+		}
+		if (!seen.insert(g->GetFullName()).second) continue;
+		auto found = g->OpenMDArray(name, nullptr);
+		if (found) return found;
+		for (const auto &sub : g->GetGroupNames(nullptr)) {
+			auto sg = g->OpenGroup(sub, nullptr);
+			if (sg) q.push_back(std::move(sg));
+		}
+	}
+	return nullptr;
+}
+
+
+static std::shared_ptr<GDALMDArray> md_resolve_array(
+		const std::shared_ptr<GDALGroup> &root,
+		const std::string &name,
+		const std::string &starting) {
+	if (!root || name.empty()) return nullptr;
+	if (name[0] == '/') {
+		auto direct = md_open_array_fullname(root.get(), name);
+		if (direct) return direct;
+	}
+	std::set<std::string> seen;
+	std::string path = starting;
+	while (true) {
+		bool go = false;
+		std::shared_ptr<GDALGroup> startGroup;
+		if (path.empty() || path == "/") {
+			go = true;
+		} else {
+			startGroup = md_open_group_fullname(root.get(), path);
+			if (startGroup && !seen.count(startGroup->GetFullName())) {
+				go = true;
+			}
+		}
+		if (go) {
+			const GDALGroup *from = startGroup ? startGroup.get() : root.get();
+			auto found = md_search_array(from, name, seen);
+			if (found) return found;
+		}
+		if (path.empty() || path == "/") break;
+		size_t npos = path.rfind('/');
+		if (npos == std::string::npos) break;
+		if (npos == 0) path = "/";
+		else path.resize(npos);
+	}
+	return nullptr;
+}
+
+
 std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x, bool filter) {
 // FROM GDAL 3.11 (while not widely available).
 // * Author:   Even Rouault <even.rouault at spatialys.com>
@@ -549,7 +669,7 @@ static std::vector<std::string> md_arrays_usable_for_raster(
 	tmp.reserve(candidates.size());
 	std::string startgroup = "";
 	for (const std::string &nm : candidates) {
-		auto poVar = poRootGroup->ResolveMDArray(nm.c_str(), startgroup, nullptr);
+		auto poVar = md_resolve_array(poRootGroup, nm.c_str(), startgroup);
 		if (!poVar) {
 			continue;
 		}
@@ -625,7 +745,7 @@ static int64_t md_array_start_time(
 		const std::string &array_name) {
 
 	std::string startgroup = "";
-	auto poVar = poRootGroup->ResolveMDArray(array_name.c_str(), startgroup, nullptr);
+	auto poVar = md_resolve_array(poRootGroup, array_name.c_str(), startgroup);
 	if (!poVar) {
 		return INT64_MAX;
 	}
@@ -1039,11 +1159,11 @@ static bool md_fill_source_from_marray(
 		}
 		auto resolve_coord = [&](const std::string &nm) -> std::shared_ptr<GDALMDArray> {
 			std::string start;
-			auto a = poRootGroup->ResolveMDArray(nm.c_str(), start, nullptr);
+			auto a = md_resolve_array(poRootGroup, nm.c_str(), start);
 			if (a) return a;
 			if (!nm.empty() && nm[0] != '/' && !group.empty()) {
 				std::string p = group + "/" + nm;
-				a = poRootGroup->ResolveMDArray(p.c_str(), start, nullptr);
+				a = md_resolve_array(poRootGroup, p.c_str(), start);
 			}
 			return a;
 		};
@@ -1259,7 +1379,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 	for (size_t ai = 0; ai < arrays_to_use.size(); ai++) {
 		std::string startgroup = "";
-		auto poVar = poRootGroup->ResolveMDArray(arrays_to_use[ai].c_str(), startgroup, nullptr);
+		auto poVar = md_resolve_array(poRootGroup, arrays_to_use[ai].c_str(), startgroup);
 		if (!poVar) {
 			if (single_var) {
 				setError(std::string("cannot find array: \"") + arrays_to_use[ai] + "\".\nAvailable arrays: " + concatenate(anms, ", "));
@@ -1385,7 +1505,7 @@ bool SpatRaster::readStartMulti(size_t src) {
 	}
 
 	std::string startgroup="";
-	auto poVar = poRootGroup->ResolveMDArray(source[src].m_arrayname.c_str(), startgroup, nullptr);
+	auto poVar = md_resolve_array(poRootGroup, source[src].m_arrayname.c_str(), startgroup);
 
     if( !poVar )   {
 		setError("cannot find: " + source[src].m_arrayname);
@@ -1440,7 +1560,7 @@ bool SpatRaster::open_gdal_multidim(GDALDatasetH &hDS, size_t src) {
 
 	std::string startgroup = "";
 	std::shared_ptr<GDALMDArray> arr =
-		root->ResolveMDArray(source[src].m_arrayname.c_str(), startgroup, nullptr);
+		md_resolve_array(root, source[src].m_arrayname.c_str(), startgroup);
 	if (!arr) return false;
 
 #if GDAL_VERSION_NUM >= 3080000
