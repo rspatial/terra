@@ -21,23 +21,37 @@ setMethod("selectHighest", signature(x="SpatRaster"),
 
 
 setMethod("centroids", signature(x="SpatRaster"),
-	function(x, weighted=FALSE, na.rm=TRUE) {
+	function(x, weighted=FALSE, na.rm=TRUE, lonlat=FALSE, data.frame=FALSE) {
 		if ((!isTRUE(na.rm)) && isTRUE(weighted)) {
 			error("centroids", "you cannot combine weighted=TRUE with na.rm=FALSE")
 		}
 		if (!isTRUE(na.rm)) {
 			out <- crds(centroids(as.polygons(ext(x))))
-			return(data.frame(out[rep(1, nlyr(x)), , drop=FALSE]))
-		}
-		opt <- spatOptions()
-		if (nlyr(x) > 1) {
-			out <- lapply(1:nlyr(x), function(i) centroids(x[[i]], weighted=weighted))
-			do.call(rbind, out)
+			out <- data.frame(out[rep(1, nlyr(x)), , drop=FALSE])
 		} else {
-			out <- x@pntr$centroid(weighted[1], opt)
-			messages(x, "centroids")
-			data.frame(x=out[1], y=out[2])
+			opt <- spatOptions()
+			if (nlyr(x) > 1) {
+				out <- lapply(1:nlyr(x), function(i) centroids(x[[i]], weighted=weighted))
+				out <- do.call(rbind, out)
+			} else {
+				out <- x@pntr$centroid(weighted[1], opt)
+				messages(x, "centroids")
+				out <- data.frame(x=out[1], y=out[2])
+			}
 		}
+		if (lonlat) {
+			geo <- is.lonlat(x)
+			if (isTRUE(crs(x) == "") | is.na(geo)) {
+				warn("centroids", "cannot determine if the crs of x is longitude/latitude, centroids are not transformed to lon/lat")
+			} else if (!isTRUE(geo)) {
+				out <- vect(out, geom=c("x", "y"))
+				out <- project(out, crs(x), "epsg:4326")
+			}
+		} 
+		if (!isTRUE(data.frame)) {
+			out <- vect(out, geom=c("x", "y"))
+		} 
+		out
 	}
 )
 

@@ -14,9 +14,9 @@ SpatRaster: Get the centroid of all cells, or he (weighted) centroid of the cell
 }
 
 \usage{
-\S4method{centroids}{SpatVector}(x, inside=FALSE, correct=FALSE, geoms=TRUE)
+\S4method{centroids}{SpatVector}(x, inside=FALSE, correct=FALSE, geoms=TRUE, lonlat=FALSE, data.frame=FALSE)
 
-\S4method{centroids}{SpatRaster}(x, weighted=FALSE, na.rm=TRUE)
+\S4method{centroids}{SpatRaster}(x, weighted=FALSE, na.rm=TRUE, lonlat=FALSE, data.frame=FALSE)
 }
 
 \arguments{
@@ -26,9 +26,11 @@ SpatRaster: Get the centroid of all cells, or he (weighted) centroid of the cell
 \item{geoms}{If \code{TRUE} centroids are returned for each geometry in \code{x}. Otherwise, a single centroid is returned for the aggregated geometries}
 \item{weighted}{logical. If \code{TRUE} the centroids are computed as the weighted means of the coordinates of cells with values}
 \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are not included in the computation. Cannot be combined with \code{na.rm=FALSE}}
+\item{lonlat}{logical. If \code{TRUE} the centroids are always longitude/latitude coordinates, irrespective of the coordinate reference system of \code{x}}
+\item{data.frame}{logical. If \code{TRUE} a \code{data.frame} is returned instead of a \code{SpatVector}}
 }
 
-\value{SpatVector: SpatVector of points. SpatRaster: data.frame}
+\value{SpatVector of points or data.frame}
 
 
 \examples{

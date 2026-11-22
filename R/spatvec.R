@@ -259,7 +259,7 @@ setMethod("fillHoles", signature(x="SpatRaster"),
 
 
 setMethod("centroids", signature(x="SpatVector"),
-	function(x, inside=FALSE, correct=FALSE, geoms=TRUE) {
+	function(x, inside=FALSE, correct=FALSE, geoms=TRUE, lonlat=FALSE, data.frame=FALSE) {
 		if (!isTRUE(geoms)) {
 			x <- aggregate(x, dissolve=FALSE)
 		}
@@ -271,6 +271,18 @@ setMethod("centroids", signature(x="SpatVector"),
 			x@pntr <- x@pntr$centroid(TRUE)
 		}
 		messages(x, "centroids")
+		if (lonlat) {
+			geo <- is.lonlat(x)
+			if (isTRUE(crs(x) == "") | is.na(geo)) {
+				warn("centroids", "cannot determine if the crs of x is longitude/latitude, centroids are not transformed to lon/lat")
+			} else if (!isTRUE(geo)) {
+				x <- project(x, "epsg:4326")
+			}
+		}
+		if (isTRUE(data.frame)) {
+			x <- data.frame(crds(x))
+		} 
+		x
 	}
 )
 
