@@ -12,6 +12,7 @@
 - `divide<SpatRaster>` gains argument `split`: `"values"` (the default) balances cell-value sums, `"notNA"` the number of non-NA cells, `"cells"` the number of cells [#2238](https://github.com/rspatial/terra/issues/2238) by Márcia Barbosa
 - more efficient VRT reading [#2224](https://github.com/rspatial/terra/pull/2224) by Mike Sumner
 - `writeCDF` writes factor levels as CF flag attributes, and reading the file restores the categories [#2228](https://github.com/rspatial/terra/issues/2228) by Kodi Arfer 
+- `centroids<SpatVector>` gains argument "geoms=TRUE" and `centroids<SpatRaster>` gains argument "na.rm=TRUE". [#2234](https://github.com/rspatial/terra/issues/2234) by Márcia Barbosa
 
 
 ## new 

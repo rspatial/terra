@@ -8,15 +8,15 @@
 \title{Centroids}
 
 \description{
-Get the centroids of polygons or lines, or centroid-like points that are guaranteed to be inside the polygons or on the lines.
+SpatVector: Get the centroids of polygons or lines, or centroid-like points that are guaranteed to be inside the polygons or on the lines.
 
-Or get the (weighted) centroid of the cells with values (not \code{NA}) of a SpatRaster.
+SpatRaster: Get the centroid of all cells, or he (weighted) centroid of the cells that are not \code{NA}.
 }
 
 \usage{
 \S4method{centroids}{SpatVector}(x, inside=FALSE, correct=FALSE, geoms=TRUE)
 
-\S4method{centroids}{SpatRaster}(x, weighted=FALSE)
+\S4method{centroids}{SpatRaster}(x, weighted=FALSE, na.rm=TRUE)
 }
 
 \arguments{
@@ -25,9 +25,10 @@ Or get the (weighted) centroid of the cells with values (not \code{NA}) of a Spa
 \item{correct}{If \code{TRUE} corrected centroids are returned for geometries in \code{x} that have a true centroid that is not inside the geometry. If \code{inside=TRUE} it is replaced with another point that is guaranteed to be inside the geometry. If it is \code{FALSE}, it is replaced with the nearest point on the border of the geometry}
 \item{geoms}{If \code{TRUE} centroids are returned for each geometry in \code{x}. Otherwise, a single centroid is returned for the aggregated geometries}
 \item{weighted}{logical. If \code{TRUE} the centroids are computed as the weighted means of the coordinates of cells with values}
+\item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are not included in the computation. Cannot be combined with \code{na.rm=FALSE}}
 }
 
-\value{SpatVector of points}
+\value{SpatVector: SpatVector of points. SpatRaster: data.frame}
 
 
 \examples{

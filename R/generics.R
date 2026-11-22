@@ -21,7 +21,14 @@ setMethod("selectHighest", signature(x="SpatRaster"),
 
 
 setMethod("centroids", signature(x="SpatRaster"),
-	function(x, weighted=FALSE) {
+	function(x, weighted=FALSE, na.rm=TRUE) {
+		if ((!isTRUE(na.rm)) && isTRUE(weighted)) {
+			error("centroids", "you cannot combine weighted=TRUE with na.rm=FALSE")
+		}
+		if (!isTRUE(na.rm)) {
+			out <- crds(centroids(as.polygons(ext(x))))
+			return(data.frame(out[rep(1, nlyr(x)), , drop=FALSE]))
+		}
 		opt <- spatOptions()
 		if (nlyr(x) > 1) {
 			out <- lapply(1:nlyr(x), function(i) centroids(x[[i]], weighted=weighted))
