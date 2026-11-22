@@ -340,7 +340,9 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
   appearance; and `loc.main` to change the location of the main title
   (either two coordinates, or a character value such as "topleft"). You
   can also use `sub=""` for a subtitle. See
-  [`title`](https://rdrr.io/r/graphics/title.html)
+  [`title`](https://rdrr.io/r/graphics/title.html). For a single layer
+  or attribute the default is no title; `main=TRUE` uses the layer or
+  column name
 
 - maxnl:
 
@@ -402,6 +404,9 @@ other plot types:
 f <- system.file("ex/elev.tif", package="terra") 
 r <- rast(f)
 plot(r)
+
+
+plot(r, main=TRUE)
 
 
 plot(r, type="interval")

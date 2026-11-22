@@ -14,6 +14,10 @@
 
 ### enhancements
 
+- `plot(main=TRUE)` uses the layer or column name as the title for a
+  single layer or column
+  [\#2237](https://github.com/rspatial/terra/issues/2237) by Márcia
+  Barbosa
 - `divide<SpatRaster>` is much faster for larger values of `n`
   [\#2239](https://github.com/rspatial/terra/issues/2239) by Márcia
   Barbosa
