@@ -10,7 +10,7 @@ SpatRaster.
 
 ``` r
 # S4 method for class 'SpatVector'
-centroids(x, inside=FALSE, correct=FALSE)
+centroids(x, inside=FALSE, correct=FALSE, geoms=TRUE)
 
 # S4 method for class 'SpatRaster'
 centroids(x, weighted=FALSE)
@@ -36,6 +36,11 @@ centroids(x, weighted=FALSE)
   it is replaced with another point that is guaranteed to be inside the
   geometry. If it is `FALSE`, it is replaced with the nearest point on
   the border of the geometry
+
+- geoms:
+
+  If `TRUE` centroids are returned for each geometry in `x`. Otherwise,
+  a single centroid is returned for the aggregated geometries
 
 - weighted:
 

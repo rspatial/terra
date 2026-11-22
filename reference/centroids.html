@@ -44,7 +44,7 @@ Or get the (weighted) centroid of the cells with values (not NA) of a SpatRaster
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">centroids</span><span class="op">(</span><span class="va">x</span>, inside<span class="op">=</span><span class="cn">FALSE</span>, correct<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">centroids</span><span class="op">(</span><span class="va">x</span>, inside<span class="op">=</span><span class="cn">FALSE</span>, correct<span class="op">=</span><span class="cn">FALSE</span>, geoms<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">centroids</span><span class="op">(</span><span class="va">x</span>, weighted<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -62,6 +62,9 @@ Or get the (weighted) centroid of the cells with values (not NA) of a SpatRaster
 
 <dt id="arg-correct">correct<a class="anchor" aria-label="anchor" href="#arg-correct"></a></dt>
 <dd><p>If <code>TRUE</code> corrected centroids are returned for geometries in <code>x</code> that have a true centroid that is not inside the geometry. If <code>inside=TRUE</code> it is replaced with another point that is guaranteed to be inside the geometry. If it is <code>FALSE</code>, it is replaced with the nearest point on the border of the geometry</p></dd>
+
+<dt id="arg-geoms">geoms<a class="anchor" aria-label="anchor" href="#arg-geoms"></a></dt>
+<dd><p>If <code>TRUE</code> centroids are returned for each geometry in <code>x</code>. Otherwise, a single centroid is returned for the aggregated geometries</p></dd>
 
 <dt id="arg-weighted">weighted<a class="anchor" aria-label="anchor" href="#arg-weighted"></a></dt>
 <dd><p>logical. If <code>TRUE</code> the centroids are computed as the weighted means of the coordinates of cells with values</p></dd>
