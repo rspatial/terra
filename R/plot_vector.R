@@ -492,6 +492,10 @@ setMethod("dots", signature(x="SpatVector"),
 
 	# backwards compatibility
 	reverse <- isTRUE(reverse) || isTRUE(decreasing)
+	# main=TRUE: title is the attribute name. The default stays blank for one attribute (#2237).
+	if (isTRUE(main)) {
+		main <- if (is.character(y) && nzchar(y)) y else ""
+	}
 
 	out <- list()
 	out$blank <- FALSE

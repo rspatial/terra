@@ -625,6 +625,10 @@
 
 	# backwards compatibility
 	reverse <- reverse | decreasing
+	# main=TRUE: title is the layer name. The default stays blank for one layer (#2237).
+	if (isTRUE(main)) {
+		main <- paste(names(x), collapse=", ")
+	}
 	out <- list()
 	out$lim <- out$ext <- as.vector(ext(x))
 	hadWin <- hasWin <- FALSE
