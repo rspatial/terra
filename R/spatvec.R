@@ -259,7 +259,10 @@ setMethod("fillHoles", signature(x="SpatRaster"),
 
 
 setMethod("centroids", signature(x="SpatVector"),
-	function(x, inside=FALSE, correct=FALSE) {
+	function(x, inside=FALSE, correct=FALSE, geoms=TRUE) {
+		if (!isTRUE(geoms)) {
+			x <- aggregate(x, dissolve=FALSE)
+		}
 		if (correct) {
 			x@pntr <- x@pntr$corrected_centroid(TRUE, isTRUE(inside))
 		} else if (inside) {

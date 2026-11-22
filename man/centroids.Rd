@@ -14,7 +14,7 @@ Or get the (weighted) centroid of the cells with values (not \code{NA}) of a Spa
 }
 
 \usage{
-\S4method{centroids}{SpatVector}(x, inside=FALSE, correct=FALSE)
+\S4method{centroids}{SpatVector}(x, inside=FALSE, correct=FALSE, geoms=TRUE)
 
 \S4method{centroids}{SpatRaster}(x, weighted=FALSE)
 }
@@ -23,6 +23,7 @@ Or get the (weighted) centroid of the cells with values (not \code{NA}) of a Spa
 \item{x}{SpatVector}
 \item{inside}{logical. If \code{TRUE} the points returned are guaranteed to be inside the polygons or on the lines, but they are not the true centroids. True centroids may be outside a polygon, for example when a polygon is "bean shaped".}
 \item{correct}{If \code{TRUE} corrected centroids are returned for geometries in \code{x} that have a true centroid that is not inside the geometry. If \code{inside=TRUE} it is replaced with another point that is guaranteed to be inside the geometry. If it is \code{FALSE}, it is replaced with the nearest point on the border of the geometry}
+\item{geoms}{If \code{TRUE} centroids are returned for each geometry in \code{x}. Otherwise, a single centroid is returned for the aggregated geometries}
 \item{weighted}{logical. If \code{TRUE} the centroids are computed as the weighted means of the coordinates of cells with values}
 }
 
