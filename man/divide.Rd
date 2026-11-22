@@ -9,9 +9,9 @@ Subdivide a raster or polygons
 }
 
 \description{
-Divide a \code{SpatRaster} into \code{n} parts. By default the parts have approximately the same sum of cell values (\code{split="values"}). Use \code{split="notNA"} for the same number of non-\code{NA} cells, or \code{split="cells"} to ignore values and \code{NA}s and split the grid by cell count. 
+Divide a \code{SpatRaster} by splitting it \code{n} times. By default the resulting parts have approximately the same sum of cell values (\code{split="values"}). Use \code{split="notNA"} for the same number of non-\code{NA} cells, or \code{split="cells"} to ignore values and \code{NA}s and split the grid by cell count.
 
-Divides a \code{SpatVector} of polygons into \code{n} compact and approximately equal area parts. The results are not deterministic so you should use set.seed to be able to reproduce your results. If you get a warning about non-convergence, you can increase the number of iterations used with additional argument iter.max
+Divide a \code{SpatVector} of polygons into \code{n} compact and approximately equal-area parts. The results are not deterministic, so you should use \code{\link{set.seed}} to be able to reproduce your results. If you get a warning about non-convergence, you can increase the number of iterations used with additional argument \code{iter.max}
 }
 
 \usage{
