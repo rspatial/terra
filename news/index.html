@@ -38,7 +38,9 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-9-61">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-61"></a></h3>
 <ul><li>
-<code>spatSample&lt;SpatVector&gt;</code> could return fewer points than requested for polygons whose bounding box is much larger than their area, such as USA in lon/lat <a href="https://github.com/rspatial/terra/issues/2233" class="external-link">#2233</a> by plantarum.</li>
+<code>crop(mask=TRUE)</code> on a NetCDF opened with the classic driver disagreed with <code>md=TRUE</code> on GDAL &gt;= 3.12.3, which forces those files bottom-up when a GeoTransform attribute is present</li>
+<li>
+<code>spatSample&lt;SpatVector&gt;</code> could return fewer points than requested for polygons whose bounding box is much larger than their area, such as USA in lon/lat <a href="https://github.com/rspatial/terra/issues/2233" class="external-link">#2233</a> by Tyler Smith.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-9-61">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-61"></a></h3>
@@ -47,6 +49,8 @@
 <li>
 <code>divide&lt;SpatRaster&gt;</code> gains argument <code>split</code>: <code>"values"</code> (the default) balances cell-value sums, <code>"notNA"</code> the number of non-NA cells, <code>"cells"</code> the number of cells <a href="https://github.com/rspatial/terra/issues/2238" class="external-link">#2238</a> by Márcia Barbosa</li>
 <li>more efficient VRT reading <a href="https://github.com/rspatial/terra/pull/2224" class="external-link">#2224</a> by Mike Sumner</li>
+<li>
+<code>writeCDF</code> writes factor levels as CF flag attributes, and reading the file restores the categories <a href="https://github.com/rspatial/terra/issues/2228" class="external-link">#2228</a> by Kodi Arfer</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-9-61">new<a class="anchor" aria-label="anchor" href="#new-1-9-61"></a></h3>
@@ -54,6 +58,7 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.9-60" id="version-19-60">version 1.9-60<a class="anchor" aria-label="anchor" href="#version-19-60"></a></h2><p class="text-muted">CRAN release: 2026-11-20</p>
+<p>Released 2026-11-19</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-9-60">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-60"></a></h3>
 <ul><li>

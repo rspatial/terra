@@ -4,10 +4,13 @@
 
 ### bug fixes
 
+- `crop(mask=TRUE)` on a NetCDF opened with the classic driver disagreed
+  with `md=TRUE` on GDAL \>= 3.12.3, which forces those files bottom-up
+  when a GeoTransform attribute is present
 - `spatSample<SpatVector>` could return fewer points than requested for
   polygons whose bounding box is much larger than their area, such as
   USA in lon/lat [\#2233](https://github.com/rspatial/terra/issues/2233)
-  by plantarum.
+  by Tyler Smith.
 
 ### enhancements
 
@@ -21,12 +24,17 @@
   Barbosa
 - more efficient VRT reading
   [\#2224](https://github.com/rspatial/terra/pull/2224) by Mike Sumner
+- `writeCDF` writes factor levels as CF flag attributes, and reading the
+  file restores the categories
+  [\#2228](https://github.com/rspatial/terra/issues/2228) by Kodi Arfer
 
 ### new
 
 ## version 1.9-60
 
 CRAN release: 2026-11-20
+
+Released 2026-11-19
 
 ### bug fixes
 

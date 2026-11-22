@@ -1,16 +1,17 @@
 # Subdivide a raster or polygons
 
-Divide a `SpatRaster` into `n` parts. By default the parts have
-approximately the same sum of cell values (`split="values"`). Use
-`split="notNA"` for the same number of non-`NA` cells, or
-`split="cells"` to ignore values and `NA`s and split the grid by cell
-count.
+Divide a `SpatRaster` by splitting it `n` times. By default the
+resulting parts have approximately the same sum of cell values
+(`split="values"`). Use `split="notNA"` for the same number of non-`NA`
+cells, or `split="cells"` to ignore values and `NA`s and split the grid
+by cell count.
 
-Divides a `SpatVector` of polygons into `n` compact and approximately
-equal area parts. The results are not deterministic so you should use
-set.seed to be able to reproduce your results. If you get a warning
-about non-convergence, you can increase the number of iterations used
-with additional argument iter.max
+Divide a `SpatVector` of polygons into `n` compact and approximately
+equal-area parts. The results are not deterministic, so you should use
+[`set.seed`](https://rdrr.io/r/base/Random.html) to be able to reproduce
+your results. If you get a warning about non-convergence, you can
+increase the number of iterations used with additional argument
+`iter.max`
 
 ## Usage
 
