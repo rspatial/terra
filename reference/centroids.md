@@ -10,10 +10,10 @@ the cells that are not `NA`.
 
 ``` r
 # S4 method for class 'SpatVector'
-centroids(x, inside=FALSE, correct=FALSE, geoms=TRUE)
+centroids(x, inside=FALSE, correct=FALSE, geoms=TRUE, lonlat=FALSE, data.frame=FALSE)
 
 # S4 method for class 'SpatRaster'
-centroids(x, weighted=FALSE, na.rm=TRUE)
+centroids(x, weighted=FALSE, na.rm=TRUE, lonlat=FALSE, data.frame=FALSE)
 ```
 
 ## Arguments
@@ -52,9 +52,19 @@ centroids(x, weighted=FALSE, na.rm=TRUE)
   logical. If `TRUE` cells that are `NA` are not included in the
   computation. Cannot be combined with `na.rm=FALSE`
 
+- lonlat:
+
+  logical. If `TRUE` the centroids are always longitude/latitude
+  coordinates, irrespective of the coordinate reference system of `x`
+
+- data.frame:
+
+  logical. If `TRUE` a `data.frame` is returned instead of a
+  `SpatVector`
+
 ## Value
 
-SpatVector: SpatVector of points. SpatRaster: data.frame
+SpatVector of points or data.frame
 
 ## Examples
 
@@ -69,8 +79,11 @@ z <- centroids(v, correct=TRUE) ## same as 'x' in this case
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 centroids(r)
-#>          x        y
-#> 1 6.091757 49.77608
+#> class       : SpatVector
+#> geometry    : points
+#> dimensions  : 1, 0  (geometries, attributes)
+#> extent      : 6.091757, 6.091757, 49.77608, 49.77608  (xmin, xmax, ymin, ymax)
+#> coord. ref. : 
 
 
 p <- vect("POLYGON ((5.9 50, 6.3 50, 6.5 49.8, 6.3 49.6, 5.9 49.5, 6.3 49.7, 6.3 49.9, 5.9 50))")
