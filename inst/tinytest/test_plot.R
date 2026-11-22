@@ -23,8 +23,25 @@ dev.off()
 expect_error(plot(r, blend=1, legend=FALSE, axes=FALSE, mar=NA))
 expect_error(plot(r, blend=h, blendfun="nope", legend=FALSE, axes=FALSE, mar=NA))
 
+# main=TRUE uses the layer or column name for a single map (#2237)
+png(tempfile(fileext=".png"))
+r1 <- rast(nrows=2, ncols=2, vals=1)
+names(r1) <- "ndvi"
+expect_equal(plot(r1)$main, "")
+expect_equal(plot(r1, main=TRUE)$main, "ndvi")
+r2 <- c(r1, r1)
+names(r2) <- c("a", "b")
+expect_equal(plot(r2, 2, main=TRUE)$main, "b")
+dev.off()
+
 # colNA for continuous vector plot (#2198)
 v <- vect(system.file("ex/lux.shp", package="terra"))
+png(tempfile(fileext=".png"))
+nm <- names(v)[1]
+expect_equal(plot(v, nm)$main, "")
+expect_equal(plot(v, nm, main=TRUE)$main, nm)
+expect_equal(plot(v, 1, main=TRUE)$main, nm)
+dev.off()
 v[5, "AREA"] <- NA
 png(tempfile(fileext=".png"))
 plot(v, "AREA", colNA="grey", type="continuous")
