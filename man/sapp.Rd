@@ -23,7 +23,7 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
   \item{fun}{if \code{x} is a \code{SpatRaster}: a function that takes a SpatRaster argument and can be applied to each layer of \code{x} (e.g. \code{\link{terrain}}); 
-  if \code{x} is a \code{SpatRasterDataset}: a function that is applied to all layers of the SpatRasters in \code{x} (e.g. \code{mean}})
+  if \code{x} is a \code{SpatRasterDataset}: a function that is applied to all layers of the SpatRasters in \code{x} (e.g. \code{mean})}
   \item{...}{additional arguments to be passed to \code{fun}} 
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
