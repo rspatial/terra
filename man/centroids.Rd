@@ -25,7 +25,7 @@ SpatRaster: Get the centroid of all cells, or he (weighted) centroid of the cell
 \item{correct}{If \code{TRUE} corrected centroids are returned for geometries in \code{x} that have a true centroid that is not inside the geometry. If \code{inside=TRUE} it is replaced with another point that is guaranteed to be inside the geometry. If it is \code{FALSE}, it is replaced with the nearest point on the border of the geometry}
 \item{geoms}{If \code{TRUE} centroids are returned for each geometry in \code{x}. Otherwise, a single centroid is returned for the aggregated geometries}
 \item{weighted}{logical. If \code{TRUE} the centroids are computed as the weighted means of the coordinates of cells with values}
-\item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are not included in the computation. Cannot be combined with \code{na.rm=FALSE}}
+\item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are not included in the computation. Cannot be set to \code{FALSE} if \code{weighted=TRUE}}
 \item{lonlat}{logical. If \code{TRUE} the centroids are always longitude/latitude coordinates, irrespective of the coordinate reference system of \code{x}}
 \item{data.frame}{logical. If \code{TRUE} a \code{data.frame} is returned instead of a \code{SpatVector}}
 }
