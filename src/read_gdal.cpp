@@ -1348,7 +1348,7 @@ static void fill_geolocation_after_multidim(SpatRaster &r, GDALDataset *poDatase
 }
 
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 12, 3)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 12, 3) && GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 13, 2)
 
 // Path inside a NETCDF:"file":var dataset name, or fname itself.
 static std::string nc_filename_for_md(std::string f) {
@@ -1714,11 +1714,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			s.extset = true;
 			s.flipped = true;
 		}
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 12, 3)
-		// GDAL 3.12.3+ forces the classic netCDF driver bottom-up when a
-		// GeoTransform attribute agrees with the dimension variables. Files
-		// whose Y coordinate already decreases (north-up storage, as writeCDF
-		// writes) are then upside down. Undo that flip on read (#2212).
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 12, 3) && GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 13, 2)
+		// GDAL 3.12.3 through 3.13.1 force the classic netCDF driver bottom-up
+		// when a GeoTransform attribute agrees with the dimension variables.
+		// Files whose Y coordinate already decreases (north-up storage, as
+		// writeCDF writes) are then upside down. GDAL 3.13.2 sets bottom-up
+		// from whether the file is GDAL's own CF layout, which these files are
+		// not. Undo the flip only in the versions that still force it (#2212).
 		else if (gdrv == "netCDF" && adfGeoTransform[5] < 0 &&
 		         adfGeoTransform[2] == 0 && adfGeoTransform[4] == 0 &&
 		         nc_geotransform_attr_matches(s.smdata, adfGeoTransform) &&
