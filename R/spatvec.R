@@ -1,6 +1,4 @@
 
-
-
 setMethod("geomtype", signature(x="SpatVector"),
 	function(x){
 		x@pntr$type()
