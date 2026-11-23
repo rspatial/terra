@@ -5,7 +5,7 @@
 \alias{flowDir}
 \alias{flowDir,SpatRaster-method}
 
-\title{Path-Based Nondisperive Flow Direction}
+\title{Path-Based Nondispersive Flow Direction}
 
 \description{
 Computes nondispersive flow/drainage direction according to path-based methods over grid-based digital elevation models. 

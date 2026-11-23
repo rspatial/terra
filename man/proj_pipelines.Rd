@@ -37,7 +37,7 @@ A \code{data.frame} with "pipelines" and the following columns:
 }
 
 \note{
-Requires PROJ >= 7.1 (inc" 3). See \code{\link{projNetwork}} to enable online grid downloading.
+Requires PROJ >= 7.1. See \code{\link{projNetwork}} to enable online grid downloading.
 }
 
 \seealso{
