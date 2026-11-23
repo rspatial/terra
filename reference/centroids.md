@@ -50,7 +50,7 @@ centroids(x, weighted=FALSE, na.rm=TRUE, lonlat=FALSE, data.frame=FALSE)
 - na.rm:
 
   logical. If `TRUE` cells that are `NA` are not included in the
-  computation. Cannot be combined with `na.rm=FALSE`
+  computation. Cannot be set to `FALSE` if `weighted=TRUE`
 
 - lonlat:
 

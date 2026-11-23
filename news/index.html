@@ -37,8 +37,7 @@
 <h2 class="pkg-version" data-toc-text="1.9-61" id="version-19-61">version 1.9-61<a class="anchor" aria-label="anchor" href="#version-19-61"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-1-9-61">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-61"></a></h3>
-<ul><li>
-<code>crop(mask=TRUE)</code> on a NetCDF opened with the classic driver disagreed with <code>md=TRUE</code> on GDAL &gt;= 3.12.3, which forces those files bottom-up when a GeoTransform attribute is present</li>
+<ul><li>reading a NetCDF with the classic driver with GDAL 3.12.3 through 3.13.1 forced north-up files bottom-up when a GeoTransform attribute is present. This flipped the values vertically and terra now corrects this for these GDAL versions.</li>
 <li>
 <code>spatSample&lt;SpatVector&gt;</code> could return fewer points than requested for polygons whose bounding box is much larger than their area, such as USA in lon/lat <a href="https://github.com/rspatial/terra/issues/2233" class="external-link">#2233</a> by Tyler Smith.</li>
 </ul></div>
@@ -54,7 +53,7 @@
 <li>
 <code>writeCDF</code> writes factor levels as CF flag attributes, and reading the file restores the categories <a href="https://github.com/rspatial/terra/issues/2228" class="external-link">#2228</a> by Kodi Arfer</li>
 <li>
-<code>centroids&lt;SpatVector&gt;</code> gains argument “geoms=TRUE” and <code>centroids&lt;SpatRaster&gt;</code> gains argument “na.rm=TRUE”. <a href="https://github.com/rspatial/terra/issues/2234" class="external-link">#2234</a> by Márcia Barbosa</li>
+<code>centroids&lt;SpatVector&gt;</code> gains argument “geoms=TRUE” and <code>centroids&lt;SpatRaster&gt;</code> gains argument “na.rm=TRUE”. Both gain “lonlat=FALSE” and “data.frame=FALSE” (the latter changes the default for SpatRaster to align it with the SpatVector method <a href="https://github.com/rspatial/terra/issues/2234" class="external-link">#2234</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-9-61">new<a class="anchor" aria-label="anchor" href="#new-1-9-61"></a></h3>

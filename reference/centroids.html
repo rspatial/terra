@@ -70,7 +70,7 @@ SpatRaster: Get the centroid of all cells, or he (weighted) centroid of the cell
 <dd><p>logical. If <code>TRUE</code> the centroids are computed as the weighted means of the coordinates of cells with values</p></dd>
 
 <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
-<dd><p>logical. If <code>TRUE</code> cells that are <code>NA</code> are not included in the computation. Cannot be combined with <code>na.rm=FALSE</code></p></dd>
+<dd><p>logical. If <code>TRUE</code> cells that are <code>NA</code> are not included in the computation. Cannot be set to <code>FALSE</code> if <code>weighted=TRUE</code></p></dd>
 
 <dt id="arg-lonlat">lonlat<a class="anchor" aria-label="anchor" href="#arg-lonlat"></a></dt>
 <dd><p>logical. If <code>TRUE</code> the centroids are always longitude/latitude coordinates, irrespective of the coordinate reference system of <code>x</code></p></dd>
