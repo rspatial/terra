@@ -3,7 +3,7 @@
 SpatVector: Get the centroids of polygons or lines, or centroid-like
 points that are guaranteed to be inside the polygons or on the lines.
 
-SpatRaster: Get the centroid of all cells, or he (weighted) centroid of
+SpatRaster: Get the centroid of all cells, or the (weighted) centroid of
 the cells that are not `NA`.
 
 ## Usage

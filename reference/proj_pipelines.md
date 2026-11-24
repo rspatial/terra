@@ -94,7 +94,7 @@ A `data.frame` with "pipelines" and the following columns:
 
 ## Note
 
-Requires PROJ \>= 7.1 (inc" 3). See
+Requires PROJ \>= 7.1. See
 [`projNetwork`](https://rspatial.github.io/terra/reference/gdal.md) to
 enable online grid downloading.
 

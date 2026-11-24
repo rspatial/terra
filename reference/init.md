@@ -8,7 +8,7 @@ with random numbers.
 
 For small objects that fit in memory, a vector containing all cell
 values can be assigned using, for instance, the
-[`values`](https://rspatial.github.io/terra/reference/values.md)
+[values](https://rspatial.github.io/terra/reference/setValues.md)
 function. The `init` function also works when the object does not fit in
 memory (by writing it directly to the disk).
 

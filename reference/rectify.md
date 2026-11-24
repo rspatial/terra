@@ -18,7 +18,7 @@ rectify(x, method="bilinear", aoi=NULL, snap=TRUE,
 
 - method:
 
-  character. Method used to for resampling. See
+  character. Method used for resampling. See
   [`resample`](https://rspatial.github.io/terra/reference/resample.md)
 
 - aoi:
@@ -30,8 +30,8 @@ rectify(x, method="bilinear", aoi=NULL, snap=TRUE,
 - snap:
 
   logical. If `TRUE`, the origin and resolution of the output are the
-  same as would the case when `aoi = NULL`. Only relevant if `aoi` is a
-  `SpatExtent`
+  same as would be the case when `aoi = NULL`. Only relevant if `aoi` is
+  a `SpatExtent`
 
 - threads:
 

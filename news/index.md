@@ -35,7 +35,7 @@
 - `centroids<SpatVector>` gains argument “geoms=TRUE” and
   `centroids<SpatRaster>` gains argument “na.rm=TRUE”. Both gain
   “lonlat=FALSE” and “data.frame=FALSE” (the latter changes the default
-  for SpatRaster to align it with the SpatVector method
+  for SpatRaster to align it with the SpatVector method)
   [\#2234](https://github.com/rspatial/terra/issues/2234) by Márcia
   Barbosa
 
@@ -72,7 +72,7 @@ Released 2026-11-19
 - `init` with a function failed on a multi-source SpatRaster
   (`the condition has length > 1` in `writeStop`) after the `mask`
   argument was added
-- `aggregate<SpatVector>` by more than one variable failed with when a
+- `aggregate<SpatVector>` by more than one variable failed when a
   grouping field had `NA`
 - scatterplot of two rasters did not work when supplying xlim/ylim
   arguments [\#2230](https://github.com/rspatial/terra/issues/2230) by
@@ -102,7 +102,7 @@ Released 2026-11-19
 - `scale<SpatRaster>` attaches attributes `"scaled:center"` and
   `"scaled:scale"` as in
   [`base::scale`](https://rdrr.io/r/base/scale.html)
-- removed spurious “missing geotransform” warning for some file when
+- removed spurious “missing geotransform” warning for some files when
   using `rast(..., md=TRUE)`
   [\#2208](https://github.com/rspatial/terra/issues/2208) by Kodi Arfer
 - `shift` gains argument `to` to center an object on a point or on the
@@ -170,7 +170,7 @@ Released 2026-09-08
   [\#2168](https://github.com/rspatial/terra/issues/2168) by Michael
   Chirico
 - GRIB files with 0 to 360 longitude are by default remapped to -180 to
-  180 by the classic GDAL GRIB driver. The multdimensional driver does
+  180 by the classic GDAL GRIB driver. The multidimensional driver does
   not do that. This created a mismatched longitude extent (taken from
   the classic driver) when opening such a file with the multidim
   interface [\#2178](https://github.com/rspatial/terra/issues/2178) by
@@ -242,7 +242,7 @@ Released 2026-08-21
   Göktuğ Öztürk
 - improved multidim handling of GRIB files
   [\#2160](https://github.com/rspatial/terra/issues/2160) by Kodi Arfer.
-- improved mutlidim handling of HDF-EOS files
+- improved multidim handling of HDF-EOS files
   [\#2163](https://github.com/rspatial/terra/issues/2163) by Monika Anna
   Tomaszewska and Kodi Arfer
   [\#2162](https://github.com/rspatial/terra/issues/2162)
@@ -278,7 +278,7 @@ Released 2026-08-21
 - argument `adj` in `add_mtext` now better aligns text along the margins
   [\#2158](https://github.com/rspatial/terra/pull/2158) by Mehmet Göktuğ
   Öztürk
-- `spatSample(method="startified")` now returns categorical values, not
+- `spatSample(method="stratified")` now returns categorical values, not
   their integer representation
   [\#2159](https://github.com/rspatial/terra/issues/2159) by Krzysztof
   Dyba
@@ -293,9 +293,9 @@ Released 2026-08-21
   location on another geometry
 - `snapTo` method to move points to the nearest location on lines or
   polygons
-- `flowDir` method to compute path-based nondisperive flow direction by
+- `flowDir` method to compute path-based nondispersive flow direction by
   Emanuele Cordano
-- `pittfiller` method by Emanuele Cordano
+- `pitfiller` method by Emanuele Cordano
 - `as.arrows` to show direction arrows on a raster by Emanuele Cordano
 
 ## version 1.9-34
@@ -397,7 +397,7 @@ Released 2026-05-04
   [\#1599](https://github.com/rspatial/terra/issues/1599) by Hu shiyu
 - `spatSample<SpatRaster>(method="stratified")` could cause an out of
   bounds error [\#1858](https://github.com/rspatial/terra/issues/1858)
-  by Felipe)
+  by Felipe
 - `vrt` on OSX had trouble with options
   [\#1410](https://github.com/rspatial/terra/issues/1410) by Andrea
   Manica. And occasionally on Windows
@@ -2683,7 +2683,7 @@ Released 2022-01-13
   Krzysztof Dyba
 - `vect<matrix>` and `vect<data.frame>` are now much faster. \[#413\] by
   BastienFR  
-- `extract` with points provided as a matrix or cell numbers is not much
+- `extract` with points provided as a matrix or cell numbers is now much
   faster. \[#341\]
 - `focal` has a new argument `na.policy` that can be set to one of “all”
   (default), “only” or “omit”. argument `na.only` has been removed, as

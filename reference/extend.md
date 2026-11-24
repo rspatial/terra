@@ -10,7 +10,7 @@ same as the requested. Depending on argument `snap` it may be a bit
 smaller or larger.
 
 You can also enlarge a SpatExtent with this method, or with an algebraic
-notation (see examples)
+notation (see examples).
 
 ## Usage
 
@@ -34,8 +34,8 @@ extend(x, y)
   which it can be extracted (such as SpatRaster and SpatVector objects).
   Alternatively, you can provide one, two or four non-negative integers
   indicating the number of rows and columns that need to be added at
-  each side (a single positive integer when the number of rows and
-  columns to be added is equal; or 2 number (columns, rows), or four
+  each side: a single positive integer when the number of rows and
+  columns to be added is equal; or two numbers (columns, rows); or four
   (left column, right column, bottom row, top row). If `x` is a
   SpatExtent, `y` should likewise be a numeric vector of 1, 2, or 4
   elements
@@ -47,7 +47,7 @@ extend(x, y)
 
 - fill:
 
-  numeric. The value used to for the new raster cells
+  numeric. The value used for the new raster cells
 
 - filename:
 

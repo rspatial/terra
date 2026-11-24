@@ -5,15 +5,16 @@ Apply a function to a SpatRaster, using layers as arguments.
 The number of arguments in function `fun` must match the number of
 layers in the SpatRaster (or the number of sub-datasets in the
 SpatRasterDataset). For example, if you want to multiply two layers, you
-could use this function: `fun=function(x,y){return(x*y)}` percentage:
-`fun=function(x,y){return(100 * x / y)}`. If you combine three layers
-you could use `fun=function(x,y,z){return((x + y) * z)}`
+could use this function: `fun=function(x,y){return(x*y)}`. To calculate
+a percentage, use: `fun=function(x,y){return(100 * x / y)}`. If you
+combine three layers you could use
+`fun=function(x,y,z){return((x + y) * z)}`.
 
 Before you use the function, test it to make sure that it is vectorized.
 That is, it should work for vectors longer than one, not only for single
 numbers. Or if the input SpatRaster(s) have multiple layers, it should
 work for a matrix (multiple cells) of input data (or matrices in the
-case of a SpatRasterDataSet). The function must return the same number
+case of a SpatRasterDataset). The function must return the same number
 of elements as its input vectors, or multiples of that. Also make sure
 that the function is `NA`-proof: it should return the same number of
 values when some or all input values are `NA`. And the function must

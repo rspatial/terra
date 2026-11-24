@@ -1,7 +1,7 @@
 # Subset a SpatRaster or a SpatVector
 
 Select a subset of layers from a SpatRaster or select a subset of
-records (row) and/or variables (columns) from a SpatVector.
+records (rows) and/or variables (columns) from a SpatVector.
 
 ## Usage
 

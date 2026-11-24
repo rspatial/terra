@@ -6,7 +6,7 @@ similarity of the SpatRaster geometry.
 
 They can be used to combine several SpatRasters to be used with
 [`merge`](https://rspatial.github.io/terra/reference/merge.md) or
-[`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md)`.`
+[`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md).
 
 You can create a SpatRasterCollection from a file with subdatasets.
 

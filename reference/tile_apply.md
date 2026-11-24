@@ -50,7 +50,7 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
   specification of the tiles. If `NULL` (the default), the tile size is
   chosen automatically and a per-worker memory budget that depends on
   `cores` (see
-  [`getTileExtents`](https://rspatial.github.io/terra/reference/makeTiles.md).
+  [`getTileExtents`](https://rspatial.github.io/terra/reference/makeTiles.md)).
   Otherwise one of: a `SpatExtent`; a list of `SpatExtent`s; a 4-column
   matrix of extents `(xmin, xmax, ymin, ymax)` as returned by
   [`getTileExtents`](https://rspatial.github.io/terra/reference/makeTiles.md);

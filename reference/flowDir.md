@@ -1,4 +1,4 @@
-# Path-Based Nondisperive Flow Direction
+# Path-Based Nondispersive Flow Direction
 
 Computes nondispersive flow/drainage direction according to path-based
 methods over grid-based digital elevation models. This is an alternative

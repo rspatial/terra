@@ -441,7 +441,7 @@
   : Flow accumulation
 
 - [`flowDir(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/flowDir.md)
-  : Path-Based Nondisperive Flow Direction
+  : Path-Based Nondispersive Flow Direction
 
 - [`focal(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/focal.md)
   : Focal values

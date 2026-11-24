@@ -37,7 +37,7 @@ freq(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE,
 - usenames:
 
   logical. If `TRUE` layers are identified by their names instead of
-  their numbers Only relevant if `bylayer` is `TRUE`
+  their numbers. Only relevant if `bylayer` is `TRUE`
 
 - zones:
 
@@ -57,8 +57,8 @@ freq(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE,
 ## Value
 
 A `data.frame` with 3 columns (layer, value, count) unless
-`bylayer=FALSE` in which case a`data.frame` with two columns is returned
-(value, count).
+`bylayer=FALSE` in which case a `data.frame` with two columns is
+returned (value, count).
 
 ## Author
 

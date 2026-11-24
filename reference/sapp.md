@@ -5,7 +5,7 @@ layer SpatRaster and returns a SpatRaster (these are rare). In most
 cases you can also use `lapply` or `sapply` for this.
 
 Or apply the same method to each sub-dataset (SpatRaster) in a
-SpatRasterDataset
+SpatRasterDataset.
 
 ## Usage
 
@@ -27,9 +27,9 @@ sapp(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 
   if `x` is a `SpatRaster`: a function that takes a SpatRaster argument
   and can be applied to each layer of `x` (e.g.
-  [`terrain`](https://rspatial.github.io/terra/reference/terrain.md). if
-  `x` is a `SpatRasterDataset`: a function that is applied to all layers
-  of the SpatRasters in `x` (e.g. `mean`
+  [`terrain`](https://rspatial.github.io/terra/reference/terrain.md));
+  if `x` is a `SpatRasterDataset`: a function that is applied to all
+  layers of the SpatRasters in `x` (e.g. `mean`)
 
 - ...:
 

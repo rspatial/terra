@@ -58,7 +58,7 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
 - y:
 
   missing or positive integer or name indicating the layer(s) or
-  attributes(s) to be plotted
+  attribute(s) to be plotted
 
 - col:
 

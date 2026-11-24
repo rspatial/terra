@@ -35,7 +35,7 @@ predict(object, model, fun=predict, ..., const=NULL, na.rm=FALSE,
 - model:
 
   fitted model of any class that has a "predict" method (or for which
-  you can supply a similar method as `fun` argument. E.g. glm, gam, or
+  you can supply a similar method as `fun` argument), e.g., glm, gam, or
   randomForest
 
 - fun:
@@ -56,10 +56,10 @@ predict(object, model, fun=predict, ..., const=NULL, na.rm=FALSE,
 
 - na.rm:
 
-  logical. If `TRUE`, cells with `NA` values in the any of the layers of
-  `x` are removed from the computation (even if the `NA` cell is in a
-  layer that is not used as a variable in the model). This option
-  prevents errors with models that cannot handle `NA` values when making
+  logical. If `TRUE`, cells with `NA` values in any of the layers of `x`
+  are removed from the computation (even if the `NA` cell is in a layer
+  that is not used as a variable in the model). This option prevents
+  errors with models that cannot handle `NA` values when making
   predictions. In most other cases this will not affect the output.
   However, there are some models that return predicted values even if
   some (or all) variables are `NA`
