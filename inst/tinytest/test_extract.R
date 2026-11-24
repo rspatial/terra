@@ -346,5 +346,17 @@ e <- extractRange(s, xy, first=1:2, last=3:2, lyr_fun=sum)
 expect_equal(e, c(522, 67))
 e <- extractRange(s, xy, first=1:2, last=3:2, lyr_fun=sum, ID=T)
 expect_equal(e, data.frame(ID=1:2, value=c(522, 67)))
+
+# per-layer scale and offset (#2242)
+r <- rast(nrows=2, ncols=2, nlyrs=3, vals=rep(c(1000, 2000, 3000), each=4))
+f <- tempfile(fileext=".tif")
+writeRaster(r, f, datatype="INT2S", overwrite=TRUE)
+x <- rast(f)
+scoff(x) <- cbind(c(0.01, 0.1, 1), c(0, 5, 0))
+expect_equal(as.numeric(values(x)[1, ]), c(10, 205, 3000))
+expect_equal(as.numeric(extract(x, 1)), c(10, 205, 3000))
+expect_equal(as.numeric(x[1]), c(10, 205, 3000))
+expect_equal(as.numeric(extract(x, vect(xyFromCell(x, 1), crs=crs(x)))[1, -1]), c(10, 205, 3000))
+expect_equal(as.numeric(extract(x[[2:3]], 1)), c(205, 3000))
  
 

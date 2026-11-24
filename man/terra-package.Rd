@@ -40,7 +40,7 @@ Below is a list of some of the most important methods grouped by theme.
     \code{\link{[[<-}} \tab Replace or add a SpatRaster layer \cr
     \code{\link{$<-}} \tab Replace or add a SpatRaster layer \cr
     \code{\link{selectRange}} \tab Select cell values from different layers using an index layer\cr
-    \code{\link{rep}} \tab Repeat layers or a SpatRaster \cr
+    \code{\link{rep}} \tab Repeat layers of a SpatRaster \cr
     \code{\link{split}} \tab Make a list of single layer SpatRasters\cr
     \code{\link{as.character}} \tab Get a character representation of a SpatRaster geometry\cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
