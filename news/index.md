@@ -4,6 +4,10 @@
 
 ### bug fixes
 
+- `extract` and `[` applied the scale and offset of the first layer to
+  every layer of a file-based SpatRaster
+  [\#2242](https://github.com/rspatial/terra/issues/2242) by Cássio
+  Moquedace
 - reading a NetCDF with the classic driver with GDAL 3.12.3 through
   3.13.1 forced north-up files bottom-up when a GeoTransform attribute
   is present. This flipped the values vertically and terra now corrects

@@ -15,6 +15,9 @@
 
 - **Krzysztof Dyba**. Author. [](https://orcid.org/0000-0002-8614-3816)
 
+- **Michael D. Sumner**. Author.
+  [](https://orcid.org/0000-0002-2471-7511)
+
 - **Roger Bivand**. Contributor.
   [](https://orcid.org/0000-0003-2392-6140)
 
@@ -27,21 +30,18 @@
 - **Barry Rowlingson**. Contributor.
   [](https://orcid.org/0000-0002-8586-6625)
 
-- **Michael D. Sumner**. Contributor.
-  [](https://orcid.org/0000-0002-2471-7511)
-
 ## Citation
 
 Source:
 [`DESCRIPTION`](https://github.com/rspatial/terra/blob/master/DESCRIPTION)
 
-Hijmans R, Brown A, Barbosa AM, Cordano E, Dyba K (2026). *terra:
-Spatial Data Analysis*. R package version 1.9-61,
+Hijmans R, Brown A, Barbosa AM, Cordano E, Dyba K, Sumner M (2026).
+*terra: Spatial Data Analysis*. R package version 1.9-61,
 <https://rspatial.org/>.
 
     @Manual{,
       title = {terra: Spatial Data Analysis},
-      author = {Robert J. Hijmans and Andrew Brown and A. Márcia Barbosa and Emanuele Cordano and Krzysztof Dyba},
+      author = {Robert J. Hijmans and Andrew Brown and A. Márcia Barbosa and Emanuele Cordano and Krzysztof Dyba and Michael D. Sumner},
       year = {2026},
       note = {R package version 1.9-61},
       url = {https://rspatial.org/},

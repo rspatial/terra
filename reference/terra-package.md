@@ -63,7 +63,7 @@ Below is a list of some of the most important methods grouped by theme.
 | `[[<-` | Replace or add a SpatRaster layer |
 | `$<-` | Replace or add a SpatRaster layer |
 | [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md) | Select cell values from different layers using an index layer |
-| [`rep`](https://rspatial.github.io/terra/reference/rep.md) | Repeat layers or a SpatRaster |
+| [`rep`](https://rspatial.github.io/terra/reference/rep.md) | Repeat layers of a SpatRaster |
 | [`split`](https://rspatial.github.io/terra/reference/split.md) | Make a list of single layer SpatRasters |
 | [`as.character`](https://rdrr.io/r/base/character.html) | Get a character representation of a SpatRaster geometry |
 | ————————— | —————————————————————————————— |
