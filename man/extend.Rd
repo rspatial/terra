@@ -12,7 +12,7 @@ Enlarge the spatial extent of a SpatRaster. See \code{\link{crop}} if you (also)
 
 Note that you can only enlarge SpatRasters with entire rows and columns. Therefore, the extent of the output SpatRaster may not be exactly the same as the requested. Depending on argument \code{snap} it may be a bit smaller or larger. 
 
-You can also enlarge a SpatExtent with this method, or with an algebraic notation (see examples)
+You can also enlarge a SpatExtent with this method, or with an algebraic notation (see examples).
 }
 
 \usage{
@@ -23,11 +23,11 @@ You can also enlarge a SpatExtent with this method, or with an algebraic notatio
 
 \arguments{
   \item{x}{SpatRaster or SpatExtent}
-  \item{y}{If \code{x} is a SpatRaster, \code{y} should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide one, two or four non-negative integers indicating the number of rows and columns that need to be added at each side (a single positive integer when the number of rows and columns to be added is equal; or 2 number (columns, rows), or four (left column, right column, bottom row, top row).
+  \item{y}{If \code{x} is a SpatRaster, \code{y} should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide one, two or four non-negative integers indicating the number of rows and columns that need to be added at each side: a single positive integer when the number of rows and columns to be added is equal; or two numbers (columns, rows); or four (left column, right column, bottom row, top row).
   If \code{x} is a SpatExtent, \code{y} should likewise be a numeric vector of 1, 2, or 4 elements}
   
   \item{snap}{character. One of "near", "in", or "out". Used to align \code{y} to the geometry of \code{x}} 
-  \item{fill}{numeric. The value used to for the new raster cells}
+  \item{fill}{numeric. The value used for the new raster cells}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

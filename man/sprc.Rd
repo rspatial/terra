@@ -14,7 +14,7 @@
 \description{
 Methods to create a SpatRasterCollection. This is an object to hold a collection (list) of SpatRasters. There are no restrictions on the similarity of the SpatRaster geometry. 
 
-They can be used to combine several SpatRasters to be used with \code{\link{merge}} or \code{\link{mosaic}.}
+They can be used to combine several SpatRasters to be used with \code{\link{merge}} or \code{\link{mosaic}}.
 
 You can create a SpatRasterCollection from a file with subdatasets.
 }

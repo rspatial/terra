@@ -8,7 +8,7 @@
 \description{
 Create a SpatRaster with values reflecting a cell property: "x", "y", "xy", "col", "row", "cell" or "chess". Alternatively, a function can be used. In that case, cell values are initialized without reference to pre-existing values. For example, use \code{fun=runif} to initialize cells with random numbers.
 
-For small objects that fit in memory, a vector containing all cell values can be assigned using, for instance, the \code{\link{values}} function. The \code{init} function also works when the object does not fit in memory (by writing it directly to the disk).
+For small objects that fit in memory, a vector containing all cell values can be assigned using, for instance, the \link[=setValues]{values} function. The \code{init} function also works when the object does not fit in memory (by writing it directly to the disk).
 }
 
 \usage{

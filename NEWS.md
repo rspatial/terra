@@ -12,7 +12,7 @@
 - `divide<SpatRaster>` gains argument `split`: `"values"` (the default) balances cell-value sums, `"notNA"` the number of non-NA cells, `"cells"` the number of cells [#2238](https://github.com/rspatial/terra/issues/2238) by Márcia Barbosa
 - more efficient VRT reading [#2224](https://github.com/rspatial/terra/pull/2224) by Mike Sumner
 - `writeCDF` writes factor levels as CF flag attributes, and reading the file restores the categories [#2228](https://github.com/rspatial/terra/issues/2228) by Kodi Arfer 
-- `centroids<SpatVector>` gains argument "geoms=TRUE" and `centroids<SpatRaster>` gains argument "na.rm=TRUE". Both gain "lonlat=FALSE" and "data.frame=FALSE" (the latter changes the default for SpatRaster to align it with the SpatVector method [#2234](https://github.com/rspatial/terra/issues/2234) by Márcia Barbosa
+- `centroids<SpatVector>` gains argument "geoms=TRUE" and `centroids<SpatRaster>` gains argument "na.rm=TRUE". Both gain "lonlat=FALSE" and "data.frame=FALSE" (the latter changes the default for SpatRaster to align it with the SpatVector method) [#2234](https://github.com/rspatial/terra/issues/2234) by Márcia Barbosa
 
 
 ## new 
@@ -32,7 +32,7 @@ Released 2026-11-19
 - `crop` to disk treated valid `INT2U` values of 65535 as missing when the source had no NoData tag [#2207](https://github.com/rspatial/terra/issues/2207) by Jakub Nowosad
 - `crop` with `mask=TRUE` on a raster opened with the multidimensional API ignored the cropping window [#2212](https://github.com/rspatial/terra/issues/2212) by Ondřej Ledvinka
 - `init` with a function failed on a multi-source SpatRaster (`the condition has length > 1` in `writeStop`) after the `mask` argument was added
-- `aggregate<SpatVector>` by more than one variable failed with when a grouping field had `NA`
+- `aggregate<SpatVector>` by more than one variable failed when a grouping field had `NA`
 - scatterplot of two rasters did not work when supplying xlim/ylim arguments [#2230](https://github.com/rspatial/terra/issues/2230) by Agustín Lobo
 - a rescaled spatstat image was not imported correctly, it applied the scale factor to the values [#2236](https://github.com/rspatial/terra/issues/2236) by Manny Gimond
 
@@ -46,7 +46,7 @@ Released 2026-11-19
 - `focal` now errors if `NAonly` is used, and ignores `pad` with a warning (arguments from `raster::focal`) [#2189](https://github.com/rspatial/terra/issues/2189) by leunissene-ESNZ
 - `writeValues` gains arguments `col` and `ncols` like `readValues` [#2188](https://github.com/rspatial/terra/issues/2188) by kbvernon
 - `scale<SpatRaster>` attaches attributes `"scaled:center"` and `"scaled:scale"` as in `base::scale`
-- removed spurious "missing geotransform" warning for some file when using `rast(..., md=TRUE)` [#2208](https://github.com/rspatial/terra/issues/2208) by Kodi Arfer
+- removed spurious "missing geotransform" warning for some files when using `rast(..., md=TRUE)` [#2208](https://github.com/rspatial/terra/issues/2208) by Kodi Arfer
 - `shift` gains argument `to` to center an object on a point or on the extent of another object [#2201](https://github.com/rspatial/terra/issues/2201) by Márcia Barbosa
 - `text<SpatVector>` gains argument `fit` to attempt to plot labels entirely inside their corresponding polygon
 - `plot<SpatRaster>` gains arguments `blend` and `blendfun` to combine the mapped colors (and alpha) of `x` with another raster (e.g. hillshade with "multiply")
@@ -77,7 +77,7 @@ Released 2026-09-08
 - terra did not compile with GEOS < 3.10.0 [#2172](https://github.com/rspatial/terra/issues/2172) by Shane Sturrock
 - integer overflow (UBSAN) error in internal use of flowDir (reported by CRAN)
 - `pitfiller` did not properly handle missing values [#2168](https://github.com/rspatial/terra/issues/2168) by Michael Chirico
-- GRIB files with 0 to 360 longitude are by default remapped to -180 to 180 by the classic GDAL GRIB driver. The multdimensional driver does not do that. This created a mismatched longitude extent (taken from the classic driver) when opening such a file with the multidim interface [#2178](https://github.com/rspatial/terra/issues/2178) by Yadong Liu
+- GRIB files with 0 to 360 longitude are by default remapped to -180 to 180 by the classic GDAL GRIB driver. The multidimensional driver does not do that. This created a mismatched longitude extent (taken from the classic driver) when opening such a file with the multidim interface [#2178](https://github.com/rspatial/terra/issues/2178) by Yadong Liu
 - `rast` with the default multidim probe discarded GDAL open error messages [#2185](https://github.com/rspatial/terra/issues/2185) by Krzysztof Dyba
 
 ## enhancements
@@ -108,7 +108,7 @@ Released 2026-08-21
 - `tile_apply` failed on SpatRasters with more than one source [#2150](https://github.com/rspatial/terra/issues/2150) by ebkurtz
 - `as.polygons` on a file-backed multi-layer SpatRaster always used the first layer, not the selected layer [#2156](https://github.com/rspatial/terra/issues/2156) by Mehmet Göktuğ Öztürk
 - improved multidim handling of GRIB files [#2160](https://github.com/rspatial/terra/issues/2160) by Kodi Arfer.
-- improved mutlidim handling of HDF-EOS files [#2163](https://github.com/rspatial/terra/issues/2163) by Monika Anna Tomaszewska and 
+- improved multidim handling of HDF-EOS files [#2163](https://github.com/rspatial/terra/issues/2163) by Monika Anna Tomaszewska and 
 Kodi Arfer [#2162](https://github.com/rspatial/terra/issues/2162)
 - `spatSample` did not handle a combination of raster sources if some had a window and others not [#2164](
 https://github.com/rspatial/terra/issues/2164) by Krzysztof Dyba
@@ -123,7 +123,7 @@ https://github.com/rspatial/terra/issues/2164) by Krzysztof Dyba
 - `focal` with "min" or "max" and an unweighted window is now faster, especially with large windows
 - the "threads" option now defaults to 16 (instead of no limit) to avoid run-away thread counts on machines with very many cores. The "threads" argument of `project` and `resample` can now also be a number
 - argument `adj` in `add_mtext` now better aligns text along the margins [#2158](https://github.com/rspatial/terra/pull/2158) by Mehmet Göktuğ Öztürk
-- `spatSample(method="startified")` now returns categorical values, not their integer representation [#2159](https://github.com/rspatial/terra/issues/2159) by Krzysztof Dyba
+- `spatSample(method="stratified")` now returns categorical values, not their integer representation [#2159](https://github.com/rspatial/terra/issues/2159) by Krzysztof Dyba
 
 
 ## new 
@@ -131,8 +131,8 @@ https://github.com/rspatial/terra/issues/2164) by Krzysztof Dyba
 - `rast` better support for file that have geolocation/GCPs and new functions `has.geoloc` and `geoloc` [#1175](https://github.com/rspatial/terra/issues/1175) by Michael Sumner
 - `furdist` method to get the furthest distance from a point to any location on another geometry
 - `snapTo` method to move points to the nearest location on lines or polygons
-- `flowDir` method to compute path-based nondisperive flow direction by Emanuele Cordano
-- `pittfiller` method by Emanuele Cordano
+- `flowDir` method to compute path-based nondispersive flow direction by Emanuele Cordano
+- `pitfiller` method by Emanuele Cordano
 - `as.arrows` to show direction arrows on a raster by Emanuele Cordano
 
 
@@ -185,7 +185,7 @@ Released 2026-05-04
 ## bug fixes
 
 - terra now distinguishes between the "standard"/"Gregorian" and the "proleptic_gregorian" calendars [#1599](https://github.com/rspatial/terra/issues/1599) by Hu shiyu
-- `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://github.com/rspatial/terra/issues/1858) by Felipe)
+- `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://github.com/rspatial/terra/issues/1858) by Felipe
 - `vrt` on OSX had trouble with options [#1410](https://github.com/rspatial/terra/issues/1410) by Andrea Manica. And occasionally on Windows [#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna Tomaszewska; due to passing them as a dangling pointer.
 - `rbind<SpatVector,SpatVector>` could make R crash when combining a variable that is numeric in one and boolean in the other source [#2069](https://github.com/rspatial/terra/issues/2069) by Hans van Calster
 - `vect` can now better handle non standard geometries such as multisurface [#2037](https://github.com/rspatial/terra/issues/2037) by Floris Vanderhaeghe
@@ -1405,7 +1405,7 @@ Released 2022-01-13
 - further support for categorical data in `freq` and `as.data.frame`. [#441] ngould7
 - speed up in processing of multi-layer in memory data. [#437] by Krzysztof Dyba
 - `vect<matrix>` and `vect<data.frame>` are now much faster. [#413] by BastienFR 	
-- `extract` with points provided as a matrix or cell numbers is not much faster. [#341]
+- `extract` with points provided as a matrix or cell numbers is now much faster. [#341]
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
 - `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>`. [#456] by Márcia Barbosa
 - The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459] by Edzer Pebesma

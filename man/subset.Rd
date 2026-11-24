@@ -7,7 +7,7 @@
 \title{Subset a SpatRaster or a SpatVector}
 
 \description{
-Select a subset of layers from a SpatRaster or select a subset of records (row) and/or variables (columns) from a SpatVector.  
+Select a subset of layers from a SpatRaster or select a subset of records (rows) and/or variables (columns) from a SpatVector.  
 }
 
 \usage{
